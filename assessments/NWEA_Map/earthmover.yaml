@@ -6,6 +6,11 @@ config:
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
+  parameter_defaults:
+    STUDENT_ID_JOIN_COLUMN: Student_StateID
+    STUDENT_ID_NAME: Student_StateID
+    STUDENT_ID_XWALK: ''
+    
 
   
 
@@ -57,122 +62,34 @@ transformations:
       - operation: add_columns
         source: $transformations.nwea_map_student_assessment
         columns:
-          school_year: "{{TermName[-4:]}}"
+          school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
       - operation: date_format
         source: $transformations.nwea_map_student_assessment
         column: TestStartDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-  
-  goal_1:
+  {% for i in range(1, 9) %} 
+  goal_{{i}}:
     operations:
       - operation: keep_columns
         source: $sources.nwea_map_input
         columns: 
-          - Goal1Name
+          - Goal{{i}}Name
       - operation: distinct_rows
-        source: $transformations.goal_1
+        source: $transformations.goal_{{i}}
       - operation: rename_columns
-        source: $transformations.goal_1
+        source: $transformations.goal_{{i}}
         columns: 
-          Goal1Name: identificationCode
-  goal_2:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal2Name
-      - operation: distinct_rows
-        source: $transformations.goal_2
-      - operation: rename_columns
-        source: $transformations.goal_2
-        columns: 
-          Goal2Name: identificationCode
-  goal_3:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal3Name
-      - operation: distinct_rows
-        source: $transformations.goal_3
-      - operation: rename_columns
-        source: $transformations.goal_3
-        columns: 
-          Goal3Name: identificationCode
-  goal_4:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal4Name
-      - operation: distinct_rows
-        source: $transformations.goal_4
-      - operation: rename_columns
-        source: $transformations.goal_4
-        columns: 
-          Goal4Name: identificationCode
-  goal_5:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal5Name
-      - operation: distinct_rows
-        source: $transformations.goal_5
-      - operation: rename_columns
-        source: $transformations.goal_5
-        columns: 
-          Goal5Name: identificationCode
-  goal_6:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal6Name
-      - operation: distinct_rows
-        source: $transformations.goal_6
-      - operation: rename_columns
-        source: $transformations.goal_6
-        columns: 
-          Goal6Name: identificationCode
-  goal_7:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal7Name
-      - operation: distinct_rows
-        source: $transformations.goal_7
-      - operation: rename_columns
-        source: $transformations.goal_7
-        columns: 
-          Goal7Name: identificationCode
-  goal_8:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - Goal8Name
-      - operation: distinct_rows
-        source: $transformations.goal_8
-      - operation: rename_columns
-        source: $transformations.goal_8
-        columns: 
-          Goal8Name: identificationCode
+          Goal{{i}}Name: identificationCode
+    {%  endfor %}
   
   objective_assessments:
     operations: 
       - operation: union
         sources:
-          - $transformations.goal_1
-          - $transformations.goal_2
-          - $transformations.goal_3
-          - $transformations.goal_4
-          - $transformations.goal_5
-          - $transformations.goal_6
-          - $transformations.goal_7
-          - $transformations.goal_8
+          {% for i in range(1, 9) %} 
+          - $transformations.goal_{{i}}
+          {%  endfor %}
       - operation: filter_rows
         source: $transformations.objective_assessments
         query: identificationCode != ''
@@ -181,136 +98,28 @@ transformations:
         source: $transformations.objective_assessments
 
 
-  proj_prof_1:
+  {% for i in range(1, 10) %}
+  proj_prof_{{i}}:
     operations:
       - operation: keep_columns
         source: $sources.nwea_map_input
         columns: 
-          - ProjectedProficiencyStudy1
+          - ProjectedProficiencyStudy{{i}}
       - operation: distinct_rows
-        source: $transformations.proj_prof_1
+        source: $transformations.proj_prof_{{i}}
       - operation: rename_columns
-        source: $transformations.proj_prof_1
+        source: $transformations.proj_prof_{{i}}
         columns: 
-          ProjectedProficiencyStudy1: codeValue
-
-  proj_prof_2:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy2
-      - operation: distinct_rows
-        source: $transformations.proj_prof_2
-      - operation: rename_columns
-        source: $transformations.proj_prof_2
-        columns: 
-          ProjectedProficiencyStudy2: codeValue
-
-  proj_prof_3:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy3
-      - operation: distinct_rows
-        source: $transformations.proj_prof_3
-      - operation: rename_columns
-        source: $transformations.proj_prof_3
-        columns: 
-          ProjectedProficiencyStudy3: codeValue
-
-  proj_prof_4:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy4
-      - operation: distinct_rows
-        source: $transformations.proj_prof_4
-      - operation: rename_columns
-        source: $transformations.proj_prof_4
-        columns: 
-          ProjectedProficiencyStudy4: codeValue
-
-  proj_prof_5:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy5
-      - operation: distinct_rows
-        source: $transformations.proj_prof_5
-      - operation: rename_columns
-        source: $transformations.proj_prof_5
-        columns: 
-          ProjectedProficiencyStudy5: codeValue
-
-  proj_prof_6:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy6
-      - operation: distinct_rows
-        source: $transformations.proj_prof_6
-      - operation: rename_columns
-        source: $transformations.proj_prof_6
-        columns: 
-          ProjectedProficiencyStudy6: codeValue
-
-  proj_prof_7:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy7
-      - operation: distinct_rows
-        source: $transformations.proj_prof_7
-      - operation: rename_columns
-        source: $transformations.proj_prof_7
-        columns: 
-          ProjectedProficiencyStudy7: codeValue
-
-  proj_prof_8:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy8
-      - operation: distinct_rows
-        source: $transformations.proj_prof_8
-      - operation: rename_columns
-        source: $transformations.proj_prof_8
-        columns: 
-          ProjectedProficiencyStudy8: codeValue
-
-  proj_prof_9:
-    operations:
-      - operation: keep_columns
-        source: $sources.nwea_map_input
-        columns: 
-          - ProjectedProficiencyStudy9
-      - operation: distinct_rows
-        source: $transformations.proj_prof_9
-      - operation: rename_columns
-        source: $transformations.proj_prof_9
-        columns: 
-          ProjectedProficiencyStudy9: codeValue
+          ProjectedProficiencyStudy{{i}}: codeValue
+  {% endfor %}
 
   proj_prof:
     operations: 
       - operation: union
         sources:
-          - $transformations.proj_prof_1
-          - $transformations.proj_prof_2
-          - $transformations.proj_prof_3
-          - $transformations.proj_prof_4
-          - $transformations.proj_prof_5
-          - $transformations.proj_prof_6
-          - $transformations.proj_prof_7
-          - $transformations.proj_prof_8
-          - $transformations.proj_prof_9
+        {% for i in range(1, 10) %}
+          - $transformations.proj_prof_{{i}}
+        {% endfor %}
       - operation: filter_rows
         source: $transformations.proj_prof
         query: codeValue != ''
