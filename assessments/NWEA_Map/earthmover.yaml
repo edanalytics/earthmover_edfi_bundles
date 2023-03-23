@@ -1,0 +1,367 @@
+# See accompanying README.md for details about this file.
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+
+  
+
+sources:
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  nwea_map_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying README.md for a list of required columns for this file
+  
+  student_id_xwalk:
+    # This file only needs to be supplied if the source assessment file does not
+    # contain the studentUniqueId used by Ed-Fi
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - from 
+      - to
+    optional: True 
+  
+# notes:
+# - left out all seasontoseasonGrowthQuintile
+
+
+transformations:
+  nwea_map_student_assessment:
+    operations:
+      - operation: join 
+        sources: 
+          - $sources.nwea_map_input
+          - $sources.student_id_xwalk
+        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        right_key: from
+        join_type: left
+      - operation: duplicate_columns
+        source: $transformations.nwea_map_student_assessment
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        source: $transformations.nwea_map_student_assessment
+        columns:
+          school_year: "{{TermName[-4:]}}"
+      - operation: date_format
+        source: $transformations.nwea_map_student_assessment
+        column: TestStartDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+  
+  goal_1:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal1Name
+      - operation: distinct_rows
+        source: $transformations.goal_1
+      - operation: rename_columns
+        source: $transformations.goal_1
+        columns: 
+          Goal1Name: identificationCode
+  goal_2:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal2Name
+      - operation: distinct_rows
+        source: $transformations.goal_2
+      - operation: rename_columns
+        source: $transformations.goal_2
+        columns: 
+          Goal2Name: identificationCode
+  goal_3:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal3Name
+      - operation: distinct_rows
+        source: $transformations.goal_3
+      - operation: rename_columns
+        source: $transformations.goal_3
+        columns: 
+          Goal3Name: identificationCode
+  goal_4:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal4Name
+      - operation: distinct_rows
+        source: $transformations.goal_4
+      - operation: rename_columns
+        source: $transformations.goal_4
+        columns: 
+          Goal4Name: identificationCode
+  goal_5:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal5Name
+      - operation: distinct_rows
+        source: $transformations.goal_5
+      - operation: rename_columns
+        source: $transformations.goal_5
+        columns: 
+          Goal5Name: identificationCode
+  goal_6:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal6Name
+      - operation: distinct_rows
+        source: $transformations.goal_6
+      - operation: rename_columns
+        source: $transformations.goal_6
+        columns: 
+          Goal6Name: identificationCode
+  goal_7:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal7Name
+      - operation: distinct_rows
+        source: $transformations.goal_7
+      - operation: rename_columns
+        source: $transformations.goal_7
+        columns: 
+          Goal7Name: identificationCode
+  goal_8:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - Goal8Name
+      - operation: distinct_rows
+        source: $transformations.goal_8
+      - operation: rename_columns
+        source: $transformations.goal_8
+        columns: 
+          Goal8Name: identificationCode
+  
+  objective_assessments:
+    operations: 
+      - operation: union
+        sources:
+          - $transformations.goal_1
+          - $transformations.goal_2
+          - $transformations.goal_3
+          - $transformations.goal_4
+          - $transformations.goal_5
+          - $transformations.goal_6
+          - $transformations.goal_7
+          - $transformations.goal_8
+      - operation: filter_rows
+        source: $transformations.objective_assessments
+        query: identificationCode != ''
+        behavior: include
+      - operation: distinct_rows
+        source: $transformations.objective_assessments
+
+
+  proj_prof_1:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy1
+      - operation: distinct_rows
+        source: $transformations.proj_prof_1
+      - operation: rename_columns
+        source: $transformations.proj_prof_1
+        columns: 
+          ProjectedProficiencyStudy1: codeValue
+
+  proj_prof_2:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy2
+      - operation: distinct_rows
+        source: $transformations.proj_prof_2
+      - operation: rename_columns
+        source: $transformations.proj_prof_2
+        columns: 
+          ProjectedProficiencyStudy2: codeValue
+
+  proj_prof_3:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy3
+      - operation: distinct_rows
+        source: $transformations.proj_prof_3
+      - operation: rename_columns
+        source: $transformations.proj_prof_3
+        columns: 
+          ProjectedProficiencyStudy3: codeValue
+
+  proj_prof_4:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy4
+      - operation: distinct_rows
+        source: $transformations.proj_prof_4
+      - operation: rename_columns
+        source: $transformations.proj_prof_4
+        columns: 
+          ProjectedProficiencyStudy4: codeValue
+
+  proj_prof_5:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy5
+      - operation: distinct_rows
+        source: $transformations.proj_prof_5
+      - operation: rename_columns
+        source: $transformations.proj_prof_5
+        columns: 
+          ProjectedProficiencyStudy5: codeValue
+
+  proj_prof_6:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy6
+      - operation: distinct_rows
+        source: $transformations.proj_prof_6
+      - operation: rename_columns
+        source: $transformations.proj_prof_6
+        columns: 
+          ProjectedProficiencyStudy6: codeValue
+
+  proj_prof_7:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy7
+      - operation: distinct_rows
+        source: $transformations.proj_prof_7
+      - operation: rename_columns
+        source: $transformations.proj_prof_7
+        columns: 
+          ProjectedProficiencyStudy7: codeValue
+
+  proj_prof_8:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy8
+      - operation: distinct_rows
+        source: $transformations.proj_prof_8
+      - operation: rename_columns
+        source: $transformations.proj_prof_8
+        columns: 
+          ProjectedProficiencyStudy8: codeValue
+
+  proj_prof_9:
+    operations:
+      - operation: keep_columns
+        source: $sources.nwea_map_input
+        columns: 
+          - ProjectedProficiencyStudy9
+      - operation: distinct_rows
+        source: $transformations.proj_prof_9
+      - operation: rename_columns
+        source: $transformations.proj_prof_9
+        columns: 
+          ProjectedProficiencyStudy9: codeValue
+
+  proj_prof:
+    operations: 
+      - operation: union
+        sources:
+          - $transformations.proj_prof_1
+          - $transformations.proj_prof_2
+          - $transformations.proj_prof_3
+          - $transformations.proj_prof_4
+          - $transformations.proj_prof_5
+          - $transformations.proj_prof_6
+          - $transformations.proj_prof_7
+          - $transformations.proj_prof_8
+          - $transformations.proj_prof_9
+      - operation: filter_rows
+        source: $transformations.proj_prof
+        query: codeValue != ''
+        behavior: include
+      - operation: distinct_rows
+        source: $transformations.proj_prof
+      - operation: add_columns
+        source: $transformations.proj_prof
+        columns:
+          description: Projected Proficiency in linked assessment
+          namespace: uri://www.nwea.org/map/AssessmentReportingMethodDescriptor
+          shortDescription: Projected Proficiency
+          column_name: ProjectedProficiencyStudy
+          data_type: Level
+          is_deprecated: False
+          score_or_performance: score
+
+  reporting_methods:
+    operations: 
+      - operation: filter_rows
+        source: $sources.assessmentReportingMethodDescriptors
+        query: is_deprecated == 'False'
+        behavior: include
+      - operation: union
+        sources:
+          - $transformations.reporting_methods
+          - $transformations.proj_prof
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $transformations.reporting_methods
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.nwea_map_student_assessment
+    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True
