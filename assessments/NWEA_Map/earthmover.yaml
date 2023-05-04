@@ -68,6 +68,19 @@ transformations:
         column: TestStartDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
+      # special handling for ComboStudentAssessment, which has no TestID
+      - operation: combine_columns
+        source: $transformations.nwea_map_student_assessment
+        columns:
+          - studentUniqueId
+          - TestName
+          - TermName
+          - TestStartDate
+          - TestStartTime
+        new_column: generated_test_id
+        separator: '-'
+
+
   {% for i in range(1, 9) %} 
   goal_{{i}}:
     operations:
