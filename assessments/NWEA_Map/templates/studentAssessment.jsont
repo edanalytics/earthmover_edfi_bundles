@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{{ TestID }}",
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map",
       "namespace": "uri://www.nwea.org/map/Assessment"
@@ -267,7 +267,7 @@
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
-        "result": "{{score[0]}}"
+        "result": "{{ score[0] | truncate(35, True, '', 0) }}"
       } {% if not loop.last %},{% endif %}
       {% endfor %}
     ],
@@ -306,28 +306,36 @@
           "namespace": "uri://www.nwea.org/map/Assessment"
         },
         "performanceLevels": [
+          {% if obj_assess[1] is not none and obj_assess[1] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Goal Adjective",
             "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
             "performanceLevelMet": true
           }
+          {% endif %}
         ],
         "scoreResults": [
+        {% if obj_assess[2] is not none and obj_assess[2] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#RIT scale score",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{ obj_assess[2] }}"
           },
+        {% endif %}
+        {% if obj_assess[3] is not none and obj_assess[3] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#SEM",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
             "result": "{{ obj_assess[3] }}"
           },
+        {% endif %}
+        {% if obj_assess[4] is not none and obj_assess[4] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Goal Range",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Range",
             "result": "{{ obj_assess[4] }}"
           }
+        {% endif %}
         ]
       } {% if not loop.last %},{% endif %}
       {% endfor %}
