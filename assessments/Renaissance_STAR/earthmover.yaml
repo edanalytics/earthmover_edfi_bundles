@@ -1,0 +1,373 @@
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  macros: > 
+      {% macro map_subject_values(value) -%}{%- if 'SM' in value -%}Math{%- elif 'SR' in value -%}Reading{%- else -%}Early Literacy{%- endif -%}{%- endmacro %}
+      {%- macro map_subject_abbrev_values(value) -%}{%- if 'SM' in value -%}MA{%- elif 'SR' in value -%}RD{%- else -%}EARLY-LIT{%- endif -%}{%- endmacro %}
+  parameter_defaults:
+    STUDENT_ID_JOIN_COLUMN: StudentStateID
+    STUDENT_ID_NAME: StudentStateID
+    INPUT_FILE_DS: ''
+    INPUT_FILE_SA: ''
+    STUDENT_ID_XWALK: ''
+
+definitions:
+  year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
+  overall_file_name: &overall_file_name ${INPUT_FILE_OVERALL}
+  separator: &separator '/'
+
+sources:
+
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  star_overall_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_OVERALL}
+    header_rows: 1
+
+  star_dashboard_standards_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_DS}
+    header_rows: 1
+    optional: True
+    type: csv
+    columns:
+      - RenaissanceClientID
+      - SchoolYear
+      - StudentRenaissanceID
+      - StudentSourcedID
+      - StudentIdentifier
+      - StudentUserID
+      - StudentStateID
+      - AssessmentID
+      - LaunchDate
+      - CompletedDate
+      - CompletedDateLocal
+      - DomainGroup
+      - DomainName
+      - DomainPercentMastery
+      - DomainConfidenceLevel
+      - DomainMasteryLevel
+      - StandardName
+      - StandardDescription
+      - StandardPercentMastery
+      - StandardConfidenceLevel
+      - StandardMasteryLevel
+
+  star_skill_area_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_SA}
+    header_rows: 1
+    optional: True
+    type: csv
+    columns:
+      - RenaissanceClientID
+      - SchoolYear
+      - StudentRenaissanceID
+      - StudentSourcedID
+      - StudentIdentifier
+      - StudentUserID
+      - StudentStateID
+      - AssessmentID
+      - LaunchDate
+      - CompletedDate
+      - CompletedDateLocal
+      - FamilyName
+      - DomainName
+      - DomainScore
+      - SkillAreaName
+      - SkillAreaMasteryScore
+
+  student_id_xwalk:
+    # This file only needs to be supplied if the source assessment file does not
+    # contain the studentUniqueId used by Ed-Fi
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    optional: True
+    type: csv
+    columns: 
+      - from 
+      - to 
+
+  domain_group_name_int_xwalk:
+    file: ${BUNDLE_DIR}/seeds/domain_group_name_to_int_xwalk.csv
+    header_rows: 1
+
+transformations:
+
+  star_student_assessment_overall:
+    operations:
+      - operation: join 
+        sources: 
+          - $sources.star_overall_input
+          - $sources.student_id_xwalk
+        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        right_key: from
+        join_type: left
+      - operation: duplicate_columns
+        source: $transformations.star_student_assessment_overall
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: filter_rows
+        source: $transformations.star_student_assessment_overall
+        query: studentUniqueId == ''
+        behavior: exclude  
+      - operation: modify_columns
+        source: $transformations.star_student_assessment_overall
+        columns:
+          SchoolYear: *year_mapping
+      - operation: filter_rows
+        source: $transformations.star_student_assessment_overall
+        query: SchoolYear == '${API_YEAR}' # SUPPLIED BY USER
+        behavior: include
+      - operation: add_columns
+        source: $transformations.star_student_assessment_overall
+        columns:
+          file_path: *overall_file_name
+      - operation: modify_columns
+        source: $transformations.star_student_assessment_overall
+        columns:
+          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+      - operation: add_columns
+        source: $transformations.star_student_assessment_overall
+        columns:
+          assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
+      - operation: add_columns
+        source: $transformations.star_student_assessment_overall
+        columns: 
+          subject_full: "{%raw%}{{map_subject_values(file_path)}}{%endraw%}"
+          assessment_id: "{%raw%}STAR-{{-assess_id_subject}}{%endraw%}"
+      - operation: add_columns
+        source: $transformations.star_student_assessment_overall
+        columns: 
+          test_name: "{%raw%}STAR {{subject_full-}}{%endraw%}"
+      - operation: rename_columns
+        source: $transformations.star_student_assessment_overall
+        columns:
+          AssessmentID: StudentAssessmentID
+
+  star_skill_area:
+    operations:
+      - operation: keep_columns
+        source: $sources.star_skill_area_input
+        columns:
+          - AssessmentID
+          - FamilyName
+          - DomainName
+          - SkillAreaName
+          - SkillAreaMasteryScore
+      - operation: add_columns
+        source: $transformations.star_skill_area
+        columns:
+          domain_group_name: "{%raw%}{{FamilyName}}: {{DomainName}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.domain_group_name_int_xwalk
+          - $transformations.star_skill_area
+        join_type: inner
+        left_key: domain_group_name
+        right_key: domain_group_name
+      - operation: add_columns
+        source: $transformations.star_skill_area
+        columns:
+          obj_id_code: "{%raw%}{{domain_group_name_int ~ ': ' ~ SkillAreaName}}{%endraw%}"
+          DomainPercentMastery: ''
+          DomainMasteryLevel: ''
+          StandardPercentMastery: ''
+          StandardConfidenceLevel: ''
+          StandardMasteryLevel: ''
+      - operation: rename_columns
+        source: $transformations.star_skill_area
+        columns:
+          FamilyName: DomainGroup
+      - operation: drop_columns
+        source: $transformations.star_skill_area
+        columns:
+          - SkillAreaName
+
+  star_standards:
+    operations:
+      - operation: keep_columns
+        source: $sources.star_dashboard_standards_input
+        columns:
+          - AssessmentID
+          - DomainGroup
+          - DomainName
+          - StandardName
+          - StandardPercentMastery
+          - StandardConfidenceLevel
+          - StandardMasteryLevel
+      - operation: add_columns
+        source: $transformations.star_standards
+        columns:
+          domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.domain_group_name_int_xwalk
+          - $transformations.star_standards
+        join_type: inner
+        left_key: domain_group_name
+        right_key: domain_group_name
+      - operation: add_columns
+        source: $transformations.star_standards
+        columns:
+          SkillAreaMasteryScore: ''
+          DomainPercentMastery: ''
+          DomainMasteryLevel: ''
+          obj_id_code: "{%raw%}{{domain_group_name_int}}: {{StandardName}}{%endraw%}"
+      - operation: drop_columns
+        source: $transformations.star_standards
+        columns:
+          - StandardName
+
+  star_domains:
+    operations:
+      # discard all columns except those we actually need for dedupe:
+      - operation: keep_columns
+        source: $sources.star_dashboard_standards_input
+        columns:
+          - AssessmentID
+          - DomainGroup
+          - DomainName
+          - DomainPercentMastery
+          - DomainMasteryLevel
+      - operation: add_columns
+        source: $transformations.star_domains
+        columns:
+          domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.domain_group_name_int_xwalk
+          - $transformations.star_domains
+        join_type: inner
+        left_key: domain_group_name
+        right_key: domain_group_name
+      - operation: add_columns
+        source: $transformations.star_domains
+        columns:
+          SkillAreaMasteryScore: ''
+          StandardPercentMastery: ''
+          StandardConfidenceLevel: ''
+          StandardMasteryLevel: ''
+          obj_id_code: "{%raw%}{{domain_group_name_int}}{%endraw%}"
+      # dedupe from standard level to domain (obj assessment) level
+      - operation: distinct_rows
+        source: $transformations.star_domains
+
+  stacked_obj_assessment:
+    operations:
+      - operation: union
+        sources:
+          - $transformations.star_domains
+          - $transformations.star_skill_area
+          - $transformations.star_standards
+      - operation: add_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          file_path_subj: *overall_file_name
+      - operation: modify_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          file_path_subj: "{%raw%}{{value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+      - operation: modify_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
+      # for each assessment record, construct a new column which will be the JSON for the item
+      - operation: add_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          assessment_id: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
+      - operation: rename_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          AssessmentID: StudentAssessmentID
+
+  star_with_obj_assessment:
+    operations:
+      # for each assessment record, construct a new column which will be the JSON for the item
+      - operation: add_columns
+        source: $transformations.stacked_obj_assessment
+        columns:
+          # todo: need to add some descriptors from here
+          student_objective_assessment_json: "{%raw%} {% if DomainPercentMastery != '' or SkillAreaMasteryScore!= '' or  StandardPercentMastery != '' %} { 'objectiveAssessmentReference': { 'assessmentIdentifier': '{{assessment_id}}', 'identificationCode': '{{obj_id_code}}', 'namespace':'uri://renaissance.com/Assessment' }, {% set pls_present = [] %} {% set all_pls = {'Domain mastery level':DomainMasteryLevel, 'Standard mastery level':StandardMasteryLevel} %} {% for pl_name, pl_result in all_pls.items() %} {% if pl_result != '' %} {% set _= pls_present.append([score_name, score_result]) %} {% endif %} {% endfor %} 'performanceLevels': [ {%- for pl in pls_present -%} { 'assessmentReportingMethodDescriptor': 'uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}', 'performanceLevelDescriptor': 'uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}', 'performanceLevelMet': true } {%- if not loop.last -%}, {%- else %}{% endif %}{%- endfor -%} ], {% set scores_present = [] %} {% set all_scores = {'Domain percent mastery':DomainPercentMastery, 'Skill area mastery score':SkillAreaMasteryScore, 'Standard percent mastery':StandardPercentMastery} %} {% for score_name, score_result in all_scores.items() %} {% if score_result != '' %} {% set _= scores_present.append([score_name, score_result]) %} {% endif %} {% endfor %} 'scoreResults': [ {%- for score in scores_present -%} { 'assessmentReportingMethodDescriptor': 'uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}', 'resultDatatypeTypeDescriptor': 'uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer', 'result': '{{score[1]}}' } {%- if not loop.last -%}, {%- else %}{% endif %}{%- endfor -%} ] },{%endif%} {%endraw%}"
+      # linearize:
+      - operation: modify_columns
+        source: $transformations.star_with_obj_assessment
+        columns:
+          student_objective_assessment_json: "{%raw%}{{student_objective_assessment_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        source: $transformations.star_with_obj_assessment
+        group_by_columns:
+          - StudentAssessmentID
+        create_columns: 
+          student_objective_assessment_json: agg(student_objective_assessment_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        source: $transformations.star_with_obj_assessment
+        columns:
+          student_objective_assessment_json: "{%raw%}{{value.rstrip(',')}}{%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.star_student_assessment_overall
+          - $transformations.star_with_obj_assessment
+        join_type: left
+        left_key: StudentAssessmentID
+        right_key: StudentAssessmentID
+
+  objective_assessments:
+    operations:
+      - operation: keep_columns
+        source: $transformations.stacked_obj_assessment
+        columns: 
+          - assessment_id
+          - obj_id_code
+      - operation: distinct_rows
+        source: $transformations.objective_assessments
+  
+  assessments:
+    operations:
+      - operation: keep_columns
+        source: $transformations.star_student_assessment_overall
+        columns: 
+          - assessment_id
+          - test_name
+      - operation: distinct_rows
+        source: $transformations.assessments
+
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.star_with_obj_assessment
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
