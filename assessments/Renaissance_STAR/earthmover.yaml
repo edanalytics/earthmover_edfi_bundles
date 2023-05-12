@@ -329,6 +329,7 @@ transformations:
       - operation: keep_columns
         source: $transformations.stacked_obj_assessment
         columns: 
+          - domain_group_name_int
           - assessment_id
           - obj_id_code
       - operation: distinct_rows
