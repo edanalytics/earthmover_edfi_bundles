@@ -1,0 +1,163 @@
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: student_id
+    STUDENT_ID_XWALK: seeds/map_student_id.csv
+
+sources:
+  istation_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns:
+      - from
+      - to
+    optional: true
+
+transformations:
+  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
+  {% for month in months %}
+  scores_{{month}}:
+    operations:
+      - operation: keep_columns
+        source: $sources.istation_input
+        columns:
+          - STUDENT_ID
+          - DOMAIN
+          - GRADE
+          - {{month}}_SCORE
+          - {{month}}_PTILE
+          - {{month}}_ADMIN_DATE
+      - operation: rename_columns
+        source: $transformations.scores_{{month}}
+        columns:
+          STUDENT_ID: student_id
+          DOMAIN: domain
+          GRADE: grade_level
+          {{month}}_SCORE: score
+          {{month}}_PTILE: percentile
+          {{month}}_ADMIN_DATE: admin_date
+      - operation: filter_rows
+        source: $transformations.scores_{{month}}
+        query: admin_date != ''
+        behavior: include
+  {% endfor %}  
+
+  stacked_months:
+    operations:
+      - operation: union
+        sources:
+          {% for month in months %}
+          - $transformations.scores_{{month}}
+          {% endfor %}
+
+  #School year is not explicitly defined in the file, so find the first test date in the file and add 1 to get the school year
+  #To do: verify that the first test date occurred in the fall
+  assessment_year:
+    operations:
+      - operation: keep_columns
+        source: $transformations.stacked_months
+        columns:
+          - domain
+          - admin_date
+      - operation: date_format
+        source: $transformations.assessment_year
+        column: admin_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y"
+      - operation: group_by
+        source: $transformations.assessment_year
+        group_by_columns: 
+          - domain
+        create_columns:
+          assessment_year: min(admin_date)
+      - operation: modify_columns
+        source: $transformations.assessment_year
+        columns: 
+          assessment_year: {%raw%}"{{ (assessment_year | int) + 1 }}"{%endraw%}
+
+  studentAssessments:
+    operations:
+      - operation: join
+        sources: 
+          - $transformations.stacked_months
+          - $sources.student_id_mapping
+        join_type: left
+        left_key: student_id
+        right_key: from
+      - operation: rename_columns
+        source: $transformations.studentAssessments
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: modify_columns
+        source: $transformations.studentAssessments
+        columns:
+          student_unique_id: {%raw%}"{{ student_unique_id | string }}"{%endraw%}
+      - operation: date_format
+        source: $transformations.studentAssessments
+        column: admin_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: combine_columns
+        source: $transformations.studentAssessments
+        columns:
+          - student_unique_id
+          - admin_date
+        new_column: assessment_unique_id
+        separator: '-'
+      - operation: modify_columns
+        source: $transformations.studentAssessments
+        columns:
+          assessment_unique_id: {%raw%}"{{ md5(assessment_unique_id) }}"{%endraw%}
+      - operation: join
+        sources:
+          - $transformations.studentAssessments
+          - $transformations.assessment_year
+        join_type: left
+        left_key: domain
+        right_key: domain
+      - operation: map_values
+        source: $transformations.studentAssessments
+        column: grade_level
+        map_file: seeds/map_grade_level.csv
+      - operation: duplicate_columns
+        source: $transformations.studentAssessments
+        columns:
+          percentile: level
+      - operation: map_values
+        source: $transformations.studentAssessments
+        column: level
+        map_file: seeds/map_percentile_to_level.csv
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl 
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl

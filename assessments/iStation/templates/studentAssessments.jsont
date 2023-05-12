@@ -1,0 +1,36 @@
+{
+    "studentAssessmentIdentifier": "{{assessment_unique_id}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "Istation",
+      "namespace": "uri://istation.com"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{assessment_year}}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{student_unique_id}}"
+    },
+    "administrationDate": "{{admin_date}}",
+    "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level}}",
+  
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{score}}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Percentile",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{percentile}}"
+      }
+    ],
+  
+    "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
+          "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#{{level}}",
+          "performanceLevelMet": true
+        }
+      ]
+  }
