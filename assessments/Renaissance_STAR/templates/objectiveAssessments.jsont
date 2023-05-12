@@ -4,6 +4,13 @@
     "assessmentIdentifier": "{{assessment_id}}",
     "namespace": "uri://renaissance.com/Assessment"
   },
+  {% if domain_group_name_int != obj_id_code %}
+  "parentObjectiveAssessmentReference": {
+    "assessmentIdentifier": "{{assessment_id}}",
+    "identificationCode": "{{domain_group_name_int}}",
+    "namespace": "uri://renaissance.com/Assessment"
+  },
+  {% endif %}
   "description": "{{obj_id_code}}",
   "identificationCode": "{{obj_id_code}}",
   "learningObjectives": [],
