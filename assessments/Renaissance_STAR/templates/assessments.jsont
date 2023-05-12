@@ -1,6 +1,6 @@
 {
   "assessmentIdentifier": "{{assessment_id}}",
-  "assessmentTitle": "{{assessment_title}}",
+  "assessmentTitle": "{{test_name}}",
   "namespace": "uri://renaissance.com/Assessment",
   "assessedGradeLevels": [
     {% if assessment_id == 'STAR-EARLY-LIT' %}
@@ -61,15 +61,15 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor":"uri://ed-fi.org/AssessmentReportingMethodDescriptor#Test Name",
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Test Name",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://ed-fi.org/AssessmentReportingMethodDescriptor#Scale Score",
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Scale Score",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://ed-fi.org/AssessmentReportingMethodDescriptor#Standard Error Measurement",
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard Error Measurement",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
     },
     {
@@ -89,11 +89,11 @@
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://ed-fi.org/AssessmentReportingMethodDescriptor#Normal Curve Equivalent",
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Normal Curve Equivalent",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://ed-fi.org/AssessmentReportingMethodDescriptor#Percentile Rank",
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Percentile Rank",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {

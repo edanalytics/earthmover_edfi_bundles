@@ -29,7 +29,7 @@
                       'SAT Benchmark Category':SATBenchmarkCategory,
                       'ACT Benchmark Category':ACTBenchmarkCategory} %}
     {% for pl_name, pl_result in all_pls.items() %}
-      {% if pl_result != '' %}
+      {% if pl_result is not none and pl_result | length %}
         {% set _= pls_present.append([pl_name, pl_result]) %}
       {% endif %}
     {% endfor %}
@@ -66,14 +66,14 @@
                          'Estimated Oral Reading Fluency':['Integer',EstimatedOralReadingFluency],
                          'Current SGP':['Integer',CurrentSGP]} %}
     {% for score_name, score_result in all_scores.items() %}
-      {% if score_result[1] != '' %}
+      {% if score_result[1] is not none and score_result[1] | length %}
         {% set _= scores_present.append([score_name, score_result[0], score_result[1]]) %}
       {% endif %}
     {% endfor %}
 
     {%- for score in scores_present %}
     {
-      "assessmentReportingMethodDescriptor": "{{score[0]}}",
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
       "result": "{{score[2]-}}"
     }
