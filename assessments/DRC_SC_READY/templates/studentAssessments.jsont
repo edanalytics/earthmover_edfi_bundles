@@ -1,0 +1,81 @@
+{
+  "studentAssessmentIdentifier": "string",
+  "assessmentReference": {
+    "assessmentIdentifier": "string",
+    "namespace": "uri://datarecognitioncorp.com/Assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": 0
+  },
+  "studentReference": {
+    "studentUniqueId": "string"
+  },
+  "accommodations": [
+    {
+      "accommodationDescriptor": "string"
+    }
+  ],
+  "administrationDate": "2023-05-18T20:45:11.845Z",
+  "administrationEndDate": "2023-05-18T20:45:11.845Z",
+  "administrationEnvironmentDescriptor": "string",
+  "administrationLanguageDescriptor": "string",
+  "eventCircumstanceDescriptor": "string",
+  "eventDescription": "string",
+  "items": [
+    {
+      "assessmentItemResultDescriptor": "string",
+      "responseIndicatorDescriptor": "string",
+      "assessmentResponse": "string",
+      "descriptiveFeedback": "string",
+      "rawScoreResult": 0,
+      "timeAssessed": "string",
+      "assessmentItemReference": {
+        "assessmentIdentifier": "string",
+        "identificationCode": "string",
+        "namespace": "string"
+      }
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "performanceLevelDescriptor": "string",
+      "performanceLevelMet": true
+    }
+  ],
+  "platformTypeDescriptor": "string",
+  "reasonNotTestedDescriptor": "string",
+  "retestIndicatorDescriptor": "string",
+  "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "resultDatatypeTypeDescriptor": "string",
+      "result": "string"
+    }
+  ],
+  "serialNumber": "string",
+  "studentObjectiveAssessments": [
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "string",
+        "identificationCode": "string",
+        "namespace": "string"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "string",
+          "performanceLevelDescriptor": "string",
+          "performanceLevelMet": true
+        }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "string",
+          "resultDatatypeTypeDescriptor": "string",
+          "result": "string"
+        }
+      ]
+    }
+  ],
+  "whenAssessedGradeLevelDescriptor": "string"
+}

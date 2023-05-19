@@ -1,0 +1,58 @@
+{
+  "identificationCode": "string",
+  "assessmentReference": {
+    "assessmentIdentifier": "string",
+    "namespace": "uri://datarecognitioncorp.com/Assessment"
+  },
+  "parentObjectiveAssessmentReference": {
+    "assessmentIdentifier": "string",
+    "identificationCode": "string",
+    "namespace": "string"
+  },
+  "academicSubjectDescriptor": "string",
+  "assessmentItems": [
+    {
+      "assessmentItemReference": {
+        "assessmentIdentifier": "string",
+        "identificationCode": "string",
+        "namespace": "string"
+      }
+    }
+  ],
+  "description": "string",
+  "learningObjectives": [
+    {
+      "learningObjectiveReference": {
+        "learningObjectiveId": "string",
+        "namespace": "string"
+      }
+    }
+  ],
+  "learningStandards": [
+    {
+      "learningStandardReference": {
+        "learningStandardId": "string"
+      }
+    }
+  ],
+  "maxRawScore": 0,
+  "nomenclature": "string",
+  "percentOfAssessment": 0,
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "performanceLevelDescriptor": "string",
+      "resultDatatypeTypeDescriptor": "string",
+      "maximumScore": "string",
+      "minimumScore": "string"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "resultDatatypeTypeDescriptor": "string",
+      "maximumScore": "string",
+      "minimumScore": "string"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "uri://datarecognitioncorp.com/Assessment",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#English Language Arts"
+    }
+  ],
+  "educationOrganizationReference": {
+    "educationOrganizationId": 0
+  },
+  "adaptiveAssessment": true,
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
+    }
+  ],
+  "assessmentCategoryDescriptor": "string",
+  "assessmentFamily": "string",
+  "assessmentForm": "string",
+  "assessmentVersion": 0,
+  "identificationCodes": [
+    {
+      "assessmentIdentificationSystemDescriptor": "string",
+      "assigningOrganizationIdentificationCode": "string",
+      "identificationCode": "string"
+    }
+  ],
+  "languages": [
+    {
+      "languageDescriptor": "string"
+    }
+  ],
+  "maxRawScore": 0,
+  "nomenclature": "string",
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "performanceLevelDescriptor": "string",
+      "resultDatatypeTypeDescriptor": "string",
+      "maximumScore": "string",
+      "minimumScore": "string"
+    }
+  ],
+  "period": {
+    "assessmentPeriodDescriptor": "string",
+    "beginDate": "2023-05-18",
+    "endDate": "2023-05-18"
+  },
+  "platformTypes": [
+    {
+      "platformTypeDescriptor": "string"
+    }
+  ],
+  "programs": [
+    {
+      "programReference": {
+        "educationOrganizationId": 0,
+        "programName": "string",
+        "programTypeDescriptor": "string"
+      }
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "string",
+      "resultDatatypeTypeDescriptor": "string",
+      "maximumScore": "string",
+      "minimumScore": "string"
+    }
+  ],
+  "sections": [
+    {
+      "sectionReference": {
+        "localCourseCode": "string",
+        "schoolId": 0,
+        "schoolYear": 0,
+        "sectionIdentifier": "string",
+        "sessionName": "string"
+      }
+    }
+  ]
+}
