@@ -1,0 +1,27 @@
+codeValue,description,namespace,shortDescription,column_name,data_type,is_deprecated,score_or_performance
+Performance Level,Performance level at the overall test level,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Performance Level,PerfLVL,Level,FALSE,performance
+Test Status,Identifies whether all units are in an assign or a complete status.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Test Status,TestStatus,Level,FALSE,performance
+Test Attemptedness Flag,Flag indicating the test met test attempt criteria.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Test Attemptedness Flag,TestAttemptednessFlag,Level,FALSE,performance
+Not Tested Code,Flag for Not Tested Reason. ,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Not Tested Code,NotTestedCode,Level,FALSE,performance
+Not Tested Reason,Reason associated with the Not Tested Code.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Not Tested Reason,NotTestedReason,Level,FALSE,performance
+Void Score Code,Flag for voiding the test attempt score.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Void Score Code,VoidScoreCode,Level,FALSE,performance
+Void Score Reason,Reason associated with the Void Test Score Code.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Void Score Reason,VoidScoreReason,Level,FALSE,performance
+Calculated Invalidation,Automatically populated based on Not Tested; Void Test Score; and Report Suppression fields.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Calculated Invalidation,CalculatedInvalidation,Level,FALSE,performance
+Report Suppression Code,Reason for report suppression,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Report Suppression Code,ReportSuppressionCode,Level,FALSE,performance
+Report Suppression Action,Description of the reporting action associated with the Report Suppression Code.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Report Suppression Action,ReportSuppressionAction,Level,FALSE,performance
+Assessment Year,The school year in which the test was administered,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Assessment Year,AssessmentYear,Level,FALSE,score
+Subject, The academic subject of the assessment.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Subject,Subject,Level,FALSE,score
+Test Code,Identifier assigned to the test name.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Test Code,TestCode,Level,FALSE,score
+Scale Score,Scale Score at the overall test level. Math/ELA/CSLA Scale: 250-850,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Scale Score,SS,Integer,FALSE,score
+CSEM,Conditional Standard Error of Measurement at the overall test level,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,CSEM,SSCSEM,Decimal,FALSE,score
+Percentile Rank,Overall percentile rank of student in the state,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Percentile Rank,PercentileRank,Integer,FALSE,score
+Reading Test Scale Score,Scale: 110-190,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Reading Test Scale Score,TestReadingScaleScore,Integer,FALSE,score
+Reading Test CSEM,Conditional Standard Error of Measurement for the reading test,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Reading Test CSEM,TestReadingSSCSEM,Integer,FALSE,score
+Writing Test Raw Score,Raw score for the writing test,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Writing Test Raw Score,TestWritingRawScore,Integer,FALSE,score
+Writing Test Points Possible,Total points possible on the writing test,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Writing Test Points Possible,TestWritingPointsPossible,Integer,FALSE,score
+Writing Test Percent Earned,Percent earned on the writing test,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Writing Test Percent Earned,TestWritingPercentEarned,Integer,FALSE,score
+Total Test Items,Total number of questions/items on an administered test. Only displayed if Test Attemptedness Flag is not blank,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Total Test Items,TotalTestItems,Integer,FALSE,score
+Total Test Items Attempted,Total number of items attempted on the test. Only displayed if Test Attemptedness Flag is not blank.,uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Total Test Items Attempted,TotalTestItemsAttempted,Integer,FALSE,score
+Raw Score,Raw score on an objective assessment (subclaim or domain),uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Raw Score,RawScore,Integer,FALSE,score
+Points Possible,Points possible on an objective assessment (subclaim or domain),uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Points Possible,PtsPoss,Integer,FALSE,score
+Percent Earned,Percent earned on an objective assessment (subclaim or domain),uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor,Percent Earned,PctEarned,Integer,FALSE,score
