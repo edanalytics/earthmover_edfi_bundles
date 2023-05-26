@@ -1,0 +1,127 @@
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: True
+  show_stacktrace: true
+
+sources:
+  cmas_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  reasonNotTestedDescriptors:
+    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  cmas_input:
+    operations:
+      # TO DO: This is not ideal but I haven't figured out how to find the average of a date column to use for tests with no dates
+      - operation: add_columns
+        source: $sources.cmas_input
+        columns:
+          defaultTestStartDateTime: "2022-04-05 00:00:00"
+      - operation: add_columns 
+        source: $sources.cmas_input
+        columns:
+          school_year: {%raw%}"{{AssessmentYear[-4:]}}"{%endraw%}
+      - operation: duplicate_columns
+        source: $sources.cmas_input
+        columns:
+          Subject: assessmentSubject
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: assessmentSubject
+        mapping:
+          English Language Arts/Literacy: ELA
+          Mathematics: MAT
+          Spanish Language Arts/Literacy: SLA
+          Science: SCI
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: GradeLevelWhenAssessed
+        map_file: seeds/mapping_GradeLevels.csv
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: PerfLVL
+        map_file: seeds/mapping_perfLVL.csv
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: NotTestedReason
+        map_file: seeds/mapping_NotTestedReason.csv
+      - operation: map_values
+        source: $transformations.cmas_input        
+        column: VoidScoreReason
+        map_file: seeds/mapping_VoidScoreReason.csv
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: ReportSuppressionCode
+        map_file: seeds/mapping_ReportSuppressionCode.csv
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: ReportSuppressionAction
+        map_file: seeds/mapping_ReportSuppressionAction.csv
+      - operation: modify_columns
+        source: $transformations.cmas_input
+        columns: 
+          SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
+          PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          TestReadingScaleScore: "{%raw%}{{TestReadingScaleScore | int}}{%endraw%}"
+          TestReadingSSCSEM: "{%raw%}{{TestReadingSSCSEM | int}}{%endraw%}"
+          TestWritingRawScore: "{%raw%}{{TestWritingRawScore | int}}{%endraw%}"
+          TestWritingPointsPossible: "{%raw%}{{TestWritingPointsPossible | int}}{%endraw%}"
+          TestWritingPercentEarned: "{%raw%}{{TestWritingPercentEarned | int}}{%endraw%}"
+          Subclaim1RawScore: "{%raw%}{{Subclaim1RawScore | int}}{%endraw%}"
+          Subclaim1PtsPoss: "{%raw%}{{Subclaim1PtsPoss | int}}{%endraw%}"
+          Subclaim1PctEarned: "{%raw%}{{Subclaim1PctEarned | int}}{%endraw%}"
+          Subclaim2RawScore: "{%raw%}{{Subclaim2RawScore | int}}{%endraw%}"
+          Subclaim2PtsPoss: "{%raw%}{{Subclaim2PtsPoss | int}}{%endraw%}"
+          Subclaim2PctEarned: "{%raw%}{{Subclaim2PctEarned | int}}{%endraw%}"
+          Subclaim3RawScore: "{%raw%}{{Subclaim3RawScore | int}}{%endraw%}"
+          Subclaim3PtsPoss: "{%raw%}{{Subclaim3PtsPoss | int}}{%endraw%}"
+          Subclaim3PctEarned: "{%raw%}{{Subclaim3PctEarned | int}}{%endraw%}"
+          Subclaim4RawScore: "{%raw%}{{Subclaim4RawScore | int}}{%endraw%}"
+          Subclaim4PtsPoss: "{%raw%}{{Subclaim4PtsPoss | int}}{%endraw%}"
+          Subclaim4PctEarned: "{%raw%}{{Subclaim4PctEarned | int}}{%endraw%}"
+          Subclaim5RawScore: "{%raw%}{{Subclaim5RawScore | int}}{%endraw%}"
+          Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
+          Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.cmas_input
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  reasonNotTestedDescriptors:
+    source: $sources.reasonNotTestedDescriptors
+    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    extension: jsonl
