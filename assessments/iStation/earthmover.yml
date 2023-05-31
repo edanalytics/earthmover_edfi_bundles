@@ -2,7 +2,7 @@ config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: student_id
@@ -66,31 +66,6 @@ transformations:
           - $transformations.scores_{{month}}
           {% endfor %}
 
-  #School year is not explicitly defined in the file, so find the first test date in the file and add 1 to get the school year
-  #To do: verify that the first test date occurred in the fall
-  assessment_year:
-    operations:
-      - operation: keep_columns
-        source: $transformations.stacked_months
-        columns:
-          - domain
-          - admin_date
-      - operation: date_format
-        source: $transformations.assessment_year
-        column: admin_date
-        from_format: "%m/%d/%Y"
-        to_format: "%Y"
-      - operation: group_by
-        source: $transformations.assessment_year
-        group_by_columns: 
-          - domain
-        create_columns:
-          assessment_year: min(admin_date)
-      - operation: modify_columns
-        source: $transformations.assessment_year
-        columns: 
-          assessment_year: {%raw%}"{{ (assessment_year | int) + 1 }}"{%endraw%}
-
   studentAssessments:
     operations:
       - operation: join
@@ -100,6 +75,10 @@ transformations:
         join_type: left
         left_key: student_id
         right_key: from
+      - operation: add_columns
+        source: $transformations.studentAssessments
+        columns:
+          assessment_year: ${API_YEAR}
       - operation: rename_columns
         source: $transformations.studentAssessments
         columns:
@@ -124,13 +103,6 @@ transformations:
         source: $transformations.studentAssessments
         columns:
           assessment_unique_id: {%raw%}"{{ md5(assessment_unique_id) }}"{%endraw%}
-      - operation: join
-        sources:
-          - $transformations.studentAssessments
-          - $transformations.assessment_year
-        join_type: left
-        left_key: domain
-        right_key: domain
       - operation: map_values
         source: $transformations.studentAssessments
         column: grade_level
