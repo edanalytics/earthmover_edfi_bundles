@@ -12,3 +12,70 @@ sources:
     type: sas
 
 
+
+
+transformations:
+  scready_student_assessment:
+    operations:
+      - operation: keep_columns 
+        source: $sources.sc_ready_input
+        columns: 
+          - stateid
+          - schoolid
+          - elagrade
+          - elass
+          - elavss
+          - elalev 
+          - elassread
+          - elaslevread
+          - elalev1
+          - elalev2 
+          - elalev3 
+          - elalev4 
+          - elalev5 
+          - elalev6 
+          - elalev7
+          - elalev8 
+          - elalev9 
+          - elalev11
+          - mathgrade
+          - mathss
+          - mathvss
+          - mathlev
+          - mathlev1 
+          - mathlev2 
+          - mathlev3 
+          - mathlev4 
+          - mathlev5
+      - operation: rename_columns
+        source: $transformations.scready_student_assessment
+        columns:
+          stateid: student_unique_id
+      - operation: add_columns
+        source: $transformations.scready_student_assessment
+        columns:
+          school_year: # no year column in file so need to base it off from somewhere?
+          administration_date: # no administration date in file so I think need to hard code it, generally scready happens on May, rally has it as 5/15
+      # creating a student assessment id based on these columns
+      - operation: combine_columns
+        source: $transformations.scready_student_assessment
+        columns:
+          # list out columns need to make student assessment ID
+        new_column: generated_test_id
+        separator: '-'
+
+  
+  objective_assessments:
+
+  
+   
+  reporting_methods:
+    operations: 
+      - operation: filter_rows
+        source: $sources.assessmentReportingMethodDescriptors
+        query: is_deprecated == 'False'
+        behavior: include
+      - operation: union
+        sources:
+          - $transformations.reporting_methods
+          - $transformations.proj_prof

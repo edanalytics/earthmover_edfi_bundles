@@ -1,42 +1,36 @@
 {
-  "studentAssessmentIdentifier": "string",
+  "studentAssessmentIdentifier": {{ md5(generated_test_id)}},
   "assessmentReference": {
-    "assessmentIdentifier": "string",
+    "assessmentIdentifier": "SCREADY",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
   },
   "schoolYearTypeReference": {
-    "schoolYear": 0
+    "schoolYear": -- need to create this in the config
   },
   "studentReference": {
-    "studentUniqueId": "string"
+    "studentUniqueId": {{student_unique_id}}
   },
-  "accommodations": [
-    {
-      "accommodationDescriptor": "string"
-    }
-  ],
-  "administrationDate": "2023-05-18T20:45:11.845Z",
-  "administrationEndDate": "2023-05-18T20:45:11.845Z",
-  "administrationEnvironmentDescriptor": "string",
-  "administrationLanguageDescriptor": "string",
-  "eventCircumstanceDescriptor": "string",
-  "eventDescription": "string",
-  "items": [
-    {
-      "assessmentItemResultDescriptor": "string",
-      "responseIndicatorDescriptor": "string",
-      "assessmentResponse": "string",
-      "descriptiveFeedback": "string",
-      "rawScoreResult": 0,
-      "timeAssessed": "string",
-      "assessmentItemReference": {
-        "assessmentIdentifier": "string",
-        "identificationCode": "string",
-        "namespace": "string"
-      }
-    }
-  ],
+  "administrationDate": --need to create this in the config,
   "performanceLevels": [
+    {% set perf_levels = [] %}
+
+      {% if elalev is not none and elalev | length %}
+        {% set _ = perf_levels.append([elalev, 'ela performance level']) %}
+      {% endif %}
+
+      {% if mathlev is not none and mathlev | length %}
+        {% set _ = perf_levels.append([mathlev, 'math performance level']) %}
+      {% endif%}
+
+  {% for perf_level in perf_levels %}
+    {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+  {% endfor %}
+    
+
     {
       "assessmentReportingMethodDescriptor": "string",
       "performanceLevelDescriptor": "string",
@@ -55,6 +49,7 @@
   ],
   "serialNumber": "string",
   "studentObjectiveAssessments": [
+    {% set all_obj_assess = [] %}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "string",
