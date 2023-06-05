@@ -22,11 +22,11 @@ sources:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns:
-      - from
-      - to
+    connection: ${SNOWFLAKE_CONNECTION}
+    query: >
+      select {$STUDENT_ID_WH} as from, student_unique_id as to
+      from analytics.prod_wh.dim_student
+      where tenant_code = ${TENANT_CODE}
     optional: true
 
 transformations:
