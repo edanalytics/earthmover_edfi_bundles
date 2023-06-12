@@ -28,7 +28,7 @@ sources:
     header_rows: 1
 
   # TODO: add additional student assessment files as necessary
-  assessment_type_input: # TODO: replace 'assessment_type' with the actual assessment type
+  staar_interim_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE} # leave this as-is, unless multiple input files are required
     header_rows: 1
@@ -45,24 +45,100 @@ sources:
       - to
     optional: True
 
+  test_code_xwalk:
+    file: ${BUNDLE_DIR}/seeds/test_code_xwalk.csv
+    header_rows: 1
 
 transformations:
   # these first two transformations should be included in every template
-  assessment_type_student_assessment: # TODO: replace 'assessment_type' with the actual assessment type
+  staar_interim_student_assessment:
     operations:
       - operation: join
         sources:
-          - $sources.assessment_type_input # TODO: change this to match the name of your input file
+          - $sources.staar_interim_input
           - $sources.student_id_xwalk
         left_key: ${STUDENT_ID_JOIN_COLUMN}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.assessment_type_student_assessment # TODO: change this to match the name of the above transformation
+        source: $transformations.staar_interim_student_assessment
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-
-  # TODO: remove this if not necessary and create additional transformations for other bootstrap if necessary
+      # rename columns with spaces to have "_" instead
+      - operation: rename_columns
+        source: $transformations.staar_interim_student_assessment
+        columns: 
+          "ADMINISTRATION TYPE": ADMINISTRATION_TYPE
+          "TEST DATE": TEST_DATE
+          "TIME TAKEN": TIME_TAKEN
+          "ESC REGION NUMBER": ESC_REGION_NUMBER
+          "COUNTY-DISTRICT-CAMPUS NUMBER": COUNTY-DISTRICT-CAMPUS_NUMBER
+          "DATE-OF-BIRTH (MMDDYYYY)": DATE-OF-BIRTH_(MMDDYYYY)
+          "TSDS UID": TSDS_UID
+          "AMERICAN-INDIAN-ALASKA-NATIVE-CODE ": AMERICAN-INDIAN-ALASKA-NATIVE-CODE_
+          "ETHNICITY/RACE REPORTING CATEGORY": ETHNICITY/RACE_REPORTING_CATEGORY
+          "LOCAL USE 1": LOCAL_USE_1
+          "LOCAL USE 2": LOCAL_USE_2
+          "LOCAL USE 3": LOCAL_USE_3
+          "LOCAL USE 4": LOCAL_USE_4
+          "ENROLLED GRADE": ENROLLED_GRADE
+          "TEXT-TO-SPEECH ACCOMMODATIONS": TEXT-TO-SPEECH_ACCOMMODATIONS
+          "AUTO-TTS ACCOMMODATIONS": AUTO-TTS_ACCOMMODATIONS
+          "CONTENT-LANGUAGE ACCOMMODATIONS": CONTENT-LANGUAGE_ACCOMMODATIONS
+          "BRAILLE/REFRESHABLE BRAILLE DEVICE_SCREEN READER SUPPORT": BRAILLE/REFRESHABLE_BRAILLE_DEVICE_SCREEN_READER_SUPPORT
+          "BASIC CALCULATOR ACCOMMODATIONS": BASIC_CALCULATOR_ACCOMMODATIONS
+          "TEST CODE": TEST_CODE
+          "GRADE LEVEL TESTED": GRADE_LEVEL_TESTED
+          "Total Scale Score": Total_Scale_Score
+          "ITEM STUDENT RESPONSES: Segment 1": ITEM_STUDENT_RESPONSES:_Segment_1
+          "ITEM STUDENT RESPONSES: Segment 2 HIGH": ITEM_STUDENT_RESPONSES:_Segment_2_HIGH
+          "ITEM STUDENT RESPONSES: Segment 3 MEDIUM": ITEM_STUDENT_RESPONSES:_Segment_3_MEDIUM
+          "ITEM STUDENT RESPONSES: Segment 4 LOW": ITEM_STUDENT_RESPONSES:_Segment_4_LOW
+          "ITEM STUDENT SCORES: Segment 1": ITEM_STUDENT_SCORES:_Segment_1
+          "ITEM STUDENT SCORES: Segment 2 HIGH": ITEM_STUDENT_SCORES:_Segment_2_HIGH
+          "ITEM STUDENT SCORES: Segment 3 MEDIUM": ITEM_STUDENT_SCORES:_Segment_3_MEDIUM
+          "ITEM STUDENT SCORES: Segment 4 LOW": ITEM_STUDENT_SCORES:_Segment_4_LOW
+          "PROBABILITY OF ACHIEVING APPROACHES GRADE LEVEL": PROBABILITY_OF_ACHIEVING_APPROACHES_GRADE_LEVEL
+          "PROBABILITY OF ACHIEVING MEETS GRADE LEVEL": PROBABILITY_OF_ACHIEVING_MEETS_GRADE_LEVEL
+          "PROBABILITY OF ACHIEVING MASTERS GRADE LEVEL": PROBABILITY_OF_ACHIEVING_MASTERS_GRADE_LEVEL
+          "Reporting Category 1: Raw Score or RAW SCORE REPORTING CATEGORY 1": RAW_SCORE_REPORTING_CATEGORY_1
+          "Reporting Category 2: Raw Score or RAW SCORE REPORTING CATEGORY 2": RAW_SCORE_REPORTING_CATEGORY_2
+          "Reporting Category 3: Raw Score or RAW SCORE REPORTING CATEGORY 3": RAW_SCORE_REPORTING_CATEGORY_3
+          "Reporting Category 4: Raw Score or RAW SCORE REPORTING CATEGORY 4": RAW_SCORE_REPORTING_CATEGORY_4
+          "Reporting Category 5: Raw Score or RAW SCORE REPORTING CATEGORY 5": RAW_SCORE_REPORTING_CATEGORY_5
+          "Reporting Category 6: Raw Score or RAW SCORE REPORTING CATEGORY 6": RAW_SCORE_REPORTING_CATEGORY_6
+          "REPORTING CATEGORY 1 STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_1_STRENGTH/WEAKNESS_INDICATOR
+          "REPORTING CATEGORY 2  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_2_ STRENGTH/WEAKNESS_INDICATOR
+          "REPORTING CATEGORY 3  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_3_ STRENGTH/WEAKNESS_INDICATOR
+          "REPORTING CATEGORY 4  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_4_ STRENGTH/WEAKNESS_INDICATOR
+          "REPORTING CATEGORY 5  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_5_ STRENGTH/WEAKNESS_INDICATOR
+          "REPORTING CATEGORY 6  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_6_ STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 1 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_1_STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 2 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_2_STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 3 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_3_STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 4 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_4_STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 5 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_5_STRENGTH/WEAKNESS_INDICATOR
+          "HISTORICAL REPORTING CATEGORY 6 STRENGTH/WEAKNESS INDICATOR": HISTORICAL_REPORTING_CATEGORY_6_STRENGTH/WEAKNESS_INDICATOR
+          "SE ALIGNMENT: Segment 1": SE_ALIGNMENT:_Segment_1
+          "SE ALIGNMENT: Segment 2 HIGH": SE_ALIGNMENT:_Segment_2_HIGH
+          "SE ALIGNMENT: Segment 3 MEDIUM": SE_ALIGNMENT:_Segment_3_MEDIUM
+          "SE ALIGNMENT: Segment 4 LOW": SE_ALIGNMENT:_Segment_4_LOW
+          "Overall Raw Score": Overall_Raw_Score
+          "Overall Performance Level": Overall_Performance_Level
+          "Opportunity Key": Opportunity_Key
+          "END OF RECORD": END_OF_RECORD
+      - operation: join
+        sources:
+          - $transformations.staar_interim_student_assessment
+          - $sources.test_code_xwalk
+        left_key: TEST_CODE
+        right_key: test_code
+        join_type: inner
+      - operation: date_format
+        source: $transformations.staar_interim_student_assessment
+        column: TEST_DATE
+        from_format: "%m%d%Y"
+        to_format: "%Y-%m-%d"
 
   ## sometimes it is necessary/helpful to create the objective assessment/other bootstrap data from the
   ## student assessment data itself, so the source for this could be a pre-created bootstrap file,
