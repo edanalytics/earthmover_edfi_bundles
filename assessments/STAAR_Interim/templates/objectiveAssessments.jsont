@@ -1,0 +1,30 @@
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "staar_interim",
+    "namespace": "uri://tea.texas.gov/student-assessment",
+  },
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Raw Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Above",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Near",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Under",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
