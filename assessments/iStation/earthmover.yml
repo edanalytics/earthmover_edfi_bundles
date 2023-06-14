@@ -105,7 +105,7 @@ transformations:
       - operation: map_values
         source: $transformations.studentAssessments
         column: grade_level
-        map_file: seeds/map_grade_level.csv
+        map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
       - operation: duplicate_columns
         source: $transformations.studentAssessments
         columns:
@@ -113,7 +113,7 @@ transformations:
       - operation: map_values
         source: $transformations.studentAssessments
         column: level
-        map_file: seeds/map_percentile_to_level.csv
+        map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_level.csv
 
 destinations:
   studentAssessments:
