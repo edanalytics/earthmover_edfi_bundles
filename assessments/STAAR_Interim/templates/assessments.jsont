@@ -1,7 +1,7 @@
 {
-  "assessmentIdentifier": "staar_interim",
-  "assessmentTitle": "STAAR Interim",
-  "namespace": "uri://tea.texas.gov/student-assessment",
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
   "assessedGradeLevels": [
     {
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
@@ -84,10 +84,6 @@
     {
       "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Overall Raw Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Raw Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ],
   "performanceLevels": [
@@ -109,21 +105,6 @@
     {
       "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#4",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
-      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Above",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
-      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Near",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
-      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#Under",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]

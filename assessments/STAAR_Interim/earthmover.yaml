@@ -16,25 +16,25 @@ config:
 
 
 sources:
-  # TODO: add or remove these bootstrap sources as necessary
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv # follow this pattern for sourcing
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
 
-  # TODO: add additional student assessment files as necessary
   staar_interim_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE} # leave this as-is, unless multiple input files are required
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
 
-  # this source should be included in every template
   student_id_xwalk:
     # This file only needs to be supplied if the source assessment file does not
     # contain the studentUniqueId used by Ed-Fi
@@ -50,7 +50,6 @@ sources:
     header_rows: 1
 
 transformations:
-  # these first two transformations should be included in every template
   staar_interim_student_assessment:
     operations:
       - operation: join
@@ -127,6 +126,7 @@ transformations:
           "Overall Performance Level": Overall_Performance_Level
           "Opportunity Key": Opportunity_Key
           "END OF RECORD": END_OF_RECORD
+      # join ib test info (e.g. subject, grade level from test code xwalk)
       - operation: join
         sources:
           - $transformations.staar_interim_student_assessment
@@ -134,33 +134,41 @@ transformations:
         left_key: TEST_CODE
         right_key: test_code
         join_type: inner
+      # reformat test date from m/d/Y to Y-m-d
       - operation: date_format
         source: $transformations.staar_interim_student_assessment
         column: TEST_DATE
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
+      # add api_year as a passed-in env var
       - operation: add_columns
         source: $transformations.staar_interim_student_assessment
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable
 
-  ## sometimes it is necessary/helpful to create the objective assessment/other bootstrap data from the
-  ## student assessment data itself, so the source for this could be a pre-created bootstrap file,
-  ## the original student assessment file, or an above transformation
-  objective_assessments:
-    operations:
-      - operation: distinct_rows # TODO: this is just an example, add operations as necessary
-        source: $transformations. # TODO: this depends, read comment above
-
-# TODO: add/remove as needed
 destinations:
+  studentAssessments:
+    source: $transformations.staar_interim_student_assessment
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
   objectiveAssessments:
-    source: $transformations.objective_assessments
+    source: $sources.objective_assessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
-  studentAssessments:
-    source: $transformations.assessment_type_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
