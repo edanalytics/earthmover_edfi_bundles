@@ -54,28 +54,86 @@ transformations:
       - operation: add_columns
         source: $transformations.scready_student_assessment
         columns:
-          school_year: # no year column in file so need to base it off from somewhere?
-          administration_date: # no administration date in file so I think need to hard code it, generally scready happens on May, rally has it as 5/15
+          school_year:  ${API_YEAR}
+          administration_date: {{ ${API_YEAR} | join("-05-15") }}
       # creating a student assessment id based on these columns
       - operation: combine_columns
         source: $transformations.scready_student_assessment
         columns:
-          # list out columns need to make student assessment ID
+          - stateid
         new_column: generated_test_id
         separator: '-'
-
-  
-  objective_assessments:
-
-  
-   
-  reporting_methods:
+  scready_student_assessment_ela:
+    operations:
+      - operations: modify_columns 
+        source: $transformations.scready_student_assessment
+        columns: 
+          mathlev: ''
+          mathlev1: ''
+          mathlev2: ''
+          mathlev3: ''
+          mathlev4: ''
+          mathlev5: ''
+          mathvss: ''
+          mathss: ''
+      - operation: add_columns 
+        source: $transformations.scready_student_assessment_ela
+        columns: 
+          subject: 'English Language Arts'
+          student_grade: elagrade
+  scready_student_assessment_math:
+    operations:
+      - operations: modify_columns 
+        source: $transformations.scready_student_assessment
+        columns: 
+          elalev: ''
+          elalev1: ''
+          elalev2: ''
+          elalev3: ''
+          elalev4: ''
+          elalev5: ''
+          elalev6: ''
+          elalev7: ''
+          elalev8: ''
+          elalev9: ''
+          elalev11: ''
+          elavss: ''
+          elass: ''
+      - operation: add_columns 
+        source: $transformations.scready_student_assessment_math
+        columns: 
+          subject: 'Mathematics'
+          student_grade: mathgrade
+  scready_student_assessment_stacked: 
     operations: 
-      - operation: filter_rows
-        source: $sources.assessmentReportingMethodDescriptors
-        query: is_deprecated == 'False'
-        behavior: include
-      - operation: union
-        sources:
-          - $transformations.reporting_methods
-          - $transformations.proj_prof
+      - operations: union 
+        source: 
+          - $tranformations.scready_student_assessment_ela
+          - $tranformations.scready_student_assessment_math
+     
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $transformations.reporting_methods
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.scready_student_assessment
+    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True

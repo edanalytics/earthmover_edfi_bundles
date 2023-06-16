@@ -1,76 +1,136 @@
 {
-  "studentAssessmentIdentifier": {{ md5(generated_test_id)}},
+  "studentAssessmentIdentifier": {{ md5(generated_test_id) }},
   "assessmentReference": {
     "assessmentIdentifier": "SCREADY",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
   },
   "schoolYearTypeReference": {
-    "schoolYear": -- need to create this in the config
+    "schoolYear": {{ school_year }}
   },
   "studentReference": {
     "studentUniqueId": {{student_unique_id}}
   },
-  "administrationDate": --need to create this in the config,
+  "administrationDate": {{ administration_date }}
   "performanceLevels": [
     {% set perf_levels = [] %}
 
-      {% if elalev is not none and elalev | length %}
-        {% set _ = perf_levels.append([elalev, 'ela performance level']) %}
+      {% if elalev != '' %}
+        {% set _ = perf_levels.append([elalev, 'Overall Performance Level']) %}
       {% endif %}
 
-      {% if mathlev is not none and mathlev | length %}
-        {% set _ = perf_levels.append([mathlev, 'math performance level']) %}
-      {% endif%}
+      {% if mathlev != '' %}
+        {% set _ = perf_levels.append([mathlev, 'Overall Performance Level']) %}
+      {% endif %}
 
   {% for perf_level in perf_levels %}
     {
-        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] }}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
   {% endfor %}
-    
+  
+  ],
 
-    {
-      "assessmentReportingMethodDescriptor": "string",
-      "performanceLevelDescriptor": "string",
-      "performanceLevelMet": true
-    }
-  ],
-  "platformTypeDescriptor": "string",
-  "reasonNotTestedDescriptor": "string",
-  "retestIndicatorDescriptor": "string",
   "scoreResults": [
-    {
-      "assessmentReportingMethodDescriptor": "string",
-      "resultDatatypeTypeDescriptor": "string",
-      "result": "string"
-    }
+   {% set scores = [] %}
+
+    {% if elass != '' %}
+      {% set _ = scores.append([elass, 'Overall Scale Score']) %}
+    {% endif %}
+
+    {% if mathss != '' %}
+      {% set _ = scores.append([mathss, 'Overall Scale Score']) %}
+
+    {% if elavss != '' %}
+      {% set _ = scores.append([elavss, 'Overall Vertical Scale Score']) %}
+    {% endif %}
+
+    {% if mathvss != '' %}
+      {% set _ = scores.append([mathvss, 'Overall Vertical Scale Score']) %}
+
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://datarecognitioncorp.com/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+      {% endfor %}
   ],
-  "serialNumber": "string",
+
   "studentObjectiveAssessments": [
     {% set all_obj_assess = [] %}
-    {
-      "objectiveAssessmentReference": {
-        "assessmentIdentifier": "string",
-        "identificationCode": "string",
-        "namespace": "string"
-      },
-      "performanceLevels": [
-        {
-          "assessmentReportingMethodDescriptor": "string",
-          "performanceLevelDescriptor": "string",
-          "performanceLevelMet": true
-        }
-      ],
-      "scoreResults": [
-        {
-          "assessmentReportingMethodDescriptor": "string",
-          "resultDatatypeTypeDescriptor": "string",
-          "result": "string"
-        }
-      ]
-    }
-  ],
-  "whenAssessedGradeLevelDescriptor": "string"
+
+    {% if elalev1 != '' %}
+      {% set _ = all_obj_assess.append([elalev1, 'ela_standard_1', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if elalev2 != '' %}
+      {% set _ = all_obj_assess.append([elalev2, 'ela_standard_2', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if elalev3 != '' %}
+      {% set _ = all_obj_assess.append([elalev3, 'ela_standard_3', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if elalev4 != '' %}
+      {% set _ = all_obj_assess.append([elalev4, 'ela_standard_4', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if elalev5 != '' %}
+      {% set _ = all_obj_assess.append([elalev5, 'ela_standard_5', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if elalev6 != ''%}
+      {% set _ = all_obj_assess.append([elalev6, 'ela_standard_6', 'Standards Performance Level']) %}
+
+    {% if elalev7 != '' %}
+      {% set _ = all_obj_assess.append([elalev7, 'ela_standard_7', 'Standards Performance Level']) %}
+
+    {% if elalev8 != '' %}
+      {% set _ = all_obj_assess.append([elalev8, 'ela_standard_8', 'Standards Performance Level']) %}
+
+    {% if elalev9 != '' %}
+      {% set _ = all_obj_assess.append([elalev9, 'ela_standard_9', 'Standards Performance Level']) %}
+
+    {% if elalev11 != '' %}
+      {% set _ = all_obj_assess.append([elalev11, 'ela_standard_11', 'Standards Performance Level']) %}
+
+    {% if mathlev1 != '' %}
+      {% set _ = all_obj_assess.append([mathlev1, 'math_standard_1', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if mathlev2 != '' %}
+      {% set _ = all_obj_assess.append([mathlev2, 'math_standard_2', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if mathlev3 != '' %}
+      {% set _ = all_obj_assess.append([mathlev3, 'math_standard_3', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if mathlev4 != '' %}
+      {% set _ = all_obj_assess.append([mathlev4, 'math_standard_4', 'Standards Performance Level']) %}
+    {% endif %}
+
+    {% if mathlev5 != '' %}
+      {% set _ = all_obj_assess.append([mathlev5, 'math_standard_5', 'Standards Performance Level']) %}
+    {% endif %}
+
+  {% for obj_assess in all_obj_assess %}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "SC-Ready",
+      "identificationCode": {{ obj_assess[1] }}
+      "namespace": "uri://datarecognitioncorp.com/Assessment"
+    },
+    "performanceLevels": [
+      {% if obj_assess[0] is not none and obj_assess[0] | length %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[0] }}",
+        "performanceLevelMet": true
+      }
+    ]
+  }
+  ]
 }

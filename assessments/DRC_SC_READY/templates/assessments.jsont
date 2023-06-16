@@ -58,69 +58,31 @@
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ungraded"
     }
   ],
-  "assessmentCategoryDescriptor": "string",
-  "assessmentFamily": "string",
-  "assessmentForm": "string",
-  "assessmentVersion": 0,
-  "identificationCodes": [
-    {
-      "assessmentIdentificationSystemDescriptor": "string",
-      "assigningOrganizationIdentificationCode": "string",
-      "identificationCode": "string"
-    }
-  ],
-  "languages": [
-    {
-      "languageDescriptor": "string"
-    }
-  ],
-  "maxRawScore": 0,
-  "nomenclature": "string",
-  "performanceLevels": [
-    {
-      "assessmentReportingMethodDescriptor": "string",
-      "performanceLevelDescriptor": "string",
-      "resultDatatypeTypeDescriptor": "string",
-      "maximumScore": "string",
-      "minimumScore": "string"
-    }
-  ],
-  "period": {
-    "assessmentPeriodDescriptor": "string",
-    "beginDate": "2023-05-18",
-    "endDate": "2023-05-18"
-  },
-  "platformTypes": [
-    {
-      "platformTypeDescriptor": "string"
-    }
-  ],
-  "programs": [
-    {
-      "programReference": {
-        "educationOrganizationId": 0,
-        "programName": "string",
-        "programTypeDescriptor": "string"
-      }
-    }
-  ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "string",
-      "resultDatatypeTypeDescriptor": "string",
-      "maximumScore": "string",
-      "minimumScore": "string"
-    }
-  ],
-  "sections": [
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
     {
-      "sectionReference": {
-        "localCourseCode": "string",
-        "schoolId": 0,
-        "schoolYear": 0,
-        "sectionIdentifier": "string",
-        "sessionName": "string"
-      }
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Vertical Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor":"uri://datarecognitioncorp.com/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor":"uri://datarecognitioncorp.com/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor":"uri://datarecognitioncorp.com/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ]
 }
