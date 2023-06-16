@@ -1,0 +1,88 @@
+      {% if TermName   is not none and TermName   | length %}
+        {% set _ = perf_levels.append([TermName  , 'Term Name  ']) %}
+      {% endif %}
+
+
+      {% if AssignedTestType   is not none and AssignedTestType   | length %}
+        {% set _ = perf_levels.append([AssignedTestType  , 'Assigned Test Type  ']) %}
+      {% endif %}
+
+
+      {% if ResultType   is not none and ResultType   | length %}
+        {% set _ = perf_levels.append([ResultType  , 'Result Type  ']) %}
+      {% endif %}
+
+
+      {% if TestLanguage   is not none and TestLanguage   | length %}
+        {% set _ = perf_levels.append([TestLanguage  , 'Test Language  ']) %}
+      {% endif %}
+
+
+      {% if TestCompletionDate   is not none and TestCompletionDate   | length %}
+        {% set _ = perf_levels.append([TestCompletionDate  , 'Test Completion Date  ']) %}
+      {% endif %}
+
+
+      {% if PrintConceptPerformanceLevel   is not none and PrintConceptPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([PrintConceptPerformanceLevel  , 'Print Concept Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if ListeningComprehensionPerformanceLevel   is not none and ListeningComprehensionPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([ListeningComprehensionPerformanceLevel  , 'Listening Comprehension Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if PictureVocabPerformanceLevel   is not none and PictureVocabPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([PictureVocabPerformanceLevel  , 'Picture Vocab Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if PhonologicalAwarenessZPDName   is not none and PhonologicalAwarenessZPDName   | length %}
+        {% set _ = perf_levels.append([PhonologicalAwarenessZPDName  , 'Phonological Awareness ZPD Name  ']) %}
+      {% endif %}
+
+
+      {% if PhonologicalAwarenessZPDLevel   is not none and PhonologicalAwarenessZPDLevel   | length %}
+        {% set _ = perf_levels.append([PhonologicalAwarenessZPDLevel  , 'Phonological Awareness ZPD Level  ']) %}
+      {% endif %}
+
+
+      {% if PhonologicalAwarenessPerformanceLevel   is not none and PhonologicalAwarenessPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([PhonologicalAwarenessPerformanceLevel  , 'Phonological Awareness Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if PhonicsWordRecognitionZPDName   is not none and PhonicsWordRecognitionZPDName   | length %}
+        {% set _ = perf_levels.append([PhonicsWordRecognitionZPDName  , 'Phonics Word Recognition ZPD Name  ']) %}
+      {% endif %}
+
+
+      {% if PhonicsWordRecognitionZPDLevel   is not none and PhonicsWordRecognitionZPDLevel   | length %}
+        {% set _ = perf_levels.append([PhonicsWordRecognitionZPDLevel  , 'Phonics Word Recognition ZPD Level  ']) %}
+      {% endif %}
+
+
+      {% if PhonicsWordRecognitionPerformanceLevel   is not none and PhonicsWordRecognitionPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([PhonicsWordRecognitionPerformanceLevel  , 'Phonics Word Recognition Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if SentenceReadingFluencyPerformanceLevel   is not none and SentenceReadingFluencyPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([SentenceReadingFluencyPerformanceLevel  , 'Sentence Reading Fluency Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if OralReadingRatePerformanceLevel   is not none and OralReadingRatePerformanceLevel   | length %}
+        {% set _ = perf_levels.append([OralReadingRatePerformanceLevel  , 'Oral Reading Rate Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if OralReadingAccuracyPerformanceLevel   is not none and OralReadingAccuracyPerformanceLevel   | length %}
+        {% set _ = perf_levels.append([OralReadingAccuracyPerformanceLevel  , 'Oral Reading Accuracy Performance Level  ']) %}
+      {% endif %}
+
+
+      {% if LiteralComprehensionPerformanceLevel is not none and LiteralComprehensionPerformanceLevel | length %}
+        {% set _ = perf_levels.append([LiteralComprehensionPerformanceLevel, 'Literal Comprehension Performance Level']) %}
+      {% endif %}
