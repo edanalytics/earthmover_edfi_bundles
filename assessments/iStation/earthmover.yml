@@ -23,9 +23,10 @@ sources:
   student_id_mapping:
     connection: ${SNOWFLAKE_CONNECTION}
     query: >
-      select {$STUDENT_ID_WH} as from, student_unique_id as to
+      select ${STUDENT_ID_WH} as "from", student_unique_id as "to"
       from analytics.prod_wh.dim_student
-      where tenant_code = ${TENANT_CODE}
+      where tenant_code = '${TENANT_CODE}'
+      and school_year = '${API_YEAR}'
     optional: true
 
 transformations:
