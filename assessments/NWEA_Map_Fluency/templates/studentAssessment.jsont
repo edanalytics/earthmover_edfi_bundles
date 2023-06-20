@@ -1,88 +1,40 @@
-      {% if TermName is not none and TermName | length %}
-        {% set _ = perf_levels.append([TermName, 'Term Name']) %}
-      {% endif %}
+{
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
+    "assessmentReference": {
+      "assessmentIdentifier": "NWEA-Map-Fluency",
+      "namespace": "uri://www.nwea.org/map/Assessment"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ school_year }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ studentUniqueId }}"
+    },
+    "administrationDate": "{{ TestStartDate }}",
 
+    "performanceLevels": [
 
-      {% if AssignedTestType is not none and AssignedTestType | length %}
-        {% set _ = perf_levels.append([AssignedTestType, 'Assigned Test Type']) %}
-      {% endif %}
+    ],
 
+    "scoreResults": [
 
-      {% if ResultType is not none and ResultType | length %}
-        {% set _ = perf_levels.append([ResultType, 'Result Type']) %}
-      {% endif %}
-
-
-      {% if TestLanguage is not none and TestLanguage | length %}
-        {% set _ = perf_levels.append([TestLanguage, 'Test Language']) %}
-      {% endif %}
-
-
-      {% if TestCompletionDate is not none and TestCompletionDate | length %}
-        {% set _ = perf_levels.append([TestCompletionDate, 'Test Completion Date']) %}
-      {% endif %}
-
-
-      {% if PrintConceptPerformanceLevel is not none and PrintConceptPerformanceLevel | length %}
-        {% set _ = perf_levels.append([PrintConceptPerformanceLevel, 'Print Concept Performance Level']) %}
-      {% endif %}
-
-
-      {% if ListeningComprehensionPerf is not none and ListeningComprehensionPerf | length %}
-        {% set _ = perf_levels.append([ListeningComprehensionPerf, 'Listening Comprehension Performance Level']) %}
-      {% endif %}
-
-
-      {% if PictureVocabPerf is not none and PictureVocabPerf | length %}
-        {% set _ = perf_levels.append([PictureVocabPerf, 'Picture Vocab Performance Level']) %}
-      {% endif %}
-
-
-      {% if PhonologicalAwarenessZPDName is not none and PhonologicalAwarenessZPDName | length %}
-        {% set _ = perf_levels.append([PhonologicalAwarenessZPDName, 'Phonological Awareness ZPD Name']) %}
-      {% endif %}
-
-
-      {% if PhonologicalAwarenessZPDLevel is not none and PhonologicalAwarenessZPDLevel | length %}
-        {% set _ = perf_levels.append([PhonologicalAwarenessZPDLevel, 'Phonological Awareness ZPD Level']) %}
-      {% endif %}
-
-
-      {% if PhonologicalAwarenessPerf is not none and PhonologicalAwarenessPerf | length %}
-        {% set _ = perf_levels.append([PhonologicalAwarenessPerf, 'Phonological Awareness Performance Level']) %}
-      {% endif %}
-
-
-      {% if PhonicsWordRecognitionZPDName is not none and PhonicsWordRecognitionZPDName | length %}
-        {% set _ = perf_levels.append([PhonicsWordRecognitionZPDName, 'Phonics Word Recognition ZPD Name']) %}
-      {% endif %}
-
-
-      {% if PhonicsWordRecognitionZPDLevel is not none and PhonicsWordRecognitionZPDLevel | length %}
-        {% set _ = perf_levels.append([PhonicsWordRecognitionZPDLevel, 'Phonics Word Recognition ZPD Level']) %}
-      {% endif %}
-
-
-      {% if PhonicsWordRecognitionPerf is not none and PhonicsWordRecognitionPerf | length %}
-        {% set _ = perf_levels.append([PhonicsWordRecognitionPerf, 'Phonics Word Recognition Performance Level']) %}
-      {% endif %}
-
-
-      {% if SentenceReadingFluencyPerformanceLevel is not none and SentenceReadingFluencyPerformanceLevel | length %}
-        {% set _ = perf_levels.append([SentenceReadingFluencyPerformanceLevel, 'Sentence Reading Fluency Performance Level ']) %}
-      {% endif %}
-
-
-      {% if OralReadingRatePerf is not none and OralReadingRatePerf | length %}
-        {% set _ = perf_levels.append([OralReadingRatePerf, 'Oral Reading Rate Performance Level']) %}
-      {% endif %}
-
-
-      {% if OralReadingAccuracyPerf is not none and OralReadingAccuracyPerf | length %}
-        {% set _ = perf_levels.append([OralReadingAccuracyPerf, 'Oral Reading Accuracy Performance Level']) %}
-      {% endif %}
-
-
-      {% if LiteralComprehensionPerf is not none and LiteralComprehensionPerf | length %}
-        {% set _ = perf_levels.append([LiteralComprehensionPerf, 'Literal Comprehension Performance Level']) %}
-      {% endif %}
+    ],
+    "studentObjectiveAssessments": [
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "NWEA-Map-Fluency",
+          "identificationCode": "",
+          "namespace": "uri://www.nwea.org/mapFluency"
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#",
+            "performanceLevelMet": true
+          }
+        ],
+        "scoreResults": [
+        ]
+      }
+    ]
+}
