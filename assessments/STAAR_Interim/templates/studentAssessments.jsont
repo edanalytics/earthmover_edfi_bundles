@@ -53,6 +53,7 @@
     {% set score_name = self._TemplateReference__context.resolve('RAW_SCORE_REPORTING_CATEGORY_'~n)%}
     {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
     {% if (score_name is not none and score_name | length) or (pl_name is not none and pl_name | length) %}
+    {%- if not loop.first -%},{% endif %}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "staar_interim",
@@ -79,8 +80,7 @@
         }
       ]
       {% endif %}
-    }{%- if not loop.last -%},
-    {%- else %}{% endif %} {% endif %}{%- endfor -%}
+    }{% endif %}{%- endfor -%}
   ]
   {% if grade_level_tested is not none and grade_level_tested | length %}
   ,
