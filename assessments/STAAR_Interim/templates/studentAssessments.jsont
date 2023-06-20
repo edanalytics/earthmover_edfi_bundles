@@ -1,8 +1,8 @@
 {
   "studentAssessmentIdentifier":"{{Opportunity_Key}}",
   "assessmentReference": {
-    "assessmentIdentifier": "staar_interim", # todo check if we want rename
-    "namespace": "uri://tea.texas.gov/student-assessment" #todo should this actually be a cambium address?
+    "assessmentIdentifier": "staar_interim",
+    "namespace": "uri://tea.texas.gov/student-assessment"
   },
   "schoolYearTypeReference": {
     "schoolYear":{{api_year}}
@@ -19,6 +19,7 @@
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Overall_Performance_Level",
       "performanceLevelMet": true
     }
+    {% endif %}
   ],
   "scoreResults": [
     {% set scores_present = [] %}
@@ -49,30 +50,32 @@
   ,
   "studentObjectiveAssessments": [
     {%- for n in range(1,6) -%}
-    {% if (RAW_SCORE_REPORTING_CATEGORY_{{n}} is not none and RAW_SCORE_REPORTING_CATEGORY_{{n}} | length) or (REPORTING_CATEGORY_{{n}}_STRENGTH/WEAKNESS_INDICATOR is not none and REPORTING_CATEGORY_{{n}}_STRENGTH/WEAKNESS_INDICATOR | length) %}
+    {% set score_name = self._TemplateReference__context.resolve('RAW_SCORE_REPORTING_CATEGORY_'~n)%}
+    {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
+    {% if (score_name is not none and score_name | length) or (pl_name is not none and pl_name | length) %}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "staar_interim",
         "identificationCode": "Reporting Category {{n}}",
-        "namespace": ""uri://tea.texas.gov/student-assessment"
+        "namespace": "uri://tea.texas.gov/student-assessment"
       }
-      {% if REPORTING_CATEGORY_{{n}}_STRENGTH/WEAKNESS_INDICATOR is not none and REPORTING_CATEGORY_{{n}}_STRENGTH/WEAKNESS_INDICATOR | length %}
+      {% if pl_name is not none and pl_name | length %}
       ,
       "performanceLevels": [
         {
           "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
-          "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#REPORTING_CATEGORY_{{n}}_STRENGTH/WEAKNESS_INDICATOR",
+          "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{pl_name}}",
           "performanceLevelMet": true
         }
       ]
       {% endif %}
-      {% if RAW_SCORE_REPORTING_CATEGORY_{{n}} is not none and RAW_SCORE_REPORTING_CATEGORY_{{n}} | length %}
+      {% if score_name is not none and score_name | length %}
       ,
       "scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Raw Score",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-          "result": "RAW_SCORE_REPORTING_CATEGORY_{{n}}"
+          "result": "{{score_name}}"
         }
       ]
       {% endif %}
