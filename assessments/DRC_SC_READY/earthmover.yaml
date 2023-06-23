@@ -5,12 +5,6 @@ config:
   state_file: ${STATE_FILE}
   show_graph: True
   show_stacktrace: True
-  parameter_defaults:
-    OUTPUT_DIR: ./
-    STATE_FILE: ./runs.csv
-    INPUT_FILE: /mnt/n/south_carolina/sc_2022/data_warehouse/ad_hoc/edfi_scready_2022_subset_for_testing_only.sas7bdat
-    API_YEAR: "2022"
-    BUNDLE_DIR: .
 
 
 sources:
