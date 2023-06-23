@@ -3,118 +3,143 @@ config:
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
-  show_graph: False
+  show_graph: True
+  show_stacktrace: True
+  parameter_defaults:
+    OUTPUT_DIR: ./
+    STATE_FILE: ./runs.csv
+    INPUT_FILE: /mnt/n/south_carolina/sc_2022/data_warehouse/ad_hoc/edfi_scready_2022_subset_for_testing_only.sas7bdat
+    API_YEAR: "2022"
+    BUNDLE_DIR: .
 
 
 sources:
-  sc_ready_input:
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  {% set input_files = [['scready_input', ''], ['scready_input_copy', '_copy']] %}
+  {% for input_file in input_files %}
+  {{input_file[0]}}:
     file: ${INPUT_FILE}
     type: sas
-
-
-
+  {% endfor %}
 
 transformations:
-  scready_student_assessment:
+  {% for input_file in input_files %}
+  scready_student_assessment{{input_file[1]}}:
     operations:
       - operation: keep_columns 
-        source: $sources.sc_ready_input
+        source: $sources.{{input_file[0]}}
         columns: 
-          - stateid
-          - schoolid
-          - elagrade
-          - elass
-          - elavss
-          - elalev 
-          - elassread
-          - elaslevread
-          - elalev1
-          - elalev2 
-          - elalev3 
-          - elalev4 
-          - elalev5 
-          - elalev6 
-          - elalev7
-          - elalev8 
-          - elalev9 
-          - elalev11
-          - mathgrade
-          - mathss
-          - mathvss
-          - mathlev
-          - mathlev1 
-          - mathlev2 
-          - mathlev3 
-          - mathlev4 
-          - mathlev5
+          - StateID
+          - SchoolID
+          - ELAGrade
+          - ELASS
+          - ELAVSS
+          - ELALev
+          - ELALev1 
+          - ELALev2
+          - ELALev3
+          - ELALev4
+          - ELALev5
+          - ELALev6
+          - ELALev7
+          - ELALev8
+          - ELALev9
+          - ELALev11
+          - MathGrade
+          - MathSS
+          - MathVSS
+          - MathLev
+          - MathLev1
+          - MathLev2
+          - MathLev3
+          - MathLev4
+          - MathLev5
       - operation: rename_columns
-        source: $transformations.scready_student_assessment
+        source: $transformations.scready_student_assessment{{input_file[1]}}
         columns:
-          stateid: student_unique_id
+          StateID: student_unique_id
       - operation: add_columns
-        source: $transformations.scready_student_assessment
+        source: $transformations.scready_student_assessment{{input_file[1]}}
         columns:
           school_year:  ${API_YEAR}
-          administration_date: {{ ${API_YEAR} | join("-05-15") }}
-      # creating a student assessment id based on these columns
-      - operation: combine_columns
-        source: $transformations.scready_student_assessment
-        columns:
-          - stateid
-        new_column: generated_test_id
-        separator: '-'
+          administration_date: {{ ${API_YEAR} ~ "-05-15" }} 
+  {% endfor %}
   scready_student_assessment_ela:
     operations:
-      - operations: modify_columns 
+      - operation: modify_columns 
         source: $transformations.scready_student_assessment
         columns: 
-          mathlev: ''
-          mathlev1: ''
-          mathlev2: ''
-          mathlev3: ''
-          mathlev4: ''
-          mathlev5: ''
-          mathvss: ''
-          mathss: ''
+          MathLev: ''
+          MathLev1: ''
+          MathLev2: ''
+          MathLev3: ''
+          MathLev4: ''
+          MathLev5: ''
+          MathVSS: ''
+          MathSS: ''
       - operation: add_columns 
         source: $transformations.scready_student_assessment_ela
         columns: 
           subject: 'English Language Arts'
-          student_grade: elagrade
+          student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
   scready_student_assessment_math:
     operations:
-      - operations: modify_columns 
-        source: $transformations.scready_student_assessment
+      - operation: modify_columns 
+        source: $transformations.scready_student_assessment_copy
         columns: 
-          elalev: ''
-          elalev1: ''
-          elalev2: ''
-          elalev3: ''
-          elalev4: ''
-          elalev5: ''
-          elalev6: ''
-          elalev7: ''
-          elalev8: ''
-          elalev9: ''
-          elalev11: ''
-          elavss: ''
-          elass: ''
+          ELALev: ''
+          ELALev1: ''
+          ELALev2: ''
+          ELALev3: ''
+          ELALev4: ''
+          ELALev5: ''
+          ELALev6: ''
+          ELALev7: ''
+          ELALev8: ''
+          ELALev9: ''
+          ELALev11: ''
+          ELAVSS: ''
+          ELASS: ''
       - operation: add_columns 
         source: $transformations.scready_student_assessment_math
         columns: 
           subject: 'Mathematics'
-          student_grade: mathgrade
+          student_grade: "{%raw%}{{MathGrade}}{%endraw%}"
   scready_student_assessment_stacked: 
     operations: 
-      - operations: union 
-        source: 
-          - $tranformations.scready_student_assessment_ela
-          - $tranformations.scready_student_assessment_math
-     
+      - operation: union 
+        sources: 
+          - $transformations.scready_student_assessment_ela
+          - $transformations.scready_student_assessment_math
+      - operation: add_columns
+        source: $transformations.scready_student_assessment_stacked
+        columns:
+          student_assessment_id: "{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
+      - operation: map_values
+        source: $transformations.scready_student_assessment_stacked
+        column: student_grade
+        map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
+    
 destinations:
-  assessmentReportingMethodDescriptors:
-    source: $transformations.reporting_methods
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
@@ -122,18 +147,13 @@ destinations:
     template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
-  assessments:
-    source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
-    extension: jsonl
-    linearize: True
-  objectiveAssessments:
-    source: $transformations.objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.scready_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    source: $transformations.scready_student_assessment_stacked
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

@@ -2,6 +2,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "uri://datarecognitioncorp.com/Assessment",
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
@@ -10,10 +11,6 @@
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#English Language Arts"
     }
   ],
-  "educationOrganizationReference": {
-    "educationOrganizationId": 0
-  },
-  "adaptiveAssessment": true,
   "assessedGradeLevels": [
     {
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
@@ -66,7 +63,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Vertical Scale Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-    },
+    }
   ],
   "performanceLevels": [
     {
