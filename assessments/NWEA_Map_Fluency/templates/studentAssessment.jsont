@@ -47,7 +47,7 @@
         {% set _ = all_obj_assess.append(["Picture Vocab Performance Level", PictureVocabPerf]) %}
       {% endif %}
       {% if PhonologicalAwarenessPerf is not none and PhonologicalAwarenessPerf | length %}
-        {% set _ = all_obj_assess.append(["Phonological Awareness Performance Level", PhonologicalAwarenessPerf, PhonologicalAwarenessZPDLevel, PhonologicalAwarenessZPDName]) %}
+        {% set _ = all_obj_assess.append(["Phonological Awareness Performance Level", PhonologicalAwarenessPerf]) %}
       {% endif %}
       {% if PhonologicalAwarenessZPDLevel is not none and PhonologicalAwarenessZPDLevel | length %}
         {% set _ = all_obj_assess.append(["Phonological Awareness ZPD Level", PhonologicalAwarenessZPDLevel]) %}
