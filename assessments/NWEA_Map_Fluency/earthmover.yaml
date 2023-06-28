@@ -1,0 +1,26 @@
+config:
+  output_dir: ./output/
+  # memory_limit: 2GB
+  # show_stacktrace: True
+  # show_graph: True
+  # log_level: DEBUG
+
+sources:
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+
+  nwea_map_fluency_input:
+    file: /mnt/n/boston/edfi_dw/ad_hoc/'SY2223 Winter MAP Fluency Data Export 01.20.23.csv'
+    header_rows: 1
+
+destinations:
+  studentAssessments:
+    source: $sources.nwea_map_fluency
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
