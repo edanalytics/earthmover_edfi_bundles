@@ -44,7 +44,23 @@
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-    }
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Does Not Meet Expectations"
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Approaches Expectations"
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Meets Expectations"
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Exceeds Expectations"
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
   ]
 }
