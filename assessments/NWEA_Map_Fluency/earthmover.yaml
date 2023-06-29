@@ -1,5 +1,5 @@
 config:
-  output_dir: ./output/
+  output_dir: /tmp/
   # memory_limit: 2GB
   # show_stacktrace: True
   # show_graph: True
@@ -8,19 +8,49 @@ config:
 sources:
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors
+    header_rows: 1
 
   nwea_map_fluency_input:
-    file: /mnt/n/boston/edfi_dw/ad_hoc/'SY2223 Winter MAP Fluency Data Export 01.20.23.csv'
+    file: ${INPUT_FILE}
     header_rows: 1
+
+transformations:
+  nwea_map_student_assessment:
+    operations:
+      - operation: add_columns
+        source: $sources.nwea_map_fluency_input
+        columns:
+          school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
+
+      - operation: date_format
+        source: $transformations.nwea_map_student_assessment
+        column: TestCompletionDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
 
 destinations:
   studentAssessments:
-    source: $sources.nwea_map_fluency
+    source: $transformations.nwea_map_student_assessment
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ./templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
     linearize: True
+  objectiveAssessments:
+    source: $sources.nwea_map_fluency_input
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl

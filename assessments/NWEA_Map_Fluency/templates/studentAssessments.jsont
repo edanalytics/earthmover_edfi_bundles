@@ -1,0 +1,45 @@
+{
+    "studentAssessmentIdentifier": "{{ TestName }}",
+    "assessmentReference": {
+      "assessmentIdentifier": "NWEA-Map-Fluency",
+      "namespace": "uri://www.nwea.org/map/Assessment"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ school_year }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ StudentID }}"
+    },
+    "administrationDate": "{{ TestStartDate }}",
+
+    "performanceLevels": [
+
+    ],
+
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#overallScore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#integer",
+        "result": "999"
+      }
+    ],
+    "studentObjectiveAssessments": [
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "NWEA-Map",
+          "identificationCode": "Print Concept Performance Level",
+          "namespace": "uri://www.nwea.org/mapFluency"
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Print Concept Performance Level",
+            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{PrintConceptPerformanceLevel}}",
+            "performanceLevelMet": true
+          }
+        ],
+        "scoreResults": [
+
+        ]
+      } 
+    ]
+}
