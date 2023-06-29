@@ -24,7 +24,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
       "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] }}",
-      "performanceLevelMet": true
+      "performanceLevelMet": {% if perf_level[0] >= 3 -%}true{%- else -%}false{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ],
@@ -127,7 +127,7 @@
       "performanceLevels": [
           {"assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
            "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[0] }}",
-           "performanceLevelMet": true
+           "performanceLevelMet": {% if obj_assess[0] >= 3 -%}true{%- else -%}false{%- endif %}
           }
         ]
     } {%-if not loop.last -%}, {%- endif -%}
