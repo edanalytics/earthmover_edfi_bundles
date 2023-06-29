@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
+    "studentAssessmentIdentifier": "{{ TestName }}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
       "namespace": "uri://www.nwea.org/map/Assessment"
@@ -8,7 +8,7 @@
       "schoolYear": {{ school_year }}
     },
     "studentReference": {
-      "studentUniqueId": "{{ studentUniqueId }}"
+      "studentUniqueId": "{{ StudentID }}"
     },
     "administrationDate": "{{ TestStartDate }}",
 
@@ -24,7 +24,7 @@
       }
     ],
     "studentObjectiveAssessments": [
- {% set all_obj_assess = [] %}
+      {% set all_obj_assess = [] %}
       {% if PrintConceptPerformanceLevel is not none and PrintConceptPerformanceLevel | length %}
         {% set _ = all_obj_assess.append(["Print Concept Performance Level", PrintConceptPerformanceLevel]) %}
       {% endif %}
