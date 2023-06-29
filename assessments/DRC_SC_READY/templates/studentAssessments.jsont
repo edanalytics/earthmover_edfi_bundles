@@ -120,7 +120,7 @@
 
     {%- for obj_assess in all_obj_assess -%}
     {"objectiveAssessmentReference": {
-        "assessmentIdentifier": "SCREADY",
+        "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
         "identificationCode": "{{ obj_assess[1] }}",
         "namespace": "uri://datarecognitioncorp.com/Assessment"
     },
