@@ -8,24 +8,32 @@ config:
 
 
 sources:
+
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
+
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
+
   scready_input:
     file: ${INPUT_FILE}
     type: sas
     encoding: latin-1
 
+
+
 transformations:
+
   scready_student_assessment:
     operations:
       - operation: keep_columns 
@@ -94,6 +102,7 @@ transformations:
           2.0: Approaches Expectations
           3.0: Meets Expectations
           4.0: Exceeds Expectations
+
   scready_student_assessment_ela:
     operations:
       - operation: modify_columns 
@@ -112,6 +121,7 @@ transformations:
         columns: 
           subject: 'English Language Arts'
           student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
+
   scready_student_assessment_math:
     operations:
       - operation: modify_columns 
@@ -135,6 +145,7 @@ transformations:
         columns: 
           subject: 'Mathematics'
           student_grade: "{%raw%}{{MathGrade}}{%endraw%}"
+
   scready_student_assessment_stacked: 
     operations: 
       - operation: union 
@@ -149,28 +160,35 @@ transformations:
         source: $transformations.scready_student_assessment_stacked
         column: student_grade
         map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
-    
+
+
+
 destinations:
+
   assessments:
     source: $sources.assessments
     template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
     linearize: True
+
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
+
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
+
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
+
   studentAssessments:
     source: $transformations.scready_student_assessment_stacked
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
