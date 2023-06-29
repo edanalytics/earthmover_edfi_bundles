@@ -20,19 +20,16 @@ sources:
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
-  {% set input_files = [['scready_input', ''], ['scready_input_copy', '_copy']] %}
-  {% for input_file in input_files %}
-  {{input_file[0]}}:
+  scready_input:
     file: ${INPUT_FILE}
     type: sas
-  {% endfor %}
+    encoding: latin-1
 
 transformations:
-  {% for input_file in input_files %}
-  scready_student_assessment{{input_file[1]}}:
+  scready_student_assessment:
     operations:
       - operation: keep_columns 
-        source: $sources.{{input_file[0]}}
+        source: $sources.scready_input
         columns: 
           - StateID
           - SchoolID
@@ -60,19 +57,18 @@ transformations:
           - MathLev4
           - MathLev5
       - operation: rename_columns
-        source: $transformations.scready_student_assessment{{input_file[1]}}
+        source: $transformations.scready_student_assessment
         columns:
           StateID: student_unique_id
       - operation: add_columns
-        source: $transformations.scready_student_assessment{{input_file[1]}}
+        source: $transformations.scready_student_assessment
         columns:
           school_year:  ${API_YEAR}
           administration_date: {{ ${API_YEAR} ~ "-05-15" }} 
       - operation: filter_rows
-        source: $transformations.scready_student_assessment{{input_file[1]}}
+        source: $transformations.scready_student_assessment
         query: student_unique_id.notnull()
         behavior: include
-  {% endfor %}
   scready_student_assessment_ela:
     operations:
       - operation: modify_columns 
@@ -94,7 +90,7 @@ transformations:
   scready_student_assessment_math:
     operations:
       - operation: modify_columns 
-        source: $transformations.scready_student_assessment_copy
+        source: $transformations.scready_student_assessment
         columns: 
           ELALev: ''
           ELALev1: ''
