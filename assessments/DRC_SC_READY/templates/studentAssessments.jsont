@@ -133,5 +133,5 @@
     } {%-if not loop.last -%}, {%- endif -%}
     {%- endfor -%}
   ],
-    "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{student_grade}}"
+    "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{student_grade | int}}"
 }
