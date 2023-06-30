@@ -50,7 +50,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://datarecognitioncorp.com/ResultDatatypeTypeDescriptor#Integer",
-      "result": {{score[0] | int}}
+      "result": "{{score[0] | int}}"
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ],
