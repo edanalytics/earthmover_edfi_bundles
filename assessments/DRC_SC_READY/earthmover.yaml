@@ -77,31 +77,6 @@ transformations:
         source: $transformations.scready_student_assessment
         query: student_unique_id.notnull()
         behavior: include
-      - operation: map_values
-        source: $transformations.scready_student_assessment
-        columns:
-          - ELALev
-          - ELALev1
-          - ELALev2
-          - ELALev3
-          - ELALev4
-          - ELALev5
-          - ELALev6
-          - ELALev7
-          - ELALev8
-          - ELALev9
-          - ELALev11
-          - MathLev
-          - MathLev1
-          - MathLev2
-          - MathLev3
-          - MathLev4
-          - MathLev5
-        mapping:
-          1.0: Does Not Meet Expectations
-          2.0: Approaches Expectations
-          3.0: Meets Expectations
-          4.0: Exceeds Expectations
 
   scready_student_assessment_ela:
     operations:
