@@ -26,43 +26,31 @@
     "studentObjectiveAssessments": [
       {% set all_obj_assess = [] %}
       {% if PrintConceptPerformanceLevel is not none and PrintConceptPerformanceLevel | length %}
-        {% set _ = all_obj_assess.append(["Print Concept Performance Level", PrintConceptPerformanceLevel]) %}
+        {% set _ = all_obj_assess.append(["Print Concept", PrintConceptPerformanceLevel]) %}
       {% endif %}
       {% if SentenceReadingFluencyPerformanceLevel is not none and SentenceReadingFluencyPerformanceLevel | length %}
-        {% set _ = all_obj_assess.append(["Sentence Reading Fluency Performance Level", SentenceReadingFluencyPerformanceLevel]) %}
+        {% set _ = all_obj_assess.append(["Sentence Reading Fluency", SentenceReadingFluencyPerformanceLevel]) %}
       {% endif %}
       {% if OralReadingRatePerf is not none and OralReadingRatePerf | length %}
-        {% set _ = all_obj_assess.append(["Oral Reading Rate Performance Level", OralReadingRatePerf]) %}
+        {% set _ = all_obj_assess.append(["Oral Reading Rate", OralReadingRatePerf]) %}
       {% endif %}
       {% if OralReadingAccuracyPerf is not none and OralReadingAccuracyPerf | length %}
-        {% set _ = all_obj_assess.append(["Oral Reading Accuracy Performance Level", OralReadingAccuracyPerf]) %}
+        {% set _ = all_obj_assess.append(["Oral Reading Accuracy", OralReadingAccuracyPerf]) %}
       {% endif %}
       {% if LiteralComprehensionPerf is not none and LiteralComprehensionPerf | length %}
-        {% set _ = all_obj_assess.append(["Literal Comprehension Performance Level", LiteralComprehensionPerf]) %}
+        {% set _ = all_obj_assess.append(["Literal Comprehension", LiteralComprehensionPerf]) %}
       {% endif %}
       {% if ListeningComprehensionPerf is not none and ListeningComprehensionPerf | length %}
-        {% set _ = all_obj_assess.append(["Listening Comprehension Performance Level", ListeningComprehensionPerf]) %}
+        {% set _ = all_obj_assess.append(["Listening Comprehension", ListeningComprehensionPerf]) %}
       {% endif %}
       {% if PictureVocabPerf is not none and PictureVocabPerf | length %}
-        {% set _ = all_obj_assess.append(["Picture Vocab Performance Level", PictureVocabPerf]) %}
+        {% set _ = all_obj_assess.append(["Picture Vocab", PictureVocabPerf]) %}
       {% endif %}
       {% if PhonologicalAwarenessPerf is not none and PhonologicalAwarenessPerf | length %}
-        {% set _ = all_obj_assess.append(["Phonological Awareness Performance Level", PhonologicalAwarenessPerf]) %}
-      {% endif %}
-      {% if PhonologicalAwarenessZPDLevel is not none and PhonologicalAwarenessZPDLevel | length %}
-        {% set _ = all_obj_assess.append(["Phonological Awareness ZPD Level", PhonologicalAwarenessZPDLevel]) %}
-      {% endif %}
-      {% if PhonologicalAwarenessZPDName is not none and PhonologicalAwarenessZPDName | length %}
-        {% set _ = all_obj_assess.append(["Phonological ZPD Name", PhonologicalAwarenessZPDName]) %}
+        {% set _ = all_obj_assess.append(["Phonological Awareness", PhonologicalAwarenessPerf,PhonologicalAwarenessZPDLevel,PhonologicalAwarenessZPDName]) %}
       {% endif %}
       {% if PhonicsWordRecognitionPerf is not none and PhonicsWordRecognitionPerf | length %}
-        {% set _ = all_obj_assess.append(["Phonics Word Recognition Performance Level", PhonicsWordRecognitionPerf]) %}
-      {% endif %}
-      {% if PhonicsWordRecognitionZPDLevel is not none and PhonicsWordRecognitionZPDLevel | length %}
-        {% set _ = all_obj_assess.append(["Phonics Word Recognition ZPD Level", PhonicsWordRecognitionZPDLevel]) %}
-      {% endif %}
-      {% if PhonicsWordRecognitionZPDName is not none and PhonicsWordRecognitionZPDName | length %}
-        {% set _ = all_obj_assess.append(["Phonics Word Recognition ZPD Name", PhonicsWordRecognitionZPDName]) %}
+        {% set _ = all_obj_assess.append(["Phonics Word Recognition", PhonicsWordRecognitionPerf,PhonicsWordRecognitionZPDLevel,PhonicsWordRecognitionZPDName]) %}
       {% endif %}
       {% for obj_assess in all_obj_assess %}
       {
@@ -74,8 +62,22 @@
         "performanceLevels": [
           {% if obj_assess[1] is not none and obj_assess[1] | length %}
           {
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{ obj_assess[0] }}",
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Performance Level",
             "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+            "performanceLevelMet": true
+          }
+          {% endif %}
+          {% if obj_assess[2] is not none and obj_assess[2] | length %}
+          ,{
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#ZPD Level",
+            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
+            "performanceLevelMet": true
+          }
+          {% endif %}
+          {% if obj_assess[3] is not none and obj_assess[3] | length %}
+          ,{
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#ZPD Name",
+            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[3] }}",
             "performanceLevelMet": true
           }
           {% endif %}
