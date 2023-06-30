@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{{ TestName }}",
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
       "namespace": "uri://www.nwea.org/map/Assessment"
@@ -8,7 +8,7 @@
       "schoolYear": {{ school_year }}
     },
     "studentReference": {
-      "studentUniqueId": "{{ StudentID }}"
+      "studentUniqueId": "{{ studentUniqueId }}"
     },
     "administrationDate": "{{ TestStartDate }}",
 

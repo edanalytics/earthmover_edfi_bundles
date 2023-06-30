@@ -13,7 +13,7 @@ sources:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   nwea_map_fluency_input:
@@ -23,16 +23,27 @@ sources:
 transformations:
   nwea_map_student_assessment:
     operations:
-      - operation: add_columns
+      - operation: duplicate_columns
         source: $sources.nwea_map_fluency_input
         columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        source: $transformations.nwea_map_student_assessment
+        columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
-
       - operation: date_format
         source: $transformations.nwea_map_student_assessment
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
+      - operation: combine_columns
+        source: $transformations.nwea_map_student_assessment
+        columns:
+          - studentUniqueId
+          - TermName
+          - TestCompletionDate
+        new_column: generated_test_id
+        separator: '-'
 
 destinations:
   studentAssessments:
@@ -53,4 +64,8 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
