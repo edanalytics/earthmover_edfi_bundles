@@ -131,10 +131,6 @@ transformations:
         source: $transformations.scready_student_assessment_stacked
         columns:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
-      - operation: map_values
-        source: $transformations.scready_student_assessment_stacked
-        column: student_grade
-        map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
 
 
 
