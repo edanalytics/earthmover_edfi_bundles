@@ -1,9 +1,8 @@
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
-  memory_limit: 1GB
   state_file: ${STATE_FILE}
-  show_graph: True
+  show_graph: False
   show_stacktrace: True
 
 
@@ -15,6 +14,10 @@ sources:
 
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  resultDatatypeTypeDescriptors:
+    file: ${BUNDLE_DIR}/seeds/resultDatatypeTypeDescriptors.csv
     header_rows: 1
 
   objectiveAssessments:
@@ -145,6 +148,12 @@ destinations:
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  resultDatatypeTypeDescriptors:
+    source: $sources.resultDatatypeTypeDescriptors
+    template: ${BUNDLE_DIR}/templates/resultDatatypeTypeDescriptors.jsont
     extension: jsonl
     linearize: True
 
