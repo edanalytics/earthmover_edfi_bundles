@@ -30,27 +30,29 @@
   ],
   "scoreResults": [
     {%- set all_scores = [] -%}
+    {% set _ = all_scores.append([subject, "Subject", "Level"]) %}
+
     {%- if ELASS -%}
-      {%- set _= all_scores.append([ELASS, "Overall Scale Score"]) -%}
+      {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
     {%- endif -%}
 
     {%- if MathSS -%}
-      {%- set _= all_scores.append([MathSS, "Overall Scale Score"]) -%}
+      {%- set _= all_scores.append([MathSS, "Overall Scale Score", "Integer"]) -%}
     {%- endif -%}
 
     {%- if ELAVSS -%}
-      {%- set _= all_scores.append([ELAVSS, "Overall Vertical Scale Score"]) -%}
+      {%- set _= all_scores.append([ELAVSS, "Overall Vertical Scale Score", "Integer"]) -%}
     {%- endif -%}
 
     {%- if MathVSS -%}
-      {%- set _= all_scores.append([MathVSS, "Overall Vertical Scale Score"]) -%}
+      {%- set _= all_scores.append([MathVSS, "Overall Vertical Scale Score", "Integer"]) -%}
     {%- endif -%}
 
     {%- for score in all_scores -%}
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
-      "resultDatatypeTypeDescriptor": "uri://datarecognitioncorp.com/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{score[0] | int}}"
+      "resultDatatypeTypeDescriptor": "uri://datarecognitioncorp.com/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ],
