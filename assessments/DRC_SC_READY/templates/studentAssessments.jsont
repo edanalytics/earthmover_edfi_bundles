@@ -132,6 +132,13 @@
           "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[0] | int}}",
           "performanceLevelMet": true
         }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "{{ obj_assess[0] | int}}"
+        }
       ]
     } {%-if not loop.last -%}, {%- endif -%}
     {%- endfor -%}
