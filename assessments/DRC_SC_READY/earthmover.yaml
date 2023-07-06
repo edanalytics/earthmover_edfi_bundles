@@ -16,10 +16,6 @@ sources:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
 
-  resultDatatypeTypeDescriptors:
-    file: ${BUNDLE_DIR}/seeds/resultDatatypeTypeDescriptors.csv
-    header_rows: 1
-
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
@@ -148,12 +144,6 @@ destinations:
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
-
-  resultDatatypeTypeDescriptors:
-    source: $sources.resultDatatypeTypeDescriptors
-    template: ${BUNDLE_DIR}/templates/resultDatatypeTypeDescriptors.jsont
     extension: jsonl
     linearize: True
 
