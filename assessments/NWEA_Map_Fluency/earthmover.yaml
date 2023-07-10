@@ -19,6 +19,8 @@ sources:
   nwea_map_fluency_input:
     file: ${INPUT_FILE}
     header_rows: 1
+  grade_levels_xwalk:
+    file: ${BUNDLE_DIR}/seeds/grade_levels_xwalk.csv
 
 transformations:
   nwea_map_student_assessment:
@@ -44,6 +46,14 @@ transformations:
           - TestCompletionDate
         new_column: generated_test_id
         separator: '-'
+      - operation: join
+        sources: 
+          - $transformations.nwea_map_student_assessment
+          - $sources.grade_levels_xwalk
+        left_key: Grade
+        right_key: assessed_grade_level
+        right_keep_columns: [edfi_grade_level]
+        join_type: left
 
 destinations:
   studentAssessments:
