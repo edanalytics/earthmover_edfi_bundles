@@ -2,7 +2,7 @@
     "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
-      "namespace": "uri://www.nwea.org/map/Assessment"
+      "namespace": "uri://www.nwea.org/mapFluency"
     },
     "schoolYearTypeReference": {
       "schoolYear": {{ school_year }}
@@ -12,13 +12,15 @@
     },
     "administrationDate": "{{ TestStartDate }}",
 
+    "whenAssessedGradeLevel": "{{ edfi_grade_level }}",
+
     "performanceLevels": [
 
     ],
 
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#overallScore",
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#overallScore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#integer",
         "result": "999"
       }
@@ -63,21 +65,21 @@
           {% if obj_assess[1] is not none and obj_assess[1] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Performance Level",
-            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
             "performanceLevelMet": true
           }
           {% endif %}
           {% if obj_assess[2] is not none and obj_assess[2] | length %}
           ,{
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#ZPD Level",
-            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#ZPD Level",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
             "performanceLevelMet": true
           }
           {% endif %}
           {% if obj_assess[3] is not none and obj_assess[3] | length %}
           ,{
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#ZPD Name",
-            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ obj_assess[3] }}",
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#ZPD Name",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[3] }}",
             "performanceLevelMet": true
           }
           {% endif %}
