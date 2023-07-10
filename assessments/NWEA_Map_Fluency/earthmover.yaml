@@ -66,11 +66,6 @@ destinations:
     template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
     linearize: True
-  objectiveAssessments:
-    source: $sources.nwea_map_fluency_input
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
