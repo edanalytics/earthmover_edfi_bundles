@@ -57,7 +57,7 @@
       {% for obj_assess in all_obj_assess %}
       {
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "NWEA-Map",
+          "assessmentIdentifier": "NWEA-Map-Fluency",
           "identificationCode": "{{ obj_assess[0] }}",
           "namespace": "uri://www.nwea.org/mapFluency"
         },
