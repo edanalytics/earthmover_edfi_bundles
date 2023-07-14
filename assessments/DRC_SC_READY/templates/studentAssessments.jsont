@@ -30,7 +30,9 @@
   ],
   "scoreResults": [
     {%- set all_scores = [] -%}
+
     {% set _ = all_scores.append([subject, "Subject", "Level"]) %}
+    {% set _ = all_scores.append([SchoolID, "SchoolID", "Integer"]) %}
 
     {%- if ELASS -%}
       {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
