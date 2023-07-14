@@ -14,11 +14,23 @@
 
     "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level}}",
 
+    administrationLanguage" : "uri://ed-fi.org/Language#{{ TestLanguage }},
+
     "performanceLevels": [
 
     ],
 
     "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Result Type",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#level",
+        "result": "{{ ResultType }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Assigned Test Type",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#level",
+        "result": "{{ AssignedTestType }}"
+      },
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#overallScore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#integer",
