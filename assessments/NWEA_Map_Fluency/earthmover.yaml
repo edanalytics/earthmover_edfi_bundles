@@ -52,6 +52,14 @@ transformations:
         source: $transformations.nwea_map_student_assessment
         columns:
           Grade: grade_level
+      - operation: map_values
+        source: $transformations.nwea_map_student_assessment
+        column: TestLanguage
+        map_file: ${BUNDLE_DIR}/seeds/map_language.csv
+      - operation: rename_columns
+        source: $transformations.nwea_map_student_assessment
+        columns:
+          TestLanguage: language
 
 destinations:
   studentAssessments:
