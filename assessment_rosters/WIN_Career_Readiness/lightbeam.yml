@@ -1,0 +1,22 @@
+state_dir: ~/.lightbeam-win/
+data_dir: "/mnt/l/sc_edfi_analytics/assessment_roster/outputs/win/scde"
+namespace: ed-fi-xassessment-roster
+
+edfi_api:
+  base_url: https://dw-sc.state-2223.scedfi.edanalytics.org
+  version: 3
+  mode: district_specific
+  client_id: ${CLIENT_ID}
+  client_secret: ${CLIENT_SECRET}
+
+connection:
+  pool_size: 8
+  timeout: 60
+  num_retries: 10
+  backoff_factor: 1.5
+  retry_statuses: [429, 500, 502, 503, 504]
+  verify_ssl: True
+
+force_delete: True
+log_level: DEBUG
+show_stacktrace: True

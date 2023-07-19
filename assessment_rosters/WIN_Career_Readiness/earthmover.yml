@@ -1,0 +1,87 @@
+config:
+    log_level: DEBUG
+    show_stacktrace: True
+    output_dir: "/mnt/l/sc_edfi_analytics/assessment_roster/outputs/win/scde/20230714"
+
+
+
+sources:
+
+    win_source:
+        file: "/mnt/l/sc_edfi_analytics/assessment_roster/raw/FINALv2_WIN_Learning_to_EDFI_All_Data 22-23_csv.csv"
+        type: csv
+        header_rows: 2
+        encoding: latin1
+        columns:
+            - StudentUniqueId
+            - SchoolId
+            - InstitutionName
+
+            - EntryGradeLevelDescriptor
+            - LastSurname
+            - FirstName
+            - MiddleName
+            - BirthDate
+            - BirthSexDescriptor
+            - LimitedEnglishProficiencyDescriptor
+            - StudentDistrictId
+
+            # assessmentCustomizations
+            - IEP
+            - Migrant
+            - Accommodation
+            - TestAdmin
+            - Mode
+            - LargePt
+            - Braille
+            - Oral
+            - GR9
+            - Retake
+            - FedReport
+            - _1
+            - _2
+            - _3
+            - _4
+            - _5
+            - _6
+            - _7
+
+
+
+transformations:
+
+    platform_type_descriptors:
+        source: $sources.win_source
+        operations:
+            - operation: add_columns
+              columns:
+                  platform_type: "{%raw%}{% if Mode == 'O' %}Computer-based{% else %}Paper-based{% endif %}{%endraw%}"
+
+    distinct_ed_orgs:
+        source: $sources.win_source
+        operations:
+            - operation: distinct_rows
+              columns:
+                - _1  # We need a single row overall, so use this fake column of all NULLs.
+
+
+
+destinations:
+
+    assessmentAdministrationParticipations:
+        source: $transformations.distinct_ed_orgs
+        template: ./templates/assessmentAdministrationParticipations.jsont
+        extension: jsonl
+        linearize: True
+
+    assessmentAdministrations:
+        source: $transformations.distinct_ed_orgs
+        template: ./templates/assessmentAdministrations.jsont
+        extension: jsonl
+        linearize: True
+
+    studentAssessmentRegistrations:
+        source: $transformations.platform_type_descriptors
+        template: ./templates/studentAssessmentRegistrations.jsont
+        extension: jsonl
+        linearize: True

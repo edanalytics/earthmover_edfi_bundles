@@ -1,0 +1,60 @@
+{%- set assessment_customization_cols = [
+    'StudentUniqueId',
+    'SchoolId',
+    'InstitutionName',
+    'EntryGradeLevelDescriptor',
+    'LastSurname',
+    'FirstName',
+    'MiddleName',
+    'BirthDate',
+    'BirthSexDescriptor',
+    'LimitedEnglishProficiencyDescriptor',
+    'StudentDistrictId',
+    'IEP',
+    'Migrant',
+    'Accommodation',
+    'TestAdmin',
+    'Mode',
+    'LargePt',
+    'Braille',
+    'Oral',
+    'GR9',
+    'Retake',
+    'FedReport',
+] -%}
+
+{%- set assessment_customizations = [] -%}
+{%- for col in assessment_customization_cols -%}
+    {%- if __row_data__[col] -%}
+        {%- set _ = assessment_customizations.append(col) -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{
+  "assessmentAdministrationReference": {
+    "administrationIdentifier": "2023 Spring Career Readiness Assessment",
+    "assessmentIdentifier": "Statewide Career Readiness Assessment",
+    "assigningEducationOrganizationId": 1,
+    "namespace": "uri://winlearning.com"
+  },
+  "reportingEducationOrganizationReference": {
+    "educationOrganizationId": 1
+  },
+  "studentEducationOrganizationAssociationReference": {
+    "educationOrganizationId": 1,
+    "studentUniqueId": "{{ StudentUniqueId }}"
+  },
+  "testingEducationOrganizationReference": {
+    "educationOrganizationId": 1
+  },
+  "assessmentCustomizations": [
+    {% for col in assessment_customizations %}
+    {
+      "identificationCode": "{{ col }}",
+      "customizationValue": "{{ __row_data__[col] }}"
+    }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "platformTypeDescriptor": "uri://ed-fi.org/PlatformTypeDescriptor#{{ platform_type }}"
+}
