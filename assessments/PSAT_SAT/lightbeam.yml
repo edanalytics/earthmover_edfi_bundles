@@ -1,0 +1,18 @@
+verbose: True
+data_dir: ${data_input_path}
+edfi_api:
+  base_url: ${base_url}
+  version: 3
+  mode: district_specific
+  year: ${api_year}
+  client_id: ${client_id}
+  client_secret: ${client_secret}
+connection:
+  pool_size: 8
+  timeout: 60
+  num_retries: 10
+  backoff_factor: 1.5
+  retry_statuses: [429, 500, 502, 503, 504]
+  verify_ssl: True
+verbose: True
+show_stacktrace: True
