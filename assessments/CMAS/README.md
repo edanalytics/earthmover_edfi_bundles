@@ -7,17 +7,18 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
-<summary><code>data/co_csa_cmas_Math_ELA_District_Student_Data_File.csv</code></summary>
+<summary><code>data/cmas_Student_Data_File.csv</code></summary>
 
 
 </details>
 
-then run the following command:
+then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files:
 ```bash
 earthmover run -c ./CMAS_EdFi_3_2/earthmover.yaml -p '{
 "BUNDLE_DIR": "./CMAS_EdFi_3_2/",
-"INPUT_FILE": "./CMAS_EdFi_3_2/data/co_csa_cmas_Math_ELA_District_Student_Data_File.csv",
-"OUTPUT_DIR": "./CMAS_EdFi_3_2/output" }'
+"INPUT_FILE": "./CMAS_EdFi_3_2/data/cmas_Student_Data_File.csv",
+"OUTPUT_DIR": "./CMAS_EdFi_3_2/output",
+"SCIENCE": "N" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
