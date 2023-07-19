@@ -1,6 +1,6 @@
 config:
   log_level: DEBUG
-  output_dir: output/
+  output_dir: ${DATA_DIR}
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
@@ -8,22 +8,22 @@ config:
 
 sources:
   cmas_input:
-    file: data/CMASsci2022.csv
+    file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: seeds/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: seeds/performanceLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   reasonNotTestedDescriptors:
-    file: seeds/reasonNotTestedDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
 
 transformations:
@@ -53,28 +53,28 @@ transformations:
       - operation: map_values
         source: $transformations.cmas_input
         column: GradeLevelWhenAssessed
-        map_file: seeds/mapping_GradeLevels.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
       - operation: map_values
         source: $transformations.cmas_input
         column: NotTestedReason
-        map_file: seeds/mapping_NotTestedReason.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_NotTestedReason.csv
       - operation: map_values
         source: $transformations.cmas_input        
         column: VoidScoreReason
-        map_file: seeds/mapping_VoidScoreReason.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_VoidScoreReason.csv
       - operation: map_values
         source: $transformations.cmas_input
         column: ReportSuppressionCode
-        map_file: seeds/mapping_ReportSuppressionCode.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionCode.csv
       - operation: map_values
         source: $transformations.cmas_input
         column: ReportSuppressionAction
-        map_file: seeds/mapping_ReportSuppressionAction.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionAction.csv
       {% if "${SCIENCE}" == "N" %}
       - operation: map_values
         source: $transformations.cmas_input
         column: PerfLVL
-        map_file: seeds/mapping_perfLVL.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_perfLVL.csv
       - operation: modify_columns
         source: $transformations.cmas_input
         columns: 
@@ -105,25 +105,25 @@ transformations:
 destinations:
   assessments:
     source: $sources.assessments
-    template: templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: templates/objectiveAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.cmas_input
-    template: templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: templates/assessmentReportingMethodDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: templates/performanceLevelDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
     extension: jsonl
   reasonNotTestedDescriptors:
     source: $sources.reasonNotTestedDescriptors
-    template: templates/reasonNotTestedDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
     extension: jsonl
