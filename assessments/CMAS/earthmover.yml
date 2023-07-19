@@ -1,29 +1,29 @@
 config:
   log_level: DEBUG
-  output_dir: ${OUTPUT_DIR}
+  output_dir: output/
   memory_limit: 1GB
   state_file: ./runs.csv
-  show_graph: True
+  show_graph: False
   show_stacktrace: true
 
 sources:
   cmas_input:
-    file: ${INPUT_FILE}
+    file: data/CMASsci2022.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: seeds/performanceLevelDescriptors.csv
     header_rows: 1
   reasonNotTestedDescriptors:
-    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    file: seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: seeds/objectiveAssessments.csv
     header_rows: 1
 
 transformations:
@@ -56,10 +56,6 @@ transformations:
         map_file: seeds/mapping_GradeLevels.csv
       - operation: map_values
         source: $transformations.cmas_input
-        column: PerfLVL
-        map_file: seeds/mapping_perfLVL.csv
-      - operation: map_values
-        source: $transformations.cmas_input
         column: NotTestedReason
         map_file: seeds/mapping_NotTestedReason.csv
       - operation: map_values
@@ -74,6 +70,11 @@ transformations:
         source: $transformations.cmas_input
         column: ReportSuppressionAction
         map_file: seeds/mapping_ReportSuppressionAction.csv
+      {% if "${SCIENCE}" == "N" %}
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: PerfLVL
+        map_file: seeds/mapping_perfLVL.csv
       - operation: modify_columns
         source: $transformations.cmas_input
         columns: 
@@ -99,29 +100,30 @@ transformations:
           Subclaim5RawScore: "{%raw%}{{Subclaim5RawScore | int}}{%endraw%}"
           Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
           Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
+      {% endif %}
 
 destinations:
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.cmas_input
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: templates/studentAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: templates/performanceLevelDescriptors.jsont
     extension: jsonl
   reasonNotTestedDescriptors:
     source: $sources.reasonNotTestedDescriptors
-    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    template: templates/reasonNotTestedDescriptors.jsont
     extension: jsonl

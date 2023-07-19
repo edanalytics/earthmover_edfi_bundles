@@ -41,16 +41,26 @@
       {% set _ = scores.append([TestCode, 'Test Code', 'Level']) %}
     {% endif %}
 
-    {% if SS is not none and SS.strip() | length and TestAttemptednessFlag == 'Y' %}
-      {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+    {% if TotalTestItems is not none and TotalTestItems.strip() | length %}
+      {% set _ = scores.append([TotalTestItems, 'Total Test Items', 'Integer']) %}
     {% endif %}
 
-    {% if SSCSEM is not none and SSCSEM.strip() | length and TestAttemptednessFlag == 'Y' %}
-      {% set _ = scores.append([SSCSEM, 'CSEM', 'Decimal']) %}
-    {% endif %}
+    {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
+      {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
+    {% endif %}    
 
-    {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
-      {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+    {% if assessmentSubject in ('ELA', 'MAT', 'SLA') and TestAttemptednessFlag == 'Y' %}
+      {% if SS is not none and SS.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+      {% endif %}
+
+      {% if SSCSEM is not none and SSCSEM.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([SSCSEM, 'CSEM', 'Decimal']) %}
+      {% endif %}
+
+      {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+      {% endif %}
     {% endif %}
 
     {% if assessmentSubject in ('ELA', 'SLA') and TestAttemptednessFlag == 'Y' %}
@@ -75,12 +85,18 @@
       {% endif %}
     {% endif %}
 
-    {% if TotalTestItems is not none and TotalTestItems.strip() | length %}
-      {% set _ = scores.append([TotalTestItems, 'Total Test Items', 'Integer']) %}
-    {% endif %}
+    {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' %}
+      {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
+        {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
+      {% endif %}
 
-    {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
-      {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
+      {% if PercentileRankofStudentStandard2 is not none and PercentileRankofStudentStandard2 | length %}
+        {% set _ = scores.append([PercentileRankofStudentStandard2, 'Standard 2 Percentile Rank', 'Integer']) %}
+      {% endif %}
+
+      {% if PercentileRankofStudentStandard3 is not none and PercentileRankofStudentStandard3 | length %}
+        {% set _ = scores.append([PercentileRankofStudentStandard3, 'Standard 3 Percentile Rank', 'Integer']) %}
+      {% endif %}
     {% endif %}
 
     {% for score in scores %}
@@ -94,10 +110,6 @@
 
   "performanceLevels": [
     {% set perf_levels = [] %}
-
-      {% if PerfLVL is not none and PerfLVL | length %}
-        {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
-      {% endif %}
 
       {% if TestStatus is not none and TestStatus | length %}
         {% set _ = perf_levels.append([TestStatus, 'Test Status']) %}
@@ -133,6 +145,12 @@
 
       {% if ReportSuppressionAction is not none and ReportSuppressionAction | length %}
         {% set _ = perf_levels.append([ReportSuppressionAction, 'Report Suppression Action']) %}
+      {% endif %}
+
+      {% if assessmentSubject in ('ELA', 'MAT', 'SLA') %}
+        {% if PerfLVL is not none and PerfLVL | length %}
+          {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
+        {% endif %}
       {% endif %}
 
     {% for perf_level in perf_levels %}
