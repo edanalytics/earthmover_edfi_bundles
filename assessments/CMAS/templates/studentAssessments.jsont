@@ -47,6 +47,10 @@
 
     {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
       {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
+    {% endif %} 
+    
+    {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
+      {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
     {% endif %}    
 
     {% if assessmentSubject in ('ELA', 'MAT', 'SLA') and TestAttemptednessFlag == 'Y' %}
@@ -56,10 +60,6 @@
 
       {% if SSCSEM is not none and SSCSEM.strip() | length and TestAttemptednessFlag == 'Y' %}
         {% set _ = scores.append([SSCSEM, 'CSEM', 'Decimal']) %}
-      {% endif %}
-
-      {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
-        {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
       {% endif %}
     {% endif %}
 
