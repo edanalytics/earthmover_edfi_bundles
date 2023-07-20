@@ -24,6 +24,7 @@ If neither of these match Ed-Fi's `studentUniqueId`, see the CLI parameters sect
 Required columns:
    - `from`
    - `to`
+</details>
 
 ## CLI Parameters
 
