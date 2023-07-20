@@ -9,6 +9,9 @@ sources:
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -61,6 +64,16 @@ transformations:
         columns:
           TestLanguage: language
 
+  objectiveAssessments:
+    operations:
+      - operation: group_by
+        source: $sources.objectiveAssessments
+        group_by_columns:
+          - identification_code
+          - reporting_method
+        create_columns:
+          levels: agg(level,;)
+
 destinations:
   studentAssessments:
     source: $transformations.nwea_map_student_assessment
@@ -79,4 +92,8 @@ destinations:
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
