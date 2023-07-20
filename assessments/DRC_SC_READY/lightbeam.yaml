@@ -1,9 +1,9 @@
 # See accompanying README.md for details about this file.
 
-state_dir: ./.lighbeam/
+state_dir: ${STATE_DIR}
 data_dir: ${DATA_DIR}
 edfi_api:
-  base_url: ${BASE_URL}
+  base_url: ${EDFI_API_BASE_URL}
   version: 3
   mode: district_specific
   year: ${API_YEAR}
