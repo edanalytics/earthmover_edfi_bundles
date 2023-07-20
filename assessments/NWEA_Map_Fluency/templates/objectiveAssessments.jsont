@@ -1,0 +1,28 @@
+{
+  "assessmentItems": [],
+  "assessmentReference": {
+    "assessmentIdentifier": "NWEA-Map-Fluency",
+    "namespace": "uri://www.nwea.org/mapFluency"
+  },
+  "description": "{{identification_code}}",
+  "identificationCode": "{{identification_code}}",
+  "learningObjectives": [],
+  "learningStandards": [],
+  "performanceLevels": [
+    {% for level in levels.split(';') %}
+      
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ reporting_method }}",
+        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ level }}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      } {% if not loop.last %},{% endif %}
+      
+    {% endfor %}
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Assessment Measure Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}
