@@ -77,7 +77,7 @@ transformations:
           administration_date: {{ ${API_YEAR} ~ "-05-15" }} 
       - operation: filter_rows
         source: $transformations.scready_student_assessment
-        query: student_unique_id.notnull()
+        query: student_unique_id.notnull() & (student_unique_id != "")
         behavior: include
 
   scready_student_assessment_ela:

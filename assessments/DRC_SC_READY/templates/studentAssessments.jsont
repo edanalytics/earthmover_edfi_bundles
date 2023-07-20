@@ -13,10 +13,10 @@
   "administrationDate": "{{administration_date}}",
   "performanceLevels": [
     {%- set perf_levels = [] -%}
-    {%- if ELALev -%}
+    {%- if ELALev | int -%}
       {%- set _= perf_levels.append([ELALev, "Overall Performance Level"]) -%}
     {%- endif -%}
-    {%- if MathLev -%}
+    {%- if MathLev | int -%}
       {%- set _= perf_levels.append([MathLev, "Overall Performance Level"]) -%}
     {%- endif -%}
 
@@ -62,63 +62,63 @@
   "studentObjectiveAssessments": [
     {%- set all_obj_assess = [] -%}
 
-    {%- if ELALev1 -%}
+    {%- if ELALev1 | int -%}
       {%- set _= all_obj_assess.append([ELALev1, 'ela_standard_1', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev2 -%}
+    {%- if ELALev2 | int -%}
       {%- set _= all_obj_assess.append([ELALev2, 'ela_standard_2', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev3 -%}
+    {%- if ELALev3 | int -%}
       {%- set _= all_obj_assess.append([ELALev3, 'ela_standard_3', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev4 -%}
+    {%- if ELALev4 | int -%}
       {%- set _= all_obj_assess.append([ELALev4, 'ela_standard_4', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev5 -%}
+    {%- if ELALev5 | int -%}
       {%- set _= all_obj_assess.append([ELALev5, 'ela_standard_5', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev6 -%}
+    {%- if ELALev6 | int -%}
       {%- set _= all_obj_assess.append([ELALev6, 'ela_standard_6', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev7 -%}
+    {%- if ELALev7 | int -%}
       {%- set _= all_obj_assess.append([ELALev7, 'ela_standard_7', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev8 -%}
+    {%- if ELALev8 | int -%}
       {%- set _= all_obj_assess.append([ELALev8, 'ela_standard_8', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev9 -%}
+    {%- if ELALev9 | int -%}
       {%- set _= all_obj_assess.append([ELALev9, 'ela_standard_9', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if ELALev11 -%}
+    {%- if ELALev11 | int -%}
       {%- set _= all_obj_assess.append([ELALev11, 'ela_standard_11', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if MathLev1 -%}
+    {%- if MathLev1 | int -%}
       {%- set _= all_obj_assess.append([MathLev1, 'math_standard_1', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if MathLev2 -%}
+    {%- if MathLev2 | int -%}
       {%- set _= all_obj_assess.append([MathLev2, 'math_standard_2', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if MathLev3 -%}
+    {%- if MathLev3 | int -%}
       {%- set _= all_obj_assess.append([MathLev3, 'math_standard_3', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if MathLev4 -%}
+    {%- if MathLev4 | int -%}
       {%- set _= all_obj_assess.append([MathLev4, 'math_standard_4', 'Standards Performance Level']) -%}
     {%- endif -%}
 
-    {%- if MathLev5 -%}
+    {%- if MathLev5 | int -%}
       {%- set _= all_obj_assess.append([MathLev5, 'math_standard_5', 'Standards Performance Level']) -%}
     {%- endif -%}
 
