@@ -13,7 +13,7 @@ This bundle currently works with SAT, PSAT/NMSQT, and PSAT 8/9 files in the form
 </details>
 <details>
 <summary><code>seeds/student_ids.csv</code></summary>
-This is a [crosswalk file](https://en.wikipedia.org/wiki/Schema_crosswalk) for translating the student IDs in the assessment CSVs to student IDs in Ed-Fi (one may be a state ID and the other a district ID, for example). 
+This is a crosswalk file for translating the student IDs in the assessment CSVs to student IDs in Ed-Fi (one may be a state ID and the other a district ID, for example).
 
 This file is **optional**. If one of the existing student IDs within the assessment
 file maps to Ed-Fi's `studentUniqueId`, you can omit the crosswalk file and specify 
