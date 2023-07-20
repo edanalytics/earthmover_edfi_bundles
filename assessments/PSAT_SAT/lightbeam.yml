@@ -1,12 +1,12 @@
 verbose: True
-data_dir: ${data_input_path}
+data_dir: ${DATA_DIR}
 edfi_api:
-  base_url: ${base_url}
+  base_url: ${BASE_URL}
   version: 3
   mode: district_specific
-  year: ${api_year}
-  client_id: ${client_id}
-  client_secret: ${client_secret}
+  year: ${API_YEAR}
+  client_id: ${CLIENT_ID}
+  client_secret: ${CLIENT_SECRET}
 connection:
   pool_size: 8
   timeout: 60
