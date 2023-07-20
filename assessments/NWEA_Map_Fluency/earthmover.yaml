@@ -66,13 +66,19 @@ transformations:
 
   objectiveAssessments:
     operations:
-      - operation: group_by
+      - operation: combine_columns
         source: $sources.objectiveAssessments
+        columns:
+          - reporting_method
+          - level
+        new_column: method_and_level
+        separator: ","
+      - operation: group_by
+        source: $transformations.objectiveAssessments
         group_by_columns:
           - identification_code
-          - reporting_method
         create_columns:
-          levels: agg(level,;)
+          methods_and_levels: agg(method_and_level,;)
 
 destinations:
   studentAssessments:

@@ -9,11 +9,11 @@
   "learningObjectives": [],
   "learningStandards": [],
   "performanceLevels": [
-    {% for level in levels.split(';') %}
+    {% for method_and_level in methods_and_levels.split(';') %}
       
       {
-        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ reporting_method }}",
-        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ level }}",
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ method_and_level.split(',')[0] }}",
+        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ method_and_level.split(',')[1] }}",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       } {% if not loop.last %},{% endif %}
       
