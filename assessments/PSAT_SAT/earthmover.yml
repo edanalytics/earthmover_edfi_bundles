@@ -121,7 +121,7 @@ transformations:
           MATH_C_QUES_CORRECT: student_correct_answers_to_math_calc_test_questions
           MATH_C_QUES_INCORRECT: student_incorrect_answers_to_math_calc_test_questions
           MATH_C_QUES_OMIT: student_omitted_math_calc_test_questions
-          {% if "${TEST_TYPE}" in ("PSAT/NMSQT", "SAT") %}
+          {% if "${TEST_TYPE}" in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
           LATEST_{{test}}_ADV_MATH: passport_to_advanced_math_subscore
           PERCENTILE_NATREP_{{test}}_ADV_MATH: nationally_representative_passport_to_advanced_math_subscore
           PERCENTILE_NATUSER_{{test}}_ADV_MATH: user_percentile_passport_to_advanced_math_subscore
@@ -187,7 +187,7 @@ transformations:
           student_correct_answers_to_math_calc_test_questions: ''
           student_incorrect_answers_to_math_calc_test_questions: ''
           student_omitted_math_calc_test_questions: ''
-          {% if "${TEST_TYPE}" in ("PSAT/NMSQT", "SAT") %}
+          {% if "${TEST_TYPE}" in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
           passport_to_advanced_math_subscore: ''
           nationally_representative_passport_to_advanced_math_subscore: ''
           user_percentile_passport_to_advanced_math_subscore: ''
