@@ -8,7 +8,6 @@ config:
     source_filetype: sas
     source_encoding: latin-1
 
-
 sources:
 
   assessmentReportingMethodDescriptors:
@@ -20,7 +19,7 @@ sources:
     header_rows: 1
 
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objective_standards_mapping.csv
     header_rows: 1
 
   assessments:
@@ -31,7 +30,6 @@ sources:
     file: ${INPUT_FILE}
     source_filetype: ${source_filetype}
     encoding: ${source_encoding}
-
 
 
 transformations:
@@ -79,7 +77,7 @@ transformations:
         source: $transformations.scready_student_assessment
         query: student_unique_id.notnull() & (student_unique_id != "")
         behavior: include
-
+    
   scready_student_assessment_ela:
     operations:
       - operation: modify_columns 
@@ -98,6 +96,7 @@ transformations:
         columns: 
           subject: 'English Language Arts'
           student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
+
 
   scready_student_assessment_math:
     operations:
@@ -133,9 +132,54 @@ transformations:
         source: $transformations.scready_student_assessment_stacked
         columns:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
+          MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
+          MathLev2_name: "{%raw%}{{student_grade | int}}_MathLev2{%endraw%}"
+          MathLev3_name: "{%raw%}{{student_grade | int}}_MathLev3{%endraw%}"
+          MathLev4_name: "{%raw%}{{student_grade | int}}_MathLev4{%endraw%}"
+          MathLev5_name: "{%raw%}{{student_grade | int}}_MathLev5{%endraw%}"
+          ELALev1_name: "{%raw%}{{student_grade | int}}_ELALev1{%endraw%}"
+          ELALev2_name: "{%raw%}{{student_grade | int}}_ELALev2{%endraw%}"
+          ELALev3_name: "{%raw%}{{student_grade | int}}_ELALev3{%endraw%}"
+          ELALev4_name: "{%raw%}{{student_grade | int}}_ELALev4{%endraw%}"
+          ELALev5_name: "{%raw%}{{student_grade | int}}_ELALev5{%endraw%}"
+          ELALev6_name: "{%raw%}{{student_grade | int}}_ELALev6{%endraw%}"
+          ELALev7_name: "{%raw%}{{student_grade | int}}_ELALev7{%endraw%}"
+          ELALev8_name: "{%raw%}{{student_grade | int}}_ELALev8{%endraw%}"
+          ELALev9_name: "{%raw%}{{student_grade | int}}_ELALev9{%endraw%}"
+          ELALev10_name: "{%raw%}{{student_grade |int}}_ELALev10{%endraw%}"
+          ELALev11_name: "{%raw%}{{student_grade |int}}_ELALev11{%endraw%}"
+      - operation: map_values
+        source: $transformations.scready_student_assessment_stacked
+        columns: 
+          - MathLev1_name
+          - MathLev2_name
+          - MathLev3_name
+          - MathLev4_name
+          - MathLev5_name
+          - ELALev1_name
+          - ELALev2_name
+          - ELALev3_name
+          - ELALev4_name
+          - ELALev5_name
+          - ELALev6_name
+          - ELALev7_name
+          - ELALev8_name
+          - ELALev9_name
+          - ELALev10_name
+          - ELALev11_name
+        map_file: ${BUNDLE_DIR}/seeds/objective_standards_mapping.csv
 
-
-
+  objective_assessments:
+    operations: 
+      - operation: distinct_rows
+        source: $sources.objectiveAssessments
+        columns: 
+          - to  
+      - operation: rename_columns 
+        source: $transformations.objective_assessments
+        columns: 
+          to: identification_code 
+      
 destinations:
 
   assessments:
@@ -145,7 +189,7 @@ destinations:
     linearize: True
 
   objectiveAssessments:
-    source: $sources.objectiveAssessments
+    source: $transformations.objective_assessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
