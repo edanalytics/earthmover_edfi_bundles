@@ -4,6 +4,9 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: True
+  parameter_defaults:
+    source_filetype: sas
+    source_encoding: latin-1
 
 
 sources:
@@ -26,8 +29,8 @@ sources:
 
   scready_input:
     file: ${INPUT_FILE}
-    type: sas
-    encoding: latin-1
+    source_filetype: ${source_filetype}
+    encoding: ${source_encoding}
 
 
 
