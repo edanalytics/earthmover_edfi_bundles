@@ -1,6 +1,6 @@
 This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
 * **Title**: PSAT/SAT Results - API 3.X
-* **Description**: This template includes the SAT, PSAT/NMSQT, and PSAT 8/9 assessments. 
+* **Description**: This template includes the SAT, PSAT/NMSQT, PSAT 10, and PSAT 8/9 assessments. 
 * **API version**: 5.3
 * **Submitter name**: Sam LeBlanc
 * **Submitter organization**: Education Analytics
@@ -8,12 +8,12 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 To run this bundle, please add your own source file(s) and column(s):
 <details>
 <summary><code>data/Student_Data_File.csv</code></summary>
-This bundle currently works with SAT, PSAT/NMSQT, and PSAT 8/9 files in the format provided by College Board. It is compatible with both the pencil and paper tests (~2016-2023) and newer digital tests (2024 and beyond).
+This bundle currently works with SAT, PSAT/NMSQT, PSAT 10, and PSAT 8/9 files in the format provided by College Board. It is compatible with both the pencil and paper tests (~2016-2023) and newer digital tests (2024 and beyond).
 
 </details>
 <details>
 <summary><code>seeds/student_ids.csv</code></summary>
-This is a [crosswalk file](https://en.wikipedia.org/wiki/Schema_crosswalk) for translating the student IDs in the assessment CSVs to student IDs in Ed-Fi (one may be a state ID and the other a district ID, for example). 
+This is a crosswalk file for translating the student IDs in the assessment CSVs to student IDs in Ed-Fi (one may be a state ID and the other a district ID, for example).
 
 This file is **optional**. If one of the existing student IDs within the assessment
 file maps to Ed-Fi's `studentUniqueId`, you can omit the crosswalk file and specify 
@@ -32,7 +32,7 @@ Required columns:
 - BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - OUTPUT_DIR: Where output files will be written
 - INPUT_FILE: The assessment file to be mapped
-- TEST_TYPE: Identifies which assessment is being loaded from the current input file. Must be <code>SAT</code>, <code>PSAT/NMSQT</code>, or <code>PSAT 8/9</code>.
+- TEST_TYPE: Identifies which assessment is being loaded from the current input file. Must be <code>SAT</code>, <code>PSAT/NMSQT</code>, <code>PSAT 10</code>, or <code>PSAT 8/9</code>.
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (`secondary_school_student_id`, `district_student_id` or `state_student_id`), or a value mapped from a crosswalk (must be supplied)
 
 ### Optional
@@ -49,7 +49,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
-"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 8/9",
+"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 10 -or- PSAT 8/9",
 "STUDENT_ID_NAME": "secondary_school_student_id"}'
 ```
 
@@ -59,7 +59,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
-"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 8/9",
+"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 10 -or- PSAT 8/9",
 "STUDENT_ID_XWALK": "path/to/student_id_xwalk.csv",
 "STUDENT_ID_JOIN_COLUMN": "Student_StateID",
 "STUDENT_ID_NAME": "to"}'
