@@ -71,6 +71,12 @@ transformations:
 
 destinations:
 
+    assessments:
+        source: $transformations.distinct_districts
+        template: ./templates/assessments.jsont
+        extension: jsonl
+        linearize: True
+
     assessmentAdministrationParticipations:
         source: $transformations.distinct_districts
         template: ./templates/assessmentAdministrationParticipations.jsont
