@@ -2,11 +2,11 @@
   "assessmentAdministrationReference": {
     "administrationIdentifier": "2023 Spring Career Readiness Assessment",
     "assessmentIdentifier": "Statewide Career Readiness Assessment",
-    "assigningEducationOrganizationId": 1,
+    "assigningEducationOrganizationId": "{{ district_id }}",
     "namespace": "uri://winlearning.com"
   },
   "participatingEducationOrganizationReference": {
-    "educationOrganizationId": 1
+    "educationOrganizationId": "{{ district_id }}"
   },
   "administrationContacts": []
 }

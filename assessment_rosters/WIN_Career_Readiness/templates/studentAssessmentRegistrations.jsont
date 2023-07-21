@@ -34,18 +34,18 @@
   "assessmentAdministrationReference": {
     "administrationIdentifier": "2023 Spring Career Readiness Assessment",
     "assessmentIdentifier": "Statewide Career Readiness Assessment",
-    "assigningEducationOrganizationId": 1,
+    "assigningEducationOrganizationId": "{{ district_id }}",
     "namespace": "uri://winlearning.com"
   },
   "reportingEducationOrganizationReference": {
-    "educationOrganizationId": 1
+    "educationOrganizationId": "{{ district_id }}"
   },
   "studentEducationOrganizationAssociationReference": {
-    "educationOrganizationId": 1,
+    "educationOrganizationId": "{{ district_id }}",
     "studentUniqueId": "{{ StudentUniqueId }}"
   },
   "testingEducationOrganizationReference": {
-    "educationOrganizationId": 1
+    "educationOrganizationId": "{{ district_id }}"
   },
   "assessmentCustomizations": [
     {% for col in assessment_customizations %}

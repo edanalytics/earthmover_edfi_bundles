@@ -50,38 +50,41 @@ sources:
 
 transformations:
 
-    platform_type_descriptors:
-        source: $sources.win_source
+    add_metadata:
+
         operations:
             - operation: add_columns
+              source: $sources.win_source
               columns:
                   platform_type: "{%raw%}{% if Mode == 'O' %}Computer-based{% else %}Paper-based{% endif %}{%endraw%}"
+                  district_id: "{%raw%}{{ SchoolId[:4] }}{%endraw%}"
 
-    distinct_ed_orgs:
-        source: $sources.win_source
+    distinct_districts:
+
         operations:
             - operation: distinct_rows
+              source: $transformations.add_metadata
               columns:
-                - _1  # We need a single row overall, so use this fake column of all NULLs.
+                - district_id
 
 
 
 destinations:
 
     assessmentAdministrationParticipations:
-        source: $transformations.distinct_ed_orgs
+        source: $transformations.distinct_districts
         template: ./templates/assessmentAdministrationParticipations.jsont
         extension: jsonl
         linearize: True
 
     assessmentAdministrations:
-        source: $transformations.distinct_ed_orgs
+        source: $transformations.distinct_districts
         template: ./templates/assessmentAdministrations.jsont
         extension: jsonl
         linearize: True
 
     studentAssessmentRegistrations:
-        source: $transformations.platform_type_descriptors
+        source: $transformations.add_metadata
         template: ./templates/studentAssessmentRegistrations.jsont
         extension: jsonl
         linearize: True
