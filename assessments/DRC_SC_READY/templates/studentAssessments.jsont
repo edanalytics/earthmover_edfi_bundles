@@ -35,19 +35,19 @@
     {% set _ = all_scores.append([SchoolID, "SchoolID", "Integer"]) %}
     {% set _ = all_scores.append([student_unique_id, "StudentUniqueId", "Integer"]) %}
 
-    {%- if ELASS -%}
+    {%- if ELASS | int -%}
       {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
     {%- endif -%}
 
-    {%- if MathSS -%}
+    {%- if MathSS | int -%}
       {%- set _= all_scores.append([MathSS, "Overall Scale Score", "Integer"]) -%}
     {%- endif -%}
 
-    {%- if ELAVSS -%}
+    {%- if ELAVSS | int -%}
       {%- set _= all_scores.append([ELAVSS, "Overall Vertical Scale Score", "Integer"]) -%}
     {%- endif -%}
 
-    {%- if MathVSS -%}
+    {%- if MathVSS | int -%}
       {%- set _= all_scores.append([MathVSS, "Overall Vertical Scale Score", "Integer"]) -%}
     {%- endif -%}
 
