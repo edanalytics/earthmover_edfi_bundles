@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "studentAssessmentIdentifier": "{{ UID }}",
   "assessmentReference": {
     "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
@@ -34,6 +34,7 @@
     {% set _ = all_scores.append([subject, "Subject", "Level"]) %}
     {% set _ = all_scores.append([SchoolID, "SchoolID", "Integer"]) %}
     {% set _ = all_scores.append([student_unique_id, "StudentUniqueId", "Integer"]) %}
+    {% set _ = all_scores.append([TestAdmin, "TestAdmin", "Level"]) %}
 
     {%- if ELASS | int -%}
       {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}

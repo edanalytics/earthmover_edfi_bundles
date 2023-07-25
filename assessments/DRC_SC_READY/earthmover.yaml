@@ -64,6 +64,8 @@ transformations:
           - MathLev3
           - MathLev4
           - MathLev5
+          - TestAdmin
+          - UID
       - operation: rename_columns
         source: $transformations.scready_student_assessment
         columns:
@@ -131,7 +133,7 @@ transformations:
       - operation: add_columns
         source: $transformations.scready_student_assessment_stacked
         columns:
-          student_assessment_id: "{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
+#          student_assessment_id: "{%raw%}{{UID}}{%endraw%}"  #"{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
           MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
           MathLev2_name: "{%raw%}{{student_grade | int}}_MathLev2{%endraw%}"
           MathLev3_name: "{%raw%}{{student_grade | int}}_MathLev3{%endraw%}"
