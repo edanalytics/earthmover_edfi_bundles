@@ -7,6 +7,11 @@ config:
   parameter_defaults:
     source_filetype: sas
     source_encoding: latin-1
+    OUTPUT_DIR: ./output
+    STATE_FILE: ./runs.csv
+    INPUT_FILE: /mnt/n/south_carolina/sc_2022/data_warehouse/ad_hoc/edfi_scready_2022_subset_for_testing_only.sas7bdat
+    API_YEAR: "2022"
+    BUNDLE_DIR: .
 
 sources:
 
@@ -77,7 +82,7 @@ transformations:
           administration_date: {{ ${API_YEAR} ~ "-05-15" }} 
       - operation: filter_rows
         source: $transformations.scready_student_assessment
-        query: student_unique_id.notnull() & (student_unique_id != "")
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
     
   scready_student_assessment_ela:
