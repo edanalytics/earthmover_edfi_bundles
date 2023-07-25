@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{ UID }}",
+  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
   "assessmentReference": {
     "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
