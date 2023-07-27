@@ -2,7 +2,7 @@
 
 config:
   log_level: DEBUG
-  output_dir: ./output #${OUTPUT_DIR}
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
@@ -17,7 +17,7 @@ sources:
   {% for input_file in input_files %}
   {{input_file[0]}}:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ./data/103838_SAT_20221121_012530.csv #${INPUT_FILE}
+    file: ${INPUT_FILE}
     header_rows: 1
     type: csv
     # See the accompanying README.md for a list of required columns for this file
@@ -152,11 +152,6 @@ transformations:
         source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: grade_when_assessed
         map_file: ./seeds/grade_mapping.csv
-      # - operation: date_format
-      #   source: $transformations.psat_sat_student_assessment{{input_file[1]}}
-      #   column: assessment_date
-      #   from_format: "%m/%d/%Y"
-      #   to_format: "%Y-%m-%d"
   {% endfor %}
   psat_sat_student_assessment_reading_writing:
     operations:
