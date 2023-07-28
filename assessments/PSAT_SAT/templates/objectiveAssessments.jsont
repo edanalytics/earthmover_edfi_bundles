@@ -18,7 +18,7 @@
       {
         "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-      }
+      },
     {% endif %}
     {% if identificationCode == 'Reading Test' %}
       {
@@ -98,8 +98,9 @@
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }
     {% endif %}
+    
     {% if identificationCode in ('Relevant Words in Context', 'Command of Evidence', 'Expression of Ideas', 'Standard English Conventions', 'Essay', 'Heart of Algebra', 'Passport to Advanced Mathematics', 'Problem Solving and Data Analysis') %}
-    {
+      {
         "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Subscore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
