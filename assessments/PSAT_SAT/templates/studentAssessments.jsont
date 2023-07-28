@@ -108,10 +108,10 @@
 
       {% if test_type == "SAT" %}
       {% set _= obj_assess_ela.append(['Essay', 
-                                  {'Essay Reading Subscore':essay_reading_subscore, 
-                                  'Essay Analysis Subscore':essay_analysis_subscore, 
-                                  'Essay Writing Subscore':essay_writing_subscore}
-                                ]) %}
+                                        {'Essay Reading Subscore':essay_reading_subscore, 
+                                        'Essay Analysis Subscore':essay_analysis_subscore, 
+                                        'Essay Writing Subscore':essay_writing_subscore}
+                                        ]) %}
       {% endif %}
 
       {% set obj_assess_math = [['Math Test', 
@@ -140,10 +140,10 @@
 
       {% if test_type in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
       {% set _= obj_assess_math.append(['Passport to Advanced Mathematics', 
-                                  {'Subscore':passport_to_advanced_math_subscore,
-                                  'Nationally Rep Sample Pctl Subscore':nationally_representative_passport_to_advanced_math_subscore,
-                                  'User Percentile Subscore':user_percentile_passport_to_advanced_math_subscore}
-                                ]) %}
+                                        {'Subscore':passport_to_advanced_math_subscore,
+                                        'Nationally Rep Sample Pctl Subscore':nationally_representative_passport_to_advanced_math_subscore,
+                                        'User Percentile Subscore':user_percentile_passport_to_advanced_math_subscore}
+                                        ]) %}
       {% endif %}
   
       {% set obj_assess = obj_assess_ela %}
