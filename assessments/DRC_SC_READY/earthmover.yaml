@@ -7,6 +7,7 @@ config:
   parameter_defaults:
     source_filetype: sas
     source_encoding: latin-1
+    district_subset_id: ""
     OUTPUT_DIR: ./output
     STATE_FILE: ./runs.csv
     INPUT_FILE: /mnt/n/south_carolina/sc_2022/data_warehouse/ad_hoc/edfi_scready_2022_subset_for_testing_only.sas7bdat
@@ -71,6 +72,10 @@ transformations:
           - MathLev5
           - TestAdmin
           - UID
+      - operation: filter_rows
+        source: $transformations.scready_student_assessment
+        query: SchoolID.str.startswith("${district_subset_id}")
+        behavior: include
       - operation: rename_columns
         source: $transformations.scready_student_assessment
         columns:
