@@ -74,7 +74,7 @@ transformations:
       - operation: map_values
         source: $transformations.cmas_input
         column: PerfLVL
-        map_file: ${BUNDLE_DIR}/seeds/mapping_perfLVL.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
       - operation: modify_columns
         source: $transformations.cmas_input
         columns: 

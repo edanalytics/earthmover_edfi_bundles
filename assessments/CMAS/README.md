@@ -12,7 +12,7 @@ To run this bundle, please add your own source file(s):
 
 </details>
 
-then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files:
+then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files and N for ELA/Math files:
 ```bash
 earthmover run -c ./CMAS/earthmover.yaml -p '{
 "BUNDLE_DIR": "./CMAS/",
