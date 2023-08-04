@@ -42,6 +42,10 @@ transformations:
         source: $sources.cmas_input
         columns:
           Subject: assessmentSubject
+      - operation: rename_columns
+        source: $transformations.cmas_input
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: map_values
         source: $transformations.cmas_input
         column: assessmentSubject

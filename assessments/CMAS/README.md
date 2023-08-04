@@ -12,12 +12,13 @@ To run this bundle, please add your own source file(s):
 
 </details>
 
-then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files and N for ELA/Math files:
+then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files and N for ELA/Math files. <code>STUDENT_ID_NAME</code> will be "StateStudentIdentifier" or "LocalStudentIdentifier" depending on which field is used for <code>student_unique_id</code> in Ed-Fi:
 ```bash
 earthmover run -c ./CMAS/earthmover.yaml -p '{
 "BUNDLE_DIR": "./CMAS/",
 "INPUT_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
 "OUTPUT_DIR": "./CMAS/output",
+"STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCIENCE": "N" }'
 ```
 
