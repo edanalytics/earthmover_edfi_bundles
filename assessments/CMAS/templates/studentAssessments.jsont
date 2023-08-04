@@ -8,7 +8,7 @@
     "schoolYear": {{school_year}}
   },
   "studentReference": {
-    "studentUniqueId": "{{StateStudentIdentifier}}"
+    "studentUniqueId": "{{LocalStudentIdentifier}}"
   },
   
   {% if Unit1TestEndDateTime is not none and Unit1TestEndDateTime | length %}
