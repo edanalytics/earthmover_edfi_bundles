@@ -1,0 +1,74 @@
+{
+  "studentAssessmentIdentifier":"{{opportunity_key}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_indentifier}}",
+    "namespace": "uri://tea.texas.gov/student-assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear":{{api_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "",
+  "administrationLanguageDescriptor": "",
+  "performanceLevels": [
+
+  ],
+  "scoreResults": [
+    {% set scores_present = [] %}
+    {% set all_scores = {'Subject':['Level',subject],
+                         'Total Scale Score':['Integer',scale_score],
+                         'Level II: Satisfactory Academic Performance':['Integer',level_2_satisfactory_academic_performance],
+                         'Level III: Accomplished Academic Performance':['Integer',level_3_accomplished_academic_performance],
+                         'Overall Raw Score':['Integer',raw_score]
+                         } %}
+    {% for score_name, score_result in all_scores.items() %}
+      {% if score_result[1] is not none and score_result[1] | length %}
+        {% set _= scores_present.append([score_name, score_result[0], score_result[1]]) %}
+      {% endif %}
+    {% endfor %}
+
+    {%- for score in scores_present %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "result": "{{score[2]}}"
+    }
+    {%- if not loop.last %},
+    {% else %}{% endif %}{% endfor %}
+  ]
+  ,
+  "studentObjectiveAssessments": [
+    {%- for n in range(1,6) -%}
+    {% set score_name = self._TemplateReference__context.resolve('reporting_category_'~n~'_raw_score')%}
+    {% if (score_name is not none and score_name | length) %}
+    {%- if not loop.first -%},{% endif %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessment_indentifier}}",
+        "identificationCode": "Reporting Category {{n}}",
+        "namespace": "uri://tea.texas.gov/student-assessment"
+      }
+      {% if pl_name is not none and pl_name | length %}
+      ,
+      "performanceLevels": [
+      ]
+      {% endif %}
+      {% if score_name is not none and score_name | length %}
+      ,
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Raw Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{score_name}}"
+        }
+      ]
+      {% endif %}
+    }{% endif %}{%- endfor -%}
+  ]
+  {% if grade_level_code is not none and grade_level_code | length %}
+  ,
+  "whenAssessedGradeLevelDescriptor": "uri://tea.texas.gov/GradeLevelDescriptorr#{{grade_level_code}}"
+  {% endif %}
+}
