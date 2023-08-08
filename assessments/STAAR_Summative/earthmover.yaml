@@ -11,8 +11,25 @@ config:
     STUDENT_ID_JOIN_COLUMN: tx_unique_student_id
     STUDENT_ID_NAME: tx_unique_student_id
     STUDENT_ID_XWALK: ''
-
-
+    # CONFORMED_COLUMNS:
+    #   - tx_unique_student_id
+    #   - assessment_identifier
+    #   - grade_level_code
+    #   - administration_date
+    #   - county_district_campus_number
+    #   - fall_2021_tsds_peims_county_district_campus_number
+    #   - reporting_category_1_raw_score
+    #   - reporting_category_2_raw_score
+    #   - reporting_category_3_raw_score
+    #   - reporting_category_4_raw_score
+    #   # - reporting_category_5_raw_score
+    #   # - reporting_category_6_raw_score
+    #   - raw_score
+    #   - scale_score
+    #   - test_version
+    #   - overall_performance_level
+    #   - test_result_id
+    #   - opportunity_key
 
 
 sources:
@@ -51,10 +68,38 @@ sources:
       - from
       - to
     optional: True
+    
+  course_code_xwalk:
+    file: ${BUNDLE_DIR}/seeds/course_code_xwalk.csv
+    header_rows: 1
 
+{% set conformed_columns = 
+  ['tx_unique_student_id',
+   'assessment_identifier',
+   'grade_level_code',
+   'administration_date',
+   'county_district_campus_number',
+   'fall_2021_tsds_peims_county_district_campus_number',
+   'subject',
+   'course_abbrev',
+   'reporting_category_1_raw_score',
+   'reporting_category_2_raw_score',
+   'reporting_category_3_raw_score',
+   'reporting_category_4_raw_score',
+   'reporting_category_5_raw_score',
+   'reporting_category_6_raw_score',
+   'raw_score',
+   'scale_score',
+   'test_version',
+   'overall_performance_level',
+   'opportunity_key'
+  ] 
+%}
 
 transformations:
-  staar_summative_alt_renamed:
+  # Conform each input type to a standard shape
+  # CONFORMED STAAR SUMMATIVE ALTERNATE
+  conformed_staar_summative_alt:
     operations:
       - operation: rename_columns
         source: $sources.staar_summative_alt_input
@@ -78,46 +123,87 @@ transformations:
           "science_reporting_category_3scores": science_reporting_category_3_raw_score
           "science_reporting_category_4scores": science_reporting_category_4_raw_score
       - operation: add_columns
-        source: $transformations.staar_summative_alt_renamed
+        source: $transformations.conformed_staar_summative_alt
         columns:
-          assessment_indentifier: staar_summative_alt
+          assessment_identifier: staar_summative_alt
           # empty category 4 column for subjects without it. will be removed in studentAssessments.jsont
           # TODO see if there's a better workaround for this
           reading_reporting_category_4_raw_score: ""
 
-  # staar_summative_eoc_renamed:
-  #   operations:
-  #     - operation: rename_columns
-  #       source: $sources.staar_summative_eoc_input
-  #       columns:
+  # CONFORMED STAAR SUMMATIVE EOC
+  conformed_staar_summative_eoc:
+    operations:
+      - operation: join
+        sources:
+          - $sources.staar_summative_eoc_input
+          - $sources.course_code_xwalk
+        left_key: end_of_course_code
+        right_key: end_of_course_code
+        join_type: inner 
+      - operation: add_columns
+        source: $transformations.conformed_staar_summative_eoc
+        columns:
+          assessment_identifier: staar_summative_eoc
+          subject: ""
+          overall_performance_level: >
+            {%raw%}
+              {%- if masters_grade_level == "1" -%}
+                Masters
+              {%- elif meets_grade_level == "1" -%}
+                Meets
+              {%- elif approaches_grade_level_at_thestudents_standard == "1" -%}
+                Approaches
+              {%- else -%}
+                Did Not Meet
+              {%- endif -%}
+            {%endraw%} 
+      - operation: keep_columns
+        source: $transformations.conformed_staar_summative_eoc
+        columns: {{conformed_columns}}
+  
+  # CONFORMED STAAR SUMMATIVE EOC ALT
+  conformed_staar_summative_eoc_alt:
+    operations:
+      - operation: join
+        sources:
+          - $sources.staar_summative_eoc_alt_input
+          - $sources.course_code_xwalk
+        left_key: end_of_course_code
+        right_key: end_of_course_code
+        join_type: inner 
+      - operation: add_columns
+        source: $transformations.conformed_staar_summative_eoc_alt
+        columns:
+          assessment_identifier: staar_summative_eoc_alt
+          subject: ""
+          overall_performance_level: >
+            {%raw%}
+              {%- if level_iii__accomplished_academicperformance == "1" -%}
+                Accomplished
+              {%- elif level_ii__satisfactory_academicperformance == "1" -%}
+                Satisfactory
+              {%- else -%}
+                Developing
+              {%- endif -%}
+            {%endraw%}
+      - operation: keep_columns
+        source: $transformations.conformed_staar_summative_eoc_alt
+        columns: {{conformed_columns}}
 
-
-  {% set subjects = ['reading', 'mathematics', 'social_studies', 'science']%}
+  # STACK WIDE STAAR SUMMATIVE ALT INTO LONG BY SUBJECT
+  {% set subjects = {
+    'reading': 'Reading',
+    'mathematics': 'Mathematics',
+    'social_studies': 'Social Studies',
+    'science': 'Science'
+    }
+  %}
   {% for subject in subjects %}
+  {% set descriptor_subject = subjects[subject] %}
   staar_summative_alt_scores_{{subject}}:
     operations:
-      - operation: keep_columns
-        source: $transformations.staar_summative_alt_renamed
-        columns:
-          - tx_unique_student_id
-          - assessment_indentifier
-          - grade_level_code
-          - administration_date
-          - county_district_campus_number
-          - fall_2021_tsds_peims_county_district_campus_number
-          - {{subject}}_reporting_category_1_raw_score
-          - {{subject}}_reporting_category_2_raw_score
-          - {{subject}}_reporting_category_3_raw_score
-          - {{subject}}_reporting_category_4_raw_score
-          - {{subject}}_raw_score
-          - {{subject}}_scale_score
-          - {{subject}}_test_version
-          - level_ii__satisfactory_academicperformance_in_{{subject}}
-          - level_iii__accomplished_academicperformance_in_{{subject}}
-          - test_result_id_{{subject}}
-          - opportunity_key_{{subject}}
       - operation: rename_columns
-        source: $transformations.staar_summative_alt_scores_{{subject}}
+        source: $transformations.conformed_staar_summative_alt
         columns:
           {{subject}}_reporting_category_1_raw_score: reporting_category_1_raw_score
           {{subject}}_reporting_category_2_raw_score: reporting_category_2_raw_score
@@ -128,16 +214,32 @@ transformations:
           {{subject}}_test_version: test_version
           level_ii__satisfactory_academicperformance_in_{{subject}}: level_2_satisfactory_academic_performance
           level_iii__accomplished_academicperformance_in_{{subject}}: level_3_accomplished_academic_performance
-          test_result_id_{{subject}}: test_result_id
           opportunity_key_{{subject}}: opportunity_key
       - operation: add_columns
         source: $transformations.staar_summative_alt_scores_{{subject}}
         columns:
-          subject: {{subject}}
+          subject: {{descriptor_subject}}
+          course_abbrev: ""
+          reporting_category_5_raw_score: ""
+          reporting_category_6_raw_score: ""
+          overall_performance_level: >
+            {%raw%}
+              {%- if level_3_accomplished_academic_performance == "1" -%}
+                Accomplished
+              {%- elif level_2_satisfactory_academic_performance == "1" -%}
+                Satisfactory
+              {%- else -%}
+                Developing
+              {%- endif -%}
+            {%endraw%}
       - operation: filter_rows
         source: $transformations.staar_summative_alt_scores_{{subject}}
         query: opportunity_key != ''
-        behavior: include
+        behavior: include 
+      - operation: keep_columns
+        source: $transformations.staar_summative_alt_scores_{{subject}}
+        columns: {{conformed_columns}}
+
   
   {% endfor %}  
 
@@ -148,6 +250,8 @@ transformations:
           {% for subject in subjects %}
           - $transformations.staar_summative_alt_scores_{{subject}}
           {% endfor %}
+          - $transformations.conformed_staar_summative_eoc
+          - $transformations.conformed_staar_summative_eoc_alt
 
   studentAssessments:
     operations:
