@@ -5,47 +5,30 @@ config:
   output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
   memory_limit: 1GB
   state_file: ./runs.csv
-  show_graph: False
+  show_graph: True
   parameter_defaults:
     # the following should be included in every template
     STUDENT_ID_JOIN_COLUMN: tx_unique_student_id
     STUDENT_ID_NAME: tx_unique_student_id
     STUDENT_ID_XWALK: ''
-    # CONFORMED_COLUMNS:
-    #   - tx_unique_student_id
-    #   - assessment_identifier
-    #   - grade_level_code
-    #   - administration_date
-    #   - county_district_campus_number
-    #   - fall_2021_tsds_peims_county_district_campus_number
-    #   - reporting_category_1_raw_score
-    #   - reporting_category_2_raw_score
-    #   - reporting_category_3_raw_score
-    #   - reporting_category_4_raw_score
-    #   # - reporting_category_5_raw_score
-    #   # - reporting_category_6_raw_score
-    #   - raw_score
-    #   - scale_score
-    #   - test_version
-    #   - overall_performance_level
-    #   - test_result_id
-    #   - opportunity_key
-
 
 sources:
-  # assessmentReportingMethodDescriptors:
-  #   file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
-  #   header_rows: 1
-  # performanceLevelDescriptors:
-  #   file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-  #   header_rows: 1
-  # objectiveAssessments:
-  #   file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
-  #   header_rows: 1
-  # assessments:
-  #   file: ${BUNDLE_DIR}/seeds/assessments.csv
-  #   header_rows: 1
 
+  # SEEDS
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  # INPUT STU ASSESSMENT FILES
   staar_summative_input:
     file: ${STAAR_SUMMATIVE_INPUT_FILE}
     header_rows: 1
@@ -59,6 +42,7 @@ sources:
     file: ${STAAR_SUMMATIVE_EOC_ALT_INPUT_FILE}
     header_rows: 1
 
+  # OTHER XWALKS
   student_id_xwalk:
     # This file only needs to be supplied if the source assessment file does not
     # contain the studentUniqueId used by Ed-Fi
@@ -68,7 +52,6 @@ sources:
       - from
       - to
     optional: True
-    
   course_code_xwalk:
     file: ${BUNDLE_DIR}/seeds/course_code_xwalk.csv
     header_rows: 1
@@ -79,7 +62,6 @@ sources:
    'grade_level_code',
    'administration_date',
    'county_district_campus_number',
-   'fall_2021_tsds_peims_county_district_campus_number',
    'subject',
    'course_abbrev',
    'reporting_category_1_raw_score',
@@ -98,15 +80,84 @@ sources:
 
 transformations:
   # Conform each input type to a standard shape
-  # CONFORMED STAAR SUMMATIVE ALTERNATE
+
+  # CONFORMED EOC
+  conformed_staar_summative_eoc:
+    operations:
+      # JOIN COURSE INFO
+      - operation: join
+        sources:
+          - $sources.staar_summative_eoc_input
+          - $sources.course_code_xwalk
+        left_key: end_of_course_code
+        right_key: end_of_course_code
+        join_type: inner 
+      # ADD assess_id & overall_pl
+      - operation: add_columns
+        source: $transformations.conformed_staar_summative_eoc
+        columns:
+          assessment_identifier: staar_summative_eoc
+          subject: {{course_academic_subject}}
+          overall_performance_level: >
+            {%raw%}
+              {%- if masters_grade_level == "1" -%}
+                Masters
+              {%- elif meets_grade_level == "1" -%}
+                Meets
+              {%- elif approaches_grade_level_at_thestudents_standard == "1" -%}
+                Approaches
+              {%- else -%}
+                Did Not Meet
+              {%- endif -%}
+            {%endraw%} 
+      # KEEP conformed columns
+      - operation: keep_columns
+        source: $transformations.conformed_staar_summative_eoc
+        columns: {{conformed_columns}}
+  
+  # CONFORMED EOC ALT
+  conformed_staar_summative_eoc_alt:
+    operations:
+      # JOIN COURSE INFO
+      - operation: join
+        sources:
+          - $sources.staar_summative_eoc_alt_input
+          - $sources.course_code_xwalk
+        left_key: end_of_course_code
+        right_key: end_of_course_code
+        join_type: inner 
+      # ADD assess_id & overall_pl
+      - operation: add_columns
+        source: $transformations.conformed_staar_summative_eoc_alt
+        columns:
+          assessment_identifier: staar_summative_eoc_alt
+          subject: {{course_academic_subject}}
+          # use component PL columns to create overall PL
+          overall_performance_level: >
+            {%raw%}
+              {%- if level_iii__accomplished_academicperformance == "1" -%}
+                Accomplished
+              {%- elif level_ii__satisfactory_academicperformance == "1" -%}
+                Satisfactory
+              {%- else -%}
+                Developing
+              {%- endif -%}
+            {%endraw%}
+      # KEEP conformed columns
+      - operation: keep_columns
+        source: $transformations.conformed_staar_summative_eoc_alt
+        columns: {{conformed_columns}}
+
+  # CONFORMED 3-8 ALT
   conformed_staar_summative_alt:
     operations:
+      # RENAME columns to easily convert from wide to long
       - operation: rename_columns
         source: $sources.staar_summative_alt_input
         columns:
-          # _5 is added by our python script bc there are duplicate colnames, 5 represents colindex in the file. later versions of this colname are for prev years
+          # '_5' comes from the scrape from PDF, bc there are duplicate colnames. 5 represents colindex in the file. county_district_campus_number_xyz in this file are the campus from previous year scores
           "county_district_campus_number_5": county_district_campus_number
-          # standardize score names so the loop below works
+          # standardize score names so we can easily convert from wide to long
           "reading_reporting_category_1scores": reading_reporting_category_1_raw_score
           "reading_reporting_category_2scores": reading_reporting_category_2_raw_score
           "reading_reporting_category_3scores": reading_reporting_category_3_raw_score
@@ -122,75 +173,15 @@ transformations:
           "science_reporting_category_2scores": science_reporting_category_2_raw_score
           "science_reporting_category_3scores": science_reporting_category_3_raw_score
           "science_reporting_category_4scores": science_reporting_category_4_raw_score
+      # ADD assess_id and missing cols
       - operation: add_columns
         source: $transformations.conformed_staar_summative_alt
         columns:
           assessment_identifier: staar_summative_alt
-          # empty category 4 column for subjects without it. will be removed in studentAssessments.jsont
-          # TODO see if there's a better workaround for this
+          # reading does not have a score 4. create one, so we can easily convert from wide to long
           reading_reporting_category_4_raw_score: ""
 
-  # CONFORMED STAAR SUMMATIVE EOC
-  conformed_staar_summative_eoc:
-    operations:
-      - operation: join
-        sources:
-          - $sources.staar_summative_eoc_input
-          - $sources.course_code_xwalk
-        left_key: end_of_course_code
-        right_key: end_of_course_code
-        join_type: inner 
-      - operation: add_columns
-        source: $transformations.conformed_staar_summative_eoc
-        columns:
-          assessment_identifier: staar_summative_eoc
-          subject: ""
-          overall_performance_level: >
-            {%raw%}
-              {%- if masters_grade_level == "1" -%}
-                Masters
-              {%- elif meets_grade_level == "1" -%}
-                Meets
-              {%- elif approaches_grade_level_at_thestudents_standard == "1" -%}
-                Approaches
-              {%- else -%}
-                Did Not Meet
-              {%- endif -%}
-            {%endraw%} 
-      - operation: keep_columns
-        source: $transformations.conformed_staar_summative_eoc
-        columns: {{conformed_columns}}
-  
-  # CONFORMED STAAR SUMMATIVE EOC ALT
-  conformed_staar_summative_eoc_alt:
-    operations:
-      - operation: join
-        sources:
-          - $sources.staar_summative_eoc_alt_input
-          - $sources.course_code_xwalk
-        left_key: end_of_course_code
-        right_key: end_of_course_code
-        join_type: inner 
-      - operation: add_columns
-        source: $transformations.conformed_staar_summative_eoc_alt
-        columns:
-          assessment_identifier: staar_summative_eoc_alt
-          subject: ""
-          overall_performance_level: >
-            {%raw%}
-              {%- if level_iii__accomplished_academicperformance == "1" -%}
-                Accomplished
-              {%- elif level_ii__satisfactory_academicperformance == "1" -%}
-                Satisfactory
-              {%- else -%}
-                Developing
-              {%- endif -%}
-            {%endraw%}
-      - operation: keep_columns
-        source: $transformations.conformed_staar_summative_eoc_alt
-        columns: {{conformed_columns}}
-
-  # STACK WIDE STAAR SUMMATIVE ALT INTO LONG BY SUBJECT
+  # 3-8 ALT -- CONVERT FROM WIDE TO LONG
   {% set subjects = {
     'reading': 'Reading',
     'mathematics': 'Mathematics',
@@ -202,6 +193,7 @@ transformations:
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_alt_scores_{{subject}}:
     operations:
+      # RENAME subject-specific columns to generic colnames so we can stack the data long
       - operation: rename_columns
         source: $transformations.conformed_staar_summative_alt
         columns:
@@ -215,13 +207,16 @@ transformations:
           level_ii__satisfactory_academicperformance_in_{{subject}}: level_2_satisfactory_academic_performance
           level_iii__accomplished_academicperformance_in_{{subject}}: level_3_accomplished_academic_performance
           opportunity_key_{{subject}}: opportunity_key
+      # ADD subject, missing cols, overall_pl
       - operation: add_columns
         source: $transformations.staar_summative_alt_scores_{{subject}}
         columns:
           subject: {{descriptor_subject}}
+          # for 3-8 tests, there is no course, nor category5/6 subscores
           course_abbrev: ""
           reporting_category_5_raw_score: ""
           reporting_category_6_raw_score: ""
+          # use component PL columns to create overall PL
           overall_performance_level: >
             {%raw%}
               {%- if level_3_accomplished_academic_performance == "1" -%}
@@ -232,10 +227,12 @@ transformations:
                 Developing
               {%- endif -%}
             {%endraw%}
+      # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         source: $transformations.staar_summative_alt_scores_{{subject}}
         query: opportunity_key != ''
         behavior: include 
+      # KEEP conformed columns
       - operation: keep_columns
         source: $transformations.staar_summative_alt_scores_{{subject}}
         columns: {{conformed_columns}}
@@ -243,6 +240,7 @@ transformations:
   
   {% endfor %}  
 
+  # STACK ALL CONFORMED SETS TOGETHER
   stacked_scores:
     operations:
       - operation: union
@@ -253,6 +251,7 @@ transformations:
           - $transformations.conformed_staar_summative_eoc
           - $transformations.conformed_staar_summative_eoc_alt
 
+  # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
     operations:
       - operation: join
@@ -266,37 +265,36 @@ transformations:
         source: $transformations.studentAssessments
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-      # reformat test date from m/d/Y to Y-m-d
-      # - operation: date_format
-      #   source: $transformations.studentAssessments
-      #   column: administration_date
-      #   from_format: "%m%Y"
-      #   to_format: "%Y-%m-%d"
       # add api_year as a passed-in env var
       - operation: add_columns
         source: $transformations.studentAssessments
         columns:
-          api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable
+          api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
 
-  # TODO: remove this if not necessary and create additional transformations for other bootstrap if necessary
 
-  ## sometimes it is necessary/helpful to create the objective assessment/other bootstrap data from the
-  ## student assessment data itself, so the source for this could be a pre-created bootstrap file,
-  ## the original student assessment file, or an above transformation
-  # objective_assessments:
-  #   operations:
-  #     - operation: distinct_rows # TODO: this is just an example, add operations as necessary
-  #       source: $transformations. # TODO: this depends, read comment above
-
-# TODO: add/remove as needed
 destinations:
-  # objectiveAssessments:
-  #   source: $transformations.objective_assessments
-  #   template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
-  #   extension: jsonl
-  #   linearize: True
   studentAssessments:
     source: $transformations.studentAssessments
     template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
