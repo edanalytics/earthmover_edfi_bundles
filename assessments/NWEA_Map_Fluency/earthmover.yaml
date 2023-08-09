@@ -73,6 +73,8 @@ transformations:
         create_columns:
           reporting_methods: agg(reporting_method,,)
           levels: agg(level,,)
+          score_reporting_methods: agg(score_reporting_method,,)
+          result_data_types: agg(result_data_type,,)
 
 destinations:
   studentAssessments:
@@ -97,3 +99,4 @@ destinations:
     source: $transformations.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
+    
