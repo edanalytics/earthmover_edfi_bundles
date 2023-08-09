@@ -302,7 +302,7 @@
       {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "NWEA-Map",
-          "identificationCode": "{{ obj_assess[0] }}",
+          "identificationCode": "{{ obj_assess[0][:60] }}",
           "namespace": "uri://www.nwea.org/map/Assessment"
         },
         "performanceLevels": [
