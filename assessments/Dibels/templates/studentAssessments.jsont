@@ -8,7 +8,7 @@
     "schoolYear": "{{school_year}}"
   },
   "studentReference": {
-    "studentUniqueId": "{{primary_id_student_id_state_id}}"
+    "studentUniqueId": "{{primary_id_student_id}}"
   },
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
@@ -45,24 +45,28 @@
     }
   ],
   "studentObjectiveAssessments": [
-    {% set obj_assess = [['Dibels-Next-FSF', ['Assessment Measure Level', assessment_measure_fsf_levels], ['Assessment Measure Score', assessment_measure_fsf_score]],
-                         ['Dibels-Next-LNF', ['Assessment Measure Level', assessment_measure_lnf_levels], ['Assessment Measure Score', assessment_measure_lnf_score]],
-                         ['Dibels-Next-PSF', ['Assessment Measure Level', assessment_measure_psf_levels], ['Assessment Measure Score', assessment_measure_psf_score]],
-                         ['Dibels-Next-NWF-CLS', ['Assessment Measure Level', assessment_measure_nwf_cls_levels], ['Assessment Measure Score', assessment_measure_nwf_cls_score]],
-                         ['Dibels-Next-NWF-WWR', ['Assessment Measure Level', assessment_measure_nwf_wwr_levels], ['Assessment Measure Score', assessment_measure_nwf_wwr_score]],
-                         ['Dibels-Next-DORF-Fluency', ['Assessment Measure Level', assessment_measure_dorf_fluency_levels], ['Assessment Measure Score', assessment_measure_dorf_fluency_score]],
-                         ['Dibels-Next-DORF-Accuracy', ['Assessment Measure Level', assessment_measure_dorf_accuracy_levels], ['Assessment Measure Score', assessment_measure_dorf_accuracy_score]],
-                         ['Dibels-Next-DORF-Retell', ['Assessment Measure Level', assessment_measure_dorf_retell_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_score]],
-                         ['Dibels-Next-DORF-Retell-Quality', ['Assessment Measure Level', assessment_measure_dorf_retell_quality_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_quality_score]],
-                         ['Dibels-Next-DORF-Errors', [], ['Assessment Measure Score', assessment_measure_dorf_errors_score]],
-                         ['Dibels-Next-Daze', ['Assessment Measure Level', assessment_measure_daze_levels], ['Assessment Measure Score', assessment_measure_daze_score]],
-                         ['Dibels-Next-Vocabulary', ['Assessment Measure Level', assessment_measure_vocabulary_levels], ['Assessment Measure Score', assessment_measure_vocabulary_score]],
-                         ['Dibels-Next-Spelling', ['Assessment Measure Level', assessment_measure_spelling_levels], ['Assessment Measure Score', assessment_measure_spelling_score]],
-                         ['Dibels-Next-RAN', ['Assessment Measure Level', assessment_measure_ran_levels], ['Assessment Measure Score', assessment_measure_ran_score]],
-                         ['Dibels-Next-Risk-Indicator', ['Assessment Measure Level', assessment_measure_risk_indicator_levels]]] %}
-
+    {% set possible_obj_assess = [['Dibels-Next-FSF', ['Assessment Measure Level', assessment_measure_fsf_levels], ['Assessment Measure Score', assessment_measure_fsf_score]],
+                                  ['Dibels-Next-LNF', ['Assessment Measure Level', assessment_measure_lnf_levels], ['Assessment Measure Score', assessment_measure_lnf_score]],
+                                  ['Dibels-Next-PSF', ['Assessment Measure Level', assessment_measure_psf_levels], ['Assessment Measure Score', assessment_measure_psf_score]],
+                                  ['Dibels-Next-NWF-CLS', ['Assessment Measure Level', assessment_measure_nwf_cls_levels], ['Assessment Measure Score', assessment_measure_nwf_cls_score]],
+                                  ['Dibels-Next-NWF-WWR', ['Assessment Measure Level', assessment_measure_nwf_wwr_levels], ['Assessment Measure Score', assessment_measure_nwf_wwr_score]],
+                                  ['Dibels-Next-DORF-Fluency', ['Assessment Measure Level', assessment_measure_dorf_fluency_levels], ['Assessment Measure Score', assessment_measure_dorf_fluency_score]],
+                                  ['Dibels-Next-DORF-Accuracy', ['Assessment Measure Level', assessment_measure_dorf_accuracy_levels], ['Assessment Measure Score', assessment_measure_dorf_accuracy_score]],
+                                  ['Dibels-Next-DORF-Retell', ['Assessment Measure Level', assessment_measure_dorf_retell_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_score]],
+                                  ['Dibels-Next-DORF-Retell-Quality', ['Assessment Measure Level', assessment_measure_dorf_retell_quality_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_quality_score]],
+                                  ['Dibels-Next-DORF-Errors', [], ['Assessment Measure Score', assessment_measure_dorf_errors_score]],
+                                  ['Dibels-Next-Daze', ['Assessment Measure Level', assessment_measure_daze_levels], ['Assessment Measure Score', assessment_measure_daze_score]],
+                                  ['Dibels-Next-Vocabulary', ['Assessment Measure Level', assessment_measure_vocabulary_levels], ['Assessment Measure Score', assessment_measure_vocabulary_score]],
+                                  ['Dibels-Next-Spelling', ['Assessment Measure Level', assessment_measure_spelling_levels], ['Assessment Measure Score', assessment_measure_spelling_score]],
+                                  ['Dibels-Next-RAN', ['Assessment Measure Level', assessment_measure_ran_levels], ['Assessment Measure Score', assessment_measure_ran_score]],
+                                  ['Dibels-Next-Risk-Indicator', ['Assessment Measure Level', assessment_measure_risk_indicator_levels]]] %}
+    {% set all_obj_assessment = [] %}
     {%- for obj in obj_assess -%}
     {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
+    {% set _= all_obj_assessment.append(obj) %}
+    {% endif %}
+    {% endfor %}
+    {%- for obj in all_obj_assessment -%}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "Dibels-Next",
@@ -90,7 +94,7 @@
       ]
       {% endif %}
     }{%- if not loop.last -%},
-    {%- else %}{% endif %} {% endif %}{%- endfor -%}
+    {%- else %}{% endif %} {%- endfor -%}
   ],
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
 }
