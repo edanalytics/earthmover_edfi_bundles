@@ -5,8 +5,8 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_JOIN_COLUMN: primary_id_student_id_state_id
-    STUDENT_ID_NAME: primary_id_student_id_state_id
+    STUDENT_ID_JOIN_COLUMN: primary_id_student_id
+    STUDENT_ID_NAME: primary_id_student_id
     STUDENT_ID_XWALK: ''
   
 definitions:
@@ -98,7 +98,7 @@ transformations:
         Client Date: client_date
         Sync Date: sync_date
         Student Primary ID: student_primary_id
-        Primary ID - Student ID (State ID): primary_id_student_id_state_id
+        ${STUDENT_ID}: primary_id_student_id
         Administration Type: administration_type
         Assessment Measure-Vocabulary-Levels: assessment_measure_vocabulary_levels
         Assessment Measure-Vocabulary-Score: assessment_measure_vocabulary_score
@@ -110,7 +110,7 @@ transformations:
     - operation: add_columns
       source: $transformations.dibels_benchmark_student_assessment
       columns:
-        student_assessment_id: "{%raw%}{{primary_id_student_id_state_id}}_{{client_date}}{%endraw%}"
+        student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
         assessment_id: "Dibels-Next"
     - operation: modify_columns
       source: $transformations.dibels_benchmark_student_assessment
@@ -128,7 +128,7 @@ transformations:
 
 destinations:
   objectiveAssessments:
-    source: $sources.objective_assessments
+    source: $sources.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
