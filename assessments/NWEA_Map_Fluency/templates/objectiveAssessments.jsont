@@ -16,11 +16,18 @@
             {% set _ = existing_reporting_methods.append(x) %}
         {% endif %}
     {% endfor %}
+    {% set levels = levels.split(',') %}
+    {% set existing_levels = [] %}
+    {% for x in levels %}
+        {% if x != '' %}
+            {% set _ = existing_levels.append(x) %}
+        {% endif %}
+    {% endfor %}
     {% for i in range(existing_reporting_methods | length) %}
       
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ existing_reporting_methods[i] }}",
-        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ levels.split(',')[i] }}",
+        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ levels[i] }}",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       } {% if not loop.last %},{% endif %}
       
