@@ -61,7 +61,7 @@
                                   ['Dibels-Next-RAN', ['Assessment Measure Level', assessment_measure_ran_levels], ['Assessment Measure Score', assessment_measure_ran_score]],
                                   ['Dibels-Next-Risk-Indicator', ['Assessment Measure Level', assessment_measure_risk_indicator_levels]]] %}
     {% set all_obj_assessment = [] %}
-    {%- for obj in obj_assess -%}
+    {%- for obj in possible_obj_assess -%}
     {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
     {% set _= all_obj_assessment.append(obj) %}
     {% endif %}
