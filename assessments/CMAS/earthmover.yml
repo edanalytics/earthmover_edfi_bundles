@@ -30,10 +30,11 @@ transformations:
   cmas_input:
     operations:
       # TO DO: This is not ideal but I haven't figured out how to find the average of a date column to use for tests with no dates
+      # Current solution is to use April 1st of the assessment year for assessments with no date (invalid scores)
       - operation: add_columns
         source: $sources.cmas_input
         columns:
-          defaultTestStartDateTime: "2023-04-01 00:00:00"
+          defaultTestStartDateTime: {%raw%}"{{AssessmentYear[-4:]}}-04-01 00:00:00"{%endraw%}
       - operation: add_columns 
         source: $sources.cmas_input
         columns:
