@@ -42,7 +42,7 @@
         {% set _ = all_obj_assess.append(["Oral Reading Rate", OralReadingRatePerf, None, None, (OralReadingWCPM,"WCPM")]) %}
       {% endif %}
       {% if OralReadingAccuracyPerf is not none and OralReadingAccuracyPerf | length %}
-        {% set _ = all_obj_assess.append(["Oral Reading Accuracy", OralReadingAccuracyPerf, None, None, (OralReadingAccuracyScore,"Score")]) %}
+        {% set _ = all_obj_assess.append(["Oral Reading Accuracy", OralReadingAccuracyPerf, None, None, (OralReadingAccuracyScore,"Oral Reading Accuracy Score")]) %}
       {% endif %}
       {% if LiteralComprehensionPerf is not none and LiteralComprehensionPerf | length %}
         {% set _ = all_obj_assess.append(["Literal Comprehension", LiteralComprehensionPerf]) %}
@@ -94,28 +94,28 @@
             {
                 "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Score",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": 999
+                "result": "999"
             }
           {% else %}
             {% if obj_assess[4] is not none and obj_assess[4] | length %}
             {
                 "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[4][1] }}",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{% if obj_assess[0] == "Oral Reading Accuracy" %}Decimal{% else %}Integer{% endif %}",
-                "result": {{ obj_assess[4][0] }}
+                "result": "{{ obj_assess[4][0] }}"
             }
             {% endif %}
             {% if obj_assess[5] is not none and obj_assess[5] | length %}
             ,{
                 "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[5][1] }}",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": {{ obj_assess[5][0] }}
+                "result": "{{ obj_assess[5][0] }}"
             }
             {% endif %}
             {% if obj_assess[6] is not none and obj_assess[6] | length %}
             ,{
                 "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[6][1] }}",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": {{ obj_assess[6][0] }}
+                "result": "{{ obj_assess[6][0] }}"
             }
             {% endif %}
           {% endif %}
