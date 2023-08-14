@@ -19,6 +19,7 @@ earthmover run -c ./CMAS/earthmover.yaml -p '{
 "INPUT_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
 "OUTPUT_DIR": "./CMAS/output",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
+"SCHOOL_YEAR" : "2023",
 "SCIENCE": "N" }'
 ```
 
