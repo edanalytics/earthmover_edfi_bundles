@@ -20,7 +20,8 @@ earthmover run -c ./CMAS/earthmover.yaml -p '{
 "OUTPUT_DIR": "./CMAS/output",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",
-"SCIENCE": "N" }'
+"SCIENCE": "N",
+"ALTERNATE_ASSESSMENT": "N" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

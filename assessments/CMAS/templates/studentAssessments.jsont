@@ -1,7 +1,11 @@
 {
   "studentAssessmentIdentifier": "{{StudentTestUUID}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+    {% if alternate_assessment == 'N' %}
+      "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+    {% else %}
+      "assessmentIdentifier": "CoAlt-SCI",
+    {% endif %}
     "namespace": "uri://www.cde.state.co.us/assessment/cmas"
   },
   "schoolYearTypeReference": {
@@ -49,9 +53,20 @@
       {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
     {% endif %} 
     
-    {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
-      {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
-    {% endif %}    
+    {% if alternate_assessment == 'N' %}
+      {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+      {% endif %} 
+    
+    {% else %}  
+      {% if SS is not none and SS.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+      {% endif %}
+
+      {% if CSEM is not none and CSEM.strip() | length and TestAttemptednessFlag == 'Y' %}
+        {% set _ = scores.append([CSEM, 'CSEM', 'Decimal']) %}
+      {% endif %}
+    {% endif %} 
 
     {% if assessmentSubject in ('ELA', 'MAT', 'SLA') and TestAttemptednessFlag == 'Y' %}
       {% if SS is not none and SS.strip() | length and TestAttemptednessFlag == 'Y' %}
@@ -163,7 +178,7 @@
         {% endif %}
       {% endif %}
 
-      {% if assessmentSubject == 'SCI' and school_year > 2022 %}
+      {% if assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment =='Y') %}
         {% if PerfLVL is not none and PerfLVL | length %}
           {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
         {% endif %}
@@ -378,7 +393,7 @@
           {% endif %}       
         {% endif %}
 
-        {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and school_year > 2022 %}
+        {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and school_year > 2022 and alternate_assessment = 'N' %}
           {% if Std1SSCO is not none and Std1SSCO | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
           {% endif %}
@@ -400,10 +415,36 @@
           {% endif %}          
         {% endif %}
 
+        {% if alternate_assessment = 'Y' %}
+          {% if Std1PtsPoss is not none and Std1PtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, Std1PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Std3PtsPoss is not none and Std3PtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Earth and Space Science', 'N/A', Std3PtsPoss, Std3PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if SEPPtsPoss is not none and SEPPtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Science and Engineering Practices', 'N/A', SEPPtsPoss, SEPPctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+          {% if TestCode == 'SC05S' %}
+            {% if Std2PtsPoss is not none and Std2PtsPoss | length %}
+              {% set _ = all_obj_assess.append(['Physical/Life Science', 'N/A', Std2PtsPoss, Std2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% else %}
+            {% if Std2PtsPoss is not none and Std2PtsPoss | length %}
+              {% set _ = all_obj_assess.append(['Life Science', 'N/A', Std2PtsPoss, Std2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %} 
+        {% endif %}
+
         {% for obj_assess in all_obj_assess %}
         {
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+            {% if alternate_assessment == 'N' %}
+              "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+            {% else %}
+              "assessmentIdentifier": "CoAlt-SCI",
+            {% endif %}
             "identificationCode": "{{ obj_assess[0] }}",
             "namespace": "uri://www.cde.state.co.us/assessment/cmas"
           },
@@ -414,6 +455,8 @@
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
                 "result": "{{ obj_assess[1] }}"
               },
+            {% endif %}
+            {% if obj_assess[2] != 'N/A' %}
               {
                 "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Points Possible",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
@@ -437,11 +480,6 @@
                 "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#CSEM",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
                 "result": "{{ obj_assess[5] }}"
-              },
-              {
-                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Points Possible",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": "{{ obj_assess[2] }}"
               }
             {% endif %}            
           ]

@@ -39,6 +39,7 @@ transformations:
         source: $transformations.cmas_input
         columns:
           school_year: ${SCHOOL_YEAR}
+          alternate_assessment: ${ALTERNATE_ASSESSMENT}
       - operation: duplicate_columns
         source: $transformations.cmas_input
         columns:
@@ -106,7 +107,7 @@ transformations:
           Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
           Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
       {% endif %}
-      {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 %}
+      {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
       - operation: map_values
         source: $transformations.cmas_input
         column: PerfLVL
@@ -132,6 +133,25 @@ transformations:
           Std3CSEM: "{%raw%}{{Std3CSEM | int}}{%endraw%}"
           SEPSSCO: "{%raw%}{{SEPSSCO | int}}{%endraw%}"
           SEPCSEM: "{%raw%}{{SEPCSEM | int}}{%endraw%}"          
+      {% endif %}
+      {% if "${ALTERNATE_ASSESSMENT}" == "Y" %}
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: PerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_coalt.csv
+      - operation: modify_columns
+        source: $transformations.cmas_input
+        columns: 
+          SSCSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
+          PercentileRank: "{%raw%}{{PtsPoss | int}}{%endraw%}"
+          Std1SSCO: "{%raw%}{{Std1PtsPoss | int}}{%endraw%}"
+          Std1CSEM: "{%raw%}{{Std1PctEarned | int}}{%endraw%}"
+          Std2SSCO: "{%raw%}{{Std2PtsPoss | int}}{%endraw%}"
+          Std2CSEM: "{%raw%}{{Std2PctEarned | int}}{%endraw%}"
+          Std3SSCO: "{%raw%}{{Std3PtsPoss| int}}{%endraw%}"
+          Std3CSEM: "{%raw%}{{Std3PctEarned | int}}{%endraw%}"
+          SEPSSCO: "{%raw%}{{SEPPtsPoss | int}}{%endraw%}"
+          SEPCSEM: "{%raw%}{{SEPPctEarned | int}}{%endraw%}"          
       {% endif %}
 
 destinations:
