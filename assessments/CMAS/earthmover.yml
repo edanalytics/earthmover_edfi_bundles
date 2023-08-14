@@ -142,16 +142,15 @@ transformations:
       - operation: modify_columns
         source: $transformations.cmas_input
         columns: 
-          SSCSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
-          PercentileRank: "{%raw%}{{PtsPoss | int}}{%endraw%}"
-          Std1SSCO: "{%raw%}{{Std1PtsPoss | int}}{%endraw%}"
-          Std1CSEM: "{%raw%}{{Std1PctEarned | int}}{%endraw%}"
-          Std2SSCO: "{%raw%}{{Std2PtsPoss | int}}{%endraw%}"
-          Std2CSEM: "{%raw%}{{Std2PctEarned | int}}{%endraw%}"
-          Std3SSCO: "{%raw%}{{Std3PtsPoss| int}}{%endraw%}"
-          Std3CSEM: "{%raw%}{{Std3PctEarned | int}}{%endraw%}"
-          SEPSSCO: "{%raw%}{{SEPPtsPoss | int}}{%endraw%}"
-          SEPCSEM: "{%raw%}{{SEPPctEarned | int}}{%endraw%}"          
+          CSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
+          Std1PtsPoss: "{%raw%}{{Std1PtsPoss | int}}{%endraw%}"
+          Std1PctEarned: "{%raw%}{{Std1PctEarned | int}}{%endraw%}"
+          Std2PtsPoss: "{%raw%}{{Std2PtsPoss | int}}{%endraw%}"
+          Std2PctEarned: "{%raw%}{{Std2PctEarned | int}}{%endraw%}"
+          Std3PtsPoss: "{%raw%}{{Std3PtsPoss| int}}{%endraw%}"
+          Std3PctEarned: "{%raw%}{{Std3PctEarned | int}}{%endraw%}"
+          SEPPtsPoss: "{%raw%}{{SEPPtsPoss | int}}{%endraw%}"
+          SEPPctEarned: "{%raw%}{{SEPPctEarned | int}}{%endraw%}"          
       {% endif %}
 
 destinations:
