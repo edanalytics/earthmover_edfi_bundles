@@ -106,6 +106,33 @@ transformations:
           Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
           Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
       {% endif %}
+      {% if "${SCIENCE}" == "Y" and school_year > 2022 %}
+      - operation: map_values
+        source: $transformations.cmas_input
+        column: PerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
+      - operation: map_values
+        source: $transformations.cmas_input
+        columns: 
+          - Std1PerfLVL
+          - Std2PerfLVL
+          - Std3PerfLVL
+          - SEPPerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
+      - operation: modify_columns
+        source: $transformations.cmas_input
+        columns: 
+          SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
+          PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          Std1SSCO: "{%raw%}{{Std1SSCO | int}}{%endraw%}"
+          Std1CSEM: "{%raw%}{{Std1CSEM | int}}{%endraw%}"
+          Std2SSCO: "{%raw%}{{Std2SSCO | int}}{%endraw%}"
+          Std2CSEM: "{%raw%}{{Std2CSEM | int}}{%endraw%}"
+          Std3SSCO: "{%raw%}{{Std3SSCO | int}}{%endraw%}"
+          Std3CSEM: "{%raw%}{{Std3CSEM | int}}{%endraw%}"
+          SEPSSCO: "{%raw%}{{SEPSSCO | int}}{%endraw%}"
+          SEPCSEM: "{%raw%}{{SEPCSEM | int}}{%endraw%}"          
+      {% endif %}
 
 destinations:
   assessments:

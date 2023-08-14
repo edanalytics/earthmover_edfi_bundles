@@ -17,6 +17,31 @@
       {
         "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Percent Earned",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#CSEM",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Lower than Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Higher than Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       }
     ]
   }
