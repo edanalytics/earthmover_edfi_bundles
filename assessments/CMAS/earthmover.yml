@@ -34,13 +34,13 @@ transformations:
       - operation: add_columns
         source: $sources.cmas_input
         columns:
-          defaultTestStartDateTime: {%raw%}"{{AssessmentYear[-4:]}}-04-01 00:00:00"{%endraw%}
+          defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
       - operation: add_columns 
-        source: $sources.cmas_input
+        source: $transformations.cmas_input
         columns:
-          school_year: {%raw%}"{{AssessmentYear[-4:]}}"{%endraw%}
+          school_year: ${SCHOOL_YEAR}
       - operation: duplicate_columns
-        source: $sources.cmas_input
+        source: $transformations.cmas_input
         columns:
           Subject: assessmentSubject
       - operation: rename_columns
@@ -106,7 +106,7 @@ transformations:
           Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
           Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
       {% endif %}
-      {% if "${SCIENCE}" == "Y" and school_year > 2022 %}
+      {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 %}
       - operation: map_values
         source: $transformations.cmas_input
         column: PerfLVL
@@ -114,10 +114,10 @@ transformations:
       - operation: map_values
         source: $transformations.cmas_input
         columns: 
-          - Std1PerfLVL
-          - Std2PerfLVL
-          - Std3PerfLVL
-          - SEPPerfLVL
+          - Std1PerfLvl
+          - Std2PerfLvl
+          - Std3PerfLvl
+          - SEPPerfLvl
         map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
       - operation: modify_columns
         source: $transformations.cmas_input
