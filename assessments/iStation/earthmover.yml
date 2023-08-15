@@ -20,6 +20,8 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  
+  {% if ${SNOWFLAKE_CONNECTION} is not none %}
   student_id_mapping:
     connection: ${SNOWFLAKE_CONNECTION}
     query: >
@@ -27,7 +29,16 @@ sources:
       from analytics.prod_wh.dim_student
       where tenant_code = '${TENANT_CODE}'
       and school_year = '${API_YEAR}'
-    optional: true
+  
+  {% else %}
+  student_id_xwalk:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - from 
+      - to
+    optional: True 
+  {% endif %}
 
 transformations:
   {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
