@@ -6,6 +6,8 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: student_id
+    STUDENT_ID_XWALK: ''
+    SNOWFLAKE_CONNECTION: ''
 
 sources:
   istation_input:
@@ -20,25 +22,13 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  
-  {% if ${SNOWFLAKE_CONNECTION} is not none %}
   student_id_mapping:
     connection: ${SNOWFLAKE_CONNECTION}
     query: >
-      select ${STUDENT_ID_WH} as "from", student_unique_id as "to"
+      select ${STUDENT_ID_WH} as student_id_from, student_unique_id as student_id_to
       from analytics.prod_wh.dim_student
       where tenant_code = '${TENANT_CODE}'
       and school_year = '${API_YEAR}'
-  
-  {% else %}
-  student_id_xwalk:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - from 
-      - to
-    optional: True 
-  {% endif %}
 
 transformations:
   {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
@@ -85,7 +75,7 @@ transformations:
           - $sources.student_id_mapping
         join_type: left
         left_key: student_id
-        right_key: from
+        right_key: student_id_from
       - operation: add_columns
         source: $transformations.studentAssessments
         columns:
@@ -97,7 +87,7 @@ transformations:
       - operation: modify_columns
         source: $transformations.studentAssessments
         columns:
-          student_unique_id: {%raw%}"{{ student_unique_id | string }}"{%endraw%}
+          student_unique_id: "{%raw%}{{ student_unique_id | string }}{%endraw%}"
       - operation: date_format
         source: $transformations.studentAssessments
         column: admin_date
@@ -113,7 +103,7 @@ transformations:
       - operation: modify_columns
         source: $transformations.studentAssessments
         columns:
-          assessment_unique_id: {%raw%}"{{ md5(assessment_unique_id) }}"{%endraw%}
+          assessment_unique_id: "{%raw%}{{ md5(assessment_unique_id) }}{%endraw%}"
       - operation: map_values
         source: $transformations.studentAssessments
         column: grade_level
