@@ -26,11 +26,7 @@ sources:
   {% if "${SNOWFLAKE_CONNECTION}" | length %}
   student_id_mapping:
     connection: ${SNOWFLAKE_CONNECTION}
-    query: >
-      select ${STUDENT_ID_WH} as student_id_from, student_unique_id as student_id_to
-      from analytics.prod_wh.dim_student
-      where tenant_code = '${TENANT_CODE}'
-      and school_year = '${API_YEAR}'
+    query: ${STUDENT_ID_QUERY}
   
   {% else %}
   student_id_mapping:
