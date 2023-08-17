@@ -1,0 +1,100 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "Dibels-Next",
+    "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{primary_id_student_id}}"
+  },
+  "administrationDate": "{{client_date}}",
+  "performanceLevels": [
+    {% set all_pls = [] %}
+    {% if pathway_achieved_composite_score != '' %}
+      {% set _= all_pls.append(["Pathway Achieved", pathway_achieved_composite_score]) %}
+    {% endif %}
+    {% if pathway_set_composite_score != '' %}
+      {% set _= all_pls.append(["Pathway Set", pathway_set_composite_score]) %}
+    {% endif %}
+    {% if assessment_measure_composite_score_levels != '' %}
+      {% set _= all_pls.append(["Assessment Measure Level", assessment_measure_composite_score_levels]) %}
+    {% endif %}
+  
+    {%- for pl in all_pls -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+      "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#{{pl[1]}}",
+      "performanceLevelMet": true
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{assessment_measure_composite_score_score}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "result": "{{benchmark_period}}"
+    }
+  ],
+  "studentObjectiveAssessments": [
+    {% set possible_obj_assess = [['Dibels-Next-FSF', ['Assessment Measure Level', assessment_measure_fsf_levels], ['Assessment Measure Score', assessment_measure_fsf_score]],
+                                  ['Dibels-Next-LNF', ['Assessment Measure Level', assessment_measure_lnf_levels], ['Assessment Measure Score', assessment_measure_lnf_score]],
+                                  ['Dibels-Next-PSF', ['Assessment Measure Level', assessment_measure_psf_levels], ['Assessment Measure Score', assessment_measure_psf_score]],
+                                  ['Dibels-Next-NWF-CLS', ['Assessment Measure Level', assessment_measure_nwf_cls_levels], ['Assessment Measure Score', assessment_measure_nwf_cls_score]],
+                                  ['Dibels-Next-NWF-WWR', ['Assessment Measure Level', assessment_measure_nwf_wwr_levels], ['Assessment Measure Score', assessment_measure_nwf_wwr_score]],
+                                  ['Dibels-Next-DORF-Fluency', ['Assessment Measure Level', assessment_measure_dorf_fluency_levels], ['Assessment Measure Score', assessment_measure_dorf_fluency_score]],
+                                  ['Dibels-Next-DORF-Accuracy', ['Assessment Measure Level', assessment_measure_dorf_accuracy_levels], ['Assessment Measure Score', assessment_measure_dorf_accuracy_score]],
+                                  ['Dibels-Next-DORF-Retell', ['Assessment Measure Level', assessment_measure_dorf_retell_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_score]],
+                                  ['Dibels-Next-DORF-Retell-Quality', ['Assessment Measure Level', assessment_measure_dorf_retell_quality_levels], ['Assessment Measure Score', assessment_measure_dorf_retell_quality_score]],
+                                  ['Dibels-Next-DORF-Errors', [], ['Assessment Measure Score', assessment_measure_dorf_errors_score]],
+                                  ['Dibels-Next-Daze', ['Assessment Measure Level', assessment_measure_daze_levels], ['Assessment Measure Score', assessment_measure_daze_score]],
+                                  ['Dibels-Next-Vocabulary', ['Assessment Measure Level', assessment_measure_vocabulary_levels], ['Assessment Measure Score', assessment_measure_vocabulary_score]],
+                                  ['Dibels-Next-Spelling', ['Assessment Measure Level', assessment_measure_spelling_levels], ['Assessment Measure Score', assessment_measure_spelling_score]],
+                                  ['Dibels-Next-RAN', ['Assessment Measure Level', assessment_measure_ran_levels], ['Assessment Measure Score', assessment_measure_ran_score]],
+                                  ['Dibels-Next-Risk-Indicator', ['Assessment Measure Level', assessment_measure_risk_indicator_levels]]] %}
+    {% set all_obj_assessment = [] %}
+    {%- for obj in possible_obj_assess -%}
+    {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
+    {% set _= all_obj_assessment.append(obj) %}
+    {% endif %}
+    {% endfor %}
+    {%- for obj in all_obj_assessment -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "Dibels-Next",
+        "identificationCode": "{{obj[0]}}",
+        "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
+      }
+      {% if obj[1]|length > 0 and obj[1][1] != '' %}
+      ,
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[1][0]}}",
+          "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#{{obj[1][1]}}",
+          "performanceLevelMet": true
+        }
+      ]
+      {% endif %}
+      {% if obj[2] is defined and obj[2][1] != '' %}
+      ,
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{obj[2][1]}}"
+        }
+      ]
+      {% endif %}
+    }{%- if not loop.last -%},
+    {%- else %}{% endif %} {%- endfor -%}
+  ],
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+}
