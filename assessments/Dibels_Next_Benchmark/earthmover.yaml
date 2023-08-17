@@ -1,0 +1,154 @@
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_JOIN_COLUMN: primary_id_student_id
+    STUDENT_ID_NAME: primary_id_student_id
+    STUDENT_ID_XWALK: ''
+  
+definitions:
+  year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
+
+sources:
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+  dibels_benchmark_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+transformations:
+  
+ dibels_benchmark_student_assessment:
+  operations:
+    # will want to keep this
+    - operation: map_values
+      source: $sources.dibels_benchmark_input
+      column: Assessment Grade
+      map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
+    # Jinja templates cannot handle spaces in variable names, so unfortunately we must replace all column names that have spaces with underscores
+    # want to figure out if I can functionalize this to real snake case
+    - operation: rename_columns
+      source: $transformations.dibels_benchmark_student_assessment
+      columns: 
+        School Year: school_year
+        Roster Option: roster_option
+        External Program: external_program
+        Account Name: account_name
+        Municipality Name: municipality_name
+        Municipality Primary ID: municipality_primary_id
+        District Name: district_name
+        District Primary ID: district_primary_id
+        Internal Program: internal_program
+        School Name: school_name
+        Primary School ID: primary_school_id
+        Secondary School ID: secondary_school_id
+        RF School: rf_school
+        Student Last Name: student_last_name
+        Student First Name: student_first_name
+        Student Middle Name: student_middle_name
+        Enrollment Date: enrollment_date
+        Date of Birth: date_of_birth
+        Reporting Class Name: reporting_class_name
+        Reporting Class ID: reporting_class_id
+        Official Teacher Name: official_teacher_name
+        Official Teacher Staff ID: official_teacher_staff_id
+        Assessing Teacher Name: assessing_teacher_name
+        Assessing Teacher Staff ID: assessing_teacher_staff_id
+        Assessment Edition: assessment_edition
+        Assessment Grade: assessment_grade
+        Benchmark Period: benchmark_period
+        Pathway Achieved-Composite Score: pathway_achieved_composite_score
+        Pathway Set-Composite Score: pathway_set_composite_score
+        Assessment Measure-Composite Score-Levels: assessment_measure_composite_score_levels
+        Assessment Measure-Composite Score-Score: assessment_measure_composite_score_score
+        Assessment Measure-FSF-Levels: assessment_measure_fsf_levels
+        Assessment Measure-FSF-Score: assessment_measure_fsf_score
+        Assessment Measure-LNF-Levels: assessment_measure_lnf_levels
+        Assessment Measure-LNF-Score: assessment_measure_lnf_score
+        Assessment Measure-PSF-Levels: assessment_measure_psf_levels
+        Assessment Measure-PSF-Score: assessment_measure_psf_score
+        Assessment Measure-NWF (CLS)-Levels: assessment_measure_nwf_cls_levels
+        Assessment Measure-NWF (CLS)-Score: assessment_measure_nwf_cls_score
+        Assessment Measure-NWF (WWR)-Levels: assessment_measure_nwf_wwr_levels
+        Assessment Measure-NWF (WWR)-Score: assessment_measure_nwf_wwr_score
+        Assessment Measure-DORF (Accuracy)-Levels: assessment_measure_dorf_accuracy_levels
+        Assessment Measure-DORF (Accuracy)-Score: assessment_measure_dorf_accuracy_score
+        Assessment Measure-DORF (Fluency)-Levels: assessment_measure_dorf_fluency_levels
+        Assessment Measure-DORF (Fluency)-Score: assessment_measure_dorf_fluency_score
+        Assessment Measure-DORF (Retell)-Levels: assessment_measure_dorf_retell_levels
+        Assessment Measure-DORF (Retell)-Score: assessment_measure_dorf_retell_score
+        Assessment Measure-DORF (Retell Quality)-Levels: assessment_measure_dorf_retell_quality_levels
+        Assessment Measure-DORF (Retell Quality)-Score: assessment_measure_dorf_retell_quality_score
+        Assessment Measure-DORF (Errors)-Score: assessment_measure_dorf_errors_score
+        Assessment Measure-Daze-Levels: assessment_measure_daze_levels
+        Assessment Measure-Daze-Score: assessment_measure_daze_score
+        Assessment Measure-Daze (Correct)-Score: assessment_measure_daze_correct_score
+        Assessment Measure-Daze (Incorrect)-Score: assessment_measure_daze_incorrect_score
+        Client Date: client_date
+        Sync Date: sync_date
+        Student Primary ID: student_primary_id
+        ${STUDENT_ID_NAME}: primary_id_student_id
+        Administration Type: administration_type
+        Assessment Measure-Vocabulary-Levels: assessment_measure_vocabulary_levels
+        Assessment Measure-Vocabulary-Score: assessment_measure_vocabulary_score
+        Assessment Measure-Spelling-Levels: assessment_measure_spelling_levels
+        Assessment Measure-Spelling-Score: assessment_measure_spelling_score
+        Assessment Measure-RAN-Levels: assessment_measure_ran_levels
+        Assessment Measure-RAN-Score: assessment_measure_ran_score
+        Assessment Measure-Risk Indicator-Levels: assessment_measure_risk_indicator_levels
+    - operation: add_columns
+      source: $transformations.dibels_benchmark_student_assessment
+      columns:
+        student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
+        assessment_id: "Dibels-Next"
+    - operation: modify_columns
+      source: $transformations.dibels_benchmark_student_assessment
+      columns:
+        school_year: *year_mapping
+  
+ assessments:
+  operations:
+    - operation: keep_columns
+      source: $transformations.dibels_benchmark_student_assessment
+      columns: 
+        - assessment_id
+    - operation: distinct_rows
+      source: $transformations.assessments
+
+destinations:
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.dibels_benchmark_student_assessment
+    template:  ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
