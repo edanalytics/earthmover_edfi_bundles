@@ -98,12 +98,13 @@
           ]
 
         scoreResults": [
-        {% if scores | length == 0}
+        {% if obj_assess["scores"] | length == 0 %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#PlaceholderScore",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
             "result": "placeholder_score"
           }
+        {% endif %}
         {% for score in obj_assess["scores"] %}
           {% if score[0] is not none and score[0] | length %}
           {
