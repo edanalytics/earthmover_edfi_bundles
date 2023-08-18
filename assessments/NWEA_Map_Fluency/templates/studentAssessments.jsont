@@ -31,96 +31,91 @@
       }
     ],
     "studentObjectiveAssessments": [
-      {% set all_obj_assess = [] %}
-      {% if PrintConceptPerformanceLevel is not none and PrintConceptPerformanceLevel | length %}
-        {% set _ = all_obj_assess.append(["Print Concept", PrintConceptPerformanceLevel, None, None, (PrintConceptCorrect,"Correct"),(PrintConceptAttempted,"Attempted")]) %}
-      {% endif %}
-      {% if SentenceReadingFluencyPerformanceLevel is not none and SentenceReadingFluencyPerformanceLevel | length %}
-        {% set _ = all_obj_assess.append(["Sentence Reading Fluency", SentenceReadingFluencyPerformanceLevel, None, None, (SentenceReadingFluencyCorrect,"Correct"), (SentenceReadingFluencyAttempted,"Attempted")]) %}
-      {% endif %}
-      {% if OralReadingRatePerf is not none and OralReadingRatePerf | length %}
-        {% set _ = all_obj_assess.append(["Oral Reading Rate", OralReadingRatePerf, None, None, (OralReadingWCPM,"WCPM")]) %}
-      {% endif %}
-      {% if OralReadingAccuracyPerf is not none and OralReadingAccuracyPerf | length %}
-        {% set _ = all_obj_assess.append(["Oral Reading Accuracy", OralReadingAccuracyPerf, None, None, (OralReadingAccuracyScore,"Oral Reading Accuracy Score")]) %}
-      {% endif %}
-      {% if LiteralComprehensionPerf is not none and LiteralComprehensionPerf | length %}
-        {% set _ = all_obj_assess.append(["Literal Comprehension", LiteralComprehensionPerf]) %}
-      {% endif %}
-      {% if ListeningComprehensionPerf is not none and ListeningComprehensionPerf | length %}
-        {% set _ = all_obj_assess.append(["Listening Comprehension", ListeningComprehensionPerf, None, None, (ListeningComprehensionCorrect,"Correct"), (ListeningComprehensionAttempted,"Attempted")]) %}
-      {% endif %}
-      {% if PictureVocabPerf is not none and PictureVocabPerf | length %}
-        {% set _ = all_obj_assess.append(["Picture Vocab", PictureVocabPerf, None , None, (PictureVocabCorrect,"Correct"), (PictureVocabAttempted,"Attempted")]) %}
-      {% endif %}
-      {% if PhonologicalAwarenessPerf is not none and PhonologicalAwarenessPerf | length %}
-        {% set _ = all_obj_assess.append(["Phonological Awareness", PhonologicalAwarenessPerf,PhonologicalAwarenessZPDLevel,PhonologicalAwarenessZPDName, (PhonologicalAwarenessDomainScore,"Domain Score"), (PhonologicalAwarenessTestPercentile,"Test Percentile")]) %}
-      {% endif %}
-      {% if PhonicsWordRecognitionPerf is not none and PhonicsWordRecognitionPerf | length %}
-        {% set _ = all_obj_assess.append(["Phonics Word Recognition", PhonicsWordRecognitionPerf,PhonicsWordRecognitionZPDLevel,PhonicsWordRecognitionZPDName, (PhonicsWordRecognitionDomainScore,"Domain Score"), (PhonicsWordRecognitionTestPercentile,"Test Percentile")]) %}
-      {% endif %}
+      {% set all_obj_assess = [
+                                ({"id_code": "Print Concept", 
+                                  "perf_levels": [PrintConceptPerformanceLevel],
+                                  "scores": [(PrintConceptCorrect,"Correct","Integer"),
+                                             (PrintConceptAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Sentence Reading Fluency", 
+                                  "perf_levels": [SentenceReadingFluencyPerformanceLevel],
+                                  "scores": [(SentenceReadingFluencyCorrect,"Correct","Integer"),
+                                             (SentenceReadingFluencyAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Oral Reading Rate", 
+                                  "perf_levels": [OralReadingRatePerf],
+                                  "scores": [(OralReadingWCPM,"WCPM","Integer")]
+                                }),
+                                ({"id_code": "Oral Reading Accuracy", 
+                                  "perf_levels": [OralReadingAccuracyPerf],
+                                  "scores": [(OralReadingAccuracyScore,"Oral Reading Accuracy Score","Decimal")]
+                                }),
+                                ({"id_code": "Literal Comprehension", 
+                                  "perf_levels": [LiteralComprehensionPerf],
+                                  "scores": []
+                                }),
+                                ({"id_code": "Listening Comprehension", 
+                                  "perf_levels": [ListeningComprehensionPerf],
+                                  "scores": [(ListeningComprehensionCorrect,"Correct","Integer"),
+                                             (ListeningComprehensionAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Picture Vocab", 
+                                  "perf_levels": [PictureVocabPerf, PhonologicalAwarenessZPDLevel, PhonologicalAwarenessZPDName],
+                                  "scores": [(PictureVocabCorrect,"Correct","Integer"),
+                                             (PictureVocabAttempted,"Attempted", "Integer")]
+                                }),
+                                ({"id_code": "Phonological Awareness", 
+                                  "perf_levels": [PhonologicalAwarenessPerf],
+                                  "scores": [(PhonologicalAwarenessDomainScore,"Domain Score", "Integer"),
+                                             (PhonologicalAwarenessTestPercentile,"Test Percentile", "Integer")]
+                                }),
+                                ({"id_code": "Phonics Word Recognition", 
+                                  "perf_levels": [PhonicsWordRecognitionPerf, PhonicsWordRecognitionZPDLevel, PhonicsWordRecognitionZPDName],
+                                  "scores": [(PhonicsWordRecognitionDomainScore,"Domain Score", "Integer"),
+                                             (PhonicsWordRecognitionTestPercentile,"Test Percentile", "Integer")]
+                                }),
+                              ]
+      %}
+
       {% for obj_assess in all_obj_assess %}
-      {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "NWEA-Map-Fluency",
-          "identificationCode": "{{ obj_assess[0] }}",
+          "identificationCode": "{{ obj_assess["id_code"] }}",
           "namespace": "uri://www.nwea.org/mapFluency"
-        },
-        "performanceLevels": [
-          {% if obj_assess[1] is not none and obj_assess[1] | length %}
+        }
+
+        performanceLevels": [
+        {% for perf_level in obj_assess["perf_levels"] %}
+          {% if perf_level is not none and perf_level | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Performance Level",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level }}",
             "performanceLevelMet": true
           }
+          {% if not loop.last %},{% endif %}
           {% endif %}
-          {% if obj_assess[2] is not none and obj_assess[2] | length %}
-          ,{
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#ZPD Level",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
-            "performanceLevelMet": true
+        {% endfor %}
+          ]
+
+        scoreResults": [
+        {% if scores | length == 0}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#PlaceholderScore",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+            "result": "placeholder_score"
           }
-          {% endif %}
-          {% if obj_assess[3] is not none and obj_assess[3] | length %}
-          ,{
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#ZPD Name",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ obj_assess[3] }}",
-            "performanceLevelMet": true
+        {% for score in obj_assess["scores"] %}
+          {% if score[0] is not none and score[0] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score[1] }}",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[2] }}",
+            "result": "{{ score[0] }}"
           }
+          {% if not loop.last %},{% endif %}
           {% endif %}
-        ],
-        "scoreResults": [
-          {% if obj_assess[0] == "Literal Comprehension" %}
-            {
-                "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Score",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": "999"
-            }
-          {% else %}
-            {% if obj_assess[4] is not none and obj_assess[4] | length %}
-            {
-                "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[4][1] }}",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{% if obj_assess[0] == "Oral Reading Accuracy" %}Decimal{% else %}Integer{% endif %}",
-                "result": "{{ obj_assess[4][0] }}"
-            }
-            {% endif %}
-            {% if obj_assess[5] is not none and obj_assess[5] | length %}
-            ,{
-                "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[5][1] }}",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": "{{ obj_assess[5][0] }}"
-            }
-            {% endif %}
-            {% if obj_assess[6] is not none and obj_assess[6] | length %}
-            ,{
-                "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ obj_assess[6][1] }}",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": "{{ obj_assess[6][0] }}"
-            }
-            {% endif %}
-          {% endif %}
-        ]
-      } {% if not loop.last %},{% endif %}
+        {% endfor %}
+          ]
+
       {% endfor %}
     ]
 }
