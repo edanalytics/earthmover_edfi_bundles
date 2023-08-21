@@ -152,6 +152,11 @@ transformations:
         source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: grade_when_assessed
         map_file: ./seeds/grade_mapping.csv
+      - operation: date_format
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        column: assessment_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
   {% endfor %}
   psat_sat_student_assessment_reading_writing:
     operations:
