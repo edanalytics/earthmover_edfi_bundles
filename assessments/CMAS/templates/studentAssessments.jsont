@@ -114,7 +114,7 @@
       {% endif %}
     {% endif %}
 
-    {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and school_year > 2022 %}
+    {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and alternate_assessment == 'N' and school_year > 2022 %}
       {% if SS is not none and SS | length %}
         {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
       {% endif %}
@@ -415,7 +415,7 @@
           {% endif %}          
         {% endif %}
 
-        {% if alternate_assessment == 'Y' %}
+        {% if alternate_assessment == 'Y' and TestAttemptednessFlag == 'Y' %}
           {% if Std1PtsPoss is not none and Std1PtsPoss | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, Std1PctEarned, 'N/A', 'N/A', 'N/A']) %}
           {% endif %}
@@ -490,8 +490,8 @@
                 "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#{{ obj_assess[6] }}",
                 "performanceLevelMet": true
               }
+            ]
           {% endif %} 
-          ]
         } {% if not loop.last %},{% endif %}
         {% endfor %}
     ]
