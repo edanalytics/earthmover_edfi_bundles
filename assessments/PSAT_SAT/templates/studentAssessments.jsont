@@ -106,7 +106,7 @@
                                    'User Percentile Subscore':user_percentile_standard_english_conventions_subscore}]
                                ] %}
 
-      {% if test_type == "SAT" %}
+      {% if test_type == "SAT" and essay_reading_subscore != '' %}
       {% set _= obj_assess_ela.append(['Essay', 
                                         {'Essay Reading Subscore':essay_reading_subscore, 
                                         'Essay Analysis Subscore':essay_analysis_subscore, 
@@ -135,7 +135,7 @@
                                 ['Problem Solving and Data Analysis', 
                                     {'Subscore':problem_solving_and_data_analysis_subscore,
                                     'Nationally Rep Sample Pctl Subscore':nationally_representative_problem_solving_and_data_analysis_subscore,
-                                    'User Percentile Subscore':user_percentile_problem_solving_and_data_analysis_subscore}],
+                                    'User Percentile Subscore':user_percentile_problem_solving_and_data_analysis_subscore}]
                                 ] %}
 
       {% if test_type in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
