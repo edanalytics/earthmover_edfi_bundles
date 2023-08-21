@@ -70,6 +70,7 @@ transformations:
 
   objectiveAssessments:
     operations:
+      #This group_by operation creates one row per objective assessment, as needed by obejctiveAssessment.jsont
       - operation: group_by
         source: $sources.objectiveAssessments
         group_by_columns:
