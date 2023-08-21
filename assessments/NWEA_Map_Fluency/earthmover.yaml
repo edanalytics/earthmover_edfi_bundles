@@ -83,7 +83,7 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.nwea_map_student_assessment
-    template: ./templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
