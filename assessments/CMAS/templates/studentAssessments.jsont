@@ -393,7 +393,7 @@
           {% endif %}       
         {% endif %}
 
-        {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and VoidScore != 'Y' and school_year > 2022 and alternate_assessment == 'N' %}
+        {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and VoidScoreCode != 'Y' and school_year > 2022 and alternate_assessment == 'N' %}
           {% if Std1SSCO is not none and Std1SSCO | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
           {% endif %}
