@@ -78,13 +78,14 @@
       %}
 
       {% for obj_assess in all_obj_assess %}
+      {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "NWEA-Map-Fluency",
           "identificationCode": "{{ obj_assess["id_code"] }}",
           "namespace": "uri://www.nwea.org/mapFluency"
-        }
+        },
 
-        performanceLevels": [
+        "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
           {% if perf_level is not none and perf_level | length %}
           {
@@ -95,9 +96,9 @@
           {% if not loop.last %},{% endif %}
           {% endif %}
         {% endfor %}
-          ]
+          ],
 
-        scoreResults": [
+        "scoreResults": [
         {% if obj_assess["scores"] | length == 0 %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#PlaceholderScore",
@@ -116,7 +117,7 @@
           {% endif %}
         {% endfor %}
           ]
-
+        }{% if not loop.last %},{% endif %}
       {% endfor %}
     ]
 }
