@@ -9,51 +9,29 @@
   "learningObjectives": [],
   "learningStandards": [],
   "performanceLevels": [
-    {% set reporting_methods = reporting_methods.split(',') %}
-    {% set existing_reporting_methods = [] %}
-    {% for x in reporting_methods %}
-        {% if x != '' %}
-            {% set _ = existing_reporting_methods.append(x) %}
-        {% endif %}
-    {% endfor %}
-    {% set levels = levels.split(',') %}
-    {% set existing_levels = [] %}
-    {% for x in levels %}
-        {% if x != '' %}
-            {% set _ = existing_levels.append(x) %}
-        {% endif %}
-    {% endfor %}
-    {% for i in range(existing_reporting_methods | length) %}
-      
+    {% set reporting_methods = reporting_methods.split(',')|select|list%}
+    {% set levels = levels.split(',')|select|list %}
+    {% for i in range(reporting_methods| length) %}
+      {% if reporting_methods[i] != '' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ existing_reporting_methods[i] }}",
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ reporting_methods[i] }}",
         "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ levels[i] }}",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      } {% if not loop.last %},{% endif %}
-      
-    {% endfor %}
+      }{% if not loop.last %},{% endif %}
+    {% endif %}
+  {% endfor %}
   ],
   "scores": [
-    {% set score_reporting_methods = score_reporting_methods.split(',') %}
-    {% set existing_score_reporting_methods = [] %}
-    {% for x in score_reporting_methods %}
-        {% if x != '' %}
-            {% set _ = existing_score_reporting_methods.append(x) %}
-        {% endif %}
-    {% endfor %}
-    {% set result_data_types = result_data_types.split(',') %}
+    {% set score_reporting_methods = score_reporting_methods.split(',')|select|list %}
+    {% set result_data_types = result_data_types.split(',')|select|list%}
     {% set existing_result_data_types = [] %}
-    {% for x in result_data_types %}
-        {% if x != '' %}
-            {% set _ = existing_result_data_types.append(x) %}
-        {% endif %}
-    {% endfor %}
-    {% for j in range(existing_score_reporting_methods | length) %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ existing_score_reporting_methods[j] }}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ existing_result_data_types[j] }}"
-    } {% if not loop.last %},{% endif %}
-
+    {% for i in range(score_reporting_methods | length) %}
+      {% if score_reporting_methods[i] != '' %}
+        {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score_reporting_methods[i] }}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ result_data_types[i] }}"
+        } {% if not loop.last %},{% endif %}
+      {% endif %}
     {% endfor %}
   ]
 }
