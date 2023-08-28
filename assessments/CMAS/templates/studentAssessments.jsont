@@ -53,74 +53,66 @@
       {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
     {% endif %} 
     
-    {% if alternate_assessment == 'N' %}
-      {% if PercentileRank is not none and PercentileRank.strip() | length and TestAttemptednessFlag == 'Y' %}
-        {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+    {% if CalculatedInvalidation == 'Valid Score' %}
+      {% if alternate_assessment == 'N' %}
+        {% if PercentileRank is not none and PercentileRank.strip() | length %}
+          {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+        {% endif %} 
+      
+      {% elseif alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
+        {% if SS is not none and SS.strip() | length %}
+          {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+        {% endif %}
+
+        {% if CSEM is not none and CSEM.strip() | length %}
+          {% set _ = scores.append([CSEM, 'CSEM', 'Decimal']) %}
+        {% endif %}
       {% endif %} 
-    
-    {% else %}  
-      {% if SS is not none and SS.strip() | length and TestAttemptednessFlag == 'Y' %}
-        {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+
+      {% if assessmentSubject in ('ELA', 'SLA') %}
+        {% if TestReadingScaleScore is not none and TestReadingScaleScore.strip() | length %}
+          {% set _ = scores.append([TestReadingScaleScore, 'Reading Test Scale Score', 'Integer']) %}
+        {% endif %}
+
+        {% if TestReadingSSCSEM is not none and TestReadingSSCSEM.strip() | length %}
+          {% set _ = scores.append([TestReadingSSCSEM, 'Reading Test CSEM', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingRawScore is not none and TestWritingRawScore.strip() | length %}
+          {% set _ = scores.append([TestWritingRawScore, 'Writing Test Raw Score', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingPointsPossible is not none and TestWritingPointsPossible.strip() | length %}
+          {% set _ = scores.append([TestWritingPointsPossible, 'Writing Test Points Possible', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingPercentEarned is not none and TestWritingPercentEarned.strip() | length %}
+          {% set _ = scores.append([TestWritingPercentEarned, 'Writing Test Percent Earned', 'Integer']) %}
+        {% endif %}
       {% endif %}
 
-      {% if CSEM is not none and CSEM.strip() | length and TestAttemptednessFlag == 'Y' %}
-        {% set _ = scores.append([CSEM, 'CSEM', 'Decimal']) %}
-      {% endif %}
-    {% endif %} 
+      {% if assessmentSubject == 'SCI' and school_year <= 2022 %}
+        {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
+        {% endif %}
 
-    {% if assessmentSubject in ('ELA', 'MAT', 'SLA') and TestAttemptednessFlag == 'Y' %}
-      {% if SS is not none and SS.strip() | length %}
-        {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
-      {% endif %}
+        {% if PercentileRankofStudentStandard2 is not none and PercentileRankofStudentStandard2 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard2, 'Standard 2 Percentile Rank', 'Integer']) %}
+        {% endif %}
 
-      {% if SSCSEM is not none and SSCSEM.strip() | length %}
-        {% set _ = scores.append([SSCSEM, 'CSEM', 'Decimal']) %}
-      {% endif %}
-    {% endif %}
-
-    {% if assessmentSubject in ('ELA', 'SLA') and TestAttemptednessFlag == 'Y' %}
-      {% if TestReadingScaleScore is not none and TestReadingScaleScore.strip() | length %}
-        {% set _ = scores.append([TestReadingScaleScore, 'Reading Test Scale Score', 'Integer']) %}
+        {% if PercentileRankofStudentStandard3 is not none and PercentileRankofStudentStandard3 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard3, 'Standard 3 Percentile Rank', 'Integer']) %}
+        {% endif %}
       {% endif %}
 
-      {% if TestReadingSSCSEM is not none and TestReadingSSCSEM.strip() | length %}
-        {% set _ = scores.append([TestReadingSSCSEM, 'Reading Test CSEM', 'Integer']) %}
-      {% endif %}
+      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and school_year > 2022 %}
+        {% if SS is not none and SS | length %}
+          {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+        {% endif %}
 
-      {% if TestWritingRawScore is not none and TestWritingRawScore.strip() | length %}
-        {% set _ = scores.append([TestWritingRawScore, 'Writing Test Raw Score', 'Integer']) %}
-      {% endif %}
-
-      {% if TestWritingPointsPossible is not none and TestWritingPointsPossible.strip() | length %}
-        {% set _ = scores.append([TestWritingPointsPossible, 'Writing Test Points Possible', 'Integer']) %}
-      {% endif %}
-
-      {% if TestWritingPercentEarned is not none and TestWritingPercentEarned.strip() | length %}
-        {% set _ = scores.append([TestWritingPercentEarned, 'Writing Test Percent Earned', 'Integer']) %}
-      {% endif %}
-    {% endif %}
-
-    {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and school_year <= 2022 %}
-      {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
-        {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
-      {% endif %}
-
-      {% if PercentileRankofStudentStandard2 is not none and PercentileRankofStudentStandard2 | length %}
-        {% set _ = scores.append([PercentileRankofStudentStandard2, 'Standard 2 Percentile Rank', 'Integer']) %}
-      {% endif %}
-
-      {% if PercentileRankofStudentStandard3 is not none and PercentileRankofStudentStandard3 | length %}
-        {% set _ = scores.append([PercentileRankofStudentStandard3, 'Standard 3 Percentile Rank', 'Integer']) %}
-      {% endif %}
-    {% endif %}
-
-    {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and alternate_assessment == 'N' and school_year > 2022 %}
-      {% if SS is not none and SS | length %}
-        {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
-      {% endif %}
-
-      {% if SSCSEM is not none and SSCSEM | length %}
-        {% set _ = scores.append([SSCSEM, 'CSEM', 'Integer']) %}
+        {% if SSCSEM is not none and SSCSEM | length %}
+          {% set _ = scores.append([SSCSEM, 'CSEM', 'Integer']) %}
+        {% endif %}
       {% endif %}
     {% endif %}
 
@@ -172,13 +164,7 @@
         {% set _ = perf_levels.append([ReportSuppressionAction, 'Report Suppression Action']) %}
       {% endif %}
 
-      {% if assessmentSubject in ('ELA', 'MAT', 'SLA') %}
-        {% if PerfLVL is not none and PerfLVL | length %}
-          {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
-        {% endif %}
-      {% endif %}
-
-      {% if assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment == 'Y') %}
+      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment == 'Y'))) %}
         {% if PerfLVL is not none and PerfLVL | length %}
           {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
         {% endif %}
@@ -195,7 +181,7 @@
 
     "studentObjectiveAssessments": [
       {% set all_obj_assess = [] %}
-        {% if assessmentSubject == 'ELA' and TestAttemptednessFlag == 'Y' %}
+        {% if assessmentSubject == 'ELA' and CalculatedInvalidation == 'Valid Score' %}
           {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
             {% set _ = all_obj_assess.append(['Reading - Literary Text', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
           {% endif %}
@@ -264,7 +250,7 @@
           {% endif %}
         {% endif %}
 
-        {% if assessmentSubject == 'SLA' and TestAttemptednessFlag == 'Y' %}
+        {% if assessmentSubject == 'SLA' and CalculatedInvalidation == 'Valid Score' %}
           {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
             {% set _ = all_obj_assess.append(['SLA Reading - Literary Text', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
           {% endif %}
@@ -312,7 +298,7 @@
           {% endif %}
         {% endif %}
 
-        {% if assessmentSubject == 'MAT' and TestAttemptednessFlag == 'Y' %}
+        {% if assessmentSubject == 'MAT' and CalculatedInvalidation == 'Valid Score' %}
           {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
             {% set _ = all_obj_assess.append(['Math - Major Content', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
           {% endif %}
@@ -393,7 +379,7 @@
           {% endif %}       
         {% endif %}
 
-        {% if assessmentSubject == 'SCI' and TestAttemptednessFlag == 'Y' and VoidScoreCode != 'Y' and school_year > 2022 and alternate_assessment == 'N' %}
+        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and school_year > 2022 and alternate_assessment == 'N' %}
           {% if Std1SSCO is not none and Std1SSCO | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
           {% endif %}
@@ -415,7 +401,7 @@
           {% endif %}          
         {% endif %}
 
-        {% if alternate_assessment == 'Y' and TestAttemptednessFlag == 'Y' %}
+        {% if alternate_assessment == 'Y' and CalculatedInvalidation == 'Valid Score' %}
           {% if Std1PtsPoss is not none and Std1PtsPoss | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, Std1PctEarned, 'N/A', 'N/A', 'N/A']) %}
           {% endif %}
