@@ -49,6 +49,8 @@ transformations:
           - studentUniqueId
           - TermName
           - TestCompletionDate
+          - AssignedTestType
+          - ResultType
         new_column: generated_test_id
         separator: '-'
       - operation: map_values
