@@ -5,6 +5,7 @@ config:
   state_file: ${STATE_FILE}
   show_stacktrace: true
   parameter_defaults:
+    SUBJECT: reading
     STUDENT_ID_NAME: student_id
     STUDENT_ID_XWALK: ''
     SNOWFLAKE_CONNECTION: ''
@@ -39,19 +40,30 @@ sources:
   {% endif %}
 
 transformations:
+  {% if August_LEVEL is not none %}
+    {% set perflvl = "LEVEL" %}
+  {% else %}
+    {% set perflvl = "TIER" %}
+  {% endif %}
+
   {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
   {% for month in months %}
   scores_{{month}}:
     operations:
+      - operation: add_columns
+        source: $sources.istation_input
+        columns:
+          - level: {% if score_level is not none %}{{score_level}}{% else %}{{score_tier}}{% endif %}
       - operation: keep_columns
         source: $sources.istation_input
         columns:
           - STUDENT_ID
           - DOMAIN
           - GRADE
+          - {{month}}_ADMIN_DATE
           - {{month}}_SCORE
           - {{month}}_PTILE
-          - {{month}}_ADMIN_DATE
+          - {{month}}_{{perflvl}}
       - operation: rename_columns
         source: $transformations.scores_{{month}}
         columns:
@@ -75,6 +87,11 @@ transformations:
           - $transformations.scores_{{month}}
           {% endfor %}
 
+  {% if "${SUBJECT}" == "reading" %}
+    {% set test = "ISIP Reading" %}
+  {% elseif "${SUBJECT}" == "spanish" %}
+    {% set test = "ISIP Spanish" %}
+  {% endif %}
   studentAssessments:
     operations:
       - operation: join
@@ -88,6 +105,7 @@ transformations:
         source: $transformations.studentAssessments
         columns:
           assessment_year: ${API_YEAR}
+          assessment_identifier: {{test}}
       - operation: rename_columns
         source: $transformations.studentAssessments
         columns:
