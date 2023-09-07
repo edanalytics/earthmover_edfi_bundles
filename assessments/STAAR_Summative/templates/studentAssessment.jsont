@@ -11,6 +11,7 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "",
+  "administrationEndDate": "{{ administration_window_end_date }}",
   "administrationLanguageDescriptor": "",
   "performanceLevels": [
     {% if overall_performance_level is not none and overall_performance_level | length %}
@@ -26,7 +27,8 @@
     {% set all_scores = {'Subject':['Level',subject],
                          'Course': ['Level',course_abbrev],
                          'Total Scale Score':['Integer',scale_score],
-                         'Overall Raw Score':['Integer',raw_score]
+                         'Overall Raw Score':['Integer',raw_score],
+                         'Administration Window':['Level',administration_window_label],
                          } %}
     {% for score_name, score_result in all_scores.items() %}
       {% if score_result[1] is not none and score_result[1] | length %}
