@@ -1,0 +1,242 @@
+# See accompanying README.md for details about this file.
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  parameter_defaults:
+    # the following should be included in every template
+    STUDENT_ID_JOIN_COLUMN: tx_unique_student_id
+    STUDENT_ID_NAME: tx_unique_student_id
+    STUDENT_ID_XWALK: ''
+
+sources:
+
+  # SEEDS
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  # INPUT STU ASSESSMENT FILES
+  staar_summative_alt_input:
+    file: ${STAAR_SUMMATIVE_ALT_INPUT_FILE}
+    header_rows: 1
+
+  # OTHER XWALKS
+  student_id_xwalk:
+    # This file only needs to be supplied if the source assessment file does not
+    # contain the studentUniqueId used by Ed-Fi
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns:
+      - from
+      - to
+    optional: True
+
+{% set conformed_columns = 
+  ['tx_unique_student_id',
+   'assessment_identifier',
+   'grade_level_code',
+   'administration_date',
+   'county_district_campus_number',
+   'subject',
+   'reporting_category_1_raw_score',
+   'reporting_category_2_raw_score',
+   'reporting_category_3_raw_score',
+   'reporting_category_4_raw_score',
+   'raw_score',
+   'scale_score',
+   'test_version',
+   'overall_performance_level',
+   'opportunity_key'
+  ] 
+%}
+
+transformations:
+  # Conform each input type to a standard shape
+
+  # CONFORMED 3-8 ALT
+  conformed_staar_summative_alt:
+    operations:
+      # RENAME columns to easily convert from wide to long
+      - operation: rename_columns
+        source: $sources.staar_summative_alt_input
+        columns:
+          {% if ${API_YEAR} >= 2023 %}
+          # standardize score names so we can easily convert from wide to long
+          "reading_language_arts_reportingcategory_1_scores": reading_reporting_category_1_raw_score
+          "reading_language_arts_reportingcategory_2_scores": reading_reporting_category_2_raw_score
+          "reading_language_arts_raw_score": reading_raw_score
+          "reading_language_arts_scale_score": reading_scale_score
+          "reading_language_arts_test_version": reading_test_version
+          "level_ii__satisfactory_academicperformance_in_reading_languagearts": level_ii__satisfactory_academicperformance_in_reading
+          "level_iii__accomplished_academicperformance_in_reading_languagearts": level_iii__accomplished_academicperformance_in_reading
+          "opportunity_key_readinglanguage_arts": opportunity_key_reading
+          "mathematics_reporting_category_1scores": mathematics_reporting_category_1_raw_score
+          "mathematics_reporting_category_2scores": mathematics_reporting_category_2_raw_score
+          "mathematics_reporting_category_3scores": mathematics_reporting_category_3_raw_score
+          "mathematics_reporting_category_4scores": mathematics_reporting_category_4_raw_score
+          "social_studies_reporting_category_1scores": social_studies_reporting_category_1_raw_score
+          "social_studies_reporting_category_2scores": social_studies_reporting_category_2_raw_score
+          "social_studies_reporting_category_3scores": social_studies_reporting_category_3_raw_score
+          "social_studies_reporting_category_4scores": social_studies_reporting_category_4_raw_score
+          "science_reporting_category_1scores": science_reporting_category_1_raw_score
+          "science_reporting_category_2scores": science_reporting_category_2_raw_score
+          "science_reporting_category_3scores": science_reporting_category_3_raw_score
+          "science_reporting_category_4scores": science_reporting_category_4_raw_score
+          # This column doesn't exist after 2022 -- TODO better way to handle this case?
+          {% else %}
+          # '_5' comes from the scrape from PDF, bc there are duplicate colnames. 5 represents colindex in the file. county_district_campus_number_xyz in this file are the campus from previous year scores
+          "county_district_campus_number_5": county_district_campus_number
+          # standardize score names so we can easily convert from wide to long
+          "reading_reporting_category_1scores": reading_reporting_category_1_raw_score
+          "reading_reporting_category_2scores": reading_reporting_category_2_raw_score
+          "reading_reporting_category_3scores": reading_reporting_category_3_raw_score
+          "mathematics_reporting_categoryscores_1": mathematics_reporting_category_1_raw_score
+          "mathematics_reading_reportingcategory_2_scores": mathematics_reporting_category_2_raw_score
+          "mathematics_reading_reportingcategory_3_scores": mathematics_reporting_category_3_raw_score
+          "mathematics_reading_reportingcategory_4_scores": mathematics_reporting_category_4_raw_score
+          "social_studies_reporting_categoryscores_1": social_studies_reporting_category_1_raw_score
+          "social_studies_reporting_categoryscores_2": social_studies_reporting_category_2_raw_score
+          "social_studies_reporting_categoryscores_3": social_studies_reporting_category_3_raw_score
+          "social_studies_reporting_categoryscores_4": social_studies_reporting_category_4_raw_score
+          "science_reporting_category_1scores": science_reporting_category_1_raw_score
+          "science_reporting_category_2scores": science_reporting_category_2_raw_score
+          "science_reporting_category_3scores": science_reporting_category_3_raw_score
+          "science_reporting_category_4scores": science_reporting_category_4_raw_score
+          {% endif %}
+      # ADD assess_id and missing cols
+      - operation: add_columns
+        source: $transformations.conformed_staar_summative_alt
+        columns:
+          assessment_identifier: staar_summative_alt
+          # reading does not have a score 4. create one, so we can easily convert from wide to long
+          reading_reporting_category_4_raw_score: ""
+            # This column doesn't exist after 2022 -- TODO better way to handle this case?
+          {% if ${API_YEAR} >= 2023 %}
+          reading_reporting_category_3_raw_score: ""
+          {% endif %}
+
+
+  # 3-8 ALT -- CONVERT FROM WIDE TO LONG
+  {% set subjects = {
+    'reading': 'Reading',
+    'mathematics': 'Mathematics',
+    'social_studies': 'Social Studies',
+    'science': 'Science'
+    }
+  %}
+  {% for subject in subjects %}
+  {% set descriptor_subject = subjects[subject] %}
+  staar_summative_alt_scores_{{subject}}:
+    operations:
+      # RENAME subject-specific columns to generic colnames so we can stack the data long
+      - operation: rename_columns
+        source: $transformations.conformed_staar_summative_alt
+        columns:
+          {{subject}}_reporting_category_1_raw_score: reporting_category_1_raw_score
+          {{subject}}_reporting_category_2_raw_score: reporting_category_2_raw_score
+          {{subject}}_reporting_category_3_raw_score: reporting_category_3_raw_score
+          {{subject}}_reporting_category_4_raw_score: reporting_category_4_raw_score
+          {{subject}}_raw_score: raw_score
+          {{subject}}_scale_score: scale_score
+          {{subject}}_test_version: test_version
+          level_ii__satisfactory_academicperformance_in_{{subject}}: level_2_satisfactory_academic_performance
+          level_iii__accomplished_academicperformance_in_{{subject}}: level_3_accomplished_academic_performance
+          opportunity_key_{{subject}}: opportunity_key
+      # ADD subject, missing cols, overall_pl
+      - operation: add_columns
+        source: $transformations.staar_summative_alt_scores_{{subject}}
+        columns:
+          subject: {{descriptor_subject}}
+          # use component PL columns to create overall PL
+          overall_performance_level: >
+            {%raw%}
+              {%- if level_3_accomplished_academic_performance == "1" -%}
+                Accomplished
+              {%- elif level_2_satisfactory_academic_performance == "1" -%}
+                Satisfactory
+              {%- else -%}
+                Developing
+              {%- endif -%}
+            {%endraw%}
+      # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
+      - operation: filter_rows
+        source: $transformations.staar_summative_alt_scores_{{subject}}
+        query: opportunity_key != ''
+        behavior: include 
+      # KEEP conformed columns
+      - operation: keep_columns
+        source: $transformations.staar_summative_alt_scores_{{subject}}
+        columns: {{conformed_columns}}
+
+  
+  {% endfor %}  
+
+  # STACK ALL CONFORMED SETS TOGETHER
+  stacked_scores:
+    operations:
+      - operation: union
+        sources:
+          {% for subject in subjects %}
+          - $transformations.staar_summative_alt_scores_{{subject}}
+          {% endfor %}
+
+  # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
+  studentAssessments:
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stacked_scores
+          - $sources.student_id_xwalk
+        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        right_key: from
+        join_type: left
+      - operation: duplicate_columns
+        source: $transformations.studentAssessments
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      # add api_year as a passed-in env var
+      - operation: add_columns
+        source: $transformations.studentAssessments
+        columns:
+          api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
