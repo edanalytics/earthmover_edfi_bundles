@@ -9,6 +9,7 @@ config:
     STUDENT_ID_NAME: student_id
     STUDENT_ID_XWALK: ''
     SNOWFLAKE_CONNECTION: ''
+    PERCENTILE_MAPPING: ''
 
 sources:
   istation_input:
@@ -21,6 +22,12 @@ sources:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  map_grade_level:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  map_percentile_to_level:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
 
@@ -40,22 +47,22 @@ sources:
   {% endif %}
 
 transformations:
-  {% if August_LEVEL is not none %}
-    {% set perflvl = "LEVEL" %}
-  {% else %}
-    {% set perflvl = "TIER" %}
-  {% endif %}
-
   {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
   {% for month in months %}
+  {% set month_level = month ~ '_LEVEL' %}
+  {% set month_tier = month ~ '_TIER' %}
   scores_{{month}}:
     operations:
-      - operation: add_columns
+      - operation: duplicate_columns
         source: $sources.istation_input
         columns:
-          - level: {% if score_level is not none %}{{score_level}}{% else %}{{score_tier}}{% endif %}
+          {% if August_LEVEL %}{{ month_level }}{% else %}{{ month_tier }}{% endif %}: perf_lvl_value
+      - operation: add_columns
+        source: $transformations.scores_{{month}}
+        columns:
+          perf_lvl_type: {% if August_LEVEL %}'level'{% else %}'tier'{% endif %}
       - operation: keep_columns
-        source: $sources.istation_input
+        source: $transformations.scores_{{month}}
         columns:
           - STUDENT_ID
           - DOMAIN
@@ -63,16 +70,17 @@ transformations:
           - {{month}}_ADMIN_DATE
           - {{month}}_SCORE
           - {{month}}_PTILE
-          - {{month}}_{{perflvl}}
+          - perf_lvl_value
+          - perf_lvl_type
       - operation: rename_columns
         source: $transformations.scores_{{month}}
         columns:
           STUDENT_ID: student_id
           DOMAIN: domain
           GRADE: grade_level
+          {{month}}_ADMIN_DATE: admin_date
           {{month}}_SCORE: score
           {{month}}_PTILE: percentile
-          {{month}}_ADMIN_DATE: admin_date
       - operation: filter_rows
         source: $transformations.scores_{{month}}
         query: admin_date != ''
@@ -88,9 +96,9 @@ transformations:
           {% endfor %}
 
   {% if "${SUBJECT}" == "reading" %}
-    {% set test = "ISIP Reading" %}
-  {% elseif "${SUBJECT}" == "spanish" %}
-    {% set test = "ISIP Spanish" %}
+    {% set test = "Istation Reading" %}
+  {% elif "${SUBJECT}" == "spanish" %}
+    {% set test = "Istation Spanish" %}
   {% endif %}
   studentAssessments:
     operations:
@@ -134,14 +142,17 @@ transformations:
         source: $transformations.studentAssessments
         column: grade_level
         map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
-      - operation: duplicate_columns
+      {% if "${PERCENTILE_MAPPING}" != '' %}
+      - operation: modify_columns
         source: $transformations.studentAssessments
-        columns:
-          percentile: level
+        columns: 
+          perf_lvl_value: percentile
+          perf_lvl_type: ${PERCENTILE_MAPPING}
       - operation: map_values
         source: $transformations.studentAssessments
-        column: level
-        map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_level.csv
+        column: perf_lvl_value
+        map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_${PERCENTILE_MAPPING}.csv
+      {% endif %}
 
 destinations:
   studentAssessments:
