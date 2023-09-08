@@ -1,36 +1,44 @@
 {
-    "studentAssessmentIdentifier": "{{assessment_unique_id}}",
-    "assessmentReference": {
-      "assessmentIdentifier": "{{assessment_identifier}}",
-      "namespace": "uri://istation.com"
+  "studentAssessmentIdentifier": "{{assessment_unique_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "uri://istation.com"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{assessment_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{admin_date}}",
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level}}",
+
+  "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{score}}"
     },
-    "schoolYearTypeReference": {
-      "schoolYear": {{assessment_year}}
-    },
-    "studentReference": {
-      "studentUniqueId": "{{student_unique_id}}"
-    },
-    "administrationDate": "{{admin_date}}",
-    "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level}}",
-  
-    "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{percentile}}"
+    }
+  ],
+
+  "performanceLevels": [
+    {% if perf_lvl_type == 'level' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{score}}"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Percentile",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{percentile}}"
+        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level {{perf_lvl_value}}",
+        "performanceLevelMet": true
       }
-    ],
-  
-    "performanceLevels": [
-        {
-          "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-          "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#{{level}}",
-          "performanceLevelMet": true
-        }
-      ]
-  }
+    {% else %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Tier",
+        "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Tier {{perf_lvl_value}}",
+        "performanceLevelMet": true
+      }
+    {% endif %}
+    ]
+}
