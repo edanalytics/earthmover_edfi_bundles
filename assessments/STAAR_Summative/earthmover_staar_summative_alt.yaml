@@ -43,12 +43,18 @@ sources:
       - from
       - to
     optional: True
+  administration_window_xwalk:
+    file: ${BUNDLE_DIR}/seeds/administration_window_xwalk.csv
+    header_rows: 1
 
 {% set conformed_columns = 
   ['tx_unique_student_id',
    'assessment_identifier',
    'grade_level_code',
-   'administration_date',
+   'administration_window',
+   'administration_window_label',
+   'administration_window_start_date',
+   'administration_window_end_date',
    'county_district_campus_number',
    'subject',
    'reporting_category_1_raw_score',
@@ -73,6 +79,7 @@ transformations:
       - operation: rename_columns
         source: $sources.staar_summative_alt_input
         columns:
+          "administration_date": administration_window
           {% if ${API_YEAR} >= 2023 %}
           # standardize score names so we can easily convert from wide to long
           "reading_language_arts_reportingcategory_1_scores": reading_reporting_category_1_raw_score
@@ -121,6 +128,7 @@ transformations:
         source: $transformations.conformed_staar_summative_alt
         columns:
           assessment_identifier: staar_summative_alt
+          school_year: "${API_YEAR}"
           # reading does not have a score 4. create one, so we can easily convert from wide to long
           reading_reporting_category_4_raw_score: ""
             # This column doesn't exist after 2022 -- TODO better way to handle this case?
@@ -171,6 +179,24 @@ transformations:
                 Developing
               {%- endif -%}
             {%endraw%}
+      # JOIN ADMIN WINDOWS
+      - operation: join
+        sources:
+          - $transformations.staar_summative_alt_scores_{{subject}}
+          - $sources.administration_window_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - grade_level_code
+          - subject
+          - administration_window
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - grade_level_code
+          - subject
+          - administration_window
+        join_type: inner 
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         source: $transformations.staar_summative_alt_scores_{{subject}}
