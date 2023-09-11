@@ -195,11 +195,13 @@ transformations:
         left_keys:
           - assessment_identifier
           - school_year
+          - grade_level_code
           - subject
           - administration_window
         right_keys:
           - assessment_identifier
           - school_year
+          - grade_level_code
           - subject
           - administration_window
         join_type: inner 

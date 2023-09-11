@@ -43,6 +43,9 @@ sources:
       - from
       - to
     optional: True
+  administration_window_xwalk:
+    file: ${BUNDLE_DIR}/seeds/administration_window_xwalk.csv
+    header_rows: 1
   course_code_xwalk:
     file: ${BUNDLE_DIR}/seeds/course_code_xwalk.csv
     header_rows: 1
@@ -51,7 +54,10 @@ sources:
   ['tx_unique_student_id',
    'assessment_identifier',
    'grade_level_code',
-   'administration_date',
+   'administration_window',
+   'administration_window_label',
+   'administration_window_start_date',
+   'administration_window_end_date',
    'county_district_campus_number',
    'subject',
    'course_abbrev',
@@ -87,11 +93,16 @@ transformations:
         left_key: end_of_course_code
         right_key: end_of_course_code
         join_type: inner 
+      - operation: rename_columns
+        source: $transformations.conformed_staar_summative_eoc_alt
+        columns:
+          "administration_date": administration_window
       # ADD assess_id & overall_pl
       - operation: add_columns
         source: $transformations.conformed_staar_summative_eoc_alt
         columns:
           assessment_identifier: staar_summative_eoc_alt
+          school_year: "${API_YEAR}"
           subject: {{course_academic_subject}}
           # use component PL columns to create overall PL
           overall_performance_level: >
@@ -103,7 +114,26 @@ transformations:
               {%- else -%}
                 Developing
               {%- endif -%}
-            {%endraw%}
+            {%endraw%} 
+      # JOIN ADMIN WINDOWS
+      - operation: join
+        sources:
+          - $transformations.conformed_staar_summative_eoc_alt
+          - $sources.administration_window_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - course_abbrev
+          - administration_window
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - course_abbrev
+          - administration_window
+        right_drop_columns:
+          - grade_level_code
+          - subject
+        join_type: inner
       # KEEP conformed columns
       - operation: keep_columns
         source: $transformations.conformed_staar_summative_eoc_alt
