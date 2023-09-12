@@ -59,7 +59,7 @@
           {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
         {% endif %} 
       
-      {% elseif alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
+      {% elif alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
         {% if SS is not none and SS.strip() | length %}
           {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
         {% endif %}
