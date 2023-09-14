@@ -83,8 +83,6 @@ transformations:
           # grade_level_tested is called grade_level_code in other STAAR tests (EOC), so rename so we can use the same stuASsessment.jsont
           "grade_level_tested": grade_level_code
           "administration_date": administration_window
-          # '_5' comes from the scrape from PDF, bc there are duplicate colnames. 5 represents colindex in the file. county_district_campus_number_xyz in this file are the campus from previous year scores
-          "county_district_campus_number_5": county_district_campus_number
           # standardize score names so we can easily convert from wide to long
           {% if ${API_YEAR} >= 2023 %}
           # starting in 2023, STAAR began reporting "reading" as "reading_language_arts", but we'll rename here to keep consistency in the convert wide-long code below
@@ -110,7 +108,6 @@ transformations:
           "science_reporting_category_2_scores": science_reporting_category_2_raw_score
           "science_reporting_category_3_scores": science_reporting_category_3_raw_score
           "science_reporting_category_4_scores": science_reporting_category_4_raw_score
-          # This column doesn't exist after 2022 -- TODO better way to handle this case?
           {% else %}
           "reading_reporting_category_1scores": reading_reporting_category_1_raw_score
           "reading_reporting_category_2scores": reading_reporting_category_2_raw_score
