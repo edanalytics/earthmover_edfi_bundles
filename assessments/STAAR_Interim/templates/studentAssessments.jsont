@@ -1,7 +1,7 @@
 {
   "studentAssessmentIdentifier":"{{Opportunity_Key}}",
   "assessmentReference": {
-    "assessmentIdentifier": "staar_interim",
+    "assessmentIdentifier": "{{ assessment_identifier }}",
     "namespace": "uri://tea.texas.gov/student-assessment"
   },
   "schoolYearTypeReference": {
@@ -49,14 +49,15 @@
   ,
   "studentObjectiveAssessments": [
     {%- for n in range(1,6) -%}
+    {% set id_code = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_NAME')%}
     {% set score_name = self._TemplateReference__context.resolve('RAW_SCORE_REPORTING_CATEGORY_'~n)%}
     {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
     {% if (score_name is not none and score_name | length) or (pl_name is not none and pl_name | length) %}
     {%- if not loop.first -%},{% endif %}
     {
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "staar_interim",
-        "identificationCode": "Reporting Category {{n}}",
+        "assessmentIdentifier": "{{ assessment_identifier }}",
+        "identificationCode": "{{ id_code }}",
         "namespace": "uri://tea.texas.gov/student-assessment"
       }
       {% if pl_name is not none and pl_name | length %}
