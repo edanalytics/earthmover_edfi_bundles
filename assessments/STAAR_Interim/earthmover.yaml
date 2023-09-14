@@ -162,7 +162,7 @@ transformations:
           reporting_category_6_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 6{%endraw%}"
       # map values using xwalk to get descriptive obj assessment names
       - operation: map_values
-        source: $transformations.scready_student_assessment_stacked
+        source: $transformations.staar_interim_student_assessment
         columns: 
           - reporting_category_1_name
           - reporting_category_2_name
