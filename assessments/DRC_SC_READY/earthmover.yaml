@@ -7,7 +7,6 @@ config:
   show_graph: False
   show_stacktrace: True
   parameter_defaults:
-    source_filetype: sas
     source_encoding: latin-1
     OUTPUT_DIR: ./output
     STATE_FILE: ./runs.csv
@@ -35,9 +34,8 @@ sources:
 
   scready_input:
     file: ${INPUT_FILE}
-    source_filetype: ${source_filetype}
-    encoding: ${source_encoding}
-    chunksize: 200000
+    source_filetype: csv
+#    encoding: ${source_encoding}
 
 
 transformations:
