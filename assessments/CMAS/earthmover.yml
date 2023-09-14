@@ -1,3 +1,5 @@
+version: 2
+
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
@@ -28,28 +30,24 @@ sources:
 
 transformations:
   cmas_input:
+    source: $sources.cmas_input
     operations:
       # TO DO: This is not ideal but I haven't figured out how to find the average of a date column to use for tests with no dates
       # Current solution is to use April 1st of the assessment year for assessments with no date (invalid scores)
       - operation: add_columns
-        source: $sources.cmas_input
         columns:
           defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
-      - operation: add_columns 
-        source: $transformations.cmas_input
+      - operation: add_columns
         columns:
           school_year: ${SCHOOL_YEAR}
           alternate_assessment: ${ALTERNATE_ASSESSMENT}
       - operation: duplicate_columns
-        source: $transformations.cmas_input
         columns:
           Subject: assessmentSubject
       - operation: rename_columns
-        source: $transformations.cmas_input
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: map_values
-        source: $transformations.cmas_input
         column: assessmentSubject
         mapping:
           English Language Arts/Literacy: ELA
@@ -57,32 +55,25 @@ transformations:
           Spanish Language Arts/Literacy: SLA
           Science: SCI
       - operation: map_values
-        source: $transformations.cmas_input
         column: GradeLevelWhenAssessed
         map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
       - operation: map_values
-        source: $transformations.cmas_input
         column: NotTestedReason
         map_file: ${BUNDLE_DIR}/seeds/mapping_NotTestedReason.csv
       - operation: map_values
-        source: $transformations.cmas_input        
         column: VoidScoreReason
         map_file: ${BUNDLE_DIR}/seeds/mapping_VoidScoreReason.csv
       - operation: map_values
-        source: $transformations.cmas_input
         column: ReportSuppressionCode
         map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionCode.csv
       - operation: map_values
-        source: $transformations.cmas_input
         column: ReportSuppressionAction
         map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionAction.csv
       {% if "${SCIENCE}" == "N" %}
       - operation: map_values
-        source: $transformations.cmas_input
         column: PerfLVL
         map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
       - operation: modify_columns
-        source: $transformations.cmas_input
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
           PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
@@ -109,11 +100,9 @@ transformations:
       {% endif %}
       {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
       - operation: map_values
-        source: $transformations.cmas_input
         column: PerfLVL
         map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
       - operation: map_values
-        source: $transformations.cmas_input
         columns: 
           - Std1PerfLvl
           - Std2PerfLvl
@@ -121,7 +110,6 @@ transformations:
           - SEPPerfLvl
         map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
       - operation: modify_columns
-        source: $transformations.cmas_input
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
           PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
@@ -136,11 +124,9 @@ transformations:
       {% endif %}
       {% if "${ALTERNATE_ASSESSMENT}" == "Y" %}
       - operation: map_values
-        source: $transformations.cmas_input
         column: PerfLVL
         map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_coalt.csv
       - operation: modify_columns
-        source: $transformations.cmas_input
         columns: 
           CSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
           Std1PtsPoss: "{%raw%}{{Std1PtsPoss | int}}{%endraw%}"
