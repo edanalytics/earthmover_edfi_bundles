@@ -1,3 +1,5 @@
+version: 2
+
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
@@ -52,17 +54,15 @@ transformations:
   {% set month_level = month ~ '_LEVEL' %}
   {% set month_tier = month ~ '_TIER' %}
   scores_{{month}}:
+    source: $sources.istation_input
     operations:
       - operation: duplicate_columns
-        source: $sources.istation_input
         columns:
           {% if August_LEVEL %}{{ month_level }}{% else %}{{ month_tier }}{% endif %}: perf_lvl_value
       - operation: add_columns
-        source: $transformations.scores_{{month}}
         columns:
           perf_lvl_type: {% if August_LEVEL %}'level'{% else %}'tier'{% endif %}
       - operation: keep_columns
-        source: $transformations.scores_{{month}}
         columns:
           - STUDENT_ID
           - DOMAIN
@@ -73,7 +73,6 @@ transformations:
           - perf_lvl_value
           - perf_lvl_type
       - operation: rename_columns
-        source: $transformations.scores_{{month}}
         columns:
           STUDENT_ID: student_id
           DOMAIN: domain
@@ -82,16 +81,16 @@ transformations:
           {{month}}_SCORE: score
           {{month}}_PTILE: percentile
       - operation: filter_rows
-        source: $transformations.scores_{{month}}
         query: admin_date != ''
         behavior: include
   {% endfor %}  
 
   stacked_months:
+    source: $transformations.scores_{{months[0]}}
     operations:
       - operation: union
         sources:
-          {% for month in months %}
+          {% for month in months[1:] %}
           - $transformations.scores_{{month}}
           {% endfor %}
 
@@ -101,55 +100,46 @@ transformations:
     {% set test = "Istation Spanish" %}
   {% endif %}
   studentAssessments:
+    source: $transformations.stacked_months
     operations:
       - operation: join
-        sources: 
-          - $transformations.stacked_months
+        sources:
           - $sources.student_id_mapping
         join_type: left
         left_key: student_id
         right_key: student_id_from
       - operation: add_columns
-        source: $transformations.studentAssessments
         columns:
           assessment_year: ${API_YEAR}
           assessment_identifier: {{test}}
       - operation: rename_columns
-        source: $transformations.studentAssessments
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: modify_columns
-        source: $transformations.studentAssessments
         columns:
           student_unique_id: "{%raw%}{{ student_unique_id | string }}{%endraw%}"
       - operation: date_format
-        source: $transformations.studentAssessments
         column: admin_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
       - operation: combine_columns
-        source: $transformations.studentAssessments
         columns:
           - student_unique_id
           - admin_date
         new_column: assessment_unique_id
         separator: '-'
       - operation: modify_columns
-        source: $transformations.studentAssessments
         columns:
           assessment_unique_id: "{%raw%}{{ md5(assessment_unique_id) }}{%endraw%}"
       - operation: map_values
-        source: $transformations.studentAssessments
         column: grade_level
         map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
       {% if "${PERCENTILE_MAPPING}" != '' %}
       - operation: modify_columns
-        source: $transformations.studentAssessments
         columns: 
           perf_lvl_value: percentile
           perf_lvl_type: ${PERCENTILE_MAPPING}
       - operation: map_values
-        source: $transformations.studentAssessments
         column: perf_lvl_value
         map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_${PERCENTILE_MAPPING}.csv
       {% endif %}
