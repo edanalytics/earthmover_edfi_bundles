@@ -145,16 +145,17 @@ transformations:
         sources:
           - $transformations.staar_interim_student_assessment
           - $sources.objectiveAssessments
-        left_key:
+        left_keys:
+          - assessment_identifier
+          - api_year
+          - subject
+          - course
+        right_keys:
           - assessment_identifier
           - school_year
           - subject
           - course
-        right_key:
-          - assessment_identifier
-          - school_year
-          - subject
-          - course
+        join_type: inner
       # reformat test date from m/d/Y to Y-m-d
       - operation: date_format
         source: $transformations.staar_interim_student_assessment
