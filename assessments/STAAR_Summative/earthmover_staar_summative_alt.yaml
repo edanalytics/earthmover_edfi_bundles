@@ -24,6 +24,9 @@ sources:
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
+  obj_assess_codes_xwalk:
+    file: ${BUNDLE_DIR}/seeds/obj_assess_codes_xwalk.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -116,7 +119,7 @@ transformations:
           "mathematics_reading_reportingcategory_4_scores": mathematics_reporting_category_4_raw_score
           "social_studies_reporting_categoryscores_1": social_studies_reporting_category_1_raw_score
           "social_studies_reporting_categoryscores_2": social_studies_reporting_category_2_raw_score
-          "social_studies_reporting_categoryscores_3": social_studies_reporting_category_3_raw_score
+          "social_studies_reporting_categoryscores_3": social_studies_reporting_category_3do _raw_score
           "social_studies_reporting_categoryscores_4": social_studies_reporting_category_4_raw_score
           "science_reporting_category_1scores": science_reporting_category_1_raw_score
           "science_reporting_category_2scores": science_reporting_category_2_raw_score
@@ -129,6 +132,8 @@ transformations:
         columns:
           assessment_identifier: staar_summative_alt
           school_year: "${API_YEAR}"
+          # TODO confirm whether this placeholder is necessary
+          course_abbrev: no_course
           # reading does not have a score 4. create one, so we can easily convert from wide to long
           reading_reporting_category_4_raw_score: ""
             # This column doesn't exist after 2022 -- TODO better way to handle this case?
@@ -197,6 +202,22 @@ transformations:
           - subject
           - administration_window
         join_type: inner 
+      # JOIN obj assess descriptive names
+      - operation: join
+        sources:
+          - $transformations.staar_summative_alt_scores_{{subject}}
+          - $sources.obj_assess_codes_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
+        join_type: inner
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         source: $transformations.staar_summative_alt_scores_{{subject}}
