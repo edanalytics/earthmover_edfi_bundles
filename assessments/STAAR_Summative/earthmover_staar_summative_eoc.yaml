@@ -24,6 +24,9 @@ sources:
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
+  obj_assess_codes_xwalk:
+    file: ${BUNDLE_DIR}/seeds/obj_assess_codes_xwalk.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -129,6 +132,22 @@ transformations:
         right_drop_columns:
           - grade_level_code
           - subject
+        join_type: inner  
+      # JOIN obj assess descriptive names
+      - operation: join
+        sources:
+          - $transformations.conformed_staar_summative_eoc
+          - $sources.obj_assess_codes_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
         join_type: inner 
       # KEEP conformed columns
       - operation: keep_columns
