@@ -126,7 +126,7 @@ transformations:
           "Overall Performance Level": Overall_Performance_Level
           "Opportunity Key": Opportunity_Key
           "END OF RECORD": END_OF_RECORD
-      # join ib test info (e.g. subject, grade level from test code xwalk)
+      # join test info (e.g. subject, grade level from test code xwalk)
       - operation: join
         sources:
           - $transformations.staar_interim_student_assessment
@@ -140,37 +140,21 @@ transformations:
         columns:
           api_year: "${API_YEAR}" #NOTE, this is passed by the user/airflow as an env variable
           assessment_identifier: staar_interim
-      # create combined column so we can rename objective assessment colnames and then re-map them
-      - operation: combine_columns
-        source: $transformations.staar_interim_student_assessment
-        columns:
+      # join objective assessment descriptive names
+      - operation: join
+        sources:
+          - $transformations.staar_interim_student_assessment
+          - $sources.objectiveAssessments
+        left_key:
           - assessment_identifier
-          - api_year
+          - school_year
           - subject
           - course
-        new_column: combined_grain_objective_assessment
-        separator: "_"
-      # add descriptive objective assessment names with extra grain, so we can remap them using xwalk in next step
-      - operation: add_columns
-        source: $transformations.staar_interim_student_assessment
-        columns:
-          reporting_category_1_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 1{%endraw%}"
-          reporting_category_2_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 2{%endraw%}"
-          reporting_category_3_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 3{%endraw%}"
-          reporting_category_4_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 4{%endraw%}"
-          reporting_category_5_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 5{%endraw%}"
-          reporting_category_6_name: "{%raw%}{{combined_grain_objective_assessment}}_Reporting Category 6{%endraw%}"
-      # map values using xwalk to get descriptive obj assessment names
-      - operation: map_values
-        source: $transformations.staar_interim_student_assessment
-        columns: 
-          - reporting_category_1_name
-          - reporting_category_2_name
-          - reporting_category_3_name
-          - reporting_category_4_name
-          - reporting_category_5_name
-          - reporting_category_6_name
-        map_file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+        right_key:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
       # reformat test date from m/d/Y to Y-m-d
       - operation: date_format
         source: $transformations.staar_interim_student_assessment
