@@ -25,6 +25,9 @@ sources:
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
+  obj_assess_codes_xwalk:
+    file: ${BUNDLE_DIR}/seeds/obj_assess_codes_xwalk.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -144,7 +147,7 @@ transformations:
       - operation: join
         sources:
           - $transformations.staar_interim_student_assessment
-          - $sources.objectiveAssessments
+          - $sources.obj_assess_codes_xwalk
         left_keys:
           - assessment_identifier
           - api_year
