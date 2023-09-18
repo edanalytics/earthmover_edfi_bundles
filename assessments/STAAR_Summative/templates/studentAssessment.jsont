@@ -48,13 +48,14 @@
   ,
   "studentObjectiveAssessments": [
     {%- for n in range(1,7) -%}
+    {% set id_code = self._TemplateReference__context.resolve('reporting_category_'~n~'_name')%}
     {% set score_name = self._TemplateReference__context.resolve('reporting_category_'~n~'_raw_score')%}
     {% if (score_name is not none and score_name | length) %}
     {%- if not loop.first -%},{% endif %}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{assessment_identifier}}",
-        "identificationCode": "Reporting Category {{n}}",
+        "identificationCode": "{{ id_code }}",
         "namespace": "uri://tea.texas.gov/student-assessment"
       }
       {% if pl_name is not none and pl_name | length %}

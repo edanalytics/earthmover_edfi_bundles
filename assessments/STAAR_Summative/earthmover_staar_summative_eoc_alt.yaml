@@ -69,6 +69,11 @@ sources:
    'reporting_category_3_raw_score',
    'reporting_category_4_raw_score',
    'reporting_category_5_raw_score',
+   'reporting_category_1_name',
+   'reporting_category_2_name',
+   'reporting_category_3_name',
+   'reporting_category_4_name',
+   'reporting_category_5_name',
    'raw_score',
    'scale_score',
    'test_version',
@@ -106,7 +111,7 @@ transformations:
         columns:
           assessment_identifier: staar_summative_eoc_alt
           school_year: "${API_YEAR}"
-          subject: {{course_academic_subject}}
+          subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
           # use component PL columns to create overall PL
           overall_performance_level: >
             {%raw%}
@@ -140,7 +145,7 @@ transformations:
       # JOIN obj assess descriptive names
       - operation: join
         sources:
-          - $transformations.conformed_staar_summative_eoc
+          - $transformations.conformed_staar_summative_eoc_alt
           - $sources.obj_assess_codes_xwalk
         left_keys:
           - assessment_identifier
