@@ -58,10 +58,10 @@ transformations:
     operations:
       - operation: duplicate_columns
         columns:
-          {% if August_LEVEL %}{{ month_level }}{% else %}{{ month_tier }}{% endif %}: perf_lvl_value
+          {% if August_LEVEL is not none %}{{ month_level }}{% else %}{{ month_tier }}{% endif %}: perf_lvl_value
       - operation: add_columns
         columns:
-          perf_lvl_type: {% if August_LEVEL %}'level'{% else %}'tier'{% endif %}
+          perf_lvl_type: {% if August_LEVEL is not none %}'level'{% else %}'tier'{% endif %}
       - operation: keep_columns
         columns:
           - STUDENT_ID
