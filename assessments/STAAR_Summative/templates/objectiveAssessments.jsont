@@ -1,5 +1,5 @@
 {
-  "identificationCode": "{{ identificationCode }}",
+  "identificationCode": "{{ identificationCode[:60] }}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "uri://tea.texas.gov/student-assessment"
