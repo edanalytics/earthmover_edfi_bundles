@@ -205,23 +205,25 @@ transformations:
           - grade_level_code
           - subject
           - administration_window
+        right_drop_columns:
+          - course_abbrev
         join_type: inner 
       # JOIN obj assess descriptive names
-      # - operation: join
-      #   sources:
-      #     - $transformations.staar_summative_alt_scores_{{subject}}
-      #     - $sources.obj_assess_codes_xwalk
-      #   left_keys:
-      #     - assessment_identifier
-      #     - school_year
-      #     - subject
-      #     - course_abbrev
-      #   right_keys:
-      #     - assessment_identifier
-      #     - school_year
-      #     - subject
-      #     - course
-      #   join_type: inner
+      - operation: join
+        sources:
+          - $transformations.staar_summative_alt_scores_{{subject}}
+          - $sources.obj_assess_codes_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
+        join_type: inner
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         source: $transformations.staar_summative_alt_scores_{{subject}}
