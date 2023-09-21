@@ -77,6 +77,8 @@ transformations:
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
           PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          TotalTestItems: "{%raw%}{{TotalTestItems | int}}{%endraw%}"
+          TotalTestItemsAttempted: "{%raw%}{{TotalTestItemsAttempted | int}}{%endraw%}"
           TestReadingScaleScore: "{%raw%}{{TestReadingScaleScore | int}}{%endraw%}"
           TestReadingSSCSEM: "{%raw%}{{TestReadingSSCSEM | int}}{%endraw%}"
           TestWritingRawScore: "{%raw%}{{TestWritingRawScore | int}}{%endraw%}"
@@ -97,6 +99,9 @@ transformations:
           Subclaim5RawScore: "{%raw%}{{Subclaim5RawScore | int}}{%endraw%}"
           Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
           Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          SSCSEM: CSEM
       {% endif %}
       {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
       - operation: map_values
@@ -113,6 +118,8 @@ transformations:
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
           PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          TotalTestItems: "{%raw%}{{TotalTestItems | int}}{%endraw%}"
+          TotalTestItemsAttempted: "{%raw%}{{TotalTestItemsAttempted | int}}{%endraw%}"
           Std1SSCO: "{%raw%}{{Std1SSCO | int}}{%endraw%}"
           Std1CSEM: "{%raw%}{{Std1CSEM | int}}{%endraw%}"
           Std2SSCO: "{%raw%}{{Std2SSCO | int}}{%endraw%}"
@@ -120,7 +127,10 @@ transformations:
           Std3SSCO: "{%raw%}{{Std3SSCO | int}}{%endraw%}"
           Std3CSEM: "{%raw%}{{Std3CSEM | int}}{%endraw%}"
           SEPSSCO: "{%raw%}{{SEPSSCO | int}}{%endraw%}"
-          SEPCSEM: "{%raw%}{{SEPCSEM | int}}{%endraw%}"          
+          SEPCSEM: "{%raw%}{{SEPCSEM | int}}{%endraw%}"  
+      - operation: rename_columns
+        columns:
+          SSCSEM: CSEM        
       {% endif %}
       {% if "${ALTERNATE_ASSESSMENT}" == "Y" %}
       - operation: map_values
