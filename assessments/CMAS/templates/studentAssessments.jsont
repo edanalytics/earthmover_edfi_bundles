@@ -58,8 +58,9 @@
         {% if PercentileRank is not none and PercentileRank.strip() | length %}
           {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
         {% endif %} 
+      {% endif %} 
       
-      {% elif alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
+      {% if alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
         {% if SS is not none and SS.strip() | length %}
           {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
         {% endif %}
@@ -110,8 +111,8 @@
           {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
         {% endif %}
 
-        {% if SSCSEM is not none and SSCSEM | length %}
-          {% set _ = scores.append([SSCSEM, 'CSEM', 'Integer']) %}
+        {% if CSEM is not none and CSEM | length %}
+          {% set _ = scores.append([CSEM, 'CSEM', 'Integer']) %}
         {% endif %}
       {% endif %}
     {% endif %}
