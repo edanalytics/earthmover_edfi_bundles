@@ -317,7 +317,7 @@
         "scoreResults": [
         {% if obj_assess[2] is not none and obj_assess[2] | length %}
           {
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#RIT scale score",
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#RIT Scale Score",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{ obj_assess[2] }}"
           },
