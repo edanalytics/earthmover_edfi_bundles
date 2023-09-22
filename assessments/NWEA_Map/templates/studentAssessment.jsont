@@ -1,7 +1,7 @@
 {
     "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
-      "assessmentIdentifier": "NWEA-Map",
+      "assessmentIdentifier": "NWEA-MAP",
       "namespace": "uri://www.nwea.org/map/Assessment"
     },
     "schoolYearTypeReference": {
@@ -301,7 +301,7 @@
       {% for obj_assess in all_obj_assess %}
       {
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "NWEA-Map",
+          "assessmentIdentifier": "NWEA-MAP",
           "identificationCode": "{{ obj_assess[0][:60] }}",
           "namespace": "uri://www.nwea.org/map/Assessment"
         },
