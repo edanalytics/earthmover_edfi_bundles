@@ -1,0 +1,274 @@
+# See accompanying README.md for details about this file.
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_JOIN_COLUMN: secondary_school_student_id
+    STUDENT_ID_NAME: secondary_school_student_id
+    STUDENT_ID_XWALK: ''
+
+
+sources:
+
+  {% set input_files = [['psat_sat_input_file', ''], ['psat_sat_input_file_copy', '_copy']] %}
+  {% for input_file in input_files %}
+  {{input_file[0]}}:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    type: csv
+    # See the accompanying README.md for a list of required columns for this file
+  {% endfor %}
+
+  student_id_xwalk:
+    # This file only needs to be supplied if the source assessment file does not
+    # contain the studentUniqueId used by Ed-Fi
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - from 
+      - to
+    optional: True
+    type: csv
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  {% for input_file in input_files %}
+  psat_sat_student_assessment{{input_file[1]}}:
+    operations:
+      - operation: rename_columns
+        source: $sources.{{input_file[0]}}
+        columns:
+          DISTRICT CODE: district_code
+          SECONDARY SCHOOL STUDENT ID: secondary_school_student_id
+          STATE SPONSORED ASSESSMENT DATE: state_sponsored_assessment_date
+          'STATE SPONORED ASSESSMENTS: GRADE LEVEL WHEN ASSESSED': state_sponsored_grade_when_assessed
+          PSAT89 TEST ADMINSTRATION INDICATOR: psat_8_9_test_administration_indicator
+          PSAT10 TEST ADMINISTRATION INDICATOR: psat_10_test_administration_indicator
+          SAT TEST ADMINISTRATION INDICATOR: sat_test_administration_indicator
+          VALID ANSWER SHEET RECEIVED: valid_answer_sheet_received
+          STATE SPONSORED ASSESSMENTS TOTAL SCORE: state_sponsored_total_score
+          STATE SPONORED ASSESSMENTS EVIDENCEBASED READING AND WRITING SECTION SCORE: state_sponsored_reading_writing_section_score
+          STATE SPONORED ASSESSMENTS MATH SECTION SCORE: state_sponsored_math_section_score
+          STATE SPONORED ASSESSMENTS READING TEST SCORE: state_sponsored_reading_test_score
+          STATE SPONORED ASSESSMENTS WRITING AND LANGUAGE TEST SCORE: state_sponsored_writing_lang_test_score
+          STATE SPONORED ASSESSMENTS MATH TEST SCORE: state_sponsored_math_test_score
+          STATE SPONORED ASSESSMENTS RELEVANT WORDS IN CONTEXT SUBSCORE: state_sponsored_relevant_words_in_context_subscore
+          STATE SPONORED ASSESSMENTS COMMAND OF EVIDENCE SUBSCORE: state_sponsored_command_of_evidence_subscore
+          STATE SPONORED ASSESSMENTS EXPRESSION OF IDEAS SUBSCORE: state_sponsored_expression_of_ideas_subscore
+          STATE SPONORED ASSESSMENTS STANDARD ENGLISH CONVENTIONS SUBSCORE: state_sponsored_standard_english_conventions_subscore
+          STATE SPONORED ASSESSMENTS HEART OF ALGEBRA SUBSCORE: state_sponsored_heart_of_algebra_subscore
+          STATE SPONORED ASSESSMENTS PASSPORT TO ADVANCED MATHEMATICS SUBSCORE: state_sponsored_passport_to_advanced_math_subscore
+          STATE SPONORED ASSESSMENTS PROBLEM SOLVING AND DATA ANALYSIS SUBSCORE: state_sponsored_problem_solving_and_data_analysis_subscore
+          ESSAY READING SUBSCORE: essay_reading_subscore
+          ESSAY ANALYSIS SUBSCORE: essay_analysis_subscore
+          ESSAY WRITING SUBSCORE: essay_writing_subscore
+          EBRW PROFICIENCY LEVEL: ebrw_proficiency_level
+          MATH PROFICIENCY LEVEL: math_proficiency_level
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE TOTAL SCORE ': nationally_representative_total_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE EVIDENCE BASED READING AND WRITING SECTION ': nationally_representative_reading_writing_section_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE MATH SECTION ': nationally_representative_math_section_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE READING TEST ': nationally_representative_reading_test_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE WRITING AND LANGUAGE TEST ': nationally_representative_writing_lang_test_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE MATH TEST ': nationally_representative_math_test_score
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE RELEVANT WORDS IN CONTEXT SUBSCORE ': nationally_representative_relevant_words_in_context_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE COMMAND OF EVIDENCE SUBSCORE ': nationally_representative_command_of_evidence_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE EXPRESSION OF IDEAS SUBSCORE ': nationally_representative_expression_of_ideas_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE STANDARD ENGLISH CONVENTIONS SUBSCORE ': nationally_representative_standard_english_conventions_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE: HEART OF ALGEBRA SUBSCORE ': nationally_representative_heart_of_algebra_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE PASSPORT TO ADVANCED MATHEMATICS SUBSCORE ': nationally_representative_passport_to_advanced_math_subscore
+          'NATIONALLY REPRESENTATIVE SAMPLE PERCENTILE PROBLEM SOLVING AND DATA ANALYSIS SUBSCORE ': nationally_representative_problem_solving_and_data_analysis_subscore
+          'USER PERCENTILE TOTAL SCORE ': user_percentile_total_score
+          'USER PERCENTILE EVIDENCE BASED READING AND WRITING ': user_percentile_reading_writing_section_score
+          'USER PERCENTILE MATH ': user_percentile_math_section_score
+          'USER PERCENTILE READING TEST ': user_percentile_reading_test_score
+          'USER PERCENTILE WRITING AND LANGUAGE TEST ': user_percentile_writing_lang_test_score
+          'USER PERCENTILE MATH TEST ': user_percentile_math_test_score
+          'USER PERCENTILE RELEVANT WORDS IN CONTEXT SUBSCORE ': user_percentile_relevant_words_in_context_subscore
+          'USER PERCENTILE COMMAND OF EVIDENCE SUBSCORE ': user_percentile_command_of_evidence_subscore
+          'USER PERCENTILE EXPRESSION OF IDEAS SUBSCORE ': user_percentile_expression_of_ideas_subscore
+          'USER PERCENTILE STANDARD ENGLISH CONVENTIONS SUBSCORE ': user_percentile_standard_english_conventions_subscore
+          'USER PERCENTILE HEART OF ALGEBRA SUBSCORE ': user_percentile_heart_of_algebra_subscore
+          'USER PERCENTILE PASSPORT TO ADVANCED MATHEMATICS SUBSCORE ': user_percentile_passport_to_advanced_math_subscore
+          'USER PERCENTILE PROBLEM SOLVING AND DATA ANALYSIS SUBSCORE ': user_percentile_problem_solving_and_data_analysis_subscore
+          'EVIDENCEBASED READING AND WRITING CCR BENCHMARK INDICATOR ': evidence_based_reading_and_writing_ccr_benchmark_indicator
+          'MATH CCR BENCHMARK INDICATOR ': math_ccr_benchmark_indicator
+          NUMBER OF READING TEST QUESTIONS: number_of_reading_test_questions
+          STUDENT CORRECT ANSWERS TO READING TEST QUESTIONS: student_correct_answers_to_reading_test_questions
+          STUDENT INCORRECT ANSWERS TO READING TEST QUESTIONS: student_incorrect_answers_to_reading_test_questions
+          STUDENT OMITTED READING TEST QUESTIONS: student_omitted_reading_test_questions
+          NUMBER OF WRITING AND LANGUAGE TEST QUESTIONS: number_of_writing_and_lang_test_questions
+          STUDENT CORRECT ANSWERS TO WRITING AND LANGUAGE TEST QUESTIONS: student_correct_answers_to_writing_and_lang_test_questions
+          STUDENT INCORRECT ANSWERS TO WRITING AND LANGUAGE TEST QUESTIONS: student_incorrect_answers_to_writing_and_lang_test_questions
+          STUDENT OMITTED WRITING AND LANGUAGE TEST QUESTIONS: student_omitted_writing_and_lang_test_questions
+          NUMBER OF MATH NO CALC TEST MULTIPLE CHOICE QUESTIONS: number_of_math_no_calc_test_mult_choice_questions
+          NUMBER OF MATH NO CALC TEST PRODUCED RESPONSE QUESTIONS: number_of_math_no_calc_test_produced_response_questions
+          STUDENT CORRECT ANSWERS TO MATH NO CALC TEST QUESTIONS: student_correct_answers_to_math_no_calc_test_questions
+          STUDENT INCORRECT ANSWERS TO MATH NO CALC TEST QUESTIONS: student_incorrect_answers_to_math_no_calc_test_questions
+          STUDENT OMITTED MATH NO CALC TEST QUESTIONS: student_omitted_math_no_calc_test_questions
+          NUMBER OF MATH CALC TEST MULTIPLE CHOICE QUESTIONS: number_of_math_calc_test_mult_choice_questions
+          NUMBER OF MATH CALC TEST PRODUCED RESPONSE QUESTIONS: number_of_math_calc_test_produced_response_questions
+          STUDENT CORRECT ANSWERS TO MATH CALC TEST QUESTIONS: student_correct_answers_to_math_calc_test_questions
+          STUDENT INCORRECT ANSWERS TO MATH CALC TEST QUESTIONS: student_incorrect_answers_to_math_calc_test_questions
+          STUDENT OMITTED MATH CALC TEST QUESTIONS: student_omitted_math_calc_test_questions
+      - operation: join 
+        sources: 
+          - $transformations.psat_sat_student_assessment{{input_file[1]}}
+          - $sources.student_id_xwalk
+        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        right_key: from
+        join_type: left
+      - operation: duplicate_columns
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        columns:
+          school_year: 2022
+      - operation: map_values
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        column: state_sponsored_grade_when_assessed
+        map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
+      - operation: filter_rows
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        query: valid_answer_sheet_received == 'N'
+        behavior: exclude
+      - operation: date_format
+        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
+        column: state_sponsored_assessment_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+  {% endfor %}
+  psat_sat_student_assessment_reading_writing:
+    operations:
+      # need to force math columns to be null
+      - operation: modify_columns
+        source: $transformations.psat_sat_student_assessment
+        columns:
+          state_sponsored_math_section_score: ''
+          state_sponsored_math_test_score: ''
+          state_sponsored_heart_of_algebra_subscore: ''
+          state_sponsored_passport_to_advanced_math_subscore: ''
+          state_sponsored_problem_solving_and_data_analysis_subscore: ''
+          math_proficiency_level: ''
+          nationally_representative_math_section_score: ''
+          nationally_representative_math_test_score: ''
+          nationally_representative_heart_of_algebra_subscore: ''
+          nationally_representative_passport_to_advanced_math_subscore: ''
+          nationally_representative_problem_solving_and_data_analysis_subscore: ''
+          user_percentile_math_section_score: ''
+          user_percentile_math_test_score: ''
+          user_percentile_heart_of_algebra_subscore: ''
+          user_percentile_passport_to_advanced_math_subscore: ''
+          user_percentile_problem_solving_and_data_analysis_subscore: ''
+          math_ccr_benchmark_indicator: ''
+          number_of_math_no_calc_test_mult_choice_questions: ''
+          number_of_math_no_calc_test_produced_response_questions: ''
+          student_correct_answers_to_math_no_calc_test_questions: ''
+          student_incorrect_answers_to_math_no_calc_test_questions: ''
+          student_omitted_math_no_calc_test_questions: ''
+          number_of_math_calc_test_mult_choice_questions: ''
+          number_of_math_calc_test_produced_response_questions: ''
+          student_correct_answers_to_math_calc_test_questions: ''
+          student_incorrect_answers_to_math_calc_test_questions: ''
+          student_omitted_math_calc_test_questions: ''
+      ### todo!! what should I make the subject for reading & writing test??
+      - operation: add_columns
+        source: $transformations.psat_sat_student_assessment_reading_writing
+        columns:
+          subject: 'English Language Arts'
+          student_assessment_id: "{%raw%}{{studentUniqueId}}_{{state_sponsored_assessment_date}}_ela{%endraw%}"
+  psat_sat_student_assessment_math:
+    operations:
+      # need to force reading columns to be null
+      - operation: modify_columns
+        source: $transformations.psat_sat_student_assessment_copy
+        columns:
+          state_sponsored_reading_writing_section_score: ''
+          state_sponsored_reading_test_score: ''
+          state_sponsored_writing_lang_test_score: ''
+          state_sponsored_relevant_words_in_context_subscore: ''
+          state_sponsored_command_of_evidence_subscore: ''
+          state_sponsored_expression_of_ideas_subscore: ''
+          state_sponsored_standard_english_conventions_subscore: ''
+          essay_reading_subscore: ''
+          essay_analysis_subscore: ''
+          essay_writing_subscore: ''
+          ebrw_proficiency_level: ''
+          nationally_representative_reading_writing_section_score: ''
+          nationally_representative_reading_test_score: ''
+          nationally_representative_writing_lang_test_score: ''
+          nationally_representative_relevant_words_in_context_subscore: ''
+          nationally_representative_command_of_evidence_subscore: ''
+          nationally_representative_expression_of_ideas_subscore: ''
+          nationally_representative_standard_english_conventions_subscore: ''
+          user_percentile_reading_writing_section_score: ''
+          user_percentile_reading_test_score: ''
+          user_percentile_writing_lang_test_score: ''
+          user_percentile_relevant_words_in_context_subscore: ''
+          user_percentile_command_of_evidence_subscore: ''
+          user_percentile_expression_of_ideas_subscore: ''
+          user_percentile_standard_english_conventions_subscore: ''
+          evidence_based_reading_and_writing_ccr_benchmark_indicator: ''
+          number_of_reading_test_questions: ''
+          student_correct_answers_to_reading_test_questions: ''
+          student_incorrect_answers_to_reading_test_questions: ''
+          student_omitted_reading_test_questions: ''
+          number_of_writing_and_lang_test_questions: ''
+          student_correct_answers_to_writing_and_lang_test_questions: ''
+          student_incorrect_answers_to_writing_and_lang_test_questions: ''
+          student_omitted_writing_and_lang_test_questions: ''
+      - operation: add_columns
+        source: $transformations.psat_sat_student_assessment_math
+        columns:
+          subject: 'Mathematics'
+          student_assessment_id: "{%raw%}{{studentUniqueId}}_{{state_sponsored_assessment_date}}_mathematics{%endraw%}"
+  psat_sat_student_assessment_stacked:
+    operations:
+      - operation: union
+        sources:
+          - $transformations.psat_sat_student_assessment_reading_writing
+          - $transformations.psat_sat_student_assessment_math
+
+
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.psat_sat_student_assessment_stacked
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
