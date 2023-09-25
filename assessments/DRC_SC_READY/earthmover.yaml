@@ -1,3 +1,5 @@
+version: 2
+
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
@@ -5,7 +7,6 @@ config:
   show_graph: False
   show_stacktrace: True
   parameter_defaults:
-    source_filetype: sas
     source_encoding: latin-1
     district_subset_id: ""
     OUTPUT_DIR: ./output
@@ -34,16 +35,16 @@ sources:
 
   scready_input:
     file: ${INPUT_FILE}
-    source_filetype: ${source_filetype}
-    encoding: ${source_encoding}
+    source_filetype: csv
+#    encoding: ${source_encoding}
 
 
 transformations:
 
   scready_student_assessment:
+    source: $sources.scready_input
     operations:
-      - operation: keep_columns 
-        source: $sources.scready_input
+      - operation: keep_columns
         columns: 
           - StateID
           - SchoolID
@@ -77,23 +78,20 @@ transformations:
         query: SchoolID.str.startswith("${district_subset_id}")
         behavior: include
       - operation: rename_columns
-        source: $transformations.scready_student_assessment
         columns:
           StateID: student_unique_id
       - operation: add_columns
-        source: $transformations.scready_student_assessment
         columns:
           school_year:  ${API_YEAR}
           administration_date: {{ ${API_YEAR} ~ "-05-15" }} 
       - operation: filter_rows
-        source: $transformations.scready_student_assessment
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
     
   scready_student_assessment_ela:
+    source: $transformations.scready_student_assessment
     operations:
-      - operation: modify_columns 
-        source: $transformations.scready_student_assessment
+      - operation: modify_columns
         columns: 
           MathLev: ''
           MathLev1: ''
@@ -103,17 +101,16 @@ transformations:
           MathLev5: ''
           MathVSS: ''
           MathSS: ''
-      - operation: add_columns 
-        source: $transformations.scready_student_assessment_ela
+      - operation: add_columns
         columns: 
           subject: 'English Language Arts'
           student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
 
 
   scready_student_assessment_math:
+    source: $transformations.scready_student_assessment
     operations:
-      - operation: modify_columns 
-        source: $transformations.scready_student_assessment
+      - operation: modify_columns
         columns: 
           ELALev: ''
           ELALev1: ''
@@ -128,20 +125,18 @@ transformations:
           ELALev11: ''
           ELAVSS: ''
           ELASS: ''
-      - operation: add_columns 
-        source: $transformations.scready_student_assessment_math
+      - operation: add_columns
         columns: 
           subject: 'Mathematics'
           student_grade: "{%raw%}{{MathGrade}}{%endraw%}"
 
-  scready_student_assessment_stacked: 
+  scready_student_assessment_stacked:
+    source: $transformations.scready_student_assessment_ela
     operations: 
       - operation: union 
-        sources: 
-          - $transformations.scready_student_assessment_ela
+        sources:
           - $transformations.scready_student_assessment_math
       - operation: add_columns
-        source: $transformations.scready_student_assessment_stacked
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"  #"{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
           MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
@@ -161,7 +156,6 @@ transformations:
           ELALev10_name: "{%raw%}{{student_grade |int}}_ELALev10{%endraw%}"
           ELALev11_name: "{%raw%}{{student_grade |int}}_ELALev11{%endraw%}"
       - operation: map_values
-        source: $transformations.scready_student_assessment_stacked
         columns: 
           - MathLev1_name
           - MathLev2_name
@@ -182,13 +176,12 @@ transformations:
         map_file: ${BUNDLE_DIR}/seeds/objective_standards_mapping.csv
 
   objective_assessments:
+    source: $sources.objectiveAssessments
     operations: 
       - operation: distinct_rows
-        source: $sources.objectiveAssessments
         columns: 
           - to  
-      - operation: rename_columns 
-        source: $transformations.objective_assessments
+      - operation: rename_columns
         columns: 
           to: identification_code 
       
