@@ -349,8 +349,9 @@
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Proficient",
       "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Yes",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
+    }
     {% if assessment_id == 'STAR-EARLY-LIT' %}
+    ,
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
       "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Early Emergent Reader",
