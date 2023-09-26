@@ -138,13 +138,19 @@ transformations:
         column: grade_level
         map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
       {% if "${PERCENTILE_MAPPING}" != '' %}
-      - operation: modify_columns
+      - operation: drop_columns
         columns: 
-          perf_lvl_value: percentile
-          perf_lvl_type: ${PERCENTILE_MAPPING}
+          - perf_lvl_value
+          - perf_lvl_type
+      - operation: duplicate_columns
+        columns:
+          percentile: perf_lvl_value
       - operation: map_values
         column: perf_lvl_value
         map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_${PERCENTILE_MAPPING}.csv
+      - operation: add_columns
+        columns: 
+          perf_lvl_type: ${PERCENTILE_MAPPING}
       {% endif %}
 
 destinations:
