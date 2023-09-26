@@ -81,9 +81,11 @@ transformations:
           school_year:  ${API_YEAR}
           administration_date: {{ ${API_YEAR} ~ "-05-15" }}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
-      - operation: filter_rows
-        query: lea_id == ${sub_lea_id}
-        behavior: include
+      {% if ${sub_lea_id} %}
+        - operation: filter_rows
+          query: lea_id == ${sub_lea_id}
+          behavior: include
+      {% endif %}
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
