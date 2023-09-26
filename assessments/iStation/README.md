@@ -49,7 +49,7 @@ Istation performance levels can be reported on two different scales: tiers (1: >
 ### Examples
 Using an ID column from the assessment file and optional percentile mapping:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
+earthmover run -c ./earthmover.yml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
@@ -59,7 +59,7 @@ earthmover run -c ./earthmover.yaml -p '{
 
 Using a student ID crosswalk:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
+earthmover run -c ./earthmover.yml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
@@ -70,7 +70,7 @@ earthmover run -c ./earthmover.yaml -p '{
 
 Using a database connection:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
+earthmover run -c ./earthmover.yml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
@@ -82,7 +82,7 @@ earthmover run -c ./earthmover.yaml -p '{
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash
-lightbeam validate+send -c ./lightbeam.yaml -p '{
+lightbeam validate+send -c ./lightbeam.yml -p '{
 "DATA_DIR": "./output/",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
