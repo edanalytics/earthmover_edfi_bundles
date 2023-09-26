@@ -10,7 +10,7 @@ config:
     SUBJECT: reading
     STUDENT_ID_NAME: student_id
     STUDENT_ID_XWALK: ''
-    SNOWFLAKE_CONNECTION: ''
+    DATABASE_CONNECTION: ''
     PERCENTILE_MAPPING: ''
 
 sources:
@@ -32,10 +32,13 @@ sources:
   map_percentile_to_level:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  map_percentile_to_tier:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
 
-  {% if "${SNOWFLAKE_CONNECTION}" | length %}
+  {% if "${DATABASE_CONNECTION}" | length %}
   student_id_mapping:
-    connection: ${SNOWFLAKE_CONNECTION}
+    connection: ${DATABASE_CONNECTION}
     query: ${STUDENT_ID_QUERY}
   
   {% else %}
