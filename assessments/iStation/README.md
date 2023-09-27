@@ -54,7 +54,7 @@ earthmover run -c ./earthmover.yml -p '{
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
 "SUBJECT": "reading",
-"PERCENTILE_MAPPING": "level"
+"PERCENTILE_MAPPING": "level"}'
 ```
 
 Using a student ID crosswalk:
