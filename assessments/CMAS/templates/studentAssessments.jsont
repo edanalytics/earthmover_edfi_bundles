@@ -141,10 +141,6 @@
         {% set _ = perf_levels.append([NotTestedCode, 'Not Tested Code']) %}
       {% endif %}
 
-      {% if NotTestedReason is not none and NotTestedReason | length %}
-        {% set _ = perf_levels.append([NotTestedReason, 'Not Tested Reason']) %}
-      {% endif %}
-
       {% if VoidScoreCode is not none and VoidScoreCode | length %}
         {% set _ = perf_levels.append([VoidScoreCode, 'Void Score Code']) %}
       {% endif %}
