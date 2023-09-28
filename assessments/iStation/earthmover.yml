@@ -52,6 +52,7 @@ sources:
   {% endif %}
 
 transformations:
+  # This step is done before iterating through the months because the run-time Jinja requres an actual column name. Something like {{month ~ 'LEVEL'}} won't work
   define_perf_levels:
     source: $sources.istation_input
     operations:
