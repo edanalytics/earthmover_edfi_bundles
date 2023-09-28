@@ -52,19 +52,30 @@ sources:
   {% endif %}
 
 transformations:
-  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
-  {% for month in months %}
-  {% set month_level = month ~ '_LEVEL' %}
-  {% set month_tier = month ~ '_TIER' %}
-  scores_{{month}}:
+  define_perf_levels:
     source: $sources.istation_input
     operations:
-      - operation: duplicate_columns
-        columns:
-          {% if August_LEVEL is not none and August_LEVEL|length %}{{ month_level }}{% else %}{{ month_tier }}{% endif %}: perf_lvl_value
       - operation: add_columns
         columns:
-          perf_lvl_type: {% if August_LEVEL is not none and August_LEVEL|length %}'level'{% else %}'tier'{% endif %}
+          August_perf_lvl: "{%raw%}{% if August_LEVEL is defined %}{{August_LEVEL}}{% else %}{{August_TIER}}{% endif %}{%endraw%}"
+          September_perf_lvl: "{%raw%}{% if September_LEVEL is defined %}{{September_LEVEL}}{% else %}{{September_TIER}}{% endif %}{%endraw%}"
+          October_perf_lvl: "{%raw%}{% if October_LEVEL is defined %}{{October_LEVEL}}{% else %}{{October_TIER}}{% endif %}{%endraw%}"
+          November_perf_lvl: "{%raw%}{% if November_LEVEL is defined %}{{November_LEVEL}}{% else %}{{November_TIER}}{% endif %}{%endraw%}"
+          December_perf_lvl: "{%raw%}{% if December_LEVEL is defined %}{{December_LEVEL}}{% else %}{{December_TIER}}{% endif %}{%endraw%}"
+          January_perf_lvl: "{%raw%}{% if January_LEVEL is defined %}{{January_LEVEL}}{% else %}{{January_TIER}}{% endif %}{%endraw%}"
+          February_perf_lvl: "{%raw%}{% if February_LEVEL is defined %}{{February_LEVEL}}{% else %}{{February_TIER}}{% endif %}{%endraw%}"
+          March_perf_lvl: "{%raw%}{% if March_LEVEL is defined %}{{March_LEVEL}}{% else %}{{March_TIER}}{% endif %}{%endraw%}"
+          April_perf_lvl: "{%raw%}{% if April_LEVEL is defined %}{{April_LEVEL}}{% else %}{{April_TIER}}{% endif %}{%endraw%}"
+          May_perf_lvl: "{%raw%}{% if May_LEVEL is defined %}{{May_LEVEL}}{% else %}{{May_TIER}}{% endif %}{%endraw%}"
+          June_perf_lvl: "{%raw%}{% if June_LEVEL is defined %}{{June_LEVEL}}{% else %}{{June_TIER}}{% endif %}{%endraw%}"
+          July_perf_lvl: "{%raw%}{% if July_LEVEL is defined %}{{July_LEVEL}}{% else %}{{July_TIER}}{% endif %}{%endraw%}"
+          perf_lvl_type: "{%raw%}{% if August_LEVEL is defined %}level{% else %}tier{% endif %}{%endraw%}"
+
+  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
+  {% for month in months %}
+  scores_{{month}}:
+    source: $$transformations.define_perf_levels
+    operations:
       - operation: keep_columns
         columns:
           - STUDENT_ID
@@ -73,7 +84,7 @@ transformations:
           - {{month}}_ADMIN_DATE
           - {{month}}_SCORE
           - {{month}}_PTILE
-          - perf_lvl_value
+          - {{month}}_perf_lvl
           - perf_lvl_type
       - operation: rename_columns
         columns:
@@ -83,6 +94,7 @@ transformations:
           {{month}}_ADMIN_DATE: admin_date
           {{month}}_SCORE: score
           {{month}}_PTILE: percentile
+          {{month}}_perf_lvl: perf_lvl_value
       - operation: filter_rows
         query: admin_date != ''
         behavior: include
