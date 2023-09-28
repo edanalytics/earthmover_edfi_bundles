@@ -31,6 +31,7 @@ Required columns:
 - OUTPUT_DIR: Where output files will be written
 - BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - INPUT_FILE: The assessment file to be mapped
+- API_YEAR: The school year when the assessments were taken
 - SUBJECT: `reading` or `spanish`. Istation's English reading and Spanish Lectura assessments are both supported. Defaults to `reading`.
 
 ### Optional
@@ -53,6 +54,7 @@ earthmover run -c ./earthmover.yml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
+"API_YEAR": "2023",
 "SUBJECT": "reading",
 "PERCENTILE_MAPPING": "level"}'
 ```
@@ -84,6 +86,8 @@ Once you have inspected the output JSONL for issues, check the settings in `ligh
 ```bash
 lightbeam validate+send -c ./lightbeam.yml -p '{
 "DATA_DIR": "./output/",
+"API_YEAR": "2023",
+"EDFI_API_BASE_URL": "yourURL",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
 ```
