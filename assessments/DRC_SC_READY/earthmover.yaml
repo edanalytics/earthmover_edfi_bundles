@@ -8,11 +8,10 @@ config:
   show_stacktrace: True
   parameter_defaults:
     source_encoding: latin-1
-    sub_lea_id: "2601"
     OUTPUT_DIR: ./output
     STATE_FILE: ./runs.csv
-    INPUT_FILE: /mnt/n/south_carolina/sc_2023/school_av/support/altered_raw_data/subset_altered/most_recent/2023_scready_sub.csv
-    API_YEAR: "2023"
+    INPUT_FILE: /mnt/n/south_carolina/sc_2023/data_systems_2023/horry_scready/csv/most_recent/horry_2021_scready_sub.csv
+    API_YEAR: "2021"
     BUNDLE_DIR: .
 
 sources:
@@ -81,11 +80,6 @@ transformations:
           school_year:  ${API_YEAR}
           administration_date: {{ ${API_YEAR} ~ "-05-15" }}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
-    {% if "${sub_lea_id}" %}
-      - operation: filter_rows
-        query: lea_id == '${sub_lea_id}'
-        behavior: include
-    {% endif %}
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
