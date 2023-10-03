@@ -45,7 +45,7 @@
     },
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score Lexile",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
       "result": "{{dibels_composite_score_lexile}}"
     },
     {
@@ -77,7 +77,7 @@
     {%- for obj in all_obj_assessment -%}
     {
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "Dibels-Next",
+        "assessmentIdentifier": "Dibels-8",
         "identificationCode": "{{obj[0]}}",
         "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
       }
@@ -114,12 +114,15 @@
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{obj[2][1]}}"
-        },
+        }
+        {% if obj[3] is defined and obj[3][1] != '' %}
+        ,
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{obj[3][1]}}"
         }
+        {% endif %}
       ]
       {% endif %}
     }{%- if not loop.last -%},
