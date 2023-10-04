@@ -8,7 +8,7 @@
       "schoolYear": {{ school_year }}
     },
     "studentReference": {
-      "studentUniqueId": "{{ studentUniqueId }}"
+      "studentUniqueId": "{{ studentUniqueId | int }}"
     },
     "administrationDate": "{{ TestStartDate }}",
 
