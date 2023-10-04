@@ -49,7 +49,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
-"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 10 -or- PSAT 8/9",
+"TEST_TYPE": "SAT" -or- "PSAT/NMSQT" -or- "PSAT 10" -or- "PSAT 8/9",
 "STUDENT_ID_NAME": "secondary_school_student_id"}'
 ```
 
@@ -59,7 +59,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/AssessmentResults.csv",
 "OUTPUT_DIR": "./output",
-"TEST_TYPE": "SAT -or- PSAT/NMSQT -or- PSAT 10 -or- PSAT 8/9",
+"TEST_TYPE": "SAT" -or- "PSAT/NMSQT" -or- "PSAT 10" -or- "PSAT 8/9",
 "STUDENT_ID_XWALK": "path/to/student_id_xwalk.csv",
 "STUDENT_ID_JOIN_COLUMN": "Student_StateID",
 "STUDENT_ID_NAME": "to"}'
