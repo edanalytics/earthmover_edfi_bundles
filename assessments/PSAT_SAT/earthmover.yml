@@ -1,4 +1,5 @@
 # See accompanying README.md for details about this file.
+version: 2
 
 config:
   log_level: DEBUG
@@ -56,9 +57,9 @@ transformations:
   {% endif %}
   {% for input_file in input_files %}
   psat_sat_student_assessment{{input_file[1]}}:
+    source: $sources.{{input_file[0]}}
     operations:
       - operation: rename_columns
-        source: $sources.{{input_file[0]}}
         columns:
           DISTRICT_STUDENT_ID: district_student_id
           STATE_STUDENT_ID: state_student_id
@@ -131,38 +132,33 @@ transformations:
           LATEST_SAT_ESSAY_ANALYSIS: essay_analysis_subscore
           LATEST_SAT_ESSAY_WRITING: essay_writing_subscore          
           {% endif %}
-
       - operation: join 
         sources: 
-          - $transformations.psat_sat_student_assessment{{input_file[1]}}
           - $sources.student_id_xwalk
         left_key: ${STUDENT_ID_JOIN_COLUMN}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         columns:
           school_year: ${SCHOOL_YEAR}
           test_type: ${TEST_TYPE}
       - operation: map_values
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: grade_when_assessed
         map_file: ./seeds/grade_mapping.csv
       - operation: date_format
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: assessment_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
   {% endfor %}
+
   psat_sat_student_assessment_reading_writing:
+    source: $transformations.psat_sat_student_assessment
     operations:
       # need to force math columns to be null
       - operation: modify_columns
-        source: $transformations.psat_sat_student_assessment
         columns:
           math_section_score: ''
           math_test_score: ''
@@ -193,15 +189,15 @@ transformations:
           user_percentile_passport_to_advanced_math_subscore: ''
           {% endif %}
       - operation: add_columns
-        source: $transformations.psat_sat_student_assessment_reading_writing
         columns:
           subject: 'English Language Arts'
           student_assessment_id: "{%raw%}{{studentUniqueId}}_{{assessment_date}}_ela{%endraw%}"
+
   psat_sat_student_assessment_math:
+    source: $transformations.psat_sat_student_assessment_copy
     operations:
       # need to force reading columns to be null
       - operation: modify_columns
-        source: $transformations.psat_sat_student_assessment_copy
         columns:
           reading_writing_section_score: ''
           reading_test_score: ''
@@ -239,15 +235,15 @@ transformations:
           essay_writing_subscore: ''
           {% endif %}
       - operation: add_columns
-        source: $transformations.psat_sat_student_assessment_math
         columns:
           subject: 'Mathematics'
           student_assessment_id: "{%raw%}{{studentUniqueId}}_{{assessment_date}}_mathematics{%endraw%}"
+
   psat_sat_student_assessment_stacked:
+    source: $transformations.psat_sat_student_assessment_reading_writing
     operations:
       - operation: union
         sources:
-          - $transformations.psat_sat_student_assessment_reading_writing
           - $transformations.psat_sat_student_assessment_math
 
 
