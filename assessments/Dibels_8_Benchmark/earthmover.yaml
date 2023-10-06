@@ -14,6 +14,7 @@ config:
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
+  id_hashing: &id_hashing "{%raw%}{{ md5(value) }}{%endraw%}"
 
 sources:
   assessmentReportingMethodDescriptors:
@@ -63,67 +64,6 @@ transformations:
       columns: 
         ${STUDENT_ID_NAME}: primary_id_student_id
     - operation: snake_case_columns
-      columns:
-        - School Year
-        - Assessment Grade
-        - Benchmark Period
-        - Composite Level
-        - Composite Score
-        - Composite - National Norm Percentile
-        - Composite - Semester Growth
-        - Composite - Year Growth
-        - Letter Names (LNF) - Level
-        - Letter Names (LNF) - Score
-        - Letter Names (LNF) - National Norm Percentile
-        - Letter Names (LNF) - Semester Growth
-        - Letter Names (LNF) - Year Growth
-        - Phonemic Awareness (PSF) - Level
-        - Phonemic Awareness (PSF) - Score
-        - Phonemic Awareness (PSF) - National Norm Percentile
-        - Phonemic Awareness (PSF) - Semester Growth
-        - Phonemic Awareness (PSF) - Year Growth
-        - Letter Sounds (NWF-CLS) - Level
-        - Letter Sounds (NWF-CLS) - Score
-        - Letter Sounds (NWF-CLS) - National Norm Percentile
-        - Letter Sounds (NWF-CLS) - Semester Growth
-        - Letter Sounds (NWF-CLS) - Year Growth
-        - Decoding (NWF-WRC) - Level
-        - Decoding (NWF-WRC) - Score
-        - Decoding (NWF-WRC) - National Norm Percentile
-        - Decoding (NWF-WRC) - Semester Growth
-        - Decoding (NWF-WRC) - Year Growth
-        - Word Reading (WRF) - Level
-        - Word Reading (WRF) - Score
-        - Word Reading (WRF) - National Norm Percentile
-        - Word Reading (WRF) - Semester Growth
-        - Word Reading (WRF) - Year Growth
-        - Reading Accuracy (ORF-Accu) - Level
-        - Reading Accuracy (ORF-Accu) - Score
-        - Reading Accuracy (ORF-Accu) - National Norm Percentile
-        - Reading Accuracy (ORF-Accu) - Semester Growth
-        - Reading Accuracy (ORF-Accu) - Year Growth
-        - Reading Fluency (ORF) - Level
-        - Reading Fluency (ORF) - Score
-        - Reading Fluency (ORF) - National Norm Percentile
-        - Reading Fluency (ORF) - Semester Growth
-        - Reading Fluency (ORF) - Year Growth
-        - Error Rate (ORF) - Score
-        - Reading Comprehension (Maze) - Level
-        - Reading Comprehension (Maze) - Score
-        - Reading Comprehension (Maze) - National Norm Percentile
-        - Reading Comprehension (Maze) - Semester Growth
-        - Reading Comprehension (Maze) - Year Growth
-        - Correct Responses (Maze) - Score
-        - Incorrect Responses (Maze) - Score
-        - Client Date
-        - Vocabulary - Level
-        - Vocabulary - Score
-        - Spelling - Level
-        - Spelling - Score
-        - RAN - Level
-        - RAN - Score
-        - Risk Indicator - Level
-        - DIBELS Composite Score - Lexile
     - operation: add_columns
       columns:
         student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
@@ -131,7 +71,7 @@ transformations:
     - operation: modify_columns
       columns:
         school_year: *year_mapping
-        student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}"
+        student_assessment_id: *id_hashing
   
  assessments:
   source: $transformations.dibels_benchmark_student_assessment
