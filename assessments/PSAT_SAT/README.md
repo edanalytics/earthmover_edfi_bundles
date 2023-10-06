@@ -69,7 +69,7 @@ Once you have inspected the output JSONL for issues, check the settings in `ligh
 ```bash
 lightbeam validate+send -c ./lightbeam.yaml -p '{
 "DATA_DIR": "./output/",
-"API_YEAR": "2023",
+"API_YEAR": "youAPIYear",
 "BASE_URL": "yourURL",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
