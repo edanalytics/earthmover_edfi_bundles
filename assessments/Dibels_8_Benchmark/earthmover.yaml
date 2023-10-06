@@ -1,3 +1,5 @@
+version: 2
+
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
@@ -46,101 +48,98 @@ sources:
 transformations:
   
  dibels_benchmark_student_assessment:
+  source: $sources.dibels_benchmark_input
   operations:
     - operation: join
       sources:
-        - $sources.dibels_benchmark_input
         - $sources.student_id_mapping
       join_type: left
       left_key: ${STUDENT_ID_FROM}
       right_key: student_id_from
     - operation: map_values
-      source: $transformations.dibels_benchmark_student_assessment
       column: Assessment Grade
       map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
     - operation: rename_columns
-      source: $transformations.dibels_benchmark_student_assessment
       columns: 
-        School Year: school_year
-        Assessment Grade: assessment_grade
-        Benchmark Period: benchmark_period
-        Composite Level: composite_level
-        Composite Score: composite_score
-        Composite - National Norm Percentile: composite_national_norm_percentile
-        Composite - Semester Growth: composite_semester_growth
-        Composite - Year Growth: composite_year_growth
-        Letter Names (LNF) - Level: letter_names_lnf_level
-        Letter Names (LNF) - Score: letter_names_lnf_score
-        Letter Names (LNF) - National Norm Percentile: letter_names_lnf_national_norm_percentile
-        Letter Names (LNF) - Semester Growth: letter_names_lnf_semester_growth
-        Letter Names (LNF) - Year Growth: letter_names_lnf_year_growth
-        Phonemic Awareness (PSF) - Level: phonemic_awareness_psf_level
-        Phonemic Awareness (PSF) - Score: phonemic_awareness_psf_score
-        Phonemic Awareness (PSF) - National Norm Percentile: phonemic_awareness_psf_national_norm_percentile
-        Phonemic Awareness (PSF) - Semester Growth: phonemic_awareness_psf_semester_growth
-        Phonemic Awareness (PSF) - Year Growth: phonemic_awareness_psf_year_growth
-        Letter Sounds (NWF-CLS) - Level: letter_sounds_nwf_cls_level
-        Letter Sounds (NWF-CLS) - Score: letter_sounds_nwf_cls_score
-        Letter Sounds (NWF-CLS) - National Norm Percentile: letter_sounds_nwf_cls_national_norm_percentile
-        Letter Sounds (NWF-CLS) - Semester Growth: letter_sounds_nwf_cls_semester_growth
-        Letter Sounds (NWF-CLS) - Year Growth: letter_sounds_nwf_cls_year_growth
-        Decoding (NWF-WRC) - Level: decoding_nwf_wrc_level
-        Decoding (NWF-WRC) - Score: decoding_nwf_wrc_score
-        Decoding (NWF-WRC) - National Norm Percentile: decoding_nwf_wrc_national_norm_percentile
-        Decoding (NWF-WRC) - Semester Growth: decoding_nwf_wrc_semester_growth
-        Decoding (NWF-WRC) - Year Growth: decoding_nwf_wrc_year_growth
-        Word Reading (WRF) - Level: word_reading_wrf_level
-        Word Reading (WRF) - Score: word_reading_wrf_score
-        Word Reading (WRF) - National Norm Percentile: word_reading_wrf_national_norm_percentile
-        Word Reading (WRF) - Semester Growth: word_reading_wrf_semester_growth
-        Word Reading (WRF) - Year Growth: word_reading_wrf_year_growth
-        Reading Accuracy (ORF-Accu) - Level: reading_accuracy_orf_accu_level
-        Reading Accuracy (ORF-Accu) - Score: reading_accuracy_orf_accu_score
-        Reading Accuracy (ORF-Accu) - National Norm Percentile: reading_accuracy_orf_accu_national_norm_percentile
-        Reading Accuracy (ORF-Accu) - Semester Growth: reading_accuracy_orf_accu_semester_growth
-        Reading Accuracy (ORF-Accu) - Year Growth: reading_accuracy_orf_accu_year_growth
-        Reading Fluency (ORF) - Level: reading_fluency_orf_level
-        Reading Fluency (ORF) - Score: reading_fluency_orf_score
-        Reading Fluency (ORF) - National Norm Percentile: reading_fluency_orf_national_norm_percentile
-        Reading Fluency (ORF) - Semester Growth: reading_fluency_orf_semester_growth
-        Reading Fluency (ORF) - Year Growth: reading_fluency_orf_year_growth
-        Error Rate (ORF) - Score: error_rate_orf_score
-        Reading Comprehension (Maze) - Level: reading_comprehension_maze_level
-        Reading Comprehension (Maze) - Score: reading_comprehension_maze_score
-        Reading Comprehension (Maze) - National Norm Percentile: reading_comprehension_maze_national_norm_percentile
-        Reading Comprehension (Maze) - Semester Growth: reading_comprehension_maze_semester_growth
-        Reading Comprehension (Maze) - Year Growth: reading_comprehension_maze_year_growth
-        Correct Responses (Maze) - Score: correct_responses_maze_score
-        Incorrect Responses (Maze) - Score: incorrect_responses_maze_score
-        Client Date: client_date
         ${STUDENT_ID_NAME}: primary_id_student_id
-        Vocabulary - Level: vocabulary_level
-        Vocabulary - Score: vocabulary_score
-        Spelling - Level: spelling_level
-        Spelling - Score: spelling_score
-        RAN - Level: ran_level
-        RAN - Score: ran_score
-        Risk Indicator - Level: risk_indicator_level
-        DIBELS Composite Score - Lexile: dibels_composite_score_lexile
+    - operation: snake_case_columns
+      columns:
+        - School Year
+        - Assessment Grade
+        - Benchmark Period
+        - Composite Level
+        - Composite Score
+        - Composite - National Norm Percentile
+        - Composite - Semester Growth
+        - Composite - Year Growth
+        - Letter Names (LNF) - Level
+        - Letter Names (LNF) - Score
+        - Letter Names (LNF) - National Norm Percentile
+        - Letter Names (LNF) - Semester Growth
+        - Letter Names (LNF) - Year Growth
+        - Phonemic Awareness (PSF) - Level
+        - Phonemic Awareness (PSF) - Score
+        - Phonemic Awareness (PSF) - National Norm Percentile
+        - Phonemic Awareness (PSF) - Semester Growth
+        - Phonemic Awareness (PSF) - Year Growth
+        - Letter Sounds (NWF-CLS) - Level
+        - Letter Sounds (NWF-CLS) - Score
+        - Letter Sounds (NWF-CLS) - National Norm Percentile
+        - Letter Sounds (NWF-CLS) - Semester Growth
+        - Letter Sounds (NWF-CLS) - Year Growth
+        - Decoding (NWF-WRC) - Level
+        - Decoding (NWF-WRC) - Score
+        - Decoding (NWF-WRC) - National Norm Percentile
+        - Decoding (NWF-WRC) - Semester Growth
+        - Decoding (NWF-WRC) - Year Growth
+        - Word Reading (WRF) - Level
+        - Word Reading (WRF) - Score
+        - Word Reading (WRF) - National Norm Percentile
+        - Word Reading (WRF) - Semester Growth
+        - Word Reading (WRF) - Year Growth
+        - Reading Accuracy (ORF-Accu) - Level
+        - Reading Accuracy (ORF-Accu) - Score
+        - Reading Accuracy (ORF-Accu) - National Norm Percentile
+        - Reading Accuracy (ORF-Accu) - Semester Growth
+        - Reading Accuracy (ORF-Accu) - Year Growth
+        - Reading Fluency (ORF) - Level
+        - Reading Fluency (ORF) - Score
+        - Reading Fluency (ORF) - National Norm Percentile
+        - Reading Fluency (ORF) - Semester Growth
+        - Reading Fluency (ORF) - Year Growth
+        - Error Rate (ORF) - Score
+        - Reading Comprehension (Maze) - Level
+        - Reading Comprehension (Maze) - Score
+        - Reading Comprehension (Maze) - National Norm Percentile
+        - Reading Comprehension (Maze) - Semester Growth
+        - Reading Comprehension (Maze) - Year Growth
+        - Correct Responses (Maze) - Score
+        - Incorrect Responses (Maze) - Score
+        - Client Date
+        - Vocabulary - Level
+        - Vocabulary - Score
+        - Spelling - Level
+        - Spelling - Score
+        - RAN - Level
+        - RAN - Score
+        - Risk Indicator - Level
+        - DIBELS Composite Score - Lexile
     - operation: add_columns
-      source: $transformations.dibels_benchmark_student_assessment
       columns:
         student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
         assessment_id: "Dibels-8"
     - operation: modify_columns
-      source: $transformations.dibels_benchmark_student_assessment
       columns:
         school_year: *year_mapping
         student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}"
   
  assessments:
+  source: $transformations.dibels_benchmark_student_assessment
   operations:
     - operation: keep_columns
-      source: $transformations.dibels_benchmark_student_assessment
       columns: 
         - assessment_id
     - operation: distinct_rows
-      source: $transformations.assessments
 
 destinations:
   objectiveAssessments:
