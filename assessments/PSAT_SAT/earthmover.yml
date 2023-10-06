@@ -14,15 +14,12 @@ config:
 
 
 sources:
-  {% set input_files = [['psat_sat_input_file', ''], ['psat_sat_input_file_copy', '_copy']] %}
-  {% for input_file in input_files %}
-  {{input_file[0]}}:
+  psat_sat_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
     type: csv
     # See the accompanying README.md for a list of required columns for this file
-  {% endfor %}
 
   student_id_xwalk:
     # This file only needs to be supplied if the source assessment file does not
@@ -55,9 +52,8 @@ transformations:
   {% else %}
     {% set test = "PSAT" %}
   {% endif %}
-  {% for input_file in input_files %}
-  psat_sat_student_assessment{{input_file[1]}}:
-    source: $sources.{{input_file[0]}}
+  psat_sat_student_assessment:
+    source: $sources.psat_sat_input
     operations:
       - operation: rename_columns
         columns:
@@ -152,7 +148,6 @@ transformations:
         column: assessment_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-  {% endfor %}
 
   psat_sat_student_assessment_reading_writing:
     source: $transformations.psat_sat_student_assessment
@@ -194,7 +189,7 @@ transformations:
           student_assessment_id: "{%raw%}{{studentUniqueId}}_{{assessment_date}}_ela{%endraw%}"
 
   psat_sat_student_assessment_math:
-    source: $transformations.psat_sat_student_assessment_copy
+    source: $transformations.psat_sat_student_assessment
     operations:
       # need to force reading columns to be null
       - operation: modify_columns
