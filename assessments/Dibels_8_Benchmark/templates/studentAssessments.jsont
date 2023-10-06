@@ -43,11 +43,13 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_national_norm_percentile}}"
     },
+    {% if dibels_composite_score_lexile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score Lexile",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
       "result": "{{dibels_composite_score_lexile}}"
     },
+    {% endif %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
@@ -70,9 +72,9 @@
                                   ['Risk-Indicator', ['Assessment Measure Level', risk_indicator_level]]] %}
     {% set all_obj_assessment = [] %}
     {%- for obj in possible_obj_assess -%}
-    {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
-    {% set _= all_obj_assessment.append(obj) %}
-    {% endif %}
+      {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
+      {% set _= all_obj_assessment.append(obj) %}
+      {% endif %}
     {% endfor %}
     {%- for obj in all_obj_assessment -%}
     {
@@ -80,15 +82,15 @@
         "assessmentIdentifier": "Dibels-8",
         "identificationCode": "{{obj[0]}}",
         "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
-      }
-      {% if obj[1]|length > 0 and obj[1][1] != '' %}
-      ,
+      },
       "performanceLevels": [
+        {% if obj[1]|length > 0 and obj[1][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[1][0]}}",
           "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#{{obj[1][1]}}",
           "performanceLevelMet": true
         }
+        {% endif %}
         {% if obj[4] is defined and obj[4][1] != '' %}
         ,
         {
@@ -105,14 +107,12 @@
           "performanceLevelMet": true
         }
         {% endif %}
-      ]
-      {% endif %}
-      {% if obj[2] is defined and obj[2][1] != '' %}
-      ,
+      ],
       "scoreResults": [
+        {% if obj[2] is defined and obj[2][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[2][1]}}"
         }
         {% if obj[3] is defined and obj[3][1] != '' %}
@@ -123,8 +123,14 @@
           "result": "{{obj[3][1]}}"
         }
         {% endif %}
+        {% elif obj[3] is defined and obj[3][1] != '' %}
+        {
+          "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "{{obj[3][1]}}"
+        },
+        {% endif %}
       ]
-      {% endif %}
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
   ],
