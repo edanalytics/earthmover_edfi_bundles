@@ -51,6 +51,7 @@ transformations:
           - TestCompletionDate
           - AssignedTestType
           - ResultType
+          - TestLanguage
         new_column: generated_test_id
         separator: '-'
       - operation: map_values
