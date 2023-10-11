@@ -33,44 +33,44 @@
     "studentObjectiveAssessments": [
       {% set all_obj_assess = [
                                 ({"id_code": "Print Concept", 
-                                  "perf_levels": [PrintConceptPerformanceLevel],
+                                  "perf_levels": [(PrintConceptPerformanceLevel, "Performance Level")],
                                   "scores": [(PrintConceptCorrect,"Correct","Integer"),
                                              (PrintConceptAttempted,"Attempted","Integer")]
                                 }),
                                 ({"id_code": "Sentence Reading Fluency", 
-                                  "perf_levels": [SentenceReadingFluencyPerformanceLevel],
+                                  "perf_levels": [(SentenceReadingFluencyPerformanceLevel, "Performance Level")],
                                   "scores": [(SentenceReadingFluencyCorrect,"Correct","Integer"),
                                              (SentenceReadingFluencyAttempted,"Attempted","Integer")]
                                 }),
                                 ({"id_code": "Oral Reading Rate", 
-                                  "perf_levels": [OralReadingRatePerf],
+                                  "perf_levels": [(OralReadingRatePerf, "Performance Level")],
                                   "scores": [(OralReadingWCPM,"WCPM","Integer")]
                                 }),
                                 ({"id_code": "Oral Reading Accuracy", 
-                                  "perf_levels": [OralReadingAccuracyPerf],
+                                  "perf_levels": [(OralReadingAccuracyPerf, "Performance Level")],
                                   "scores": [(OralReadingAccuracyScore,"Oral Reading Accuracy Score","Decimal")]
                                 }),
                                 ({"id_code": "Literal Comprehension", 
-                                  "perf_levels": [LiteralComprehensionPerf],
+                                  "perf_levels": [(LiteralComprehensionPerf,"Performance Level")],
                                   "scores": []
                                 }),
                                 ({"id_code": "Listening Comprehension", 
-                                  "perf_levels": [ListeningComprehensionPerf],
+                                  "perf_levels": [(ListeningComprehensionPerf,"Performance Level")],
                                   "scores": [(ListeningComprehensionCorrect,"Correct","Integer"),
                                              (ListeningComprehensionAttempted,"Attempted","Integer")]
                                 }),
                                 ({"id_code": "Picture Vocab", 
-                                  "perf_levels": [PictureVocabPerf, PhonologicalAwarenessZPDLevel, PhonologicalAwarenessZPDName],
+                                  "perf_levels": [(PictureVocabPerf,"Performance Level")],
                                   "scores": [(PictureVocabCorrect,"Correct","Integer"),
                                              (PictureVocabAttempted,"Attempted", "Integer")]
                                 }),
                                 ({"id_code": "Phonological Awareness", 
-                                  "perf_levels": [PhonologicalAwarenessPerf],
+                                  "perf_levels": [(PhonologicalAwarenessPerf, "Performance Level"), (PhonologicalAwarenessZPDLevel,"ZPD Level") , (PhonologicalAwarenessZPDName,"ZPD Name")],
                                   "scores": [(PhonologicalAwarenessDomainScore,"Domain Score", "Integer"),
                                              (PhonologicalAwarenessTestPercentile,"Test Percentile", "Integer")]
                                 }),
                                 ({"id_code": "Phonics Word Recognition", 
-                                  "perf_levels": [PhonicsWordRecognitionPerf, PhonicsWordRecognitionZPDLevel, PhonicsWordRecognitionZPDName],
+                                  "perf_levels": [(PhonicsWordRecognitionPerf, "Performance Level"), (PhonicsWordRecognitionZPDLevel, "ZPD Level"), (PhonicsWordRecognitionZPDName, "ZPD Name")],
                                   "scores": [(PhonicsWordRecognitionDomainScore,"Domain Score", "Integer"),
                                              (PhonicsWordRecognitionTestPercentile,"Test Percentile", "Integer")]
                                 }),
@@ -87,10 +87,10 @@
 
         "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
-          {% if perf_level is not none and perf_level | length %}
+          {% if perf_level[0] is not none and perf_level[0] | length %}
           {
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Performance Level",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level }}",
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ perf_level[1] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
             "performanceLevelMet": true
           }
           {% if not loop.last %},{% endif %}
