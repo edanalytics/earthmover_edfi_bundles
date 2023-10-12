@@ -29,12 +29,28 @@
     {%- endfor -%}
   ],
   "scoreResults": [
-    {%- set all_scores = [] -%}
+    {%- set all_scores = [
+        [subject, "Subject", "Level"],
+        [SchoolID, "SchoolID", "Integer"],
+        [student_unique_id, "StudentUniqueId", "Integer"],
+        [TestAdmin, "TestAdmin", "Level"],
 
-    {% set _ = all_scores.append([subject, "Subject", "Level"]) %}
-    {% set _ = all_scores.append([SchoolID, "SchoolID", "Integer"]) %}
-    {% set _ = all_scores.append([student_unique_id, "StudentUniqueId", "Integer"]) %}
-    {% set _ = all_scores.append([TestAdmin, "TestAdmin", "Level"]) %}
+        [Lex, "Lexile Score", "Level"],
+        [LexLow, "Lexile Min", "Level"],
+        [LexUp, "Lexile Max", "Level"],
+
+        [Quant, "Quantile Score", "Level"],
+        [QuantLow, "Quantile Min", "Level"],
+        [QuantUp, "Quantile Max", "Level"],
+    ] -%}
+
+    {%- if LexNPR | int -%}
+        {%- set _ = all_scores.append([LexNPR, "Lexile National Percentile Rank", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if QuantNPR | int -%}
+        {%- set _ = all_scores.append([QuantNPR, "Quantile National Percentile Rank", "Integer"]) -%}
+    {%- endif -%}
 
     {%- if ELASS | int -%}
       {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
