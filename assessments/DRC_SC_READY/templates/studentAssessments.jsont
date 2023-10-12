@@ -34,15 +34,31 @@
         [SchoolID, "SchoolID", "Integer"],
         [student_unique_id, "StudentUniqueId", "Integer"],
         [TestAdmin, "TestAdmin", "Level"],
-
-        [Lex, "Lexile Score", "Level"],
-        [LexLow, "Lexile Min", "Level"],
-        [LexUp, "Lexile Max", "Level"],
-
-        [Quant, "Quantile Score", "Level"],
-        [QuantLow, "Quantile Min", "Level"],
-        [QuantUp, "Quantile Max", "Level"],
     ] -%}
+
+    {%- if Lex -%}
+        {%- set _ = all_scores.append([Lex, "Lexile Score", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if LexLow -%}
+        {%- set _ = all_scores.append([LexLow, "Lexile Min", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if LexUp -%}
+        {%- set _ = all_scores.append([LexUp, "Lexile Max", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if Quant -%}
+        {%- set _ = all_scores.append([Quant, "Quantile Score", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if QuantLow -%}
+        {%- set _ = all_scores.append([QuantLow, "Quantile Min", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if QuantUp -%}
+        {%- set _ = all_scores.append([QuantUp, "Quantile Max", "Level"]) -%}
+    {%- endif -%}
 
     {%- if LexNPR | int -%}
         {%- set _ = all_scores.append([LexNPR, "Lexile National Percentile Rank", "Integer"]) -%}
