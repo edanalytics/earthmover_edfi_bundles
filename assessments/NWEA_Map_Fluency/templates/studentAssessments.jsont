@@ -1,5 +1,34 @@
+{% set PrintConceptCorrect = PrintConceptCorrect.split(',') %}
+{% set PrintConceptAttempted = PrintConceptAttempted.split(',') %}
+{% set PrintConceptPerformanceLevel = PrintConceptPerformanceLevel.split(',') %}
+{% set SentenceReadingFluencyPerformanceLevel = SentenceReadingFluencyPerformanceLevel.split(',') %}
+{% set SentenceReadingFluencyCorrect = SentenceReadingFluencyCorrect.split(',') %}
+{% set SentenceReadingFluencyAttempted = SentenceReadingFluencyAttempted.split(',') %}
+{% set OralReadingRatePerf = OralReadingRatePerf.split(',') %}
+{% set OralReadingWCPM = OralReadingWCPM.split(',') %}
+{% set OralReadingAccuracyPerf = OralReadingAccuracyPerf.split(',') %}
+{% set OralReadingAccuracyScore = OralReadingAccuracyScore.split(',') %}
+{% set LiteralComprehensionPerf = LiteralComprehensionPerf.split(',') %}
+{% set ListeningComprehensionPerf = ListeningComprehensionPerf.split(',') %}
+{% set ListeningComprehensionCorrect = ListeningComprehensionCorrect.split(',') %}
+{% set ListeningComprehensionAttempted = ListeningComprehensionAttempted.split(',') %}
+{% set PictureVocabPerf = PictureVocabPerf.split(',') %}
+{% set PictureVocabCorrect = PictureVocabCorrect.split(',') %}
+{% set PictureVocabAttempted = PictureVocabAttempted.split(',') %}
+{% set PhonologicalAwarenessPerf = PhonologicalAwarenessPerf.split(',') %}
+{% set PhonologicalAwarenessZPDLevel = PhonologicalAwarenessZPDLevel.split(',') %}
+{% set PhonologicalAwarenessZPDName = PhonologicalAwarenessZPDName.split(',') %}
+{% set PhonologicalAwarenessDomainScore = PhonologicalAwarenessDomainScore.split(',') %}
+{% set PhonologicalAwarenessTestPercentile = PhonologicalAwarenessTestPercentile.split(',') %}
+{% set PhonicsWordRecognitionPerf = PhonicsWordRecognitionPerf.split(',') %}
+{% set PhonicsWordRecognitionZPDLevel = PhonicsWordRecognitionZPDLevel.split(',') %}
+{% set PhonicsWordRecognitionZPDName = PhonicsWordRecognitionZPDName.split(',') %}
+{% set PhonicsWordRecognitionDomainScore = PhonicsWordRecognitionDomainScore.split(',') %}
+{% set PhonicsWordRecognitionTestPercentile = PhonicsWordRecognitionTestPercentile.split(',') %}
+{% for i in range(count) %}
+{% set seq = i | string %}
 {
-    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id + seq) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
       "namespace": "uri://www.nwea.org/mapFluency"
@@ -87,10 +116,10 @@
 
         "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
-          {% if perf_level[0] is not none and perf_level[0] | length %}
+          {% if perf_level[0][i] is not none and perf_level[0][i] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ perf_level[1] }}",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0][i] }}",
             "performanceLevelMet": true
           }
           {% if not loop.last %},{% endif %}
@@ -100,11 +129,11 @@
 
         "scoreResults": [
         {% for score in obj_assess["scores"] %}
-          {% if score[0] is not none and score[0] | length %}
+          {% if score[0][i] is not none and score[0][i] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score[1] }}",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[2] }}",
-            "result": "{{ score[0] }}"
+            "result": "{{ score[0][i] }}"
           }
           {% if not loop.last %},{% endif %}
           {% endif %}
@@ -114,3 +143,5 @@
       {% endfor %}
     ]
 }
+{% if not loop.last %}{{ '\n' }}{% endif %}
+{% endfor %}
