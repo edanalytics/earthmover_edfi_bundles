@@ -8,11 +8,9 @@ config:
   show_stacktrace: True
   parameter_defaults:
     source_encoding: latin-1
-    OUTPUT_DIR: ./output
-    STATE_FILE: ./runs.csv
-    INPUT_FILE: /mnt/n/south_carolina/sc_2023/data_systems_2023/horry_scready/csv/most_recent/horry_2021_scready_sub.csv
-    API_YEAR: "2021"
-    BUNDLE_DIR: .
+    INPUT_FILE: ''
+    API_YEAR: ''
+    BUNDLE_DIR: ''
 
 sources:
 
