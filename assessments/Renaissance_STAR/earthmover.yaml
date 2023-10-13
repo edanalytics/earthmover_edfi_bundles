@@ -1,3 +1,5 @@
+version: 2
+
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
@@ -19,11 +21,12 @@ config:
       {%- endif -%}
       {%- endmacro %}
   parameter_defaults:
-    STUDENT_ID_JOIN_COLUMN: StudentStateID
     STUDENT_ID_NAME: StudentStateID
+    STUDENT_ID_FROM: StudentStateID
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
     STUDENT_ID_XWALK: ''
+    DATABASE_CONNECTION: ''
 
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
@@ -97,16 +100,20 @@ sources:
       - SkillAreaName
       - SkillAreaMasteryScore
 
-  student_id_xwalk:
-    # This file only needs to be supplied if the source assessment file does not
-    # contain the studentUniqueId used by Ed-Fi
+  {% if "${DATABASE_CONNECTION}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+
+  {% else %}
+  student_id_mapping:
     file: ${STUDENT_ID_XWALK}
     header_rows: 1
-    optional: True
-    type: csv
     columns: 
-      - from 
-      - to 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
 
   domain_group_name_int_xwalk:
     file: ${BUNDLE_DIR}/seeds/domain_group_name_to_int_xwalk.csv
@@ -115,60 +122,50 @@ sources:
 transformations:
 
   star_student_assessment_overall:
+    source: $sources.star_overall_input
     operations:
       - operation: join 
         sources: 
-          - $sources.star_overall_input
-          - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_JOIN_COLUMN}
-        right_key: from
+          - $sources.student_id_mapping
         join_type: left
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from
       - operation: duplicate_columns
-        source: $transformations.star_student_assessment_overall
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: filter_rows
-        source: $transformations.star_student_assessment_overall
         query: studentUniqueId == ''
         behavior: exclude  
       - operation: modify_columns
-        source: $transformations.star_student_assessment_overall
         columns:
           SchoolYear: *year_mapping
       - operation: filter_rows
-        source: $transformations.star_student_assessment_overall
         query: SchoolYear == '${API_YEAR}' # SUPPLIED BY USER
         behavior: include
       - operation: add_columns
-        source: $transformations.star_student_assessment_overall
         columns:
           file_path: *overall_file_name
       - operation: modify_columns
-        source: $transformations.star_student_assessment_overall
         columns:
           file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
       - operation: add_columns
-        source: $transformations.star_student_assessment_overall
         columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
       - operation: add_columns
-        source: $transformations.star_student_assessment_overall
         columns: 
           subject_full: "{%raw%}{{map_subject_values(file_path)}}{%endraw%}"
           assessment_id: "{%raw%}STAR-{{-assess_id_subject}}{%endraw%}"
       - operation: add_columns
-        source: $transformations.star_student_assessment_overall
         columns: 
           test_name: "{%raw%}STAR {{subject_full-}}{%endraw%}"
       - operation: rename_columns
-        source: $transformations.star_student_assessment_overall
         columns:
           AssessmentID: StudentAssessmentID
 
   star_skill_area:
+    source: $sources.star_overall_input
     operations:
       - operation: keep_columns
-        source: $sources.star_skill_area_input
         columns:
           - AssessmentID
           - FamilyName
@@ -176,18 +173,15 @@ transformations:
           - SkillAreaName
           - SkillAreaMasteryScore
       - operation: add_columns
-        source: $transformations.star_skill_area
         columns:
           domain_group_name: "{%raw%}{{FamilyName}}: {{DomainName}}{%endraw%}"
       - operation: join
         sources:
           - $sources.domain_group_name_int_xwalk
-          - $transformations.star_skill_area
         join_type: inner
         left_key: domain_group_name
         right_key: domain_group_name
       - operation: add_columns
-        source: $transformations.star_skill_area
         columns:
           obj_id_code: "{%raw%}{{domain_group_name_int ~ ': ' ~ SkillAreaName}}{%endraw%}"
           DomainPercentMastery: ''
@@ -196,18 +190,16 @@ transformations:
           StandardConfidenceLevel: ''
           StandardMasteryLevel: ''
       - operation: rename_columns
-        source: $transformations.star_skill_area
         columns:
           FamilyName: DomainGroup
       - operation: drop_columns
-        source: $transformations.star_skill_area
         columns:
           - SkillAreaName
 
   star_standards:
+    source: $sources.star_dashboard_standards_input
     operations:
       - operation: keep_columns
-        source: $sources.star_dashboard_standards_input
         columns:
           - AssessmentID
           - DomainGroup
@@ -217,33 +209,29 @@ transformations:
           - StandardConfidenceLevel
           - StandardMasteryLevel
       - operation: add_columns
-        source: $transformations.star_standards
         columns:
           domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
       - operation: join
         sources:
           - $sources.domain_group_name_int_xwalk
-          - $transformations.star_standards
         join_type: inner
         left_key: domain_group_name
         right_key: domain_group_name
       - operation: add_columns
-        source: $transformations.star_standards
         columns:
           SkillAreaMasteryScore: ''
           DomainPercentMastery: ''
           DomainMasteryLevel: ''
           obj_id_code: "{%raw%}{{domain_group_name_int}}: {{StandardName}}{%endraw%}"
       - operation: drop_columns
-        source: $transformations.star_standards
         columns:
           - StandardName
 
   star_domains:
+    source: $sources.star_dashboard_standards_input
     operations:
       # discard all columns except those we actually need for dedupe:
       - operation: keep_columns
-        source: $sources.star_dashboard_standards_input
         columns:
           - AssessmentID
           - DomainGroup
@@ -251,18 +239,15 @@ transformations:
           - DomainPercentMastery
           - DomainMasteryLevel
       - operation: add_columns
-        source: $transformations.star_domains
         columns:
           domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
       - operation: join
         sources:
           - $sources.domain_group_name_int_xwalk
-          - $transformations.star_domains
         join_type: inner
         left_key: domain_group_name
         right_key: domain_group_name
       - operation: add_columns
-        source: $transformations.star_domains
         columns:
           SkillAreaMasteryScore: ''
           StandardPercentMastery: ''
@@ -271,42 +256,36 @@ transformations:
           obj_id_code: "{%raw%}{{domain_group_name_int}}{%endraw%}"
       # dedupe from standard level to domain (obj assessment) level
       - operation: distinct_rows
-        source: $transformations.star_domains
 
   stacked_obj_assessment:
+    source: $transformations.star_domains
     operations:
       - operation: union
         sources:
-          - $transformations.star_domains
           - $transformations.star_skill_area
           - $transformations.star_standards
       - operation: add_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           file_path_subj: *overall_file_name
       - operation: modify_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           file_path_subj: "{%raw%}{{value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
       - operation: modify_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           assessment_id: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
       - operation: rename_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           AssessmentID: StudentAssessmentID
 
   star_with_obj_assessment:
+    source: $transformations.stacked_obj_assessment
     operations:
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
-        source: $transformations.stacked_obj_assessment
         columns:
           student_objective_assessment_json: >
             {%raw-%}  
@@ -362,49 +341,43 @@ transformations:
             },{%endif%}
             {%-endraw%}
       - operation: modify_columns
-        source: $transformations.star_with_obj_assessment
         columns:
           student_objective_assessment_json: "{%raw%}{{student_objective_assessment_json | replace('\n', '')-}}{%endraw%}"
       # group and aggregate:
       - operation: group_by
-        source: $transformations.star_with_obj_assessment
         group_by_columns:
           - StudentAssessmentID
         create_columns: 
           student_objective_assessment_json: agg(student_objective_assessment_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
-        source: $transformations.star_with_obj_assessment
         columns:
           student_objective_assessment_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
       - operation: join
         sources:
           - $transformations.star_student_assessment_overall
-          - $transformations.star_with_obj_assessment
-        join_type: left
+        join_type: right
         left_key: StudentAssessmentID
         right_key: StudentAssessmentID
 
   objective_assessments:
+    source: $transformations.stacked_obj_assessment
     operations:
       - operation: keep_columns
-        source: $transformations.stacked_obj_assessment
         columns: 
           - domain_group_name_int
           - assessment_id
           - obj_id_code
       - operation: distinct_rows
-        source: $transformations.objective_assessments
   
   assessments:
+    source: $transformations.star_student_assessment_overall
     operations:
       - operation: keep_columns
-        source: $transformations.star_student_assessment_overall
         columns: 
           - assessment_id
           - test_name
       - operation: distinct_rows
-        source: $transformations.assessments
 
 
 destinations:
