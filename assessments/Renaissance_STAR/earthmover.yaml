@@ -163,7 +163,7 @@ transformations:
           AssessmentID: StudentAssessmentID
 
   star_skill_area:
-    source: $sources.star_overall_input
+    source: $sources.star_skill_area_input
     operations:
       - operation: keep_columns
         columns:
