@@ -19,28 +19,28 @@
         {% set _ = perf_levels.append([AchievementQuintile, 'Achievement Quintile']) %}
       {% endif %}
 
-      {% if FalltoFallMetProjectedGrowth is not none and FalltoFallMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([FalltoFallMetProjectedGrowth, 'Fall-To-Fall Met Projected Growth']) %}
+      {% if FallToFallMetProjectedGrowth is not none and FallToFallMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([FallToFallMetProjectedGrowth, 'Fall-To-Fall Met Projected Growth']) %}
       {% endif %}
 
-      {% if FalltoWinterMetProjectedGrowth is not none and FalltoWinterMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([FalltoWinterMetProjectedGrowth, 'Fall-To-Winter Met Projected Growth']) %}
+      {% if FallToWinterMetProjectedGrowth is not none and FallToWinterMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([FallToWinterMetProjectedGrowth, 'Fall-To-Winter Met Projected Growth']) %}
       {% endif %}
 
-      {% if FalltoSpringMetProjectedGrowth is not none and FalltoSpringMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([FalltoSpringMetProjectedGrowth, 'Fall-To-Spring Met Projected Growth']) %}
+      {% if FallToSpringMetProjectedGrowth is not none and FallToSpringMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([FallToSpringMetProjectedGrowth, 'Fall-To-Spring Met Projected Growth']) %}
       {% endif %}
 
-      {% if WintertoWinterMetProjectedGrowth is not none and WintertoWinterMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([WintertoWinterMetProjectedGrowth, 'Winter-To-Winter Met Projected Growth']) %}
+      {% if WinterToWinterMetProjectedGrowth is not none and WinterToWinterMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([WinterToWinterMetProjectedGrowth, 'Winter-To-Winter Met Projected Growth']) %}
       {% endif %}
 
-      {% if WintertoSpringMetProjectedGrowth is not none and WintertoSpringMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([WintertoSpringMetProjectedGrowth, 'Winter-To-Spring Met Projected Growth']) %}
+      {% if WinterToSpringMetProjectedGrowth is not none and WinterToSpringMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([WinterToSpringMetProjectedGrowth, 'Winter-To-Spring Met Projected Growth']) %}
       {% endif %}
 
-      {% if SpringtoSpringMetProjectedGrowth is not none and SpringtoSpringMetProjectedGrowth | length %}
-        {% set _ = perf_levels.append([SpringtoSpringMetProjectedGrowth, 'Spring-To-Spring Met Projected Growth']) %}
+      {% if SpringToSpringMetProjectedGrowth is not none and SpringToSpringMetProjectedGrowth | length %}
+        {% set _ = perf_levels.append([SpringToSpringMetProjectedGrowth, 'Spring-To-Spring Met Projected Growth']) %}
       {% endif %}
 
       {% if GoalAdjective is not none and GoalAdjective | length %}
@@ -103,124 +103,124 @@
         {% set _ = scores.append([TestPercentile, 'Test Percentile', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoFallProjectedGrowth is not none and FalltoFallProjectedGrowth | length %}
-        {% set _ = scores.append([FalltoFallProjectedGrowth, 'Fall-To-Fall Projected Growth', 'Integer']) %}
+      {% if FallToFallProjectedGrowth is not none and FallToFallProjectedGrowth | length %}
+        {% set _ = scores.append([FallToFallProjectedGrowth, 'Fall-To-Fall Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoFallObservedGrowth is not none and FalltoFallObservedGrowth | length %}
-        {% set _ = scores.append([FalltoFallObservedGrowth, 'Fall-To-Fall Observed Growth', 'Integer']) %}
+      {% if FallToFallObservedGrowth is not none and FallToFallObservedGrowth | length %}
+        {% set _ = scores.append([FallToFallObservedGrowth, 'Fall-To-Fall Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoFallObservedGrowthSE is not none and FalltoFallObservedGrowthSE | length %}
-        {% set _ = scores.append([FalltoFallObservedGrowthSE, 'Fall-To-Fall Observed Growth SE', 'Decimal']) %}
+      {% if FallToFallObservedGrowthSE is not none and FallToFallObservedGrowthSE | length %}
+        {% set _ = scores.append([FallToFallObservedGrowthSE, 'Fall-To-Fall Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoFallConditionalGrowthIndex is not none and FalltoFallConditionalGrowthIndex | length %}
-        {% set _ = scores.append([FalltoFallConditionalGrowthIndex, 'Fall-To-Fall Conditional Growth Index', 'Decimal']) %}
+      {% if FallToFallConditionalGrowthIndex is not none and FallToFallConditionalGrowthIndex | length %}
+        {% set _ = scores.append([FallToFallConditionalGrowthIndex, 'Fall-To-Fall Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoFallConditionalGrowthPercentile is not none and FalltoFallConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([FalltoFallConditionalGrowthPercentile, 'Fall-To-Fall Conditional Growth Percentile', 'Decimal']) %}
+      {% if FallToFallConditionalGrowthPercentile is not none and FallToFallConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([FallToFallConditionalGrowthPercentile, 'Fall-To-Fall Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoWinterProjectedGrowth is not none and FalltoWinterProjectedGrowth | length %}
-        {% set _ = scores.append([FalltoWinterProjectedGrowth, 'Fall-To-Winter Projected Growth', 'Integer']) %}
+      {% if FallToWinterProjectedGrowth is not none and FallToWinterProjectedGrowth | length %}
+        {% set _ = scores.append([FallToWinterProjectedGrowth, 'Fall-To-Winter Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoWinterObservedGrowth is not none and FalltoWinterObservedGrowth | length %}
-        {% set _ = scores.append([FalltoWinterObservedGrowth, 'Fall-To-Winter Observed Growth', 'Integer']) %}
+      {% if FallToWinterObservedGrowth is not none and FallToWinterObservedGrowth | length %}
+        {% set _ = scores.append([FallToWinterObservedGrowth, 'Fall-To-Winter Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoWinterObservedGrowthSE is not none and FalltoWinterObservedGrowthSE | length %}
-        {% set _ = scores.append([FalltoWinterObservedGrowthSE, 'Fall-To-Winter Observed Growth SE', 'Decimal']) %}
+      {% if FallToWinterObservedGrowthSE is not none and FallToWinterObservedGrowthSE | length %}
+        {% set _ = scores.append([FallToWinterObservedGrowthSE, 'Fall-To-Winter Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoWinterConditionalGrowthIndex is not none and FalltoWinterConditionalGrowthIndex | length %}
-        {% set _ = scores.append([FalltoWinterConditionalGrowthIndex, 'Fall-To-Winter Conditional Growth Index', 'Decimal']) %}
+      {% if FallToWinterConditionalGrowthIndex is not none and FallToWinterConditionalGrowthIndex | length %}
+        {% set _ = scores.append([FallToWinterConditionalGrowthIndex, 'Fall-To-Winter Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoWinterConditionalGrowthPercentile is not none and FalltoWinterConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([FalltoWinterConditionalGrowthPercentile, 'Fall-To-Winter Conditional Growth Percentile', 'Decimal']) %}
+      {% if FallToWinterConditionalGrowthPercentile is not none and FallToWinterConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([FallToWinterConditionalGrowthPercentile, 'Fall-To-Winter Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoSpringProjectedGrowth is not none and FalltoSpringProjectedGrowth | length %}
-        {% set _ = scores.append([FalltoSpringProjectedGrowth, 'Fall-To-Spring Projected Growth', 'Integer']) %}
+      {% if FallToSpringProjectedGrowth is not none and FallToSpringProjectedGrowth | length %}
+        {% set _ = scores.append([FallToSpringProjectedGrowth, 'Fall-To-Spring Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoSpringObservedGrowth is not none and FalltoSpringObservedGrowth | length %}
-        {% set _ = scores.append([FalltoSpringObservedGrowth, 'Fall-To-Spring Observed Growth', 'Integer']) %}
+      {% if FallToSpringObservedGrowth is not none and FallToSpringObservedGrowth | length %}
+        {% set _ = scores.append([FallToSpringObservedGrowth, 'Fall-To-Spring Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if FalltoSpringObservedGrowthSE is not none and FalltoSpringObservedGrowthSE | length %}
-        {% set _ = scores.append([FalltoSpringObservedGrowthSE, 'Fall-To-Spring Observed Growth SE', 'Decimal']) %}
+      {% if FallToSpringObservedGrowthSE is not none and FallToSpringObservedGrowthSE | length %}
+        {% set _ = scores.append([FallToSpringObservedGrowthSE, 'Fall-To-Spring Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoSpringConditionalGrowthIndex is not none and FalltoSpringConditionalGrowthIndex | length %}
-        {% set _ = scores.append([FalltoSpringConditionalGrowthIndex, 'Fall-To-Spring Conditional Growth Index', 'Decimal']) %}
+      {% if FallToSpringConditionalGrowthIndex is not none and FallToSpringConditionalGrowthIndex | length %}
+        {% set _ = scores.append([FallToSpringConditionalGrowthIndex, 'Fall-To-Spring Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if FalltoSpringConditionalGrowthPercentile is not none and FalltoSpringConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([FalltoSpringConditionalGrowthPercentile, 'Fall-To-Spring Conditional Growth Percentile', 'Decimal']) %}
+      {% if FallToSpringConditionalGrowthPercentile is not none and FallToSpringConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([FallToSpringConditionalGrowthPercentile, 'Fall-To-Spring Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoWinterProjectedGrowth is not none and WintertoWinterProjectedGrowth | length %}
-        {% set _ = scores.append([WintertoWinterProjectedGrowth, 'Winter-To-Winter Projected Growth', 'Integer']) %}
+      {% if WinterToWinterProjectedGrowth is not none and WinterToWinterProjectedGrowth | length %}
+        {% set _ = scores.append([WinterToWinterProjectedGrowth, 'Winter-To-Winter Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if WintertoWinterObservedGrowth is not none and WintertoWinterObservedGrowth | length %}
-        {% set _ = scores.append([WintertoWinterObservedGrowth, 'Winter-To-Winter Observed Growth', 'Integer']) %}
+      {% if WinterToWinterObservedGrowth is not none and WinterToWinterObservedGrowth | length %}
+        {% set _ = scores.append([WinterToWinterObservedGrowth, 'Winter-To-Winter Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if WintertoWinterObservedGrowthSE is not none and WintertoWinterObservedGrowthSE | length %}
-        {% set _ = scores.append([WintertoWinterObservedGrowthSE, 'Winter-To-Winter Observed Growth SE', 'Decimal']) %}
+      {% if WinterToWinterObservedGrowthSE is not none and WinterToWinterObservedGrowthSE | length %}
+        {% set _ = scores.append([WinterToWinterObservedGrowthSE, 'Winter-To-Winter Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoWinterConditionalGrowthIndex is not none and WintertoWinterConditionalGrowthIndex | length %}
-        {% set _ = scores.append([WintertoWinterConditionalGrowthIndex, 'Winter-To-Winter Conditional Growth Index', 'Decimal']) %}
+      {% if WinterToWinterConditionalGrowthIndex is not none and WinterToWinterConditionalGrowthIndex | length %}
+        {% set _ = scores.append([WinterToWinterConditionalGrowthIndex, 'Winter-To-Winter Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoWinterConditionalGrowthPercentile is not none and WintertoWinterConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([WintertoWinterConditionalGrowthPercentile, 'Winter-To-Winter Conditional Growth Percentile', 'Decimal']) %}
+      {% if WinterToWinterConditionalGrowthPercentile is not none and WinterToWinterConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([WinterToWinterConditionalGrowthPercentile, 'Winter-To-Winter Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoSpringProjectedGrowth is not none and WintertoSpringProjectedGrowth | length %}
-        {% set _ = scores.append([WintertoSpringProjectedGrowth, 'Winter-To-Spring Projected Growth', 'Integer']) %}
+      {% if WinterToSpringProjectedGrowth is not none and WinterToSpringProjectedGrowth | length %}
+        {% set _ = scores.append([WinterToSpringProjectedGrowth, 'Winter-To-Spring Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if WintertoSpringObservedGrowth is not none and WintertoSpringObservedGrowth | length %}
-        {% set _ = scores.append([WintertoSpringObservedGrowth, 'Winter-To-Spring Observed Growth', 'Integer']) %}
+      {% if WinterToSpringObservedGrowth is not none and WinterToSpringObservedGrowth | length %}
+        {% set _ = scores.append([WinterToSpringObservedGrowth, 'Winter-To-Spring Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if WintertoSpringObservedGrowthSE is not none and WintertoSpringObservedGrowthSE | length %}
-        {% set _ = scores.append([WintertoSpringObservedGrowthSE, 'Winter-To-Spring Observed Growth SE', 'Decimal']) %}
+      {% if WinterToSpringObservedGrowthSE is not none and WinterToSpringObservedGrowthSE | length %}
+        {% set _ = scores.append([WinterToSpringObservedGrowthSE, 'Winter-To-Spring Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoSpringConditionalGrowthIndex is not none and WintertoSpringConditionalGrowthIndex | length %}
-        {% set _ = scores.append([WintertoSpringConditionalGrowthIndex, 'Winter-To-Spring Conditional Growth Index', 'Decimal']) %}
+      {% if WinterToSpringConditionalGrowthIndex is not none and WinterToSpringConditionalGrowthIndex | length %}
+        {% set _ = scores.append([WinterToSpringConditionalGrowthIndex, 'Winter-To-Spring Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if WintertoSpringConditionalGrowthPercentile is not none and WintertoSpringConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([WintertoSpringConditionalGrowthPercentile, 'Winter-To-Spring Conditional Growth Percentile', 'Decimal']) %}
+      {% if WinterToSpringConditionalGrowthPercentile is not none and WinterToSpringConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([WinterToSpringConditionalGrowthPercentile, 'Winter-To-Spring Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
-      {% if SpringtoSpringProjectedGrowth is not none and SpringtoSpringProjectedGrowth | length %}
-        {% set _ = scores.append([SpringtoSpringProjectedGrowth, 'Spring-To-Spring Projected Growth', 'Integer']) %}
+      {% if SpringToSpringProjectedGrowth is not none and SpringToSpringProjectedGrowth | length %}
+        {% set _ = scores.append([SpringToSpringProjectedGrowth, 'Spring-To-Spring Projected Growth', 'Integer']) %}
       {% endif %}
 
-      {% if SpringtoSpringObservedGrowth is not none and SpringtoSpringObservedGrowth | length %}
-        {% set _ = scores.append([SpringtoSpringObservedGrowth, 'Spring-To-Spring Observed Growth', 'Integer']) %}
+      {% if SpringToSpringObservedGrowth is not none and SpringToSpringObservedGrowth | length %}
+        {% set _ = scores.append([SpringToSpringObservedGrowth, 'Spring-To-Spring Observed Growth', 'Integer']) %}
       {% endif %}
 
-      {% if SpringtoSpringObservedGrowthSE is not none and SpringtoSpringObservedGrowthSE | length %}
-        {% set _ = scores.append([SpringtoSpringObservedGrowthSE, 'Spring-To-Spring Observed Growth SE', 'Decimal']) %}
+      {% if SpringToSpringObservedGrowthSE is not none and SpringToSpringObservedGrowthSE | length %}
+        {% set _ = scores.append([SpringToSpringObservedGrowthSE, 'Spring-To-Spring Observed Growth SE', 'Decimal']) %}
       {% endif %}
 
-      {% if SpringtoSpringConditionalGrowthIndex is not none and SpringtoSpringConditionalGrowthIndex | length %}
-        {% set _ = scores.append([SpringtoSpringConditionalGrowthIndex, 'Spring-To-Spring Conditional Growth Index', 'Decimal']) %}
+      {% if SpringToSpringConditionalGrowthIndex is not none and SpringToSpringConditionalGrowthIndex | length %}
+        {% set _ = scores.append([SpringToSpringConditionalGrowthIndex, 'Spring-To-Spring Conditional Growth Index', 'Decimal']) %}
       {% endif %}
 
-      {% if SpringtoSpringConditionalGrowthPercentile is not none and SpringtoSpringConditionalGrowthPercentile | length %}
-        {% set _ = scores.append([SpringtoSpringConditionalGrowthPercentile, 'Spring-To-Spring Conditional Growth Percentile', 'Decimal']) %}
+      {% if SpringToSpringConditionalGrowthPercentile is not none and SpringToSpringConditionalGrowthPercentile | length %}
+        {% set _ = scores.append([SpringToSpringConditionalGrowthPercentile, 'Spring-To-Spring Conditional Growth Percentile', 'Decimal']) %}
       {% endif %}
 
       {% if LexileScore is not none and LexileScore | length %}
