@@ -5,9 +5,10 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_JOIN_COLUMN: primary_id_student_id
-    STUDENT_ID_NAME: primary_id_student_id
+    STUDENT_ID_NAME: Student Primary ID
+    STUDENT_ID_FROM: Student Primary ID
     STUDENT_ID_XWALK: ''
+    DATABASE_CONNECTION: ''
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
@@ -27,13 +28,35 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
 
+  {% if "${DATABASE_CONNECTION}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+  
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
+
 transformations:
   
  dibels_benchmark_student_assessment:
   operations:
+    - operation: join
+      sources:
+        - $sources.dibels_benchmark_input
+        - $sources.student_id_mapping
+      join_type: left
+      left_key: ${STUDENT_ID_FROM}
+      right_key: student_id_from
     # will want to keep this
     - operation: map_values
-      source: $sources.dibels_benchmark_input
+      source: $transformations.dibels_benchmark_student_assessment
       column: Assessment Grade
       map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
     # Jinja templates cannot handle spaces in variable names, so unfortunately we must replace all column names that have spaces with underscores
@@ -97,7 +120,6 @@ transformations:
         Assessment Measure-Daze (Incorrect)-Score: assessment_measure_daze_incorrect_score
         Client Date: client_date
         Sync Date: sync_date
-        Student Primary ID: student_primary_id
         ${STUDENT_ID_NAME}: primary_id_student_id
         Administration Type: administration_type
         Assessment Measure-Vocabulary-Levels: assessment_measure_vocabulary_levels
