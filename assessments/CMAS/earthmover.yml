@@ -1,0 +1,175 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+
+sources:
+  cmas_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  reasonNotTestedDescriptors:
+    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  cmas_input:
+    source: $sources.cmas_input
+    operations:
+      # Use April 1st of the assessment year for assessments with no date (invalid scores)
+      - operation: add_columns
+        columns:
+          defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
+      - operation: add_columns
+        columns:
+          school_year: ${SCHOOL_YEAR}
+          alternate_assessment: ${ALTERNATE_ASSESSMENT}
+      - operation: duplicate_columns
+        columns:
+          Subject: assessmentSubject
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: map_values
+        column: assessmentSubject
+        mapping:
+          English Language Arts/Literacy: ELA
+          Mathematics: MAT
+          Spanish Language Arts/Literacy: SLA
+          Science: SCI
+      - operation: map_values
+        column: GradeLevelWhenAssessed
+        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
+      - operation: map_values
+        column: NotTestedReason
+        map_file: ${BUNDLE_DIR}/seeds/mapping_NotTestedReason.csv
+      - operation: map_values
+        column: VoidScoreReason
+        map_file: ${BUNDLE_DIR}/seeds/mapping_VoidScoreReason.csv
+      - operation: map_values
+        column: ReportSuppressionCode
+        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionCode.csv
+      - operation: map_values
+        column: ReportSuppressionAction
+        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionAction.csv
+      {% if "${SCIENCE}" == "N" %}
+      - operation: map_values
+        column: PerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
+      - operation: modify_columns
+        columns: 
+          SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
+          PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          TotalTestItems: "{%raw%}{{TotalTestItems | int}}{%endraw%}"
+          TotalTestItemsAttempted: "{%raw%}{{TotalTestItemsAttempted | int}}{%endraw%}"
+          TestReadingScaleScore: "{%raw%}{{TestReadingScaleScore | int}}{%endraw%}"
+          TestReadingSSCSEM: "{%raw%}{{TestReadingSSCSEM | int}}{%endraw%}"
+          TestWritingRawScore: "{%raw%}{{TestWritingRawScore | int}}{%endraw%}"
+          TestWritingPointsPossible: "{%raw%}{{TestWritingPointsPossible | int}}{%endraw%}"
+          TestWritingPercentEarned: "{%raw%}{{TestWritingPercentEarned | int}}{%endraw%}"
+          Subclaim1RawScore: "{%raw%}{{Subclaim1RawScore | int}}{%endraw%}"
+          Subclaim1PtsPoss: "{%raw%}{{Subclaim1PtsPoss | int}}{%endraw%}"
+          Subclaim1PctEarned: "{%raw%}{{Subclaim1PctEarned | int}}{%endraw%}"
+          Subclaim2RawScore: "{%raw%}{{Subclaim2RawScore | int}}{%endraw%}"
+          Subclaim2PtsPoss: "{%raw%}{{Subclaim2PtsPoss | int}}{%endraw%}"
+          Subclaim2PctEarned: "{%raw%}{{Subclaim2PctEarned | int}}{%endraw%}"
+          Subclaim3RawScore: "{%raw%}{{Subclaim3RawScore | int}}{%endraw%}"
+          Subclaim3PtsPoss: "{%raw%}{{Subclaim3PtsPoss | int}}{%endraw%}"
+          Subclaim3PctEarned: "{%raw%}{{Subclaim3PctEarned | int}}{%endraw%}"
+          Subclaim4RawScore: "{%raw%}{{Subclaim4RawScore | int}}{%endraw%}"
+          Subclaim4PtsPoss: "{%raw%}{{Subclaim4PtsPoss | int}}{%endraw%}"
+          Subclaim4PctEarned: "{%raw%}{{Subclaim4PctEarned | int}}{%endraw%}"
+          Subclaim5RawScore: "{%raw%}{{Subclaim5RawScore | int}}{%endraw%}"
+          Subclaim5PtsPoss: "{%raw%}{{Subclaim5PtsPoss | int}}{%endraw%}"
+          Subclaim5PctEarned: "{%raw%}{{Subclaim5PctEarned | int}}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          SSCSEM: CSEM
+      {% endif %}
+      {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
+      - operation: map_values
+        column: PerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
+      - operation: map_values
+        columns: 
+          - Std1PerfLvl
+          - Std2PerfLvl
+          - Std3PerfLvl
+          - SEPPerfLvl
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
+      - operation: modify_columns
+        columns: 
+          SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
+          PercentileRank: "{%raw%}{{PercentileRank | int}}{%endraw%}"
+          TotalTestItems: "{%raw%}{{TotalTestItems | int}}{%endraw%}"
+          TotalTestItemsAttempted: "{%raw%}{{TotalTestItemsAttempted | int}}{%endraw%}"
+          Std1SSCO: "{%raw%}{{Std1SSCO | int}}{%endraw%}"
+          Std1CSEM: "{%raw%}{{Std1CSEM | int}}{%endraw%}"
+          Std2SSCO: "{%raw%}{{Std2SSCO | int}}{%endraw%}"
+          Std2CSEM: "{%raw%}{{Std2CSEM | int}}{%endraw%}"
+          Std3SSCO: "{%raw%}{{Std3SSCO | int}}{%endraw%}"
+          Std3CSEM: "{%raw%}{{Std3CSEM | int}}{%endraw%}"
+          SEPSSCO: "{%raw%}{{SEPSSCO | int}}{%endraw%}"
+          SEPCSEM: "{%raw%}{{SEPCSEM | int}}{%endraw%}"  
+      - operation: rename_columns
+        columns:
+          SSCSEM: CSEM        
+      {% endif %}
+      {% if "${ALTERNATE_ASSESSMENT}" == "Y" %}
+      - operation: map_values
+        column: PerfLVL
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_coalt.csv
+      - operation: modify_columns
+        columns: 
+          CSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
+          Std1PtsPoss: "{%raw%}{{Std1PtsPoss | int}}{%endraw%}"
+          Std1PctEarned: "{%raw%}{{Std1PctEarned | int}}{%endraw%}"
+          Std2PtsPoss: "{%raw%}{{Std2PtsPoss | int}}{%endraw%}"
+          Std2PctEarned: "{%raw%}{{Std2PctEarned | int}}{%endraw%}"
+          Std3PtsPoss: "{%raw%}{{Std3PtsPoss| int}}{%endraw%}"
+          Std3PctEarned: "{%raw%}{{Std3PctEarned | int}}{%endraw%}"
+          SEPPtsPoss: "{%raw%}{{SEPPtsPoss | int}}{%endraw%}"
+          SEPPctEarned: "{%raw%}{{SEPPctEarned | int}}{%endraw%}"          
+      {% endif %}
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.cmas_input
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  reasonNotTestedDescriptors:
+    source: $sources.reasonNotTestedDescriptors
+    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    extension: jsonl

@@ -1,0 +1,481 @@
+{
+  "studentAssessmentIdentifier": "{{StudentTestUUID}}",
+  "assessmentReference": {
+    {% if alternate_assessment == 'N' %}
+      "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+    {% else %}
+      "assessmentIdentifier": "CoAlt-SCI",
+    {% endif %}
+    "namespace": "uri://www.cde.state.co.us/assessment/cmas"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  
+  {% if Unit1TestEndDateTime is not none and Unit1TestEndDateTime | length %}
+  "administrationDate": "{{Unit1TestEndDateTime}}",
+  {% else %}
+  "administrationDate": "{{defaultTestStartDateTime}}",
+  {% endif %}
+
+  {% if Unit3TestEndDateTime is not none and Unit3TestEndDateTime | length %}
+  "administrationEndDate": "{{Unit3TestEndDateTime}}",
+  {% endif %}
+
+  {% if NotTestedReason is not none and NotTestedReason | length %}
+  "reasonNotTestedDescriptor": "uri://www.cde.state.co.us/assessment/cmas/reasonNotTestedDescriptor#{{NotTestedReason}}",
+  {% endif %}
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{GradeLevelWhenAssessed}}",
+
+  "scoreResults": [
+  {% set scores = [] %}
+
+    {% if AssessmentYear is not none and AssessmentYear | length %}
+      {% set _ = scores.append([AssessmentYear, 'Assessment Year', 'Level']) %}
+    {% endif %}
+
+    {% if Subject is not none and Subject | length %}
+      {% set _ = scores.append([Subject, 'Subject', 'Level']) %}
+    {% endif %}
+
+    {% if TestCode is not none and TestCode | length %}
+      {% set _ = scores.append([TestCode, 'Test Code', 'Level']) %}
+    {% endif %}
+
+    {% if TotalTestItems is not none and TotalTestItems.strip() | length %}
+      {% set _ = scores.append([TotalTestItems, 'Total Test Items', 'Integer']) %}
+    {% endif %}
+
+    {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
+      {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
+    {% endif %} 
+    
+    {% if CalculatedInvalidation == 'Valid Score' %}
+      {% if alternate_assessment == 'N' %}
+        {% if PercentileRank is not none and PercentileRank.strip() | length %}
+          {% set _ = scores.append([PercentileRank, 'Percentile Rank', 'Integer']) %}
+        {% endif %} 
+      {% endif %} 
+      
+      {% if alternate_assessment == 'Y' or assessmentSubject in ('ELA', 'MAT', 'SLA') %}  
+        {% if SS is not none and SS.strip() | length %}
+          {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+        {% endif %}
+
+        {% if CSEM is not none and CSEM.strip() | length %}
+          {% set _ = scores.append([CSEM, 'CSEM', 'Decimal']) %}
+        {% endif %}
+      {% endif %} 
+
+      {% if assessmentSubject in ('ELA', 'SLA') %}
+        {% if TestReadingScaleScore is not none and TestReadingScaleScore.strip() | length %}
+          {% set _ = scores.append([TestReadingScaleScore, 'Reading Test Scale Score', 'Integer']) %}
+        {% endif %}
+
+        {% if TestReadingSSCSEM is not none and TestReadingSSCSEM.strip() | length %}
+          {% set _ = scores.append([TestReadingSSCSEM, 'Reading Test CSEM', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingRawScore is not none and TestWritingRawScore.strip() | length %}
+          {% set _ = scores.append([TestWritingRawScore, 'Writing Test Raw Score', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingPointsPossible is not none and TestWritingPointsPossible.strip() | length %}
+          {% set _ = scores.append([TestWritingPointsPossible, 'Writing Test Points Possible', 'Integer']) %}
+        {% endif %}
+
+        {% if TestWritingPercentEarned is not none and TestWritingPercentEarned.strip() | length %}
+          {% set _ = scores.append([TestWritingPercentEarned, 'Writing Test Percent Earned', 'Integer']) %}
+        {% endif %}
+      {% endif %}
+
+      {% if assessmentSubject == 'SCI' and school_year <= 2022 %}
+        {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
+        {% endif %}
+
+        {% if PercentileRankofStudentStandard2 is not none and PercentileRankofStudentStandard2 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard2, 'Standard 2 Percentile Rank', 'Integer']) %}
+        {% endif %}
+
+        {% if PercentileRankofStudentStandard3 is not none and PercentileRankofStudentStandard3 | length %}
+          {% set _ = scores.append([PercentileRankofStudentStandard3, 'Standard 3 Percentile Rank', 'Integer']) %}
+        {% endif %}
+      {% endif %}
+
+      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and school_year > 2022 %}
+        {% if SS is not none and SS | length %}
+          {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
+        {% endif %}
+
+        {% if CSEM is not none and CSEM | length %}
+          {% set _ = scores.append([CSEM, 'CSEM', 'Integer']) %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    {% for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0]}}"
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  "performanceLevels": [
+    {% set perf_levels = [] %}
+
+      {% if TestStatus is not none and TestStatus | length %}
+        {% set _ = perf_levels.append([TestStatus, 'Test Status']) %}
+      {% endif %}
+
+      {% if TestAttemptednessFlag is not none and TestAttemptednessFlag | length %}
+        {% set _ = perf_levels.append([TestAttemptednessFlag, 'Test Attemptedness Flag']) %}
+      {% endif %}
+
+      {% if NotTestedCode is not none and NotTestedCode | length %}
+        {% set _ = perf_levels.append([NotTestedCode, 'Not Tested Code']) %}
+      {% endif %}
+
+      {% if VoidScoreCode is not none and VoidScoreCode | length %}
+        {% set _ = perf_levels.append([VoidScoreCode, 'Void Score Code']) %}
+      {% endif %}
+
+      {% if VoidScoreReason is not none and VoidScoreReason | length %}
+        {% set _ = perf_levels.append([VoidScoreReason, 'Void Score Reason']) %}
+      {% endif %}
+
+      {% if CalculatedInvalidation is not none and CalculatedInvalidation | length %}
+        {% set _ = perf_levels.append([CalculatedInvalidation, 'Calculated Invalidation']) %}
+      {% endif %}
+
+      {% if ReportSuppressionCode is not none and ReportSuppressionCode | length %}
+        {% set _ = perf_levels.append([ReportSuppressionCode, 'Report Suppression Code']) %}
+      {% endif %}
+
+      {% if ReportSuppressionAction is not none and ReportSuppressionAction | length %}
+        {% set _ = perf_levels.append([ReportSuppressionAction, 'Report Suppression Action']) %}
+      {% endif %}
+
+      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment == 'Y'))) %}
+        {% if PerfLVL is not none and PerfLVL | length %}
+          {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
+        {% endif %}
+      {% endif %}
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+    ],
+
+    "studentObjectiveAssessments": [
+      {% set all_obj_assess = [] %}
+        {% if assessmentSubject == 'ELA' and CalculatedInvalidation == 'Valid Score' %}
+          {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
+            {% set _ = all_obj_assess.append(['Reading - Literary Text', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim2RawScore is not none and Subclaim2RawScore | length %}
+            {% set _ = all_obj_assess.append(['Reading - Informational Text', Subclaim2RawScore, Subclaim2PtsPoss, Subclaim2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim3RawScore is not none and Subclaim3RawScore | length %}
+            {% set _ = all_obj_assess.append(['Reading - Vocabulary', Subclaim3RawScore, Subclaim3PtsPoss, Subclaim3PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim4RawScore is not none and Subclaim4RawScore | length %}
+            {% set _ = all_obj_assess.append(['Writing - Writing Expression', Subclaim4RawScore, Subclaim4PtsPoss, Subclaim4PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim5RawScore is not none and Subclaim5RawScore | length %}
+            {% set _ = all_obj_assess.append(['Writing - Knowledge and use of Language Conventions', Subclaim5RawScore, Subclaim5PtsPoss, Subclaim5PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Reading - Key Ideas: Literary Text', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Reading - Key Ideas: Informational Text', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Reading - Integration of Knowledge & Ideas', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor4PercentEarned is not none and Domain1Descriptor4PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Reading - Craft & Structure', 'N/A', 'N/A', Domain1Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain2Descriptor1PercentEarned is not none and Domain2Descriptor1PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Language - Vocabulary Acquisition & Use', 'N/A', 'N/A', Domain2Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+          {% if TestCode in ('ELA03', 'ELA04', 'ELA05') %}
+            {% if Domain3Descriptor1PercentEarned is not none and Domain3Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Prose Constructed Response 1', 'N/A', 'N/A', Domain3Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor2PercentEarned is not none and Domain3Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Prose Constructed Response 2', 'N/A', 'N/A', Domain3Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor3PercentEarned is not none and Domain3Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Written Expression', 'N/A', 'N/A', Domain3Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor4PercentEarned is not none and Domain3Descriptor4PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Knowledge of Language and Conventions', 'N/A', 'N/A', Domain3Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+
+          {% if TestCode in ('ELA06', 'ELA07', 'ELA08') %}
+            {% if Domain3Descriptor1PercentEarned is not none and Domain3Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Literacy - History/Social Studies', 'N/A', 'N/A', Domain3Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor2PercentEarned is not none and Domain3Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Literacy - Science & Technical Subjects', 'N/A', 'N/A', Domain3Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain4Descriptor1PercentEarned is not none and Domain4Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Prose Constructed Response 1', 'N/A', 'N/A', Domain4Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain4Descriptor2PercentEarned is not none and Domain4Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Prose Constructed Response 2', 'N/A', 'N/A', Domain4Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain4Descriptor3PercentEarned is not none and Domain4Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Written Expression', 'N/A', 'N/A', Domain4Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain4Descriptor4PercentEarned is not none and Domain4Descriptor4PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Writing - Knowledge of Language and Conventions', 'N/A', 'N/A', Domain4Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% if assessmentSubject == 'SLA' and CalculatedInvalidation == 'Valid Score' %}
+          {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Literary Text', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim2RawScore is not none and Subclaim2RawScore | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Informational Text', Subclaim2RawScore, Subclaim2PtsPoss, Subclaim2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim3RawScore is not none and Subclaim3RawScore | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Vocabulary', Subclaim3RawScore, Subclaim3PtsPoss, Subclaim3PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim4RawScore is not none and Subclaim4RawScore | length %}
+            {% set _ = all_obj_assess.append(['SLA Writing - Writing Expression', Subclaim4RawScore, Subclaim4PtsPoss, Subclaim4PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim5RawScore is not none and Subclaim5RawScore | length %}
+            {% set _ = all_obj_assess.append(['SLA Writing - Knowledge and use of Language Conventions', Subclaim5RawScore, Subclaim5PtsPoss, Subclaim5PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Key Ideas: Literary Text', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Key Ideas: Informational Text', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Integration of Knowledge & Ideas', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain1Descriptor4PercentEarned is not none and Domain1Descriptor4PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['SLA Reading - Craft & Structure', 'N/A', 'N/A', Domain1Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain2Descriptor1PercentEarned is not none and Domain2Descriptor1PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['SLA Language - Vocabulary Acquisition & Use', 'N/A', 'N/A', Domain2Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+          {% if TestCode in ('SLA03', 'SLA04') %}
+            {% if Domain3Descriptor1PercentEarned is not none and Domain3Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['SLA Writing - Prose Constructed Response 1', 'N/A', 'N/A', Domain3Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor2PercentEarned is not none and Domain3Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['SLA Writing - Prose Constructed Response 2', 'N/A', 'N/A', Domain3Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor3PercentEarned is not none and Domain3Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['SLA Writing - Written Expression', 'N/A', 'N/A', Domain3Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain3Descriptor4PercentEarned is not none and Domain3Descriptor4PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['SLA Writing - Knowledge of Language and Conventions', 'N/A', 'N/A', Domain3Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% if assessmentSubject == 'MAT' and CalculatedInvalidation == 'Valid Score' %}
+          {% if Subclaim1RawScore is not none and Subclaim1RawScore | length %}
+            {% set _ = all_obj_assess.append(['Math - Major Content', Subclaim1RawScore, Subclaim1PtsPoss, Subclaim1PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim2RawScore is not none and Subclaim2RawScore | length %}
+            {% set _ = all_obj_assess.append(['Math - Additional & Supporting Content', Subclaim2RawScore, Subclaim2PtsPoss, Subclaim2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim3RawScore is not none and Subclaim3RawScore | length %}
+            {% set _ = all_obj_assess.append(['Math - Expressing Mathematical Reasoning', Subclaim3RawScore, Subclaim3PtsPoss, Subclaim3PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Subclaim4RawScore is not none and Subclaim4RawScore | length %}
+            {% set _ = all_obj_assess.append(['Math - Modeling & Application', Subclaim4RawScore, Subclaim4PtsPoss, Subclaim4PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain2Descriptor1PercentEarned is not none and Domain2Descriptor1PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Math - Modeling & Reasoning: On Grade Level', 'N/A', 'N/A', Domain2Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Domain2Descriptor2PercentEarned is not none and Domain2Descriptor2PercentEarned | length %}
+            {% set _ = all_obj_assess.append(['Math - Modeling & Reasoning: Securely Held Knowledge', 'N/A', 'N/A', Domain2Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+          {% if TestCode == 'MAT03' %}
+            {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Operations & Algebraic Thinking', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Number & Operations in Base Ten', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Measurement & Data', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+
+          {% if TestCode in ('MAT04', 'MAT05') %}
+            {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Number & Operations in Base Ten', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Numbers & Operations: Fractions', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+          
+          {% if TestCode == 'MAT06' %}
+            {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Ratios & Proportional Relationships', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - The Number System', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Expressions & Equations', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}     
+                      
+          {% if TestCode == 'MAT07' %}
+            {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Ratios & Proportional Relationships', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - The Number System', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Expressions & Equations', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor4PercentEarned is not none and Domain1Descriptor4PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Statistics & Probability', 'N/A', 'N/A', Domain1Descriptor4PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}
+                      
+          {% if TestCode == 'MAT08' %}
+            {% if Domain1Descriptor1PercentEarned is not none and Domain1Descriptor1PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Geometry', 'N/A', 'N/A', Domain1Descriptor1PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor2PercentEarned is not none and Domain1Descriptor2PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Expressions & Equations', 'N/A', 'N/A', Domain1Descriptor2PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+            {% if Domain1Descriptor3PercentEarned is not none and Domain1Descriptor3PercentEarned | length %}
+              {% set _ = all_obj_assess.append(['Math - Functions', 'N/A', 'N/A', Domain1Descriptor3PercentEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %}       
+        {% endif %}
+
+        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and school_year > 2022 and alternate_assessment == 'N' %}
+          {% if Std1SSCO is not none and Std1SSCO | length %}
+            {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
+          {% endif %}
+          {% if Std3SSCO is not none and Std3SSCO | length %}
+            {% set _ = all_obj_assess.append(['Earth and Space Science', 'N/A', Std3PtsPoss, 'N/A', Std3SSCO, Std3CSEM, Std3PerfLvl]) %}
+          {% endif %}
+          {% if SEPSSCO is not none and SEPSSCO | length %}
+            {% set _ = all_obj_assess.append(['Science and Engineering Practices', 'N/A', SEPPtsPoss, 'N/A', SEPSSCO, SEPCSEM, SEPPerfLvl]) %}
+          {% endif %}
+
+          {% if TestCode == 'SC05S' %}
+            {% if Std2SSCO is not none and Std2SSCO | length %}
+              {% set _ = all_obj_assess.append(['Physical/Life Science', 'N/A', Std2PtsPoss, 'N/A', Std2SSCO, Std2CSEM, Std2PerfLvl]) %}
+            {% endif %}
+          {% else %}
+            {% if Std2SSCO is not none and Std2SSCO | length %}
+              {% set _ = all_obj_assess.append(['Life Science', 'N/A', Std2PtsPoss, 'N/A', Std2SSCO, Std2CSEM, Std2PerfLvl]) %}
+            {% endif %}
+          {% endif %}          
+        {% endif %}
+
+        {% if alternate_assessment == 'Y' and CalculatedInvalidation == 'Valid Score' %}
+          {% if Std1PtsPoss is not none and Std1PtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, Std1PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if Std3PtsPoss is not none and Std3PtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Earth and Space Science', 'N/A', Std3PtsPoss, Std3PctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if SEPPtsPoss is not none and SEPPtsPoss | length %}
+            {% set _ = all_obj_assess.append(['Science and Engineering Practices', 'N/A', SEPPtsPoss, SEPPctEarned, 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+          {% if TestCode == 'SC05S' %}
+            {% if Std2PtsPoss is not none and Std2PtsPoss | length %}
+              {% set _ = all_obj_assess.append(['Physical/Life Science', 'N/A', Std2PtsPoss, Std2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% else %}
+            {% if Std2PtsPoss is not none and Std2PtsPoss | length %}
+              {% set _ = all_obj_assess.append(['Life Science', 'N/A', Std2PtsPoss, Std2PctEarned, 'N/A', 'N/A', 'N/A']) %}
+            {% endif %}
+          {% endif %} 
+        {% endif %}
+
+        {% for obj_assess in all_obj_assess %}
+        {
+          "objectiveAssessmentReference": {
+            {% if alternate_assessment == 'N' %}
+              "assessmentIdentifier": "{{"CMAS-" + assessmentSubject}}",
+            {% else %}
+              "assessmentIdentifier": "CoAlt-SCI",
+            {% endif %}
+            "identificationCode": "{{ obj_assess[0] }}",
+            "namespace": "uri://www.cde.state.co.us/assessment/cmas"
+          },
+          "scoreResults": [
+            {% if obj_assess[1] != 'N/A' %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Raw Score",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[1] }}"
+              },
+            {% endif %}
+            {% if obj_assess[2] != 'N/A' %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Points Possible",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[2] }}"
+              },
+            {% endif %}
+            {% if obj_assess[3] != 'N/A' %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Percent Earned",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[3] }}"
+              }
+            {% endif %}
+            {% if obj_assess[4] != 'N/A' %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Scale Score",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[4] }}"
+              },
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#CSEM",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[5] }}"
+              }
+            {% endif %}            
+          ]
+          {% if obj_assess[6] != 'N/A' %},
+            "performanceLevels": [ 
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Performance Level",
+                "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#{{ obj_assess[6] }}",
+                "performanceLevelMet": true
+              }
+            ]
+          {% endif %} 
+        } {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
