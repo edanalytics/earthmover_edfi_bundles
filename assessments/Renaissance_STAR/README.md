@@ -50,11 +50,16 @@ Required columns:
 - INPUT_FILE_DS: The Dashboard Standard file to be mapped
 - INPUT_FILE_SA: The Skill Area file to be mapped
 If student IDs must be mapped, provide the following additional parameters:
-- STUDENT_ID_XWALK: Path to a two-column CSV mapping `from` and ID included in the assessment file and `to` the `studentUniqueId` value in Ed-Fi
-- STUDENT_ID_JOIN_COLUMN: Declare which column in the assessment file should be used for the crosswalk join
+- STUDENT_ID_XWALK: Path to a two-column CSV mapping `student_id_from`, an ID included in the assessment file, and `student_id_to`, the `studentUniqueId` value in Ed-Fi
+- STUDENT_ID_FROM: Which column from the results file to use for mapping
+- STUDENT_ID_NAME: `student_id_to`
 
-When using an ID xwalk, set `STUDENT_ID_NAME` as `to`.
-
+To query a student ID xwalk from a database, provide the following additional parameters:
+- DATABASE_CONNECTION: [SQLAlchemy database URL](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls)
+- STUDENT_ID_QUERY: Crosswalk query with columns `student_id_from` and `student_id_to`. You may need to use `$$` in the place of single quotes to avoid issues with constructing the query string.
+- STUDENT_ID_FROM: Which column from the results file to use for mapping
+- STUDENT_ID_NAME: `student_id_to`
+  
 ### Examples
 Using an ID column from the assessment file:
 ```bash
@@ -67,7 +72,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STUDENT_ID_NAME": "StudentStateID"}'
 ```
 
-Using a student ID crosswalk
+Using a student ID crosswalk:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
@@ -76,8 +81,22 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE_SA": "path/to/SEL_SkillArea_v1.csv",
 "OUTPUT_DIR": "./output",
 "STUDENT_ID_XWALK": "path/to/student_id_xwalk.csv",
-"STUDENT_ID_JOIN_COLUMN": "StudentStateID",
-"STUDENT_ID_NAME": "to"}'
+"STUDENT_ID_FROM": "StudentStateID",
+"STUDENT_ID_NAME": "student_id_to"}'
+```
+
+Using a database connection:
+```bash
+earthmover run -c ./earthmover.yaml -p '{
+"BUNDLE_DIR": ".",
+"INPUT_FILE_OVERALL": "path/to/SEL_v2.csv",
+"INPUT_FILE_DS": "path/to/SEL_Dashboard_Standards_v2.csv",
+"INPUT_FILE_SA": "path/to/SEL_SkillArea_v1.csv",
+"OUTPUT_DIR": "./output",
+"DATABASE_CONNECTION": "database_connection_string"
+"STUDENT_ID_QUERY": "select id_1 as student_id_from, id_2 as student_id_to from student_table",
+"STUDENT_ID_FROM": "StudentStateID",
+"STUDENT_ID_NAME": "student_id_to"}'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
