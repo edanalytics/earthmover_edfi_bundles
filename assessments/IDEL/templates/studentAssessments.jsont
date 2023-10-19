@@ -1,0 +1,67 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_id}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{primary_id_student_id}}"
+  },
+  "administrationDate": "{{client_date}}",
+  {% if assessment_measure_instructional_recommendation_levels != '' %}
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#assessment_measure_instructional_recommendation_levels",
+      "performanceLevelMet": true
+    }
+  ],
+  {% endif %}
+  {% if benchmark_period != '' %}
+  "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "benchmark_period"
+    }
+  ],
+  {% endif %}
+  "studentObjectiveAssessments": [
+    {% set possible_obj_assessments = 
+        {'FNL':'fluidez_en_nombrar_letras',
+         'FSF':'fluidez_en_la_segmentacion_de_fonemas',
+         'FPS':'fluidez_en_las_palabras_sin_sentido',
+         'FLO':'fluidez_en_la_lectura_oral',
+         'FUP':'fluidez_en_el_uso_de_las_palabras',
+         'FRO':'fluidez_en_el_relato_oral'} %}
+
+    {% for obj_id, obj_name in possible_obj_assessments.items() %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": {{assessment_id}}
+        "identificationCode": "{{obj_id}}",
+        "namespace": "{{namespace}}"
+      }
+      ,
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "assessment_measure_{{obj_name}}_score"
+        }
+      ],
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#assessment_measure_{{obj_name}}_level",
+          "performanceLevelMet": true
+        }
+      ]
+    }{%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+}
