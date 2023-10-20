@@ -1,4 +1,5 @@
 # See accompanying README.md for details about this file.
+version: 2
 
 config:
   log_level: DEBUG
@@ -8,9 +9,11 @@ config:
   show_graph: False
   parameter_defaults:
     # the following should be included in every template
-    STUDENT_ID_JOIN_COLUMN: tx_unique_student_id
+    STUDENT_ID_FROM: tx_unique_student_id
     STUDENT_ID_NAME: tx_unique_student_id
     STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
 
 sources:
 
@@ -87,22 +90,20 @@ transformations:
 
   # CONFORMED EOC
   conformed_staar_summative_eoc:
+    source: $sources.staar_summative_eoc_input
     operations:
       # JOIN COURSE INFO
       - operation: join
         sources:
-          - $sources.staar_summative_eoc_input
           - $sources.course_code_xwalk
         left_key: end_of_course_code
         right_key: end_of_course_code
         join_type: inner 
       - operation: rename_columns
-        source: $transformations.conformed_staar_summative_eoc
         columns:
           "administration_date": administration_window
       # ADD assess_id & overall_pl
       - operation: add_columns
-        source: $transformations.conformed_staar_summative_eoc
         columns:
           assessment_identifier: staar_summative_eoc
           school_year: "${API_YEAR}"
@@ -122,7 +123,6 @@ transformations:
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
-          - $transformations.conformed_staar_summative_eoc
           - $sources.administration_window_xwalk
         left_keys:
           - assessment_identifier
@@ -142,7 +142,6 @@ transformations:
       # JOIN obj assess descriptive names
       - operation: join
         sources:
-          - $transformations.conformed_staar_summative_eoc
           - $sources.obj_assess_codes_xwalk
         left_keys:
           - assessment_identifier
@@ -157,26 +156,23 @@ transformations:
         join_type: inner 
       # KEEP conformed columns
       - operation: keep_columns
-        source: $transformations.conformed_staar_summative_eoc
         columns: {{conformed_columns}}
   
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
+    source: $transformations.conformed_staar_summative_eoc
     operations:
       - operation: join
         sources:
-          - $transformations.conformed_staar_summative_eoc
           - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        left_key: ${STUDENT_ID_FROM}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.studentAssessments
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       # add api_year as a passed-in env var
       - operation: add_columns
-        source: $transformations.studentAssessments
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
 
