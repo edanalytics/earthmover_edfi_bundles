@@ -1,4 +1,5 @@
 # See accompanying README.md for details about this file.
+version: 2
 
 config:
   log_level: DEBUG
@@ -8,9 +9,11 @@ config:
   show_graph: False
   parameter_defaults:
     # the following should be included in every template
-    STUDENT_ID_JOIN_COLUMN: tx_unique_student_id
+    STUDENT_ID_FROM: tx_unique_student_id
     STUDENT_ID_NAME: tx_unique_student_id
     STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
 
 sources:
 
@@ -83,10 +86,10 @@ transformations:
 
   # CONFORMED 3-8
   conformed_staar_summative:
+    source: $sources.staar_summative_input
     operations:
       # RENAME columns to easily convert from wide to long
       - operation: rename_columns
-        source: $sources.staar_summative_input
         columns:
           # grade_level_tested is called grade_level_code in other STAAR tests (EOC), so rename so we can use the same stuASsessment.jsont
           "grade_level_tested": grade_level_code
@@ -135,7 +138,6 @@ transformations:
           {% endif %}
       # ADD assess_id and missing cols
       - operation: add_columns
-        source: $transformations.conformed_staar_summative
         columns:
           assessment_identifier: staar_summative
           school_year: "${API_YEAR}"
@@ -160,10 +162,10 @@ transformations:
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_scores_{{subject}}:
+    source: $transformations.conformed_staar_summative
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
       - operation: rename_columns
-        source: $transformations.conformed_staar_summative
         columns:
           {{subject}}_reporting_category_1_raw_score: reporting_category_1_raw_score
           {{subject}}_reporting_category_2_raw_score: reporting_category_2_raw_score
@@ -178,7 +180,6 @@ transformations:
           opportunity_key_{{subject}}: opportunity_key
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
-        source: $transformations.staar_summative_scores_{{subject}}
         columns:
           subject: {{descriptor_subject}}
           # use component PL columns to create overall PL
@@ -197,7 +198,6 @@ transformations:
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
-          - $transformations.staar_summative_scores_{{subject}}
           - $sources.administration_window_xwalk
         left_keys:
           - assessment_identifier
@@ -217,7 +217,6 @@ transformations:
       # JOIN obj assess descriptive names
       - operation: join
         sources:
-          - $transformations.staar_summative_scores_{{subject}}
           - $sources.obj_assess_codes_xwalk
         left_keys:
           - assessment_identifier
@@ -232,12 +231,10 @@ transformations:
         join_type: inner
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        source: $transformations.staar_summative_scores_{{subject}}
         query: opportunity_key != ''
         behavior: include 
       # KEEP conformed columns
       - operation: keep_columns
-        source: $transformations.staar_summative_scores_{{subject}}
         columns: {{conformed_columns}}
 
   
@@ -245,30 +242,29 @@ transformations:
 
   # STACK ALL CONFORMED SETS TOGETHER
   stacked_scores:
+    source: $transformations.staar_summative_scores_reading
     operations:
       - operation: union
         sources:
-          {% for subject in subjects %}
-          - $transformations.staar_summative_scores_{{subject}}
-          {% endfor %}
+          - $transformations.staar_summative_scores_mathematics
+          - $transformations.staar_summative_scores_social_studies
+          - $transformations.staar_summative_scores_science
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
+    source: $transformations.stacked_scores
     operations:
       - operation: join
         sources:
-          - $transformations.stacked_scores
           - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        left_key: ${STUDENT_ID_FROM}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.studentAssessments
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       # add api_year as a passed-in env var
       - operation: add_columns
-        source: $transformations.studentAssessments
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
 
