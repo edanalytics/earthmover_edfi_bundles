@@ -1,10 +1,14 @@
 * **Title**: STAAR Summative - API 3.X
 * **Description**: This template covers STAAR Summative Data File Formats for:
-    * Grades 3-8 Reporting Data File
-    * Alternate 2 Grades 3-8 Data File
-    * End-of-Course Reporting Data File
-    * Alternate 2 End-of-Course Reporting Data File
+    * Grades 3-8 Reporting Data File (21-22 and 22-23 compatible)
+    * Alternate 2 Grades 3-8 Data File (21-22 and 22-23 compatible)
+    * End-of-Course Reporting Data File (21-22 and 22-23 compatible)
+    * Alternate 2 End-of-Course Reporting Data File (21-22 and 22-23 compatible)
+      
 For more info on these data files, including the File Format documentation, see https://tea.texas.gov/student-assessment/testing/student-assessment-overview/data-file-formats
+
+Note, there is a separate earthmover.yaml file for each of the 4 reporting data formats, but they are all included in this bundle, because the `/templates/` files work on all four formats (the json files will share the same structure).
+
 * **API version**: 5.2
 * **Submitter name**: Rob Little
 * **Submitter organization**: Education Analytics
@@ -23,7 +27,7 @@ For more info on these data files, including the File Format documentation, see 
 
 If student IDs must be mapped, provide the following additional parameters:
 - STUDENT_ID_XWALK: Path to a two-column CSV mapping `from` and ID included in the assessment file and `to` the `studentUniqueId` value in Ed-Fi
-- STUDENT_ID_JOIN_COLUMN: Declare which column in the assessment file should be used for the crosswalk join
+- STUDENT_ID_FROM: Declare which column in the assessment file should be used for the crosswalk join
 
 When using an ID xwalk, set `STUDENT_ID_NAME` as `to`.
 
