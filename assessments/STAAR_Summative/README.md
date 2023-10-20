@@ -16,14 +16,10 @@ For more info on these data files, including the File Format documentation, see 
 - OUTPUT_DIR: Where output files will be written
 - BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - API_YEAR: The Ed-Fi API year that the output of this template will send to. e.g. for school year 2022-2023, enter `2023`
+- INPUT_FILE: The path to the STAAR Summative .csv file you want to transform
 
 
 ### Optional
-Note, you can enter any combination of these parameters, depending on the files you have. If you have e.g. a 3-8 file AND an Alternate EOC file, both will be converted to a common .json structure and saved in one studentAssessments.json file
-- STAAR_SUMMATIVE_INPUT_FILE: The path to a "Grades 3-8 Reporting Data File"
-- STAAR_SUMMATIVE_ALT_INPUT_FILE: The path to a "Alternate 2 Grades 3-8 Data File"
-- STAAR_SUMMATIVE_EOC_INPUT_FILE: The path to a "End-of-Course Reporting Data File"
-- STAAR_SUMMATIVE_EOC_ALT_INPUT_FILE: The path to a "Alternate 2 End-of-Course Reporting Data File"
 
 If student IDs must be mapped, provide the following additional parameters:
 - STUDENT_ID_XWALK: Path to a two-column CSV mapping `from` and ID included in the assessment file and `to` the `studentUniqueId` value in Ed-Fi
@@ -32,23 +28,19 @@ If student IDs must be mapped, provide the following additional parameters:
 When using an ID xwalk, set `STUDENT_ID_NAME` as `to`.
 
 ### Examples
-Running a single 3-8 file:
+Running a STAAR Summative 3-8 file:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
+earthmover run -c ./earthmover_staar_summative.yaml -p '{
 "BUNDLE_DIR": ".",
-"STAAR_SUMMATIVE_INPUT_FILE": "path/to/staar_summative_3-8_2023.csv",
+"INPUT_FILE": "path/to/staar_summative_3-8_2023.csv",
 "OUTPUT_DIR": "./output",
 "API_YEAR": "2023"}'
 ```
-
-Running all four files (note, they will be stacked together into one output file):
+Running a STAAR Summative EOC ALT file:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
+earthmover run -c ./earthmover_staar_summative_eoc_alt.yaml -p '{
 "BUNDLE_DIR": ".",
-"STAAR_SUMMATIVE_INPUT_FILE": "path/to/staar_summative_3-8_2023.csv",
-"STAAR_SUMMATIVE_ALT_INPUT_FILE": "path/to/staar_summative_3-8_ALT2_2023.csv",
-"STAAR_SUMMATIVE_EOC_INPUT_FILE": "path/to/staar_summative_EOC_2023.csv",
-"STAAR_SUMMATIVE_EOC_ALT_INPUT_FILE": "path/to/staar_summative_EOC_ALT2_2023.csv",
+"INPUT_FILE": "path/to/staar_summative_eoc_alt_2023.csv",
 "OUTPUT_DIR": "./output",
 "API_YEAR": "2023"}'
 ```
