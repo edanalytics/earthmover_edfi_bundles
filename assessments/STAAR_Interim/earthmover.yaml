@@ -1,4 +1,5 @@
 # See accompanying README.md for details about this file.
+version: 2
 
 config:
   log_level: DEBUG
@@ -8,7 +9,7 @@ config:
   show_graph: False
   parameter_defaults:
     # the following should be included in every template
-    STUDENT_ID_JOIN_COLUMN: TSDS UID
+    STUDENT_ID_FROM: TSDS UID
     STUDENT_ID_NAME: TSDS UID
     STUDENT_ID_XWALK: ''
 
@@ -54,21 +55,19 @@ sources:
 
 transformations:
   staar_interim_student_assessment:
+    source: $sources.staar_interim_input
     operations:
       - operation: join
         sources:
-          - $sources.staar_interim_input
           - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_JOIN_COLUMN}
+        left_key: ${STUDENT_ID_FROM}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.staar_interim_student_assessment
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       # rename columns with spaces to have "_" instead
       - operation: rename_columns
-        source: $transformations.staar_interim_student_assessment
         columns: 
           "ADMINISTRATION TYPE": ADMINISTRATION_TYPE
           "TEST DATE": TEST_DATE
@@ -132,21 +131,18 @@ transformations:
       # join test info (e.g. subject, grade level from test code xwalk)
       - operation: join
         sources:
-          - $transformations.staar_interim_student_assessment
           - $sources.test_code_xwalk
         left_key: TEST_CODE
         right_key: test_code
         join_type: inner
       # add api_year as a passed-in env var & asses identifier as static
       - operation: add_columns
-        source: $transformations.staar_interim_student_assessment
         columns:
           api_year: "${API_YEAR}" #NOTE, this is passed by the user/airflow as an env variable
           assessment_identifier: staar_interim
       # join objective assessment descriptive names
       - operation: join
         sources:
-          - $transformations.staar_interim_student_assessment
           - $sources.obj_assess_codes_xwalk
         left_keys:
           - assessment_identifier
@@ -161,7 +157,6 @@ transformations:
         join_type: inner
       # reformat test date from m/d/Y to Y-m-d
       - operation: date_format
-        source: $transformations.staar_interim_student_assessment
         column: TEST_DATE
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
