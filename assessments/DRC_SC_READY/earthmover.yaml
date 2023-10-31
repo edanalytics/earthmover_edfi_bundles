@@ -6,6 +6,7 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: True
+  skip_hashing: True
   parameter_defaults:
     source_encoding: latin-1
     INPUT_FILE: ''
