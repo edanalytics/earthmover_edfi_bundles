@@ -1,0 +1,188 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": {% if psat_8_9_test_administration_indicator == 'Y' %}"PSAT 8/9"{% elif psat_10_test_administration_indicator == 'Y' %}"PSAT 10"{% else %}"SAT"{% endif %},
+    "namespace": "uri://collegeboard.org"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{state_sponsored_assessment_date}}",
+  "performanceLevels": [
+    {% set all_pls = [] %}
+    {% if ebrw_proficiency_level != '' %}
+      {% set _= all_pls.append(["Proficiency Level", ebrw_proficiency_level]) %}
+    {% endif %}
+    {% if math_proficiency_level != '' %}
+      {% set _= all_pls.append(["Proficiency Level", math_proficiency_level]) %}
+    {% endif %}
+    {% if evidence_based_reading_and_writing_ccr_benchmark_indicator != '' %}
+      {% set _= all_pls.append(["CCR Benchmark Indicator", evidence_based_reading_and_writing_ccr_benchmark_indicator]) %}
+    {% endif %}
+    {% if math_ccr_benchmark_indicator != '' %}
+      {% set _= all_pls.append(["CCR Benchmark Indicator", math_ccr_benchmark_indicator]) %}
+    {% endif %}
+  
+    {%- for pl in all_pls -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+      "performanceLevelDescriptor": "uri://collegeboard.org/PerformanceLevelDescriptor#{{pl[1]}}",
+      "performanceLevelMet": true
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scoreResults": [
+    {% set all_scores = [] %}
+    {% if state_sponsored_total_score != '' %}
+      {% set _= all_scores.append(["State Sponsored Assessments Total Score", state_sponsored_total_score]) %}
+    {% endif %}
+    {% if state_sponsored_reading_writing_section_score != '' %}
+      {% set _= all_scores.append(["State Sponsored Assessments Score", state_sponsored_reading_writing_section_score]) %}
+    {% endif %}
+    {% if state_sponsored_math_section_score != '' %}
+      {% set _= all_scores.append(["State Sponsored Assessments Score", state_sponsored_math_section_score]) %}
+    {% endif %}
+    {% if nationally_representative_total_score != '' %}
+      {% set _= all_scores.append(["Nationally Rep Sample Pctl Total Score", nationally_representative_total_score]) %}
+    {% endif %}
+    {% if nationally_representative_reading_writing_section_score != '' %}
+      {% set _= all_scores.append(["Nationally Rep Sample Pctl Score", nationally_representative_reading_writing_section_score]) %}
+    {% endif %}
+    {% if nationally_representative_math_section_score != '' %}
+      {% set _= all_scores.append(["Nationally Rep Sample Pctl Score", nationally_representative_math_section_score]) %}
+    {% endif %}
+    {% if user_percentile_total_score != '' %}
+      {% set _= all_scores.append(["User Percentile Total Score", user_percentile_total_score]) %}
+    {% endif %}
+    {% if user_percentile_reading_writing_section_score != '' %}
+      {% set _= all_scores.append(["User Percentile Score", user_percentile_reading_writing_section_score]) %}
+    {% endif %}
+    {% if user_percentile_math_section_score != '' %}
+      {% set _= all_scores.append(["User Percentile Score", user_percentile_math_section_score]) %}
+    {% endif %}
+    {% if subject != '' %}
+      {% set _= all_scores.append(["Subject", subject]) %}
+    {% endif %}
+    
+    {%- for score in all_scores -%}
+    {
+          "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{score[1]}}"
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "studentObjectiveAssessments": [
+    {% set obj_assess_ela = [['Reading Test', 
+                                 {'State Sponsored Assessments Score':state_sponsored_reading_test_score,
+                                 'Nationally Rep Sample Pctl Score':nationally_representative_reading_test_score,
+                                 'User Percentile Score':user_percentile_reading_test_score,
+                                 'Number of Reading Test Questions':number_of_reading_test_questions,
+                                 'Correct Answers to Reading Test Questions':student_correct_answers_to_reading_test_questions,
+                                 'Incorrect Answers to Reading Test Questions':student_incorrect_answers_to_reading_test_questions,
+                                 'Omitted Reading Test Questions':student_omitted_reading_test_questions}],
+                             ['Writing and Language Test', 
+                                 {'State Sponsored Assessments Score':state_sponsored_writing_lang_test_score,
+                                 'Nationally Rep Sample Pctl Score':nationally_representative_writing_lang_test_score,
+                                 'User Percentile Score':user_percentile_writing_lang_test_score,
+                                 'Number of Writing Test Questions':number_of_writing_and_lang_test_questions,
+                                 'Correct Answers to Writing Test Questions':student_correct_answers_to_writing_and_lang_test_questions,
+                                 'Incorrect Answers to Writing Test Questions':student_incorrect_answers_to_writing_and_lang_test_questions,
+                                 'Omitted Writing Test Questions':student_omitted_writing_and_lang_test_questions}],
+                             ['Relevant Words in Context', 
+                                 {'State Sponsored Assessments Subscore':state_sponsored_relevant_words_in_context_subscore,
+                                 'Nationally Rep Sample Pctl Subscore':nationally_representative_relevant_words_in_context_subscore,
+                                 'User Percentile Subscore':user_percentile_relevant_words_in_context_subscore}],
+                             ['Command of Evidence', 
+                                 {'State Sponsored Assessments Subscore':state_sponsored_command_of_evidence_subscore,
+                                 'Nationally Rep Sample Pctl Subscore':nationally_representative_command_of_evidence_subscore,
+                                 'User Percentile Subscore':user_percentile_command_of_evidence_subscore}],
+                             ['Expression of Ideas', 
+                                 {'State Sponsored Assessments Subscore':state_sponsored_expression_of_ideas_subscore,
+                                 'Nationally Rep Sample Pctl Subscore':nationally_representative_expression_of_ideas_subscore,
+                                 'User Percentile Subscore':user_percentile_expression_of_ideas_subscore}],
+                             ['Standard English Conventions', 
+                                 {'State Sponsored Assessments Subscore':state_sponsored_standard_english_conventions_subscore,
+                                 'Nationally Rep Sample Pctl Subscore':nationally_representative_standard_english_conventions_subscore,
+                                 'User Percentile Subscore':user_percentile_standard_english_conventions_subscore}]
+                             ] %}
+    {%- if essay_reading_subscore != '' or essay_analysis_subscore != '' or essay_writing_subscore != '' -%}
+      {{ obj_assess_ela.append(['Essay', 
+                                {'Essay Reading Subscore':essay_reading_subscore, 
+                                'Essay Analysis Subscore':essay_analysis_subscore, 
+                                'Essay Writing Subscore':essay_writing_subscore}])  or ""}}
+    {%- endif -%}
+
+    {% set obj_assess_math = [['Math Test', 
+                                  {'State Sponsored Assessments Score':state_sponsored_math_test_score,
+                                  'Nationally Rep Sample Pctl Score':nationally_representative_math_test_score,
+                                  'User Percentile Score':user_percentile_math_test_score,
+                                  'Number of Math No Calc Test MC Questions':number_of_math_no_calc_test_mult_choice_questions,
+                                  'Number of Math No Calc Test PR Questions':number_of_math_no_calc_test_produced_response_questions,
+                                  'Correct Answers to Math No Calc Test Questions':student_correct_answers_to_math_no_calc_test_questions,
+                                  'Incorrect Answers to Math No Calc Test Questions':student_incorrect_answers_to_math_no_calc_test_questions,
+                                  'Omitted Math No Calc Test Questions':student_omitted_math_no_calc_test_questions,
+                                  'Number of Math Calc Test MC Questions':number_of_math_calc_test_mult_choice_questions,
+                                  'Number of Math Calc Test PR Questions':number_of_math_calc_test_produced_response_questions,
+                                  'Correct Answers to Math Calc Test Questions':student_correct_answers_to_math_calc_test_questions,
+                                  'Incorrect Answers to Math Calc Test Questions':student_incorrect_answers_to_math_calc_test_questions,
+                                  'Omitted Math Calc Test Questions':student_omitted_math_calc_test_questions}],
+                              ['Heart of Algebra', 
+                                  {'State Sponsored Assessments Subscore':state_sponsored_heart_of_algebra_subscore,
+                                  'Nationally Rep Sample Pctl Subscore':nationally_representative_heart_of_algebra_subscore,
+                                  'User Percentile Subscore':user_percentile_heart_of_algebra_subscore}],
+                              ['Passport to Advanced Mathematics', 
+                                  {'State Sponsored Assessments Subscore':state_sponsored_passport_to_advanced_math_subscore,
+                                  'Nationally Rep Sample Pctl Subscore':nationally_representative_passport_to_advanced_math_subscore,
+                                  'User Percentile Subscore':user_percentile_passport_to_advanced_math_subscore}],
+                              ['Problem Solving and Data Analysis', 
+                                  {'State Sponsored Assessments Subscore':state_sponsored_problem_solving_and_data_analysis_subscore,
+                                  'Nationally Rep Sample Pctl Subscore':nationally_representative_problem_solving_and_data_analysis_subscore,
+                                  'User Percentile Subscore':user_percentile_problem_solving_and_data_analysis_subscore}],
+                              ] %}
+
+    {% set obj_assess = obj_assess_ela %}
+    {% if '_mathematics' in  student_assessment_id %}
+    {% set obj_assess = obj_assess_math %}
+    {% endif %}
+
+    {%- for obj in obj_assess -%}
+    {% set all_score_obj = [] %}
+      {% for score_name, score_result in obj[1].items() %}
+        {% if score_result != '' %}
+          {% set _= all_score_obj.append([score_name, score_result]) %}
+        {% endif %}
+       {% endfor %}
+
+    {% if all_score_obj|length > 0 %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": {% if psat_8_9_test_administration_indicator == 'Y' %}"PSAT 8/9"{% elif psat_10_test_administration_indicator == 'Y' %}"PSAT 10"{% else %}"SAT"{% endif %},
+        "identificationCode": "{{obj[0]}}",
+        "namespace": "uri://collegeboard.org"
+      }
+      ,
+      "scoreResults": [
+       {%- for score in all_score_obj -%}
+        {
+          "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{score[1]}}"
+        }
+        {%- if not loop.last -%},
+        {%- else %}{% endif %}{%- endfor -%}
+      ]
+    }{%- if not loop.last -%},
+    {%- else %}{% endif %} 
+    {% endif %}{%- endfor -%}
+  ]
+  {% if state_sponsored_grade_when_assessed != '' %}
+  ,
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{state_sponsored_grade_when_assessed}}"
+  {% endif %}
+}

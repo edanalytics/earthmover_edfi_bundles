@@ -1,0 +1,22 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "uri://collegeboard.org"
+    },
+    "description": "{{description}}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#State Sponsored Assessments Subscore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Section Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+  }
