@@ -79,10 +79,6 @@
                                   "perf_levels": [(OralReadingAccuracyPerf, "Performance Level")],
                                   "scores": [(OralReadingAccuracyScore,"Oral Reading Accuracy Score","Decimal")]
                                 }),
-                                ({"id_code": "Literal Comprehension", 
-                                  "perf_levels": [(LiteralComprehensionPerf,"Performance Level")],
-                                  "scores": []
-                                }),
                                 ({"id_code": "Listening Comprehension", 
                                   "perf_levels": [(ListeningComprehensionPerf,"Performance Level")],
                                   "scores": [(ListeningComprehensionCorrect,"Correct","Integer"),
@@ -103,10 +99,21 @@
                                   "scores": [(PhonicsWordRecognitionDomainScore,"Domain Score", "Integer"),
                                              (PhonicsWordRecognitionTestPercentile,"Test Percentile", "Integer")]
                                 }),
+                                  ({"id_code": "Literal Comprehension", 
+                                  "perf_levels": [(LiteralComprehensionPerf,"Performance Level")],
+                                  "scores": [("not_scored","Literal Comprehension Score (Not Scored)", "Integer")]
+                                })
                               ]
-      %}
+        %}
 
+      {% set filtered_obj_assess = [] %}
       {% for obj_assess in all_obj_assess %}
+        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length %}
+        {{ filtered_obj_assess.append(obj_assess) or "" }}
+        {% endif %}
+      {% endfor %}
+
+      {% for obj_assess in filtered_obj_assess %}
       {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "NWEA-Map-Fluency",
@@ -125,20 +132,25 @@
           {% if not loop.last %},{% endif %}
           {% endif %}
         {% endfor %}
-          ],
-
-        "scoreResults": [
-        {% for score in obj_assess["scores"] %}
-          {% if score[0][i] is not none and score[0][i] | length %}
-          {
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score[1] }}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[2] }}",
-            "result": "{{ score[0][i] }}"
-          }
-          {% if not loop.last %},{% endif %}
-          {% endif %}
-        {% endfor %}
           ]
+            ,
+            "scoreResults": [
+            {% for score in obj_assess["scores"] %}
+            {% if score[0][i] is not none and score[0][i] | length %}
+                {
+                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score[1] }}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[2] }}",
+                    {% if obj_assess["id_code"] == "Literal Comprehension" %}
+                    "result": "{{ score[0] }}"
+                    {% else %}
+                    "result": "{{ score[0][i] }}"
+                    {% endif %}
+                }
+                {% if not loop.last %},{% endif %}
+            {% endif %}
+            {% endfor %}
+          ]
+
         }{% if not loop.last %},{% endif %}
       {% endfor %}
     ]
