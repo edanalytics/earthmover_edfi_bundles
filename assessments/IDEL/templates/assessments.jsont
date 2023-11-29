@@ -1,0 +1,66 @@
+{
+  "assessmentIdentifier": "{{assessment_id}}",
+  "assessmentTitle": "Indicadores Dinámicos del Éxito en la Lectura",
+  "namespace": "uri://dibels.uoregon.edu/assessment/idel",
+  "languages" : [
+    {
+      "languageDescriptor": "uri://ed-fi.org/LanguageDescriptor#spa"
+    }
+  ],
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
+    }
+  ],
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels":[
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Intensive",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Strategic",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Not Determined",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
