@@ -1,0 +1,57 @@
+[
+    "studentAssessmentIdentifier": "{{student_assessment_id}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "CLI-Circle",
+      "namespace": "uri://www.cli.org/circle/Assessment"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ school_year }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ local_student_id }}"
+    },
+    "administrationDate": "{{assessment_date}}",
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject}}",
+        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject_default_name}}",
+        "performanceLevelIndicatorName": "{{assessment_performance}}"
+      }
+    ],
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject_default_name}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject}}",
+        "result": "{{assessment_score}}"
+      }
+    ]
+    
+    "studentObjectiveAssessments": [
+      {
+        "administrationDate": "{{assessment_date}}",
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{student_objective_assessment_id}}",
+          "identificationCode": "string",
+          "namespace": "string",
+          "link": {
+            "rel": "string",
+            "href": "string"
+          }
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject}}",
+            "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject_default_name}}",
+            "performanceLevelIndicatorName": "{{assessment_performance}}"
+          }
+        ],
+        "scoreResults": [
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject_default_name}}",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject}}",
+            "result": "{{assessment_score}}"
+          }
+        ]
+      }
+    ],
+]
