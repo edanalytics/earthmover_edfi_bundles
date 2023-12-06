@@ -238,9 +238,7 @@ transformations:
       - operation: add_columns
         columns:
       {% for assessment in assessments %}
-        {% set condition_met = false %}
-        {% if not condition_met and assessment|string in objective_assessment|string%}
-          {% set condition_met = true %}
+        {% if assessment|string in objective_assessment|string%}
           assessment: {{descriptor_assessment}}
           assessment_code: {{assessment}}
         {% endif %}
@@ -279,9 +277,9 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.stacked_objective_assessment_scores
-    template: assessments/CLI_Circle/templates/test_variable_2.jsont
-    extension: csv
+    source: $transformations.stacked_all_assessment_scores
+    template: assessments/CLI_Circle/templates/studentAssessments.jsont
+    extension: jsonl
     linearize: True
     debug: True
     show_progress: True
