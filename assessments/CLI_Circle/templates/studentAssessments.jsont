@@ -10,27 +10,28 @@
     "studentReference": {
       "studentUniqueId": "{{ local_student_id }}"
     },
-    "administrationDate": "{{assessment_date}}",
+    "administrationDate": "{{ assessment_date }}",
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject}}",
-        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject_default_name}}",
-        "performanceLevelIndicatorName": "{{assessment_performance}}"
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ assessment }}",
+        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ assessment_code }}",
+        "performanceLevelIndicatorName": "{{ assessment_performance }}"
       }
     ],
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject_default_name}}",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject}}",
-        "result": "{{assessment_score}}"
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ assessment_code }}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ assessment }}",
+        "result": "{{ assessment_score }}"
       }
     ]
     
+    {% if assessment|string in objective_assessment|string%}
     "studentObjectiveAssessments": [
       {
-        "administrationDate": "{{assessment_date}}",
+        "administrationDate": "{{ objective_assessment_date }}",
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "{{student_objective_assessment_id}}",
+          "assessmentIdentifier": "{{ assessment_code }}",
           "identificationCode": "string",
           "namespace": "string",
           "link": {
@@ -40,18 +41,19 @@
         },
         "performanceLevels": [
           {
-            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject}}",
-            "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject_default_name}}",
-            "performanceLevelIndicatorName": "{{assessment_performance}}"
+            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ objective_assessment }}",
+            "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_code }}",
+            "performanceLevelIndicatorName": "{{ objective_assessment_performance }}"
           }
         ],
         "scoreResults": [
           {
-            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{subject_default_name}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{subject}}",
-            "result": "{{assessment_score}}"
+            "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ objective_assessment_code }}",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment }}",
+            "result": "{{ objective_assessment_performance }}"
           }
         ]
       }
+      {% endif %}
     ],
 ]
