@@ -338,11 +338,15 @@ transformations:
 {% endfor %}
 
   stacked_assessment_scores:
-    source: $transformations.cli_circle_student_rapid_vocabulary_v1
+    source: $transformations.cli_circle_student_rln_v1
     operations:
       - operation: union
         sources:
-          - $transformations.cli_circle_student_pa_v2
+{% for assessment_code, assessment_values in assessments.items() %}
+    {% if assessment_code != 'rln_v1' %}
+          - $transformations.cli_circle_student_{{ assessment_code }}
+    {% endif %}  
+{% endfor %} 
 
 destinations:
   studentAssessments:
