@@ -352,6 +352,6 @@ destinations:
   studentAssessments:
     source: $transformations.stacked_assessment_scores
     template: assessments/CLI_Circle/templates/studentAssessments.jsont
-    extension: csv
+    extension: json
     linearize: False
     show_progress: True
