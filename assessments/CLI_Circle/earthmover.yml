@@ -16,18 +16,9 @@ sources:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: '/mnt/n/texas_esc_4/data/assessment/cli circle/lamar_cisd/CircleDataExport_CIRCLE Progress Monitoring Pre-K Results Export_20220618_031032842D80A/report.csv'
     header_rows: 3
-    # See the accompanying README.md for a list of required columns for this file
-
-  assessments:
-    file: assessments/CLI_Circle/seeds/assessments.csv
-    header_rows: 1
-  assessmentReportingMethodDescriptors:
-    file: assessments/CLI_Circle/seeds/assessmentReportingMethodDescriptors.csv
-    header_rows: 1
-
 
 {% set conformed_columns = [
-  'student_assessment_id', 
+  'student_wave_id', 
   'wave',
   'school_year',
   'district_number',
@@ -69,72 +60,160 @@ sources:
   'dyslexia',
   'enrollment_date',
   'withdrawal_date',
-  'assessment',
   'assessment_code',
+  'assessment_descriptor',
   'assessment_score',
-  'assessment_date',
   'assessment_performance',
-  'objective_assessment',
-  'objective_assessment_code',
-  'objective_assessment_score',
-  'objective_assessment_date',
-  'objective_assessment_performance'
+  'assessment_date',
+  'oa_category_1_name',
+  'oa_category_2_name',
+  'oa_category_3_name',
+  'oa_category_4_name',
+  'oa_category_5_name',
+  'oa_category_6_name',
+  'oa_category_7_name',
+  'oa_category_1_descriptor',
+  'oa_category_2_descriptor',
+  'oa_category_3_descriptor',
+  'oa_category_4_descriptor',
+  'oa_category_5_descriptor',
+  'oa_category_6_descriptor',
+  'oa_category_7_descriptor',
+  'oa_category_1_date',
+  'oa_category_2_date',
+  'oa_category_3_date',
+  'oa_category_4_date',
+  'oa_category_5_date',
+  'oa_category_6_date',
+  'oa_category_7_date',
+  'oa_category_1_score',
+  'oa_category_2_score',
+  'oa_category_3_score',
+  'oa_category_4_score',
+  'oa_category_5_score',
+  'oa_category_6_score',
+  'oa_category_7_score',
+  'oa_category_1_performance',
+  'oa_category_2_performance',
+  'oa_category_3_performance',
+  'oa_category_4_performance',
+  'oa_category_5_performance',
+  'oa_category_6_performance',
+  'oa_category_7_performance'
   ] 
 %}
 
 {% set assessments = {
-  'rln_v1': 'Rapid Letter Naming',
-  'rapid_vocabulary_v1': 'Rapid Vocabulary',
-  'pa_v2': 'Phonological Awareness',
-  'pa_opt_v1': 'Optional Phonological Awareness',
-  'math_v1': 'Math',
-  'math_opt_v1': 'Optional Math',
-  'letter_sound_v1': 'Letter-Sound Correspondence',
-  'story_retell_comp_v1': 'Story Retell and Comprehension',
-  'book_print_v1': 'Book and Print Knowledge',
-  'science_v1': 'Science',
-  'social_studies_v1': 'Social Studies',
-  'social_emotional_v1': 'Social Emotional Behaviors',
-  'early_writing_v1': 'Early Writing Skills Early Writing Skills',
-  'approaches_to_learning_exp_v2': 'Approaches to Learning Expanded',
-  'approaches_to_learning_exp_v2_initiative_curiosity_v1': 'Initiative and Curiosity',
-  'approaches_to_learning_exp_v2_flexibility_v1': 'Flexibility',
-  'approaches_to_learning_exp_v2_creativity_dramatic_play_v1': 'Total Score Art/Creativity and Dramatic Play',
-  'physical_dev_health_v1': 'Physical Development and Health',
-  'language_communication_2016_v1': 'Speech Production and Sentence Skills',
-  'motivation_to_read_2016_v1': 'Motivation to Read - En',
-  'cpm_admin_mode': 'Administration Mode'
-  }
-%}
-
-{% set objective_assessments = {
-  'rapid_vocabulary_v1_rv_set1_v1': 'Rapid Vocabulary Set 1',
-  'rapid_vocabulary_v1_rv_set2_v1': 'Rapid Vocabulary Set 2',
-  'rapid_vocabulary_v1_rv_set3_v1': 'Rapid Vocabulary Set 3',
-  'pa_v2_syllabication_v2': 'Phonological Awareness Syllabication',
-  'pa_v2_onset_rime_v2': 'Phonological Awareness Onset-Rime',
-  'pa_v2_alliteration_v2': 'Phonological Awareness Alliteration',
-  'pa_v2_rhyming_i_v2': 'Phonological Awareness Rhyming I',
-  'pa_opt_v1_listening_v2': 'Optional Phonological Awareness Listening',
-  'pa_opt_v1_words_v2': 'Optional Phonological Awareness Words in a Sentence',
-  'pa_opt_v1_rhyming_ii_v2': 'Optional Phonological Awareness Rhyming II',
-  'math_v1_rote_counting_v1': 'Math Rote Counting',
-  'math_v1_shape_naming_v1': 'Math Shape Naming',
-  'math_v1_number_discrimination_v1': 'Math Number Discrimination',
-  'math_v1_number_naming_v1': 'Math Number Naming',
-  'math_v1_shape_disc_v1': 'Math Shape Discrimination',
-  'math_v1_counting_v1': 'Math Counting Sets',
-  'math_v1_operations_v1': 'Math Operations',
-  'math_opt_v1_patterns_v1': 'Optional Math Patterns',
-  'math_opt_v1_real_world_v1': 'Optional Math Real World',
-  'social_emotional_v1_positive_social_v1': 'Positive Social Behaviors',
-  'social_emotional_v1_classroom_community_safety_v1': 'Classroom Community and Safety',
-  'social_emotional_v1_emotion_behavior_v1': 'Emotion and Behavior Regulation',
-  'social_emotional_v1_self_care_v1': 'Self-Care',
-  'social_emotional_v1_approaches_to_learning_v1': 'Approaches to Learning',
-  'physical_dev_health_v1_fine_visual_motor_v1': 'Fine and Visual Motor',
-  'physical_dev_health_v1_gross_motor_v1': 'Gross Motor',
-  'physical_dev_health_v1_health_v1': 'Health Status'
+    'rln_v1': {
+      'name': 'Rapid Letter Naming',
+      'objective_assessments': []
+    },
+    'rapid_vocabulary_v1': {
+      'name': 'Rapid Vocabulary',
+      'objective_assessments': [
+        {'oa_category_1':{'rapid_vocabulary_v1_rv_set1_v1': 'Rapid Vocabulary Set 1'}},
+        {'oa_category_2':{'rapid_vocabulary_v1_rv_set2_v1': 'Rapid Vocabulary Set 2'}},
+        {'oa_category_3':{'rapid_vocabulary_v1_rv_set3_v1': 'Rapid Vocabulary Set 3'}}
+      ]
+    },
+    'pa_v2': {
+      'name': 'Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'pa_v2_syllabication_v2': 'Phonological Awareness Syllabication'}},
+        {'oa_category_2':{'pa_v2_onset_rime_v2': 'Phonological Awareness Onset-Rime'}},
+        {'oa_category_3':{'pa_v2_alliteration_v2': 'Phonological Awareness Alliteration'}},
+        {'oa_category_4':{'pa_v2_rhyming_i_v2': 'Phonological Awareness Rhyming I'}}
+      ]
+    },
+    'pa_opt_v1': {
+      'name': 'Optional Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'pa_opt_v1_listening_v2': 'Optional Phonological Awareness Listening'}},
+        {'oa_category_2':{'pa_opt_v1_words_v2': 'Optional Phonological Awareness Words in a Sentence'}},
+        {'oa_category_3':{'pa_opt_v1_rhyming_ii_v2': 'Optional Phonological Awareness Rhyming II'}}
+      ]
+    },
+    'math_v1': {
+      'name': 'Math',
+      'objective_assessments': [
+        {'oa_category_1':{'math_v1_rote_counting_v1': 'Math Rote Counting'}},
+        {'oa_category_2':{'math_v1_shape_naming_v1': 'Math Shape Naming'}},
+        {'oa_category_3':{'math_v1_number_discrimination_v1': 'Math Number Discrimination'}},
+        {'oa_category_4':{'math_v1_number_naming_v1': 'Math Number Naming'}},
+        {'oa_category_5':{'math_v1_shape_disc_v1': 'Math Shape Discrimination'}},
+        {'oa_category_6':{'math_v1_counting_v1': 'Math Counting Sets'}},
+        {'oa_category_7':{'math_v1_operations_v1': 'Math Operations'}}
+      ]
+    },
+    'math_opt_v1': {
+      'name': 'Optional Math',
+      'objective_assessments': [
+        {'oa_category_1':{'math_opt_v1_patterns_v1': 'Optional Math Patterns'}},
+        {'oa_category_2':{'math_opt_v1_real_world_v1': 'Optional Math Real World'}}
+      ]
+    },
+    'letter_sound_v1': {
+      'name': 'Letter-Sound Correspondence',
+      'objective_assessments': []
+    },
+    'story_retell_comp_v1': {
+      'name': 'Story Retell and Comprehension',
+      'objective_assessments': []
+    },
+    'book_print_v1': {
+      'name': 'Book and Print Knowledge',
+      'objective_assessments': []
+    },
+    'science_v1': {
+      'name': 'Science',
+      'objective_assessments': []
+    },
+    'social_studies_v1': {
+      'name': 'Social Studies',
+      'objective_assessments': []
+    },
+    'social_emotional_v1': {
+      'name': 'Social Emotional Behaviors',
+      'objective_assessments': [
+        {'oa_category_1':{'social_emotional_v1_positive_social_v1': 'Positive Social Behaviors'}},
+        {'oa_category_2':{'social_emotional_v1_classroom_community_safety_v1': 'Classroom Community and Safety'}},
+        {'oa_category_3':{'social_emotional_v1_emotion_behavior_v1': 'Emotion and Behavior Regulation'}},
+        {'oa_category_4':{'social_emotional_v1_self_care_v1': 'Self-Care'}},
+        {'oa_category_5':{'social_emotional_v1_approaches_to_learning_v1': 'Approaches to Learning'}}
+      ]
+    },
+    'early_writing_v1': {
+      'name': 'Early Writing Skills Early Writing Skills',
+      'objective_assessments': []
+    },
+    'approaches_to_learning_exp_v2': {
+      'name': 'Approaches to Learning Expanded',
+      'objective_assessments': [
+        {'oa_category_1':{'approaches_to_learning_exp_v2_initiative_curiosity_v1': 'Initiative and Curiosity'}},
+        {'oa_category_2':{'approaches_to_learning_exp_v2_flexibility_v1': 'Flexibility'}},
+        {'oa_category_3':{'approaches_to_learning_exp_v2_creativity_dramatic_play_v1': 'Total Score Art/Creativity and Dramatic Play'}}
+      ]
+    },
+    'physical_dev_health_v1': {
+      'name': 'Physical Development and Health',
+      'objective_assessments': [
+        {'oa_category_1':{'physical_dev_health_v1_fine_visual_motor_v1': 'Fine and Visual Motor'}},
+        {'oa_category_2':{'physical_dev_health_v1_gross_motor_v1': 'Gross Motor'}},
+        {'oa_category_3':{'physical_dev_health_v1_health_v1': 'Health Status'}}
+      ]
+    },
+    'language_communication_2016_v1': {
+      'name': 'Speech Production and Sentence Skills',
+      'objective_assessments': []
+    },
+    'motivation_to_read_2016_v1': {
+      'name': 'Motivation to Read - En',
+      'objective_assessments': []
+    },
+    'cpm_admin_mode': {
+      'name': 'Administration Mode',
+      'objective_assessments': []
+    }
   }
 %}
 
@@ -161,125 +240,114 @@ transformations:
     source: $sources.cli_circle_input
     operations:
       - operation: snake_case_columns  
-      # RENAME columns to easily convert from wide to long
       - operation: add_columns
         columns:
-          student_assessment_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
+          student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
 
-  # CONVERT ASSESSMENT DATA FROM WIDE TO LONG
-  {% for assessment in assessments %}
-  {% set descriptor_assessment = assessments[assessment] %}
-  cli_circle_scores_{{assessment}}:
+{% for assessment_code, assessment_values in assessments.items() %}
+  cli_circle_student_{{assessment_code}}:
     source: $transformations.cli_circle_student_assessment
     operations:
-      # RENAME assessment-specific columns to generic colnames so we can stack the data long
       - operation: rename_columns
         columns:
-          {{assessment}}: assessment_score
-          {{assessment}}_date: assessment_date
-        # Handling assessments without cut point (cp) values to prevent errors
-      {% if assessment not in non_cp_columns %}
-          cp_{{assessment}}: assessment_performance
+          {{ assessment_code }}: assessment_score
+          {{ assessment_code }}_date: assessment_date
+
+      {% if assessment_code not in non_cp_columns %}
+      - operation: rename_columns
+        columns:
+          cp_{{ assessment_code }}: assessment_performance
       {% else %}
       - operation: add_columns
         columns:
           assessment_performance: ''
       {% endif %}
-      # ADD additional columns needed for JSON parsing
+
       - operation: add_columns
         columns:
-          assessment: {{descriptor_assessment}}
-          assessment_code: {{assessment}}
-          objective_assessment: ''
-          objective_assessment_code: ''
-          objective_assessment_score: ''
-          objective_assessment_date: ''
-          objective_assessment_performance: ''
-      # FILTER columns without assessment scores or assessment dates
+          assessment_code: {{ assessment_code }}
+          assessment_descriptor: {{ assessment_values.name }}
+
+      - operation: add_columns
+        columns:
+          oa_category_1_name: ''
+          oa_category_2_name: ''
+          oa_category_3_name: ''
+          oa_category_4_name: ''
+          oa_category_5_name: ''
+          oa_category_6_name: ''
+          oa_category_7_name: ''
+          oa_category_1_descriptor: ''
+          oa_category_2_descriptor: ''
+          oa_category_3_descriptor: ''
+          oa_category_4_descriptor: ''
+          oa_category_5_descriptor: ''
+          oa_category_6_descriptor: ''
+          oa_category_7_descriptor: ''
+          oa_category_1_date: ''
+          oa_category_2_date: ''
+          oa_category_3_date: ''
+          oa_category_4_date: ''
+          oa_category_5_date: ''
+          oa_category_6_date: ''
+          oa_category_7_date: ''
+          oa_category_1_score: ''
+          oa_category_2_score: ''
+          oa_category_3_score: ''
+          oa_category_4_score: ''
+          oa_category_5_score: ''
+          oa_category_6_score: ''
+          oa_category_7_score: ''  
+          oa_category_1_performance: ''
+          oa_category_2_performance: ''
+          oa_category_3_performance: ''
+          oa_category_4_performance: ''
+          oa_category_5_performance: ''
+          oa_category_6_performance: ''
+          oa_category_7_performance: ''  
+
+      {% if assessment_values.objective_assessments is not none and assessment_values.objective_assessments | length %}
+      {% for objective_assessment in assessment_values.objective_assessments %}
+        {% for oa_category, oa_values in objective_assessment.items() %}
+          {% for oa_key, oa_value in oa_values.items() %}
+      - operation: rename_columns
+        columns:
+          {{ oa_key }}: {{ oa_category }}_score
+          {{ oa_key }}_date: {{ oa_category }}_date
+          
+            {% if oa_key not in non_cp_columns %}
+      - operation: rename_columns
+        columns:
+          cp_{{ oa_key }}: {{ oa_category }}_performance
+            {% endif %}
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_name: {{ oa_key }}
+          {{ oa_category }}_descriptor: {{ oa_value }}
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
+      {% endif %}
+
       - operation: filter_rows
         query: assessment_score != '' and assessment_date != ''
         behavior: include 
+
       - operation: keep_columns
         columns: {{conformed_columns}}
-  {% endfor %}
+{% endfor %}
 
-  # JOIN DATA TOGETHER FOR FUTURE TRANSFORMATIONS
   stacked_assessment_scores:
-    source: $transformations.cli_circle_scores_rln_v1
+    source: $transformations.cli_circle_student_rapid_vocabulary_v1
     operations:
       - operation: union
         sources:
-  {% for assessment in assessments %}
-          - $transformations.cli_circle_scores_{{ assessment }}
-  {% endfor %}
-
-
-
-  # CONVERT OBJECTIVE ASSESSMENT DATA FROM WIDE TO LONG
-  {% for objective_assessment in objective_assessments %}
-  {% set descriptor_objective_assessment = objective_assessments[objective_assessment] %}
-  cli_circle_scores_{{objective_assessment}}:
-    source: $transformations.cli_circle_student_assessment
-    operations:
-      # RENAME assessment-specific columns to generic colnames so we can stack the data long
-      - operation: rename_columns
-        columns:
-          {{objective_assessment}}: objective_assessment_score
-          {{objective_assessment}}_date: objective_assessment_date
-        # Handling assessments without cut point (cp) values to prevent errors
-      {% if objective_assessment not in non_cp_columns %}
-          cp_{{objective_assessment}}: objective_assessment_performance
-      {% else %}
-      - operation: add_columns
-        columns:
-          objective_assessment_performance: ''
-      {% endif %}
-      # ADD additional columns needed for JSON parsing
-      - operation: add_columns
-        columns:
-      {% for assessment in assessments %}
-        {% if assessment|string in objective_assessment|string%}
-          assessment: {{descriptor_assessment}}
-          assessment_code: {{assessment}}
-        {% endif %}
-      {% endfor %}
-          objective_assessment: {{descriptor_objective_assessment}}
-          objective_assessment_code: {{objective_assessment}}
-          assessment_score: ''
-          assessment_date: ''
-          assessment_performance: ''
-      # FILTER columns without assessment scores or assessment dates
-      - operation: filter_rows
-        query: objective_assessment_score != '' and objective_assessment_date != ''
-        behavior: include 
-      - operation: keep_columns
-        columns: {{conformed_columns}}
-  {% endfor %}
-
-  # JOIN DATA TOGETHER FOR FUTURE TRANSFORMATIONS
-  stacked_objective_assessment_scores:
-    source: $transformations.cli_circle_scores_rapid_vocabulary_v1_rv_set1_v1
-    operations:
-      - operation: union
-        sources:
-  {% for objective_assessment in objective_assessments %}
-          - $transformations.cli_circle_scores_{{ objective_assessment }}
-  {% endfor %}
-
-  # JOIN DATA TOGETHER FOR FUTURE TRANSFORMATIONS
-  stacked_all_assessment_scores:
-    source: $transformations.stacked_assessment_scores
-    operations:
-      - operation: union
-        sources:
-          - $transformations.stacked_objective_assessment_scores
-
+          - $transformations.cli_circle_student_pa_v2
 
 destinations:
   studentAssessments:
-    source: $transformations.stacked_all_assessment_scores
+    source: $transformations.stacked_assessment_scores
     template: assessments/CLI_Circle/templates/studentAssessments.jsont
-    extension: jsonl
-    linearize: True
-    debug: True
+    extension: csv
+    linearize: False
     show_progress: True
