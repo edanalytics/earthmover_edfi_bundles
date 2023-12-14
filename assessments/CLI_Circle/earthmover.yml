@@ -6,7 +6,9 @@ config:
   output_dir: assessments/CLI_Circle/output
   memory_limit: 1GB
   state_file: ./runs.csv
-  show_graph: False
+  show_headers: True
+  show_stacktrace: True
+  show_graph: True
   parameter_defaults:
     STUDENT_ID_JOIN_COLUMN: local_student_id
 
@@ -239,7 +241,7 @@ transformations:
   cli_circle_student_assessment:
     source: $sources.cli_circle_input
     operations:
-      - operation: snake_case_columns  
+      - operation: snake_case_columns 
       - operation: add_columns
         columns:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
@@ -247,6 +249,8 @@ transformations:
 {% for assessment_code, assessment_values in assessments.items() %}
   cli_circle_student_{{assessment_code}}:
     source: $transformations.cli_circle_student_assessment
+    header_rows: 1
+    show_headers: True
     operations:
       - operation: rename_columns
         columns:
@@ -268,6 +272,47 @@ transformations:
           assessment_code: {{ assessment_code }}
           assessment_descriptor: {{ assessment_values.name }}
 
+      {% if assessment_values.objective_assessments is not none and assessment_values.objective_assessments | length %}
+      {% set cat_numbers=[] -%}
+      {% for objective_assessment in assessment_values.objective_assessments %}
+        {% for oa_category, oa_values in objective_assessment.items() %}
+          {% for oa_key, oa_value in oa_values.items() %}
+      - operation: rename_columns
+        columns:
+          {{ oa_key }}: {{ oa_category }}_score
+          {{ oa_key }}_date: {{ oa_category }}_date
+          
+            {% if oa_key not in non_cp_columns %}
+      - operation: rename_columns
+        columns:
+          cp_{{ oa_key }}: {{ oa_category }}_performance
+            {% else %}
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_performance: ''              
+            {% endif %}
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_name: {{ oa_key }}
+          {{ oa_category }}_descriptor: {{ oa_value }}
+          {% set cat_number = cat_numbers.append(oa_category.split('_')[-1]) %}          
+          {% endfor %}     
+        {% endfor %}
+      {% endfor %}
+      
+        {% for n in range(1, 8) %}
+          {% if n|string not in cat_numbers %}
+      - operation: add_columns
+        columns:
+          oa_category_{{ n }}_name: ''  
+          oa_category_{{ n }}_descriptor: '' 
+          oa_category_{{ n }}_date: '' 
+          oa_category_{{ n }}_score: '' 
+          oa_category_{{ n }}_performance: '' 
+          {%- endif -%}      
+        {%- endfor -%}
+      
+      {% else %}
       - operation: add_columns
         columns:
           oa_category_1_name: ''
@@ -305,28 +350,6 @@ transformations:
           oa_category_5_performance: ''
           oa_category_6_performance: ''
           oa_category_7_performance: ''  
-
-      {% if assessment_values.objective_assessments is not none and assessment_values.objective_assessments | length %}
-      {% for objective_assessment in assessment_values.objective_assessments %}
-        {% for oa_category, oa_values in objective_assessment.items() %}
-          {% for oa_key, oa_value in oa_values.items() %}
-      - operation: rename_columns
-        columns:
-          {{ oa_key }}: {{ oa_category }}_score
-          {{ oa_key }}_date: {{ oa_category }}_date
-          
-            {% if oa_key not in non_cp_columns %}
-      - operation: rename_columns
-        columns:
-          cp_{{ oa_key }}: {{ oa_category }}_performance
-            {% endif %}
-      - operation: add_columns
-        columns:
-          {{ oa_category }}_name: {{ oa_key }}
-          {{ oa_category }}_descriptor: {{ oa_value }}
-          {% endfor %}
-        {% endfor %}
-      {% endfor %}
       {% endif %}
 
       - operation: filter_rows
@@ -335,12 +358,17 @@ transformations:
 
       - operation: keep_columns
         columns: {{conformed_columns}}
+        debug: True
+        header_rows: 1
+        show_headers: True
+
 {% endfor %}
 
   stacked_assessment_scores:
     source: $transformations.cli_circle_student_rln_v1
     operations:
       - operation: union
+        debug: True
         sources:
 {% for assessment_code, assessment_values in assessments.items() %}
     {% if assessment_code != 'rln_v1' %}
