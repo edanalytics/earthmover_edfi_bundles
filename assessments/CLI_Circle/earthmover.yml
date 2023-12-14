@@ -6,9 +6,7 @@ config:
   output_dir: assessments/CLI_Circle/output
   memory_limit: 1GB
   state_file: ./runs.csv
-  show_headers: True
-  show_stacktrace: True
-  show_graph: True
+  show_graph: False
   parameter_defaults:
     STUDENT_ID_JOIN_COLUMN: local_student_id
 
@@ -18,6 +16,10 @@ sources:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: '/mnt/n/texas_esc_4/data/assessment/cli circle/lamar_cisd/CircleDataExport_CIRCLE Progress Monitoring Pre-K Results Export_20220618_031032842D80A/report.csv'
     header_rows: 3
+
+  assessmentReportingMethodDescriptors:
+    file: assessments/CLI_Circle/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
 
 {% set conformed_columns = [
   'student_wave_id', 
@@ -62,11 +64,11 @@ sources:
   'dyslexia',
   'enrollment_date',
   'withdrawal_date',
-  'assessment_code',
+  'assessment_name',
   'assessment_descriptor',
+  'assessment_date',
   'assessment_score',
   'assessment_performance',
-  'assessment_date',
   'oa_category_1_name',
   'oa_category_2_name',
   'oa_category_3_name',
@@ -246,21 +248,19 @@ transformations:
         columns:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
 
-{% for assessment_code, assessment_values in assessments.items() %}
-  cli_circle_student_{{assessment_code}}:
+{% for assessment_name, assessment_values in assessments.items() %}
+  cli_circle_student_{{assessment_name}}:
     source: $transformations.cli_circle_student_assessment
-    header_rows: 1
-    show_headers: True
     operations:
       - operation: rename_columns
         columns:
-          {{ assessment_code }}: assessment_score
-          {{ assessment_code }}_date: assessment_date
+          {{ assessment_name }}: assessment_score
+          {{ assessment_name }}_date: assessment_date
 
-      {% if assessment_code not in non_cp_columns %}
+      {% if assessment_name not in non_cp_columns %}
       - operation: rename_columns
         columns:
-          cp_{{ assessment_code }}: assessment_performance
+          cp_{{ assessment_name }}: assessment_performance
       {% else %}
       - operation: add_columns
         columns:
@@ -269,7 +269,7 @@ transformations:
 
       - operation: add_columns
         columns:
-          assessment_code: {{ assessment_code }}
+          assessment_name: {{ assessment_name }}
           assessment_descriptor: {{ assessment_values.name }}
 
       {% if assessment_values.objective_assessments is not none and assessment_values.objective_assessments | length %}
@@ -359,8 +359,6 @@ transformations:
       - operation: keep_columns
         columns: {{conformed_columns}}
         debug: True
-        header_rows: 1
-        show_headers: True
 
 {% endfor %}
 
@@ -370,9 +368,9 @@ transformations:
       - operation: union
         debug: True
         sources:
-{% for assessment_code, assessment_values in assessments.items() %}
-    {% if assessment_code != 'rln_v1' %}
-          - $transformations.cli_circle_student_{{ assessment_code }}
+{% for assessment_name, assessment_values in assessments.items() %}
+    {% if assessment_name != 'rln_v1' %}
+          - $transformations.cli_circle_student_{{ assessment_name }}
     {% endif %}  
 {% endfor %} 
 
@@ -380,6 +378,20 @@ destinations:
   studentAssessments:
     source: $transformations.stacked_assessment_scores
     template: assessments/CLI_Circle/templates/studentAssessments.jsont
-    extension: json
+    extension: jsonl
     linearize: False
+    show_progress: True
+
+  objectiveAssessments:
+    source: $transformations.stacked_assessment_scores
+    template: assessments/CLI_Circle/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: False
+    show_progress: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: assessments/CLI_Circle/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
     show_progress: True
