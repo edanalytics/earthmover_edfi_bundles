@@ -1,5 +1,5 @@
 [
-    "studentAssessmentIdentifier": "{{ assessment_code }}",
+    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ assessment_name }}",
     "assessmentReference": {
       "assessmentIdentifier": "CLI-Circle",
       "namespace": "uri://www.cli.org/circle/Assessment"
@@ -40,7 +40,7 @@
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{ assessment_code }}",
+            "assessmentIdentifier": "{{ assessment_name }}",
             "identificationCode": "{{ objective_assessment_name[:60] }}"
             "namespace": "uri://www.cli.org/circle/Assessment/ObjectiveAssessment",
           },          
