@@ -21,6 +21,10 @@ sources:
     file: assessments/CLI_Circle/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
+  assessments:
+    file: assessments/CLI_Circle/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
 {% set conformed_columns = [
   'student_wave_id', 
   'wave',
@@ -358,7 +362,6 @@ transformations:
 
       - operation: keep_columns
         columns: {{conformed_columns}}
-        debug: True
 
 {% endfor %}
 
@@ -366,7 +369,6 @@ transformations:
     source: $transformations.cli_circle_student_rln_v1
     operations:
       - operation: union
-        debug: True
         sources:
 {% for assessment_name, assessment_values in assessments.items() %}
     {% if assessment_name != 'rln_v1' %}
@@ -379,19 +381,26 @@ destinations:
     source: $transformations.stacked_assessment_scores
     template: assessments/CLI_Circle/templates/studentAssessments.jsont
     extension: jsonl
-    linearize: False
+    linearize: True
     show_progress: True
 
   objectiveAssessments:
     source: $transformations.stacked_assessment_scores
     template: assessments/CLI_Circle/templates/objectiveAssessments.jsont
     extension: jsonl
-    linearize: False
+    linearize: True
     show_progress: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: assessments/CLI_Circle/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+    show_progress: True
+
+  assessments:
+    source: $sources.assessments
+    template: assessments/CLI_Circle/templates/assessments.jsont
     extension: jsonl
     linearize: True
     show_progress: True
