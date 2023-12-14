@@ -1,0 +1,49 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "uri://www.cli.org/circle/Assessment",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Early Education"
+    }
+  ],
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#Other",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Other"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Needs Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#On Track"
+    },    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
+    },
+  ]
+}
