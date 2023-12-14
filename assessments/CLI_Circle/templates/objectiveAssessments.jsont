@@ -9,27 +9,31 @@
 
   {
     "assessmentReference": {
-      "assessmentIdentifier": "{{ assessment_name }}",
-      "namespace": "uri://www.cli.org/circle/Assessment",
-    },
-
-    "parentObjectiveAssessmentReference": {
-      "assessmentIdentifier": "{{ assessment_name }}",
-      "identificationCode": "{{ objective_assessment_name }}"
-      "namespace": "uri://www.cli.org/circle/Assessment/ObjectiveAssessment",
+      "assessmentIdentifier": "cli_circle",
+      "namespace": "uri://www.cli.org/circle/Assessment"
     },
     "performanceLevels": [
-      {
-          "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ objective_assessment_descriptor }}",
-          "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_performance }}",
-          "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      }
+     {
+       "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
+       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+       "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_performance }}"
+     },
+     {
+       "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
+       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+       "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_name }}"
+     },
     ],
     "scores": [
       {
-          "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ objective_assessment_descriptor }}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-          "result": "{{ objective_assessment_score }}"
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ objective_assessment_descriptor }}",
+        "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ objective_assessment_score }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ objective_assessment_name }}"
       }
     ],
   }
