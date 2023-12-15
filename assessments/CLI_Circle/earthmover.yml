@@ -117,7 +117,7 @@ sources:
   ] 
 %}
 
-{% set assessments = {
+{% set assessments_en = {
     'rln_v1': {
       'name': 'Rapid Letter Naming',
       'objective_assessments': []
@@ -206,7 +206,7 @@ sources:
       'objective_assessments': [
         {'oa_category_1':{'approaches_to_learning_exp_v2_initiative_curiosity_v1': 'Initiative and Curiosity'}},
         {'oa_category_2':{'approaches_to_learning_exp_v2_flexibility_v1': 'Flexibility'}},
-        {'oa_category_3':{'approaches_to_learning_exp_v2_creativity_dramatic_play_v1': 'Total Score Art/Creativity and Dramatic Play'}}
+        {'oa_category_3':{'approaches_to_learning_exp_v2_creativity_dramatic_play_v1': 'Art/Creativity and Dramatic Play'}}
       ]
     },
     'physical_dev_health_v1': {
@@ -232,21 +232,152 @@ sources:
   }
 %}
 
+{% set assessments_spa = {
+    'rlna_spa_v1': {
+      'name': 'Letras Rápidas',
+      'objective_assessments': []
+    },
+    'rapid_vocabulary_spa_v1': {
+      'name': 'Vocabulario Rápido',
+      'objective_assessments': [],
+      'sets':[
+        {'set_1':{'rapid_vocabulary_spa_v1_rv_set1_spa_v1': 'Vocabulario Rápido 1'}},
+        {'set_2':{'rapid_vocabulary_spa_v1_rv_set2_spa_v1': 'Vocabulario Rápido 2'}},
+        {'set_3':{'rapid_vocabulary_spa_v1_rv_set3_spa_v1': 'Vocabulario Rápido 3'}}
+      ]
+    },
+    'pa_spa_v2': {
+      'name': 'Conciencia Fonológica',
+      'objective_assessments': [
+        {'oa_category_1':{'pa_spa_v2_syllabication_spa_v2': 'Conciencia Fonológica División Silábica'}},
+        {'oa_category_2':{'pa_spa_v2_alliteration_spa_v2': 'Conciencia Fonológica Aliteración'}},
+        {'oa_category_3':{'pa_spa_v2_rhyming_i_spa_v2': 'Conciencia Fonológica Rimas I'}}
+      ]
+    },
+    'pa_opt_v1': {
+      'name': 'Conciencia Fonológica Opcional',
+      'objective_assessments': [
+        {'oa_category_1':{'pa_optional_spa_v1_listening_spa_v2': 'Conciencia Fonológica Opcional Escuchar'}},
+        {'oa_category_2':{'pa_optional_spa_v1_words_spa_v2': 'Conciencia Fonológica Opcional Palabras de la Oración'}},
+        {'oa_category_3':{'pa_optional_spa_v1_rhyming_ii_spa_v2': 'Conciencia Fonológica Opcional Rimas II'}}
+      ]
+    },
+    'math_spa_v1': {
+      'name': 'Matemáticas',
+      'objective_assessments': [
+        {'oa_category_1':{'math_spa_v1_rote_counting_spa_v1': 'Matemáticas Conteo de Memoria'}},
+        {'oa_category_2':{'math_spa_v1_shape_naming_spa_v1': 'Matemáticas Nombre de las Figuras'}},
+        {'oa_category_3':{'math_spa_v1_number_discrimination_spa_v1': 'Matemáticas Reconocimiento de Números'}},
+        {'oa_category_4':{'math_spa_v1_number_name_spa_v1': 'Matemáticas Nombre de los Números'}},
+        {'oa_category_5':{'math_spa_v1_shape_disc_spa_v1': 'Matemáticas Reconocimiento de Figuras'}},
+        {'oa_category_6':{'math_spa_v1_counting_spa_v1': 'Matemáticas Conteo de Grupos'}},
+        {'oa_category_7':{'math_spa_v1_operations_spa_v1': 'Matemáticas Operaciones'}}
+      ]
+    },
+    'math_opt_spa_v1': {
+      'name': 'Matemáticas opcional',
+      'objective_assessments': [
+        {'oa_category_1':{'math_opt_spa_v1_patterns_spa_v1': 'Matemáticas Opcional patrones'}},
+        {'oa_category_2':{'math_opt_spa_v1_real_world_spa_v1': 'Matemáticas Opcional Mundo Real'}}
+      ]
+    },
+    'letter_sound_spa_v1': {
+      'name': 'Sonidos de Letras',
+      'objective_assessments': []
+    },
+    'story_retell_comp_spa_v1': {
+      'name': 'Recontar y Comprension',
+      'objective_assessments': []
+    },
+    'book_print_spa_v1': {
+      'name': 'Libros y Material Impreso',
+      'objective_assessments': []
+    },
+    'science_spa_v1': {
+      'name': 'Ciencias',
+      'objective_assessments': []
+    },
+    'social_studies_spa_v1': {
+      'name': 'Estudios Sociales',
+      'objective_assessments': []
+    },
+    'social_emotional_spa_v2': {
+      'name': 'Socio-Emocional',
+      'objective_assessments': [
+        {'oa_category_1':{'social_emotional_spa_v2_positive_social_spa_v1': 'Conducta Social Positiva'}},
+        {'oa_category_2':{'social_emotional_spa_v2_classroom_community_safety_spa_v1': 'Comunidad y Seguridad del Salón'}},
+        {'oa_category_3':{'social_emotional_spa_v2_emotion_behavior_spa_v1': 'Regulación de Emociones y Conducta'}},
+        {'oa_category_4':{'social_emotional_spa_v2_self_care_spa_v1': 'Cuidado Propio'}},
+        {'oa_category_5':{'social_emotional_spa_v2_approaches_to_learning_spa_v1': 'Enfoques del Aprendizaje'}}
+      ]
+    },
+    'early_writing_spa_v1': {
+      'name': 'Escritura Temprana',
+      'objective_assessments': []
+    },
+    'approaches_to_learning_extended_spa_v1': {
+      'name': 'Enfoques del aprendizaje - Extendidos',
+      'objective_assessments': [
+        {'oa_category_1':{'approaches_to_learning_extended_spa_v1_initiative_curiosity_spa_v1': 'Iniciativa y Curiosidad'}},
+        {'oa_category_2':{'approaches_to_learning_extended_spa_v1_flexibility_spa_v1': 'Flexibilidad'}},
+        {'oa_category_3':{'approaches_to_learning_extended_spa_v1_creativity_dramatic_play_spa_v1': 'Arte/Creatividad y Actuación'}}
+      ]
+    },
+    'physical_dev_health_spa_v1': {
+      'name': 'Desarrollo fFísico y Salud',
+      'objective_assessments': [
+        {'oa_category_1':{'physical_dev_health_spa_v1_fine_visual_motor_spa_v1': 'Motricidad Fina y Visual'}},
+        {'oa_category_2':{'physical_dev_health_spa_v1_gross_motor_spa_v1': 'Motricidad Gruesa'}},
+        {'oa_category_3':{'physical_dev_health_spa_v1_health_spa_v1': 'Estado de Salud'}}
+      ]
+    },
+    'language_communication_2016_spa_v1': {
+      'name': 'Speech Production and Sentence Skills',
+      'objective_assessments': []
+    },
+    'motivation_to_read_2016_spa_v1': {
+      'name': 'Motivation to Read - En',
+      'objective_assessments': []
+    },
+    'cpm_admin_mode_sp': {
+      'name': 'Administration Mode',
+      'objective_assessments': []
+    }
+  }
+%}
+
+{% set assessments = assessments_en.copy() %}
+{% set _ = assessments.update(assessments_spa) %}
+
 {% set non_cp_columns = [      
-  'approaches_to_learning_exp_v2_creativity_dramatic_play_v1',
-  'approaches_to_learning_exp_v2_flexibility_v1',
-  'approaches_to_learning_exp_v2_initiative_curiosity_v1',
-  'cpm_admin_mode',
-  'math_opt_v1_patterns_v1',
-  'math_opt_v1_real_world_v1',
-  'physical_dev_health_v1_fine_visual_motor_v1',
-  'physical_dev_health_v1_gross_motor_v1',
-  'physical_dev_health_v1_health_v1',
-  'social_emotional_v1_approaches_to_learning_v1',
-  'social_emotional_v1_self_care_v1',
-  'social_emotional_v1_emotion_behavior_v1',
-  'social_emotional_v1_classroom_community_safety_v1',
-  'social_emotional_v1_positive_social_v1'
+    'approaches_to_learning_exp_v2_creativity_dramatic_play_v1',
+    'approaches_to_learning_exp_v2_flexibility_v1',
+    'approaches_to_learning_exp_v2_initiative_curiosity_v1',
+    'cpm_admin_mode',
+    'math_opt_v1_patterns_v1',
+    'math_opt_v1_real_world_v1',
+    'physical_dev_health_v1_fine_visual_motor_v1',
+    'physical_dev_health_v1_gross_motor_v1',
+    'physical_dev_health_v1_health_v1',
+    'social_emotional_v1_approaches_to_learning_v1',
+    'social_emotional_v1_self_care_v1',
+    'social_emotional_v1_emotion_behavior_v1',
+    'social_emotional_v1_classroom_community_safety_v1',
+    'social_emotional_v1_positive_social_v1',
+    'approaches_to_learning_extended_spa_v1_initiative_curiosity_spa_v1',
+    'approaches_to_learning_extended_spa_v1_flexibility_spa_v1',
+    'approaches_to_learning_extended_spa_v1_creativity_dramatic_play_spa_v1',
+    'cpm_admin_mode_sp',
+    'math_opt_spa_v1_patterns_spa_v1',
+    'math_opt_spa_v1_real_world_spa_v1',
+    'physical_dev_health_spa_v1_fine_visual_motor_spa_v1',
+    'physical_dev_health_spa_v1_gross_motor_spa_v1',
+    'physical_dev_health_spa_v1_health_spa_v1',
+    'social_emotional_spa_v2_positive_social_spa_v1',
+    'social_emotional_spa_v2_classroom_community_safety_spa_v1',
+    'social_emotional_spa_v2_emotion_behavior_spa_v1',
+    'social_emotional_spa_v2_self_care_spa_v1',
+    'social_emotional_spa_v2_approaches_to_learning_spa_v1'
 ] 
 %}
 
