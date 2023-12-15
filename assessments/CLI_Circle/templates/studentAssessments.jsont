@@ -16,11 +16,6 @@
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ assessment_performance }}"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
-        "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ assessment_name }}"
       }
     ],
     "scoreResults": [
@@ -34,6 +29,14 @@
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ assessment_name }}"
       }
+      {% if assessment_set_score is not none and assessment_set_score | length %}
+      ,
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Set",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ assessment_set }}"
+      }
+      {% endif %}
     ]
         
     "studentObjectiveAssessments": [
@@ -59,12 +62,7 @@
               "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
               "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_performance }}"
-            },
-            {
-              "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
-              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_name }}"
-            },
+            }
           ],
           "scoreResults": [
             {
