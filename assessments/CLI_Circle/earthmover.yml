@@ -73,6 +73,12 @@ sources:
   'assessment_date',
   'assessment_score',
   'assessment_performance',
+  'assessment_set',
+  'assessment_set_name',
+  'assessment_set_descriptor',
+  'assessment_set_date',
+  'assessment_set_score',
+  'assessment_set_performance',
   'oa_category_1_name',
   'oa_category_2_name',
   'oa_category_3_name',
@@ -118,10 +124,11 @@ sources:
     },
     'rapid_vocabulary_v1': {
       'name': 'Rapid Vocabulary',
-      'objective_assessments': [
-        {'oa_category_1':{'rapid_vocabulary_v1_rv_set1_v1': 'Rapid Vocabulary Set 1'}},
-        {'oa_category_2':{'rapid_vocabulary_v1_rv_set2_v1': 'Rapid Vocabulary Set 2'}},
-        {'oa_category_3':{'rapid_vocabulary_v1_rv_set3_v1': 'Rapid Vocabulary Set 3'}}
+      'objective_assessments': [],
+      'sets':[
+        {'set_1':{'rapid_vocabulary_v1_rv_set1_v1': 'Rapid Vocabulary Set 1'}},
+        {'set_2':{'rapid_vocabulary_v1_rv_set2_v1': 'Rapid Vocabulary Set 2'}},
+        {'set_3':{'rapid_vocabulary_v1_rv_set3_v1': 'Rapid Vocabulary Set 3'}}
       ]
     },
     'pa_v2': {
@@ -260,6 +267,34 @@ transformations:
         columns:
           {{ assessment_name }}: assessment_score
           {{ assessment_name }}_date: assessment_date
+      
+      {% if assessment_values.sets is not none and assessment_values.sets | length %}
+        {% for set in assessment_values.sets %}
+          {% for set_category, set_values in set.items() %}
+            {% for set_key, set_value in set_values.items() %}
+          {{ set_key }}_date: assessment_set_date
+          {{ set_key }}: assessment_set_score
+          cp_{{ set_key }}: assessment_set_performance
+
+      - operation: add_columns
+        columns:
+          assessment_set_name: {{ set_key }}
+          assessment_set_descriptor: {{ set_value }}
+          assessment_set: {{ set_category.split('_')[-1] }}
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+      {% else %}
+      - operation: add_columns
+        columns:
+          assessment_set_name: ''
+          assessment_set_descriptor: ''
+          assessment_set: ''
+          assessment_set_date: ''
+          assessment_set_score: ''
+          assessment_set_performance: ''
+      {% endif %}
+
 
       {% if assessment_name not in non_cp_columns %}
       - operation: rename_columns
