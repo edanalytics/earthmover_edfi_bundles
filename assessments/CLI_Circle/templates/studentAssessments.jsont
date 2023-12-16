@@ -1,5 +1,5 @@
 [
-    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ assessment_name }}",
+    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
     "assessmentReference": {
       "assessmentIdentifier": "cli_circle",
       "namespace": "uri://www.cli.org/circle/Assessment"
@@ -10,31 +10,31 @@
     "studentReference": {
       "studentUniqueId": "{{ local_student_id }}"
     },
-    "administrationDate": "{{ assessment_date }}",
+    "administrationDate": "{{ subject_date }}",
     "performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Overall Performance Level",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ assessment_performance }}"
+        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_performance }}"
       }
     ],
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ assessment_descriptor }}",
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#{{ subject_descriptor }}",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{ assessment_score }}"
+        "result": "{{ subject_score }}"
       },
       {
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "result": "{{ assessment_name }}"
+        "result": "{{ subject_name }}"
       }
-      {% if assessment_set_score is not none and assessment_set_score | length %}
+      {% if subject_set_score is not none and subject_set_score | length %}
       ,
       {
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Set",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "result": "{{ assessment_set }}"
+        "result": "{{ subject_set }}"
       }
       {% endif %}
     ]
@@ -54,7 +54,7 @@
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
             "assessmentIdentifier": "cli_circle",
-            "identificationCode": "{{ assessment_name }}"
+            "identificationCode": "{{ subject_name }}"
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
           "performanceLevels": [
