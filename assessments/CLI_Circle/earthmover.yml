@@ -23,7 +23,7 @@ sources:
     file: assessments/CLI_Circle/seeds/assessments.csv
     header_rows: 1
 
-# PRE-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
+# PREP-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
 # CLI Circle Data comes in wide, so we have to pivot the data into a long format
 # To do this, we conform the subject/objective assessments column titles "math_v1" into generic titles e.g. "subject_name"
 # Then we stack it all together so that we have one row per student/subject assessed.
@@ -119,7 +119,7 @@ sources:
   ] 
 %}
 
-# PRE-STEP 2: CREATE DICT OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
+# PREP-STEP 2: CREATE DICT OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
 # We need this comprehensive dictionary to pass on values to our conformed columns above.
 # CLI Circle comes in both English and Spanish, and the objective assessment quantities (amount of OAs per subject) change depending on each, so we have to build two dictionaries.
 # An example of the output of this would be: 
@@ -360,7 +360,7 @@ sources:
 {% set _ = subjects.update(subjects_spa) %}
 
 
-# PRE-STEP 3: CREATE LIST OF SUBJECTS WITHOUT CUT POINT VALUES (PERFORMANCE INDICATORS)
+# PREP-STEP 3: CREATE LIST OF SUBJECTS WITHOUT CUT POINT VALUES (PERFORMANCE INDICATORS)
 # Some subjects don't carry CP values, and we need to know which ones don't so that we can create empty performance columns for those.
 # If we don't create empty columns, the "keep columns" operation below won't finish successfully.
 {% set non_cp_columns = [      
@@ -397,7 +397,7 @@ sources:
 
 
 
-# STEP 1: CONVERT COLUMNS TO SNAKE CASE
+# TRANSFORMATION-STEP 1: CONVERT COLUMNS TO SNAKE CASE
 # Some columns in the data come through with spaces or using "-" symbols instead of "_" as separators
 # We need to make sure all columns are snake cased before we begin working on the data. 
 # We can also build our student_wave_id here, which will help us identify a student and wave row.
@@ -410,7 +410,7 @@ transformations:
         columns:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
 
-# STEP 1: LOOP THROUGH DICTIONARY OF SUBJECTS AND CONFORM COLUMNS
+# TRANSFORMATION-STEP 2: LOOP THROUGH DICTIONARY OF SUBJECTS AND CONFORM COLUMNS
 # Start of by creating the main subject columns we need, these are defined pretty early in our dictionary above.
 {% for subject_name, subject_values in subjects.items() %}
   cli_circle_student_{{subject_name}}:
@@ -541,7 +541,7 @@ transformations:
 {% endfor %}
 
 
-# STEP 2: STACK ALL SUBJECT DATA TOGETHER
+# TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
 # Stack all the data we created in the for loop above together.
   stacked_subject_scores:
     source: $transformations.cli_circle_student_rln_v1
