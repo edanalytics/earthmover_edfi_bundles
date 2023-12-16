@@ -26,7 +26,7 @@ sources:
 
 # PRE-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
 # CLI Circle Data comes in wide, so we have to pivot the data into a long format
-# To do this, we conform the subject/objective assessments column titles "math_v1" into generic titles e.g. "assessment_name"
+# To do this, we conform the subject/objective assessments column titles "math_v1" into generic titles e.g. "subject_name"
 # Then we stack it all together so that we have one row per student/subject assessed.
 {% set conformed_columns = [
   'student_wave_id', 
