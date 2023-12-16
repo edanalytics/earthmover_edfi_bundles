@@ -10,7 +10,6 @@ config:
   parameter_defaults:
     STUDENT_ID_JOIN_COLUMN: local_student_id
 
-
 sources:
   cli_circle_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
@@ -27,8 +26,8 @@ sources:
 
 # PRE-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
 # CLI Circle Data comes in wide, so we have to pivot the data into a long format
-# To do this, we conform the assessment/objective assessments column names "math_v1" into generic names e.g. "assessment_name"
-# Then we stack it all together so that we have one row per student assessment
+# To do this, we conform the subject/objective assessments column titles "math_v1" into generic titles e.g. "assessment_name"
+# Then we stack it all together so that we have one row per student/subject assessed.
 {% set conformed_columns = [
   'student_wave_id', 
   'wave',
@@ -72,17 +71,17 @@ sources:
   'dyslexia',
   'enrollment_date',
   'withdrawal_date',
-  'assessment_name',
-  'assessment_descriptor',
-  'assessment_date',
-  'assessment_score',
-  'assessment_performance',
-  'assessment_set',
-  'assessment_set_name',
-  'assessment_set_descriptor',
-  'assessment_set_date',
-  'assessment_set_score',
-  'assessment_set_performance',
+  'subject_name',
+  'subject_descriptor',
+  'subject_date',
+  'subject_score',
+  'subject_performance',
+  'subject_set',
+  'subject_set_name',
+  'subject_set_descriptor',
+  'subject_set_date',
+  'subject_set_score',
+  'subject_set_performance',
   'oa_category_1_name',
   'oa_category_2_name',
   'oa_category_3_name',
@@ -121,14 +120,14 @@ sources:
   ] 
 %}
 
-# PRE-STEP 2: CREATE DICT OF ASSESSMENTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
+# PRE-STEP 2: CREATE DICT OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
 # We need this comprehensive dictionary to pass on values to our conformed columns above.
-# CLI Circle comes in both English and Spanish and the objective assessment quantities change depending on each, so we have to build two dictionaries.
+# CLI Circle comes in both English and Spanish, and the objective assessment quantities (amount of OAs per subject) change depending on each, so we have to build two dictionaries.
 # An example of the output of this would be: 
-  # student_id | assessment_name| assessment_descriptor | ...assessment_performance | oa_category_1_name       | ...oa_category_1_performance
-  # 1234       |pa_v2           | Phonological Awareness| ...Needs Support          | pa_opt_v1_listening_v2   | ...Monitoring
-  # 1234       |math_v1         | Math                  | ...On Track               | math_v1_rote_counting_v1 | ...On Track
-{% set assessments_en = {
+  # student_id | subject_name | subject_descriptor    | ...subject_performance | oa_category_1_name       | ...oa_category_1_performance
+  # 1234       | pa_v2        | Phonological Awareness| ...Needs Support       | pa_opt_v1_listening_v2   | ...Monitoring
+  # 1234       | math_v1      | Math                  | ...On Track            | math_v1_rote_counting_v1 | ...On Track
+{% set subjects_en = {
     'rln_v1': {
       'name': 'Rapid Letter Naming',
       'objective_assessments': []
@@ -243,7 +242,7 @@ sources:
   }
 %}
 
-{% set assessments_spa = {
+{% set subjects_spa = {
     'rlna_spa_v1': {
       'name': 'Letras Rápidas',
       'objective_assessments': []
@@ -358,12 +357,12 @@ sources:
 %}
 
 # Stack the dictionaries together into one large dictionary that we can iterate through bellow.
-{% set assessments = assessments_en.copy() %}
-{% set _ = assessments.update(assessments_spa) %}
+{% set subjects = subjects_en.copy() %}
+{% set _ = subjects.update(subjects_spa) %}
 
 
-# PRE-STEP 3: CREATE LIST OF ASSESSMENTS WITHOUT CUT POINT VALUES (PERFORMANCE INDICATORS)
-# Some assessments don't carry CP values, and we need to know which ones don't so that we can create empty performance columns for those.
+# PRE-STEP 3: CREATE LIST OF SUBJECTS WITHOUT CUT POINT VALUES (PERFORMANCE INDICATORS)
+# Some subjects don't carry CP values, and we need to know which ones don't so that we can create empty performance columns for those.
 # If we don't create empty columns, the "keep columns" operation below won't finish successfully.
 {% set non_cp_columns = [      
     'approaches_to_learning_exp_v2_creativity_dramatic_play_v1',
@@ -412,72 +411,72 @@ transformations:
         columns:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
 
-# STEP 1: LOOP THROUGH DICTIONARY OF ASSESSMENTS AND CONFORM COLUMNS
-# Start of by creating the main assessment columns we need, these are defined pretty early in our dictionary above.
-{% for assessment_name, assessment_values in assessments.items() %}
-  cli_circle_student_{{assessment_name}}:
+# STEP 1: LOOP THROUGH DICTIONARY OF SUBJECTS AND CONFORM COLUMNS
+# Start of by creating the main subject columns we need, these are defined pretty early in our dictionary above.
+{% for subject_name, subject_values in subjects.items() %}
+  cli_circle_student_{{subject_name}}:
     source: $transformations.cli_circle_student_assessment
     operations:
       - operation: rename_columns
         columns:
-          {{ assessment_name }}: assessment_score
-          {{ assessment_name }}_date: assessment_date
+          {{ subject_name }}: subject_score
+          {{ subject_name }}_date: subject_date
       
-      # Some assessments have "sets" and a student might take one of the sets as an assessment but not all.
-      # For example, Rapid Letter Naming has 3 sets, each set contains multiple combination of letters, a student can be assessed on one of these sets.
-      # For these assessments we have to create an "assessment_set" column which will tell us what set a student was assessed with.
-      {% if assessment_values.sets is not none and assessment_values.sets | length %}
-        {% for set in assessment_values.sets %}
+      # Some subjects have "sets" and a student might be assessed based on one of these sets.
+      # For example, Rapid Letter Naming has 3 sets, each set contains multiple combinations of letters, a student can be assessed on one of these sets.
+      # For these subjects we have to create a "subject_set" column which will tell us what set a student was assessed with.
+      {% if subject_values.sets is not none and subject_values.sets | length %}
+        {% for set in subject_values.sets %}
           {% for set_category, set_values in set.items() %}
             {% for set_key, set_value in set_values.items() %}
-          {{ set_key }}_date: assessment_set_date
-          {{ set_key }}: assessment_set_score
-          cp_{{ set_key }}: assessment_set_performance
+          {{ set_key }}_date: subject_set_date
+          {{ set_key }}: subject_set_score
+          cp_{{ set_key }}: subject_set_performance
 
       - operation: add_columns
         columns:
-          assessment_set_name: {{ set_key }}
-          assessment_set_descriptor: {{ set_value }}
-          assessment_set: {{ set_category.split('_')[-1] }}
+          subject_set_name: {{ set_key }}
+          subject_set_descriptor: {{ set_value }}
+          subject_set: {{ set_category.split('_')[-1] }}
             {% endfor %}
           {% endfor %}
         {% endfor %}
       {% else %}
       - operation: add_columns
         columns:
-          assessment_set_name: ''
-          assessment_set_descriptor: ''
-          assessment_set: ''
-          assessment_set_date: ''
-          assessment_set_score: ''
-          assessment_set_performance: ''
+          subject_set_name: ''
+          subject_set_descriptor: ''
+          subject_set: ''
+          subject_set_date: ''
+          subject_set_score: ''
+          subject_set_performance: ''
       {% endif %}
 
-      # Here we deal with assessments that do not have a Cut Point (Performance) indicator.
-      # If the assessment_name is not found in the list of Non Cut Point Columns it will create an assessment_performance column with a proper value.
-      # If it is, it will create a null column with the name "assessment_performance" so that our keep columns operation does not break.
-      {% if assessment_name not in non_cp_columns %}
+      # Here we deal with subjects that do not have a Cut Point (Performance) indicator.
+      # If the subject_name is not found in the list of Non Cut Point Columns it will create a subject_performance column with a proper value.
+      # If it is, it will create a null column with the name "subject_performance" so that our keep columns operation does not break.
+      {% if subject_name not in non_cp_columns %}
       - operation: rename_columns
         columns:
-          cp_{{ assessment_name }}: assessment_performance
+          cp_{{ subject_name }}: subject_performance
       {% else %}
       - operation: add_columns
         columns:
-          assessment_performance: ''
+          subject_performance: ''
       {% endif %}
 
-      # Add the final assessment columns: name and descriptor (e.g. "math_v1" and "Math")
+      # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
       - operation: add_columns
         columns:
-          assessment_name: {{ assessment_name }}
-          assessment_descriptor: {{ assessment_values.name }}
+          subject_name: {{ subject_name }}
+          subject_descriptor: {{ subject_values.name }}
 
       # Now we create objective assessment data based on our dictionaries above.
-      # If an assessment has objective assessments listed, then it conformes all those objective assessments 
+      # If a subject has objective assessments listed, then it conforms all those objective assessments 
       # by giving them generic names that can then stack on top of each other e.g. "oa_category_1"..."oa_category_7"
-      {% if assessment_values.objective_assessments is not none and assessment_values.objective_assessments | length %}
+      {% if subject_values.objective_assessments is not none and subject_values.objective_assessments | length %}
       {% set cat_numbers=[] -%}
-      {% for objective_assessment in assessment_values.objective_assessments %}
+      {% for objective_assessment in subject_values.objective_assessments %}
         {% for oa_category, oa_values in objective_assessment.items() %}
           {% for oa_key, oa_value in oa_values.items() %}
       - operation: rename_columns
@@ -519,7 +518,7 @@ transformations:
         {%- endfor -%}
       
       {% else %}
-      # For any assessments without objective assessments, we will build all the null columns below for ranges 1-7
+      # For any subjects without objective assessments, we will build all the null columns below for ranges 1-7
       - operation: add_columns
         columns:
       {% for n in range(1, 8) %}
@@ -531,9 +530,9 @@ transformations:
         {% endfor %}
       {% endif %}
 
-      # Filter out any data with empty scores and dates (so any rows that don't have a valid assessment score taken).
+      # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
       - operation: filter_rows
-        query: assessment_score != '' and assessment_date != ''
+        query: subject_score != '' and subject_date != ''
         behavior: include 
 
       # Finally, we keep the conformed columns we need for the templates.
@@ -543,30 +542,30 @@ transformations:
 {% endfor %}
 
 
-# STEP 2: STACK ALL ASSESSMENT DATA TOGETHER
+# STEP 2: STACK ALL SUBJECT DATA TOGETHER
 # Stack all the data we created in the for loop above together.
-  stacked_assessment_scores:
+  stacked_subject_scores:
     source: $transformations.cli_circle_student_rln_v1
     operations:
       - operation: union
         sources:
 # To avoid duplicates, we remove rln_v1 from this join (so we don't join rln_v1 twice - once as a source above and as a joined table below)
-{% for assessment_name, assessment_values in assessments.items() %}
-    {% if assessment_name != 'rln_v1' %}
-          - $transformations.cli_circle_student_{{ assessment_name }}
+{% for subject_name, subject_values in subjects.items() %}
+    {% if subject_name != 'rln_v1' %}
+          - $transformations.cli_circle_student_{{ subject_name }}
     {% endif %}  
 {% endfor %} 
 
 destinations:
   studentAssessments:
-    source: $transformations.stacked_assessment_scores
+    source: $transformations.stacked_subject_scores
     template: assessments/CLI_Circle/templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
     show_progress: True
 
   objectiveAssessments:
-    source: $transformations.stacked_assessment_scores
+    source: $transformations.stacked_subject_scores
     template: assessments/CLI_Circle/templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
