@@ -122,8 +122,10 @@ sources:
 
 # PREP-STEP 2: CREATE DICT OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
 # We need this comprehensive dictionary to pass on values to our conformed columns above.
-# CLI Circle comes in both English and Spanish, and the objective assessment quantities (amount of OAs per subject) change depending on each, so we have to build two dictionaries.
-# An example of the output of this would be: 
+# CLI Circle comes in both English and Spanish, with varying quantities of objective assessments (OAs) per subject for each language,
+# for example "pa_v2" (English) is made up of four objective assessments, while pa_spa_v2 (Spanish) is made up of three. 
+# Additionally, the objective assessment descriptors are translated to Spanish. Due to these differences, we need to construct two separate dictionaries which eventually merge together to undergo the final transformations.
+# An example output eventually created by this dictionary would be: 
   # student_id | subject_name | subject_descriptor    | ...subject_performance | oa_category_1_name       | ...oa_category_1_performance
   # 1234       | pa_v2        | Phonological Awareness| ...Needs Support       | pa_opt_v1_listening_v2   | ...Monitoring
   # 1234       | math_v1      | Math                  | ...On Track            | math_v1_rote_counting_v1 | ...On Track
