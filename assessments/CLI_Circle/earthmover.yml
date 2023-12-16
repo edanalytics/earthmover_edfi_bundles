@@ -25,7 +25,7 @@ sources:
 
 # PREP-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
 # CLI Circle Data comes in wide, where each row represents a single student, so we have to pivot the data into a long format to use it in our templates.
-# To do this, we conform the subject/objective assessments column titles "math_v1" into generic titles e.g. "subject_name"
+# To do this, we conform the subject/objective assessments column titles (e.g. "math_v1") into generic titles (e.g. "subject_name")
 # Then we stack it all together so that we have one row per student/subject assessed.
 # This list will be used in our final "keep columns" step to indicate the conformed columns we want to keep in the final transformation.
 {% set conformed_columns = [
