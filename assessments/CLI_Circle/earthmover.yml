@@ -401,7 +401,7 @@ sources:
 
 
 # TRANSFORMATION-STEP 1: CONVERT COLUMNS TO SNAKE CASE
-# Some columns in the data come through with spaces or using "-" symbols instead of "_" as separators
+# Some columns in the data come through with spaces or using "-" symbols instead of "_" as separators.
 # We need to make sure all columns are snake cased before we begin working on the data. 
 # We can also build our student_wave_id here, which will help us identify a student and wave row.
 transformations:
@@ -411,6 +411,7 @@ transformations:
       - operation: snake_case_columns 
       - operation: add_columns
         columns:
+          # do we even need this? the wave column comes with values that are not snake cased (e.g. "wave 1") so we might need to get rid of this?
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{local_student_id}}{%endraw%}'
 
 # TRANSFORMATION-STEP 2: LOOP THROUGH DICTIONARY OF SUBJECTS AND CONFORM COLUMNS
@@ -454,8 +455,8 @@ transformations:
           subject_set_performance: ''
       {% endif %}
 
-      # Here we deal with subjects that do not have a Cut Point (Performance) indicator.
-      # If the subject_name is not found in the list of Non Cut Point Columns it will create a subject_performance column with a proper value.
+      # Here we deal with subjects that do not have a Cut Point column (Performance indicator).
+      # If the subject_name is not found in the "non_cp_columns" list it will create a subject_performance column with a proper value.
       # If it is, it will create a null column with the name "subject_performance" so that our keep columns operation does not break.
       {% if subject_name not in non_cp_columns %}
       - operation: rename_columns
@@ -545,7 +546,7 @@ transformations:
 
 
 # TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
-# Stack all the data we created in the for loop above together.
+# Stack all the data we created together.
   stacked_subject_scores:
     source: $transformations.cli_circle_student_rln_v1
     operations:
