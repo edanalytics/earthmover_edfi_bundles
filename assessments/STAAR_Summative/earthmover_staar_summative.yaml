@@ -121,7 +121,7 @@ transformations:
           "approaches_grade_level_in_reading_language_arts": approaches_grade_level_in_reading
           "masters_grade_level_in_reading_language_arts": masters_grade_level_in_reading
           "opportunity_key_reading_language_arts": opportunity_key_reading
-          {% elif %{API_YEAR} == 2022 %}
+          {% elif ${API_YEAR} == 2022 %}
           "reading_reporting_category_1_scores": reading_reporting_category_1_raw_score
           "reading_reporting_category_2_scores": reading_reporting_category_2_raw_score
           "reading_reporting_category_3_scores": reading_reporting_category_3_raw_score
