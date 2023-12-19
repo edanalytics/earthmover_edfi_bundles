@@ -94,6 +94,7 @@ transformations:
           # grade_level_tested is called grade_level_code in other STAAR tests (EOC), so rename so we can use the same stuASsessment.jsont
           "grade_level_tested": grade_level_code
           "administration_date": administration_window
+          {% if ${API_YEAR} >= 2022 %}
           # standardize score names so we can easily convert from wide to long
           "mathematics_reporting_category_1_scores": mathematics_reporting_category_1_raw_score
           "mathematics_reporting_category_2_scores": mathematics_reporting_category_2_raw_score
@@ -107,6 +108,7 @@ transformations:
           "science_reporting_category_2_scores": science_reporting_category_2_raw_score
           "science_reporting_category_3_scores": science_reporting_category_3_raw_score
           "science_reporting_category_4_scores": science_reporting_category_4_raw_score
+          {% endif %}
           {% if ${API_YEAR} >= 2023 %}
           # starting in 2023, STAAR began reporting "reading" as "reading_language_arts", but we'll rename here to keep consistency in the convert wide-long code below
           "reading_language_arts_reporting_category_1_scores": reading_reporting_category_1_raw_score
@@ -136,6 +138,24 @@ transformations:
             # This column doesn't exist after 2022 -- TODO better way to handle this case?
           {% if ${API_YEAR} >= 2023 %}
           reading_reporting_category_3_raw_score: ""
+          {% endif %}
+          # in 2021 and earlier, reporting category scores were store in one column, e.g. '423' represented ['4','2','3']
+          {% if ${API_YEAR} <= 2021 %}
+          reading_reporting_category_1_raw_score: {%raw%}{{reading_reporting_category_scores[0]}}{%endraw%}
+          reading_reporting_category_2_raw_score: {%raw%}{{reading_reporting_category_scores[1]}}{%endraw%}
+          reading_reporting_category_3_raw_score: {%raw%}{{reading_reporting_category_scores[2]}}{%endraw%}
+          mathematics_reporting_category_1_raw_score: {%raw%}{{mathematics_reporting_category_scores[0]}}{%endraw%}
+          mathematics_reporting_category_2_raw_score: {%raw%}{{mathematics_reporting_category_scores[1]}}{%endraw%}
+          mathematics_reporting_category_3_raw_score: {%raw%}{{mathematics_reporting_category_scores[2]}}{%endraw%}
+          mathematics_reporting_category_4_raw_score: {%raw%}{{mathematics_reporting_category_scores[3]}}{%endraw%}
+          social_studies_reporting_category_1_raw_score: {%raw%}{{social_studies_reporting_category_scores[0]}}{%endraw%}
+          social_studies_reporting_category_2_raw_score: {%raw%}{{social_studies_reporting_category_scores[1]}}{%endraw%}
+          social_studies_reporting_category_3_raw_score: {%raw%}{{social_studies_reporting_category_scores[2]}}{%endraw%}
+          social_studies_reporting_category_4_raw_score: {%raw%}{{social_studies_reporting_category_scores[3]}}{%endraw%}
+          science_reporting_category_1_raw_score: {%raw%}{{science_reporting_category_scores[0]}}{%endraw%}
+          science_reporting_category_2_raw_score: {%raw%}{{science_reporting_category_scores[1]}}{%endraw%}
+          science_reporting_category_3_raw_score: {%raw%}{{science_reporting_category_scores[2]}}{%endraw%}
+          science_reporting_category_4_raw_score: {%raw%}{{science_reporting_category_scores[3]}}{%endraw%}
           {% endif %}
 
 
