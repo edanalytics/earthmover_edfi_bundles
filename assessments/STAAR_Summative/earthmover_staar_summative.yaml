@@ -141,21 +141,21 @@ transformations:
           {% endif %}
           # in 2021 and earlier, reporting category scores were store in one column, e.g. '423' represented ['4','2','3']
           {% if ${API_YEAR} <= 2021 %}
-          reading_reporting_category_1_raw_score: {%raw%}{{reading_reporting_category_scores[0]}}{%endraw%}
-          reading_reporting_category_2_raw_score: {%raw%}{{reading_reporting_category_scores[1]}}{%endraw%}
-          reading_reporting_category_3_raw_score: {%raw%}{{reading_reporting_category_scores[2]}}{%endraw%}
-          mathematics_reporting_category_1_raw_score: {%raw%}{{mathematics_reporting_category_scores[0]}}{%endraw%}
-          mathematics_reporting_category_2_raw_score: {%raw%}{{mathematics_reporting_category_scores[1]}}{%endraw%}
-          mathematics_reporting_category_3_raw_score: {%raw%}{{mathematics_reporting_category_scores[2]}}{%endraw%}
-          mathematics_reporting_category_4_raw_score: {%raw%}{{mathematics_reporting_category_scores[3]}}{%endraw%}
-          social_studies_reporting_category_1_raw_score: {%raw%}{{social_studies_reporting_category_scores[0]}}{%endraw%}
-          social_studies_reporting_category_2_raw_score: {%raw%}{{social_studies_reporting_category_scores[1]}}{%endraw%}
-          social_studies_reporting_category_3_raw_score: {%raw%}{{social_studies_reporting_category_scores[2]}}{%endraw%}
-          social_studies_reporting_category_4_raw_score: {%raw%}{{social_studies_reporting_category_scores[3]}}{%endraw%}
-          science_reporting_category_1_raw_score: {%raw%}{{science_reporting_category_scores[0]}}{%endraw%}
-          science_reporting_category_2_raw_score: {%raw%}{{science_reporting_category_scores[1]}}{%endraw%}
-          science_reporting_category_3_raw_score: {%raw%}{{science_reporting_category_scores[2]}}{%endraw%}
-          science_reporting_category_4_raw_score: {%raw%}{{science_reporting_category_scores[3]}}{%endraw%}
+          reading_reporting_category_1_raw_score: "{%raw%}{{reading_reporting_category_scores[0]}}{%endraw%}"
+          reading_reporting_category_2_raw_score: "{%raw%}{{reading_reporting_category_scores[1]}}{%endraw%}"
+          reading_reporting_category_3_raw_score: "{%raw%}{{reading_reporting_category_scores[2]}}{%endraw%}"
+          mathematics_reporting_category_1_raw_score: "{%raw%}{{mathematics_reporting_category_scores[0]}}{%endraw%}"
+          mathematics_reporting_category_2_raw_score: "{%raw%}{{mathematics_reporting_category_scores[1]}}{%endraw%}"
+          mathematics_reporting_category_3_raw_score: "{%raw%}{{mathematics_reporting_category_scores[2]}}{%endraw%}"
+          mathematics_reporting_category_4_raw_score: "{%raw%}{{mathematics_reporting_category_scores[3]}}{%endraw%}"
+          social_studies_reporting_category_1_raw_score: "{%raw%}{{social_studies_reporting_category_scores[0]}}{%endraw%}"
+          social_studies_reporting_category_2_raw_score: "{%raw%}{{social_studies_reporting_category_scores[1]}}{%endraw%}"
+          social_studies_reporting_category_3_raw_score: "{%raw%}{{social_studies_reporting_category_scores[2]}}{%endraw%}"
+          social_studies_reporting_category_4_raw_score: "{%raw%}{{social_studies_reporting_category_scores[3]}}{%endraw%}"
+          science_reporting_category_1_raw_score: "{%raw%}{{science_reporting_category_scores[0]}}{%endraw%}"
+          science_reporting_category_2_raw_score: "{%raw%}{{science_reporting_category_scores[1]}}{%endraw%}"
+          science_reporting_category_3_raw_score: "{%raw%}{{science_reporting_category_scores[2]}}{%endraw%}"
+          science_reporting_category_4_raw_score: "{%raw%}{{science_reporting_category_scores[3]}}{%endraw%}"
           {% endif %}
 
 
