@@ -14,6 +14,7 @@ config:
     STUDENT_ID_XWALK: ''
     STUDENT_ID_QUERY: ''
     DATABASE_CONNECTION: ''
+    INPUT_FILE_ENCODING: csv
     
 
 sources:
@@ -30,6 +31,7 @@ sources:
   nwea_map_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
+    type: ${INPUT_FILE_ENCODING}
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
 
