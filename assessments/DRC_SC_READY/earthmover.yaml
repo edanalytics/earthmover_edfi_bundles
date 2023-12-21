@@ -11,7 +11,7 @@ config:
     INPUT_FILE: ''
     API_YEAR: ''
     BUNDLE_DIR: ''
-
+    INPUT_FILETYPE: csv
 
 sources:
 
@@ -33,7 +33,7 @@ sources:
 
   scready_input:
     file: ${INPUT_FILE}
-    source_filetype: csv
+    type: ${INPUT_FILETYPE}
 #    encoding: ${source_encoding}
 
 
