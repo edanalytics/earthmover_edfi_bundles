@@ -23,6 +23,10 @@ sources:
     file: assessments/CLI_CIRCLE/seeds/assessments.csv
     header_rows: 1
 
+  objectiveAssessments:
+    file: assessments/CLI_CIRCLE/seeds/objectiveAssessments.csv
+    header_rows: 1
+
 # PREP-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
 # CLI CIRCLE Data comes in wide, where each row represents a single student, so we have to pivot the data into a long format to use it in our templates.
 # To do this, we conform the subject/objective assessments column titles (e.g. "math_v1") into generic titles (e.g. "subject_name")
@@ -30,29 +34,26 @@ sources:
 # This list will be used in our final "keep columns" step to indicate the conformed columns we want to keep in the final transformation.
 {% set conformed_columns = [
   'student_wave_id', 
-  'wave',
   'school_year',
-  'student_engage_id',
-  'assessment_language',
   'subject_name',
-  'subject_descriptor',
-  'subject_set_1_number',  
-  'subject_set_1_name',  
-  'subject_set_1_descriptor', 
-  'subject_set_1_date',
-  'subject_set_1_score',
-  'subject_set_1_performance',
-  'subject_set_2_number',  
-  'subject_set_2_name',
-  'subject_set_2_descriptor',
-  'subject_set_2_date',
-  'subject_set_2_score',
-  'subject_set_2_performance',
+  'subject_descriptor', 
+  'subject_set_1_number', 
+  'subject_set_2_number', 
   'subject_set_3_number', 
+  'subject_set_1_name',   
+  'subject_set_2_name',
   'subject_set_3_name',  
+  'subject_set_1_descriptor', 
+  'subject_set_2_descriptor',
   'subject_set_3_descriptor',
+  'subject_set_1_date',
+  'subject_set_2_date',
   'subject_set_3_date', 
+  'subject_set_1_score',
+  'subject_set_2_score',
   'subject_set_3_score',
+  'subject_set_1_performance',
+  'subject_set_2_performance',
   'subject_set_3_performance',
   'oa_category_1_name',
   'oa_category_2_name',
@@ -514,6 +515,8 @@ transformations:
               {% set set_colname = set_values.set_colname_spa %}
             {% endif %}
 
+      - operation: rename_columns
+        columns:
       {% set set_n = set_category.split('_')[-1] %}
           {{ set_colname }}_date: subject_set_{{ set_n }}_date
           {{ set_colname }}: subject_set_{{ set_n }}_score
