@@ -104,14 +104,14 @@ sources:
   # 1234       | math_v1      | Math                  | ...On Track            | math_v1_rote_counting_v1 | ...On Track
 {% set subjects_en = {
     'rln_v1': {
-      'colname': 'rlna_spa_v1',
+      'colname': 'rln_v1',
       'descriptor': 'Rapid Letter Naming',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'rapid_vocabulary_v1': {
-      'colname': 'rapid_vocabulary_spa_v1',
+      'colname': 'rapid_vocabulary_v1',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
       'sets':[
@@ -124,7 +124,7 @@ sources:
       'oa_has_cp_col': True
     },
     'pa_v2': {
-      'colname': 'pa_spa_v2',
+      'colname': 'pa_v2',
       'descriptor': 'Phonological Awareness',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'pa_v2_syllabication_v2', 'oa_descriptor':'Phonological Awareness Syllabication'}},
@@ -137,7 +137,7 @@ sources:
       'oa_has_cp_col': True
     },
     'pa_opt_v1': {
-      'colname': 'pa_optional_spa_v1',
+      'colname': 'pa_opt_v1',
       'descriptor': 'Optional Phonological Awareness',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'pa_opt_v1_listening_v2', 'oa_descriptor':'Optional Phonological Awareness Listening'}},
@@ -149,7 +149,7 @@ sources:
       'oa_has_cp_col': True
     },
     'math_v1': {
-      'colname': 'math_spa_v1',
+      'colname': 'math_v1',
       'descriptor': 'Math',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'math_v1_rote_counting_v1', 'oa_descriptor':'Math Rote Counting'}},
@@ -165,7 +165,7 @@ sources:
       'oa_has_cp_col': True
     },
     'math_opt_v1': {
-      'colname': 'math_opt_spa_v1',
+      'colname': 'math_opt_v1',
       'descriptor': 'Optional Math',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'math_opt_v1_patterns_v1', 'oa_descriptor':'Optional Math Patterns'}},
@@ -176,42 +176,42 @@ sources:
       'oa_has_cp_col': False
     },
     'letter_sound_v1': {
-      'colname': 'letter_sound_spa_v1',
+      'colname': 'letter_sound_v1',
       'descriptor': 'Letter-Sound Correspondence',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'story_retell_comp_v1': {
-      'colname': 'story_retell_comp_spa_v1',
+      'colname': 'story_retell_comp_v1',
       'descriptor': 'Story Retell and Comprehension',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'book_print_v1': {
-      'colname': 'book_print_spa_v1',
+      'colname': 'book_print_v1',
       'descriptor': 'Book and Print Knowledge',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'science_v1': {
-      'colname': 'science_spa_v1',
+      'colname': 'science_v1',
       'descriptor': 'Science',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'social_studies_v1': {
-      'colname': 'social_studies_spa_v1',
+      'colname': 'social_studies_v1',
       'descriptor': 'Social Studies',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'social_emotional_v1': {
-      'colname': 'social_emotional_spa_v2',
+      'colname': 'social_emotional_v1',
       'descriptor': 'Social Emotional Behaviors',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'social_emotional_v1_positive_social_v1', 'oa_descriptor':'Positive Social Behaviors'}},
@@ -225,14 +225,14 @@ sources:
       'oa_has_cp_col': False
     },
     'early_writing_v1': {
-      'colname': 'early_writing_spa_v1',
+      'colname': 'early_writing_v1',
       'descriptor': 'Early Writing Skills Early Writing Skills',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'approaches_to_learning_exp_v2': {
-      'colname': 'approaches_to_learning_extended_spa_v1',
+      'colname': 'approaches_to_learning_exp_v2',
       'descriptor': 'Approaches to Learning Expanded',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'approaches_to_learning_exp_v2_initiative_curiosity_v1', 'oa_descriptor':'Initiative and Curiosity'}},
@@ -244,7 +244,7 @@ sources:
       'oa_has_cp_col': False
     },
     'physical_dev_health_v1': {
-      'colname': 'physical_dev_health_spa_v1',
+      'colname': 'physical_dev_health_v1',
       'descriptor': 'Physical Development and Health',
       'objective_assessments': [
         {'oa_category_1':{'oa_colname':'physical_dev_health_v1_fine_visual_motor_v1', 'oa_descriptor':'Fine and Visual Motor'}},
@@ -256,21 +256,21 @@ sources:
       'oa_has_cp_col': False
     },
     'language_communication_2016_v1': {
-      'colname': 'language_communication_2016_spa_v1',
+      'colname': 'language_communication_2016_v1',
       'descriptor': 'Speech Production and Sentence Skills',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'motivation_to_read_2016_v1': {
-      'colname': 'motivation_to_read_2016_spa_v1',
+      'colname': 'motivation_to_read_2016_v1',
       'descriptor': 'Motivation to Read - En',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'cpm_admin_mode': {
-      'colname': 'cpm_admin_mode_sp',
+      'colname': 'cpm_admin_mode',
       'descriptor': 'Administration Mode',
       'objective_assessments': [],
       'assessment_language': 'English',
