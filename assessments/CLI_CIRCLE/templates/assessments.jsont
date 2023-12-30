@@ -1,0 +1,108 @@
+{
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "namespace": "{{ namespace }}",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Early Education"
+    }
+  ],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Rapid Letter Naming"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Rapid Vocabulary"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Phonological Awareness"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Optional Phonological Awareness"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Optional Math"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Letter-Sound Correspondence"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Story Retell and Comprehension"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Book and Print Knowledge"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Social Studies"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Social Emotional Behaviors"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Early Writing Skills Early Writing Skills"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Approaches to Learning Expanded"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Physical Development and Health"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Speech Production and Sentence Skills"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Motivation to Read - En"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Administration Mode"
+    }  
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Set",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Needs Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#On Track"
+    },    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
+    },
+  ]
+}

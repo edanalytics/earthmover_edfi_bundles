@@ -1,0 +1,38 @@
+{
+  "identificationCode": "{{ identificationCode[:60] }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "cli_circle",
+    "namespace": "uri://www.cli.org/circle/Assessment"
+  },
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Needs Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#On Track"
+    },    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
+    },
+  ]
+}

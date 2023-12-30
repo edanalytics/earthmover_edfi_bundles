@@ -1,0 +1,645 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: assessments/CLI_CIRCLE/output
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_JOIN_COLUMN: student_engage_id
+
+sources:
+  cli_circle_input:
+    file: '/mnt/n/texas_esc_4/data/assessment/cli circle/lamar_cisd/CircleDataExport_CIRCLE Progress Monitoring Pre-K Results Export_20220618_031032842D80A/report.csv'
+    header_rows: 3
+
+  assessmentReportingMethodDescriptors:
+    file: assessments/CLI_CIRCLE/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  assessments:
+    file: assessments/CLI_CIRCLE/seeds/assessments.csv
+    header_rows: 1
+
+# PREP-STEP 1: CREATE LIST OF CONFORMED COLUMNS TO STACK ON TOP OF EACH OTHER.
+# CLI CIRCLE Data comes in wide, where each row represents a single student, so we have to pivot the data into a long format to use it in our templates.
+# To do this, we conform the subject/objective assessments column titles (e.g. "math_v1") into generic titles (e.g. "subject_name")
+# Then we stack it all together so that we have one row per student/subject assessed.
+# This list will be used in our final "keep columns" step to indicate the conformed columns we want to keep in the final transformation.
+{% set conformed_columns = [
+  'student_wave_id', 
+  'wave',
+  'school_year',
+  'student_engage_id',
+  'assessment_language',
+  'subject_name',
+  'subject_descriptor',
+  'subject_set_1_number',  
+  'subject_set_1_name',  
+  'subject_set_1_descriptor', 
+  'subject_set_1_date',
+  'subject_set_1_score',
+  'subject_set_1_performance',
+  'subject_set_2_number',  
+  'subject_set_2_name',
+  'subject_set_2_descriptor',
+  'subject_set_2_date',
+  'subject_set_2_score',
+  'subject_set_2_performance',
+  'subject_set_3_number', 
+  'subject_set_3_name',  
+  'subject_set_3_descriptor',
+  'subject_set_3_date', 
+  'subject_set_3_score',
+  'subject_set_3_performance',
+  'oa_category_1_name',
+  'oa_category_2_name',
+  'oa_category_3_name',
+  'oa_category_4_name',
+  'oa_category_5_name',
+  'oa_category_6_name',
+  'oa_category_7_name',
+  'oa_category_1_descriptor',
+  'oa_category_2_descriptor',
+  'oa_category_3_descriptor',
+  'oa_category_4_descriptor',
+  'oa_category_5_descriptor',
+  'oa_category_6_descriptor',
+  'oa_category_7_descriptor',
+  'oa_category_1_date',
+  'oa_category_2_date',
+  'oa_category_3_date',
+  'oa_category_4_date',
+  'oa_category_5_date',
+  'oa_category_6_date',
+  'oa_category_7_date',
+  'oa_category_1_score',
+  'oa_category_2_score',
+  'oa_category_3_score',
+  'oa_category_4_score',
+  'oa_category_5_score',
+  'oa_category_6_score',
+  'oa_category_7_score',
+  'oa_category_1_performance',
+  'oa_category_2_performance',
+  'oa_category_3_performance',
+  'oa_category_4_performance',
+  'oa_category_5_performance',
+  'oa_category_6_performance',
+  'oa_category_7_performance'
+  ] 
+%}
+
+# PREP-STEP 2: CREATE DICT OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK ON.
+# We need this comprehensive dictionary to pass on values to our conformed columns above.
+# CLI CIRCLE comes in both English and Spanish, with varying quantities of objective assessments (OAs) per subject for each language,
+# for example "pa_v2" (English) is made up of four objective assessments, while pa_spa_v2 (Spanish) is made up of three. 
+# Due to these differences, we need to construct two separate dictionaries which eventually merge together to undergo the final transformations.
+# An example output eventually created by this dictionary would be: 
+  # student_id | subject_name | subject_descriptor    | ...subject_performance | oa_category_1_name       | ...oa_category_1_performance
+  # 1234       | pa_v2        | Phonological Awareness| ...Needs Support       | pa_opt_v1_listening_v2   | ...Monitoring
+  # 1234       | math_v1      | Math                  | ...On Track            | math_v1_rote_counting_v1 | ...On Track
+{% set subjects_en = {
+    'rln_v1': {
+      'colname': 'rlna_spa_v1',
+      'descriptor': 'Rapid Letter Naming',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'rapid_vocabulary_v1': {
+      'colname': 'rapid_vocabulary_spa_v1',
+      'descriptor': 'Rapid Vocabulary',
+      'objective_assessments': [],
+      'sets':[
+        {'set_1':{'set_colname':'rapid_vocabulary_v1_rv_set1_v1', 'set_descriptor':'Rapid Vocabulary Set 1'}},
+        {'set_2':{'set_colname':'rapid_vocabulary_v1_rv_set2_v1', 'set_descriptor':'Rapid Vocabulary Set 2'}},
+        {'set_3':{'set_colname':'rapid_vocabulary_v1_rv_set3_v1', 'set_descriptor':'Rapid Vocabulary Set 3'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'pa_v2': {
+      'colname': 'pa_spa_v2',
+      'descriptor': 'Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'pa_v2_syllabication_v2', 'oa_descriptor':'Phonological Awareness Syllabication'}},
+        {'oa_category_2':{'oa_colname':'pa_v2_alliteration_v2', 'oa_descriptor':'Phonological Awareness Alliteration'}},
+        {'oa_category_3':{'oa_colname':'pa_v2_rhyming_i_v2', 'oa_descriptor':'Phonological Awareness Rhyming I'}},
+        {'oa_category_4':{'oa_colname':'pa_v2_onset_rime_v2', 'oa_descriptor':'Phonological Awareness Onset-Rime'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'pa_opt_v1': {
+      'colname': 'pa_optional_spa_v1',
+      'descriptor': 'Optional Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'pa_opt_v1_listening_v2', 'oa_descriptor':'Optional Phonological Awareness Listening'}},
+        {'oa_category_2':{'oa_colname':'pa_opt_v1_words_v2', 'oa_descriptor':'Optional Phonological Awareness Words in a Sentence'}},
+        {'oa_category_3':{'oa_colname':'pa_opt_v1_rhyming_ii_v2', 'oa_descriptor':'Optional Phonological Awareness Rhyming II'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'math_v1': {
+      'colname': 'math_spa_v1',
+      'descriptor': 'Math',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'math_v1_rote_counting_v1', 'oa_descriptor':'Math Rote Counting'}},
+        {'oa_category_2':{'oa_colname':'math_v1_shape_naming_v1', 'oa_descriptor':'Math Shape Naming'}},
+        {'oa_category_3':{'oa_colname':'math_v1_number_discrimination_v1', 'oa_descriptor':'Math Number Discrimination'}},
+        {'oa_category_4':{'oa_colname':'math_v1_number_naming_v1', 'oa_descriptor':'Math Number Naming'}},
+        {'oa_category_5':{'oa_colname':'math_v1_shape_disc_v1', 'oa_descriptor':'Math Shape Discrimination'}},
+        {'oa_category_6':{'oa_colname':'math_v1_counting_v1', 'oa_descriptor':'Math Counting Sets'}},
+        {'oa_category_7':{'oa_colname':'math_v1_operations_v1', 'oa_descriptor':'Math Operations'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'math_opt_v1': {
+      'colname': 'math_opt_spa_v1',
+      'descriptor': 'Optional Math',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'math_opt_v1_patterns_v1', 'oa_descriptor':'Optional Math Patterns'}},
+        {'oa_category_2':{'oa_colname':'math_opt_v1_real_world_v1', 'oa_descriptor':'Optional Math Real World'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'letter_sound_v1': {
+      'colname': 'letter_sound_spa_v1',
+      'descriptor': 'Letter-Sound Correspondence',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'story_retell_comp_v1': {
+      'colname': 'story_retell_comp_spa_v1',
+      'descriptor': 'Story Retell and Comprehension',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'book_print_v1': {
+      'colname': 'book_print_spa_v1',
+      'descriptor': 'Book and Print Knowledge',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'science_v1': {
+      'colname': 'science_spa_v1',
+      'descriptor': 'Science',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'social_studies_v1': {
+      'colname': 'social_studies_spa_v1',
+      'descriptor': 'Social Studies',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'social_emotional_v1': {
+      'colname': 'social_emotional_spa_v2',
+      'descriptor': 'Social Emotional Behaviors',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'social_emotional_v1_positive_social_v1', 'oa_descriptor':'Positive Social Behaviors'}},
+        {'oa_category_2':{'oa_colname':'social_emotional_v1_classroom_community_safety_v1', 'oa_descriptor':'Classroom Community and Safety'}},
+        {'oa_category_3':{'oa_colname':'social_emotional_v1_emotion_behavior_v1', 'oa_descriptor':'Emotion and Behavior Regulation'}},
+        {'oa_category_4':{'oa_colname':'social_emotional_v1_self_care_v1', 'oa_descriptor':'Self-Care'}},
+        {'oa_category_5':{'oa_colname':'social_emotional_v1_approaches_to_learning_v1', 'oa_descriptor':'Approaches to Learning'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'early_writing_v1': {
+      'colname': 'early_writing_spa_v1',
+      'descriptor': 'Early Writing Skills Early Writing Skills',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'approaches_to_learning_exp_v2': {
+      'colname': 'approaches_to_learning_extended_spa_v1',
+      'descriptor': 'Approaches to Learning Expanded',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'approaches_to_learning_exp_v2_initiative_curiosity_v1', 'oa_descriptor':'Initiative and Curiosity'}},
+        {'oa_category_2':{'oa_colname':'approaches_to_learning_exp_v2_flexibility_v1',  'oa_descriptor':'Flexibility'}},
+        {'oa_category_3':{'oa_colname':'approaches_to_learning_exp_v2_creativity_dramatic_play_v1', 'oa_descriptor':'Art/Creativity and Dramatic Play'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'physical_dev_health_v1': {
+      'colname': 'physical_dev_health_spa_v1',
+      'descriptor': 'Physical Development and Health',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'physical_dev_health_v1_fine_visual_motor_v1', 'oa_descriptor':'Fine and Visual Motor'}},
+        {'oa_category_2':{'oa_colname':'physical_dev_health_v1_gross_motor_v1', 'oa_descriptor':'Gross Motor'}},
+        {'oa_category_3':{'oa_colname':'physical_dev_health_v1_health_v1', 'oa_descriptor':'Health Status'}}
+      ],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'language_communication_2016_v1': {
+      'colname': 'language_communication_2016_spa_v1',
+      'descriptor': 'Speech Production and Sentence Skills',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'motivation_to_read_2016_v1': {
+      'colname': 'motivation_to_read_2016_spa_v1',
+      'descriptor': 'Motivation to Read - En',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': True
+    },
+    'cpm_admin_mode': {
+      'colname': 'cpm_admin_mode_sp',
+      'descriptor': 'Administration Mode',
+      'objective_assessments': [],
+      'assessment_language': 'English',
+      'subject_has_cp_col': False
+    }
+  }
+%}
+
+{% set subjects_spa = {
+    'rlna_spa_v1': {
+      'colname': 'rln_v1',
+      'descriptor': 'Rapid Letter Naming',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'rapid_vocabulary_spa_v1': {
+      'colname': 'rapid_vocabulary_v1',
+      'descriptor': 'Rapid Vocabulary',
+      'objective_assessments': [],
+      'sets':[
+        {'set_1':{'set_colname': 'rapid_vocabulary_v1_rv_set1_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'set_descriptor':'Rapid Vocabulary Set 1'}},
+        {'set_2':{'set_colname': 'rapid_vocabulary_v1_rv_set2_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'set_descriptor':'Rapid Vocabulary Set 2'}},
+        {'set_3':{'set_colname': 'rapid_vocabulary_v1_rv_set3_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'set_descriptor':'Rapid Vocabulary Set 3'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'pa_spa_v2': {
+      'colname': 'pa_v2',
+      'descriptor': 'Phonological Awareness', 
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'pa_v2_syllabication_v2', 'oa_colname_spa': 'pa_spa_v2_syllabication_spa_v2', 'oa_descriptor':'Phonological Awareness Syllabication'}},
+        {'oa_category_2':{'oa_colname':'pa_v2_alliteration_v2', 'oa_colname_spa': 'pa_spa_v2_alliteration_spa_v2', 'oa_descriptor':'Phonological Awareness Alliteration'}},
+        {'oa_category_3':{'oa_colname':'pa_v2_rhyming_i_v2', 'oa_colname_spa': 'pa_spa_v2_rhyming_i_spa_v2', 'oa_descriptor':'Phonological Awareness Rhyming I'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'pa_optional_spa_v1': {
+      'colname': 'pa_opt_v1',
+      'descriptor': 'Optional Phonological Awareness', 
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'pa_opt_v1_listening_v2', 'oa_colname_spa': 'pa_optional_spa_v1_listening_spa_v2', 'oa_descriptor':'Optional Phonological Awareness Listening'}},
+        {'oa_category_2':{'oa_colname':'pa_opt_v1_words_v2', 'oa_colname_spa': 'pa_optional_spa_v1_words_spa_v2', 'oa_descriptor':'Optional Phonological Awareness Words in a Sentence'}},
+        {'oa_category_3':{'oa_colname':'pa_opt_v1_rhyming_ii_v2', 'oa_colname_spa': 'pa_optional_spa_v1_rhyming_ii_spa_v2', 'oa_descriptor':'Optional Phonological Awareness Rhyming II'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'math_spa_v1': {
+      'colname': 'math_v1',
+      'descriptor': 'Math',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'math_v1_rote_counting_v1', 'oa_colname_spa': 'math_spa_v1_rote_counting_spa_v1', 'oa_descriptor':'Math Rote Counting'}},
+        {'oa_category_2':{'oa_colname':'math_v1_shape_naming_v1', 'oa_colname_spa': 'math_spa_v1_shape_naming_spa_v1', 'oa_descriptor':'Math Shape Naming'}},
+        {'oa_category_3':{'oa_colname':'math_v1_number_discrimination_v1', 'oa_colname_spa': 'math_spa_v1_number_discrimination_spa_v1', 'oa_descriptor':'Math Number Discrimination'}},
+        {'oa_category_4':{'oa_colname':'math_v1_number_naming_v1', 'oa_colname_spa': 'math_spa_v1_number_name_spa_v1', 'oa_descriptor':'Math Number Naming'}},
+        {'oa_category_5':{'oa_colname':'math_v1_shape_disc_v1', 'oa_colname_spa': 'math_spa_v1_shape_disc_spa_v1', 'oa_descriptor':'Math Shape Discrimination'}},
+        {'oa_category_6':{'oa_colname':'math_v1_counting_v1', 'oa_colname_spa': 'math_spa_v1_counting_spa_v1', 'oa_descriptor':'Math Counting Sets'}},
+        {'oa_category_7':{'oa_colname':'math_v1_operations_v1', 'oa_colname_spa': 'math_spa_v1_operations_spa_v1', 'oa_descriptor':'Math Operations'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': True
+    },
+    'math_opt_spa_v1': {
+      'colname': 'math_opt_v1',
+      'descriptor': 'Optional Math',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'math_opt_v1_patterns_v1', 'oa_colname_spa': 'math_opt_spa_v1_patterns_spa_v1', 'oa_descriptor':'Optional Math Patterns'}},
+        {'oa_category_2':{'oa_colname':'math_opt_v1_real_world_v1', 'oa_colname_spa': 'math_opt_spa_v1_real_world_spa_v1', 'oa_descriptor':'Optional Math Real World'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'letter_sound_spa_v1': {
+      'colname': 'letter_sound_v1',
+      'descriptor': 'Letter-Sound Correspondence',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'story_retell_comp_spa_v1': {
+      'colname': 'story_retell_comp_v1',
+      'descriptor': 'Story Retell and Comprehension',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'book_print_spa_v1': {
+      'colname': 'book_print_v1',
+      'descriptor': 'Book and Print Knowledge',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'science_spa_v1': {
+      'colname': 'science_v1',
+      'descriptor': 'Science',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'social_studies_spa_v1': {
+      'colname': 'social_studies_v1',
+      'descriptor': 'Social Studies',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'social_emotional_spa_v2': {
+      'colname': 'social_emotional_v1',
+      'descriptor': 'Social Emotional Behaviors',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'social_emotional_v1_positive_social_v1', 'oa_colname_spa': 'social_emotional_spa_v2_positive_social_spa_v1', 'oa_descriptor':'Positive Social Behaviors'}},
+        {'oa_category_2':{'oa_colname':'social_emotional_v1_classroom_community_safety_v1', 'oa_colname_spa': 'social_emotional_spa_v2_classroom_community_safety_spa_v1', 'oa_descriptor':'Classroom Community and Safety'}},
+        {'oa_category_3':{'oa_colname':'social_emotional_v1_emotion_behavior_v1', 'oa_colname_spa': 'social_emotional_spa_v2_emotion_behavior_spa_v1', 'oa_descriptor':'Emotion and Behavior Regulation'}},
+        {'oa_category_4':{'oa_colname':'social_emotional_v1_self_care_v1', 'oa_colname_spa': 'social_emotional_spa_v2_self_care_spa_v1', 'oa_descriptor':'Self-Care'}},
+        {'oa_category_5':{'oa_colname':'social_emotional_v1_approaches_to_learning_v1', 'oa_colname_spa': 'social_emotional_spa_v2_approaches_to_learning_spa_v1', 'oa_descriptor':'Approaches to Learning'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'early_writing_spa_v1': {
+      'colname': 'early_writing_v1',
+      'descriptor': 'Early Writing Skills Early Writing Skills',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'approaches_to_learning_extended_spa_v1': {
+      'colname': 'approaches_to_learning_exp_v2',
+      'descriptor': 'Approaches to Learning Expanded',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'approaches_to_learning_exp_v2_initiative_curiosity_v1', 'oa_colname_spa': 'approaches_to_learning_extended_spa_v1_initiative_curiosity_spa_v1', 'oa_descriptor':'Initiative and Curiosity'}},
+        {'oa_category_2':{'oa_colname':'approaches_to_learning_exp_v2_flexibility_v1', 'oa_colname_spa': 'approaches_to_learning_extended_spa_v1_flexibility_spa_v1', 'oa_descriptor':'Flexibility'}},
+        {'oa_category_3':{'oa_colname':'approaches_to_learning_exp_v2_creativity_dramatic_play_v1', 'oa_colname_spa': 'approaches_to_learning_extended_spa_v1_creativity_dramatic_play_spa_v1', 'oa_descriptor':'Art/Creativity and Dramatic Play'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'physical_dev_health_spa_v1': {
+      'colname': 'physical_dev_health_v1',
+      'descriptor': 'Physical Development and Health',
+      'objective_assessments': [
+        {'oa_category_1':{'oa_colname':'physical_dev_health_v1_fine_visual_motor_v1', 'oa_colname_spa': 'physical_dev_health_spa_v1_fine_visual_motor_spa_v1', 'oa_descriptor':'Fine and Visual Motor'}},
+        {'oa_category_2':{'oa_colname':'physical_dev_health_v1_gross_motor_v1', 'oa_colname_spa': 'physical_dev_health_spa_v1_gross_motor_spa_v1', 'oa_descriptor':'Gross Motor'}},
+        {'oa_category_3':{'oa_colname':'physical_dev_health_v1_health_v1', 'oa_colname_spa': 'physical_dev_health_spa_v1_health_spa_v1', 'oa_descriptor':'Health Status'}}
+      ],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True,
+      'oa_has_cp_col': False
+    },
+    'language_communication_2016_spa_v1': {
+      'colname': 'language_communication_2016_v1',
+      'descriptor': 'Speech Production and Sentence Skills',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'motivation_to_read_2016_spa_v1': {
+      'colname': 'motivation_to_read_2016_v1',
+      'descriptor': 'Motivation to Read - En',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': True
+    },
+    'cpm_admin_mode_sp': {
+      'colname': 'cpm_admin_mode',
+      'descriptor': 'Administration Mode',
+      'objective_assessments': [],
+      'assessment_language': 'Spanish',
+      'subject_has_cp_col': False
+    }
+  }
+%}
+
+# Stack the dictionaries together into one large dictionary that we can iterate through bellow.
+{% set subjects = subjects_en.copy() %}
+{% set _ = subjects.update(subjects_spa) %}
+
+# TRANSFORMATION-STEP 1: CONVERT COLUMNS TO SNAKE CASE
+# Some columns in the data come through with spaces or using "-" symbols instead of "_" as separators.
+# We need to make sure all columns are snake cased before we begin working on the data. 
+# We can also build our student_wave_id here, which will help us identify a student and wave row.
+transformations:
+  cli_circle_student_assessment:
+    source: $sources.cli_circle_input
+    operations:
+      - operation: snake_case_columns 
+      - operation: add_columns
+        columns:
+          # do we even need this? the wave column comes with values that are not snake cased (e.g. "wave 1") so we might need to get rid of this?
+          student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
+
+# TRANSFORMATION-STEP 2: LOOP THROUGH DICTIONARY OF SUBJECTS AND CONFORM COLUMNS
+# Start off by creating the main subject columns we need, these are defined pretty early in our dictionary above.
+{% for subject_name, subject_values in subjects.items() %}
+  cli_circle_student_{{ subject_name }}:
+    source: $transformations.cli_circle_student_assessment
+    operations:
+      - operation: rename_columns
+        columns:
+          {{ subject_name }}: subject_score
+          {{ subject_name }}_date: subject_date
+
+      # Here we deal with subjects that do not have a Cut Point column (Performance indicator).
+      # If a cp column is not present in the dataset for the specific subject, 
+      # we will create a null column with the name "subject_cut_point", this ensures our "keep columns" transformation does not break.
+      {% if subject_values.subject_has_cp_col %}
+      - operation: rename_columns
+        columns:
+          cp_{{ subject_name }}: subject_cut_point
+      {% else %}
+      - operation: add_columns
+        columns:
+          subject_cut_point: ''
+      {% endif %}
+
+      # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
+      - operation: add_columns
+        columns:
+          subject_name: {{ subject_values.colname }}
+          subject_descriptor: {{ subject_values.descriptor }}
+            
+      # Some subjects have "sets" and a student might be assessed based on one of these sets.
+      # For example, Rapid Letter Naming has 3 sets, each set contains multiple combinations of letters, a student can be assessed on one of these sets.
+      # For these subjects we have to create a "subject_set" column which will tell us what set a student was assessed with.  
+        {% set set_numbers = [] %}
+        {% for set in subject_values.sets %}
+          {% for set_category, set_values in set.items() %}
+            {% if subject_values.assessment_language == 'English' %}
+              {% set set_colname = set_values.set_colname %}
+            {% elif subject_values.assessment_language == 'Spanish' %}
+              {% set set_colname = set_values.set_colname_spa %}
+            {% endif %}
+
+      {% set set_n = set_category.split('_')[-1] %}
+          {{ set_colname }}_date: subject_set_{{ set_n }}_date
+          {{ set_colname }}: subject_set_{{ set_n }}_score
+          cp_{{ set_colname }}: subject_set_{{ set_n }}_performance
+      - operation: add_columns
+        columns:
+          subject_set_{{ set_n }}_name: {{ set_values.set_colname }}
+          subject_set_{{ set_n }}_descriptor: {{ set_values.set_descriptor }}
+          subject_set_{{ set_n }}_number: {{ set_n }}
+        
+      {% set set_numbers_append = set_numbers.append(set_n) %}
+          {% endfor %}
+        {% endfor %}
+
+        {% for n in range(1, 4) %}
+          {% if n|string not in set_numbers %}
+      - operation: add_columns
+        columns:
+          subject_set_{{ n }}_number: ''  
+          subject_set_{{ n }}_name: ''  
+          subject_set_{{ n }}_descriptor: '' 
+          subject_set_{{ n }}_date: '' 
+          subject_set_{{ n }}_score: '' 
+          subject_set_{{ n }}_performance: '' 
+          {%- endif -%}      
+        {%- endfor %}
+
+      # Now we create objective assessment data based on our dictionaries above.
+      # If a subject has objective assessments listed, then it conforms all those objective assessments 
+      # by giving them generic names that can then stack on top of each other e.g. "oa_category_1"..."oa_category_7"
+      {% set cat_numbers=[] -%}
+      {% for objective_assessment in subject_values.objective_assessments %}
+        {% for oa_category, oa_values in objective_assessment.items() %}
+          {% if subject_values.assessment_language == 'English' %}
+            {% set oa_colname = oa_values.oa_colname %}
+          {% elif subject_values.assessment_language == 'Spanish' %}
+            {% set oa_colname = oa_values.oa_colname_spa %}
+          {% endif %}
+      - operation: rename_columns
+        columns:
+          {{ oa_colname }}: {{ oa_category }}_score
+          {{ oa_colname }}_date: {{ oa_category }}_date
+          
+            {% if subject_values.oa_has_cp_col %}
+      - operation: rename_columns
+        columns:
+          cp_{{ oa_colname }}: {{ oa_category }}_performance
+            {% else %}
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_performance: ''              
+            {% endif %}
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_name: {{ oa_values.oa_colname }}
+          {{ oa_category }}_descriptor: {{ oa_values.oa_descriptor }}
+          # We also have to get the final category number before the loop ends
+          # This will let us construct the rest of the "oa_category_x" columns, so if "pa_v2" only has 4 objective assessments we append "1,2,3,4" to the empty cat_numbers list above
+          # Then the code below will build the rest of the range for the numbers missing (e.g. "5,6,7")
+          {% set cat_number = cat_numbers.append(oa_category.split('_')[-1]) %}               
+        {% endfor %}
+      {% endfor %}
+      
+        {% for n in range(1, 8) %}
+          {% if n|string not in cat_numbers %}
+      - operation: add_columns
+        columns:
+          oa_category_{{ n }}_name: ''  
+          oa_category_{{ n }}_descriptor: '' 
+          oa_category_{{ n }}_date: '' 
+          oa_category_{{ n }}_score: '' 
+          oa_category_{{ n }}_performance: '' 
+          {%- endif -%}      
+        {%- endfor -%}
+
+      # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
+      - operation: filter_rows
+        query: subject_score != '' and subject_date != ''
+        behavior: include 
+
+      # Finally, we keep the conformed columns we need for the templates.
+      - operation: keep_columns
+        columns: {{conformed_columns}}
+
+{% endfor %}
+
+
+# TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
+# Stack all the data we created together.
+  stacked_subject_scores:
+    source: $transformations.cli_circle_student_rln_v1
+    operations:
+      - operation: union
+        sources:
+# To avoid duplicates, we remove rln_v1 from this join (so we don't join rln_v1 twice - once as a source above and as a joined table below)
+{% for subject_name, subject_values in subjects.items() %}
+    {% if subject_name != 'rln_v1' %}
+          - $transformations.cli_circle_student_{{ subject_name }}
+    {% endif %}  
+{% endfor %} 
+
+destinations:
+  studentAssessments:
+    source: $transformations.stacked_subject_scores
+    template: assessments/CLI_CIRCLE/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+    show_progress: True
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: assessments/CLI_CIRCLE/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+    show_progress: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: assessments/CLI_CIRCLE/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+    show_progress: True
+
+  assessments:
+    source: $sources.assessments
+    template: assessments/CLI_CIRCLE/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+    show_progress: True
