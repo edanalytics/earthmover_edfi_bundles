@@ -468,6 +468,9 @@ transformations:
     source: $sources.cli_circle_input
     operations:
       - operation: snake_case_columns 
+      - operation: modify_columns
+        columns:
+          wave: "{%raw%}{{ wave |replace(' ', '_') }}{%endraw%}"
       - operation: add_columns
         columns:
           # do we even need this? the wave column comes with values that are not snake cased (e.g. "wave 1") so we might need to get rid of this?
