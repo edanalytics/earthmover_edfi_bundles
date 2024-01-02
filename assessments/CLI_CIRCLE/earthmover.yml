@@ -489,15 +489,15 @@ transformations:
 
       # Here we deal with subjects that do not have a Cut Point column (Performance indicator).
       # If a cp column is not present in the dataset for the specific subject, 
-      # we will create a null column with the name "subject_cut_point", this ensures our "keep columns" transformation does not break.
+      # we will create a null column with the name "subject_performance", this ensures our "keep columns" transformation does not break.
       {% if subject_values.subject_has_cp_col %}
       - operation: rename_columns
         columns:
-          cp_{{ subject_name }}: subject_cut_point
+          cp_{{ subject_name }}: subject_performance
       {% else %}
       - operation: add_columns
         columns:
-          subject_cut_point: ''
+          subject_performance: ''
       {% endif %}
 
       # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
