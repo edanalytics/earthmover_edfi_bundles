@@ -32,6 +32,7 @@ sources:
   'school_year',
   'subject_name',
   'subject_descriptor', 
+  'subject_type',
   'subject_set_1_oa_1_number', 
   'subject_set_1_oa_2_number', 
   'subject_set_2_oa_1_number', 
@@ -74,30 +75,30 @@ sources:
   'subject_set_2_oa_2_module',
   'subject_set_3_oa_1_module',
   'subject_set_3_oa_2_module',
-  'screen_assess_ref_1_number',
-  'screen_assess_ref_2_number',
-  'screen_assess_ref_3_number',
-  'screen_assess_ref_1_name',
-  'screen_assess_ref_2_name',
-  'screen_assess_ref_3_name',
-  'screen_assess_ref_1_descriptor',
-  'screen_assess_ref_2_descriptor',
-  'screen_assess_ref_3_descriptor',
-  'screen_assess_ref_1_score',
-  'screen_assess_ref_2_score',
-  'screen_assess_ref_3_score',
-  'comp_assess_ref_1_number',
-  'comp_assess_ref_2_number',
-  'comp_assess_ref_3_number',
-  'comp_assess_ref_1_name',
-  'comp_assess_ref_2_name',
-  'comp_assess_ref_3_name',
-  'comp_assess_ref_1_descriptor',
-  'comp_assess_ref_2_descriptor',
-  'comp_assess_ref_3_descriptor',
-  'comp_assess_ref_1_score',
-  'comp_assess_ref_2_score',
-  'comp_assess_ref_3_score'
+  'screener_assess_ref_1_number',
+  'screener_assess_ref_2_number',
+  'screener_assess_ref_3_number',
+  'screener_assess_ref_1_name',
+  'screener_assess_ref_2_name',
+  'screener_assess_ref_3_name',
+  'screener_assess_ref_1_descriptor',
+  'screener_assess_ref_2_descriptor',
+  'screener_assess_ref_3_descriptor',
+  'screener_assess_ref_1_score',
+  'screener_assess_ref_2_score',
+  'screener_assess_ref_3_score',
+  'composite_assess_ref_1_number',
+  'composite_assess_ref_2_number',
+  'composite_assess_ref_3_number',
+  'composite_assess_ref_1_name',
+  'composite_assess_ref_2_name',
+  'composite_assess_ref_3_name',
+  'composite_assess_ref_1_descriptor',
+  'composite_assess_ref_2_descriptor',
+  'composite_assess_ref_3_descriptor',
+  'composite_assess_ref_1_score',
+  'composite_assess_ref_2_score',
+  'composite_assess_ref_3_score'
   ] 
 %}
 
@@ -105,17 +106,17 @@ sources:
     'txkea_dyslexia_checklist': {
       'colname': 'txkea_dyslexia_checklist',
       'descriptor': 'KG Dyslexia Referral Checklist',
-      'assess_type':'checklist',
+      'subject_assess_type':'checklist',
       'assessment_language': 'English',
       'subject_has_cp_col': True
     },
     'kea_dyslexia_screener': {
       'colname': 'kea_dyslexia_screener',
       'descriptor': 'Dyslexia Screener',
-      'assess_type':'screener',
-      'screener_assessments': [
-        {'screen_assess_ref_1':[{'screen_asses_ref_colname':'txkea_letter_sounds', 'screen_asses_ref_descriptor':'Letter Sounds'}]},
-        {'screen_assess_ref_2':[{'screen_asses_ref_colname':'txkea_blending', 'screen_asses_ref_descriptor':'Blending'}]}
+      'subject_assess_type':'screener',
+      'subject_assessments': [
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_letter_sounds', 'subject_asses_ref_descriptor':'Letter Sounds'}]},
+        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_blending', 'subject_asses_ref_descriptor':'Blending'}]}
       ],
       'assessment_language': 'English',
       'subject_has_cp_col': False
@@ -123,11 +124,11 @@ sources:
     'kea_literacy_screening': {
       'colname': 'kea_literacy_screening',
       'descriptor': 'Literacy Screening',
-      'assess_type':'screener',
-      'screener_assessments': [
-        {'screen_assess_ref_1':[{'screen_asses_ref_colname':'txkea_vocabulary_1', 'screen_asses_ref_descriptor':'Vocabulary Set 1'}]},
-        {'screen_assess_ref_2':[{'screen_asses_ref_colname':'txkea_letter_names_1', 'screen_asses_ref_descriptor':'Letter Names Set 1'}]},
-        {'screen_assess_ref_3':[{'screen_asses_ref_colname':'txkea_spelling_1', 'screen_asses_ref_descriptor':'Spelling Set 1'}]}
+      'subject_assess_type':'screener',
+      'subject_assessments': [
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
+        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Set 1'}]},
+        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_spelling_1', 'subject_asses_ref_descriptor':'Spelling Set 1'}]}
       ],
       'assessment_language': 'English',
       'subject_has_cp_col': False
@@ -135,11 +136,11 @@ sources:
     'txkea_literacy_reading_composite': {
       'colname': 'txkea_literacy_reading_composite',
       'descriptor': 'Literacy Reading Composite',
-      'assess_type':'composite',
-      'composite_assessments': [
-        {'comp_assess_ref_1':[{'comp_asses_ref_colname':'txkea_letter_names_1', 'comp_asses_ref_descriptor':'Letter Names Set 1'}]},
-        {'comp_assess_ref_2':[{'comp_asses_ref_colname':'txkea_letter_sounds_1', 'comp_asses_ref_descriptor':'Letter Sounds 1'}]},
-        {'comp_assess_ref_3':[{'comp_asses_ref_colname':'txkea_blending_1', 'comp_asses_ref_descriptor':'Blending 1'}]}
+      'subject_assess_type':'composite',
+      'subject_assessments': [
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Set 1'}]},
+        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_sounds_1', 'subject_asses_ref_descriptor':'Letter Sounds 1'}]},
+        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_blending_1', 'subject_asses_ref_descriptor':'Blending 1'}]}
       ],
       'assessment_language': 'English',
       'subject_has_cp_col': False
@@ -147,10 +148,10 @@ sources:
     'txkea_language_composite': {
       'colname': 'txkea_language_composite',
       'descriptor': 'Language Composite',
-      'assess_type':'composite',
-      'composite_assessments': [
-        {'comp_assess_ref_1':[{'comp_asses_ref_colname':'txkea_vocabulary_1', 'comp_asses_ref_descriptor':'Vocabulary Set 1'}]},
-        {'comp_assess_ref_2':[{'comp_asses_ref_colname':'txkea_listening_comp_1', 'comp_asses_ref_descriptor':'Listening Comprehension 1'}]}
+      'subject_assess_type':'composite',
+      'subject_assessments': [
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
+        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_listening_comp_1', 'subject_asses_ref_descriptor':'Listening Comprehension 1'}]}
       ],
       'assessment_language': 'English',
       'subject_has_cp_col': False
@@ -158,7 +159,7 @@ sources:
     'txkea_letter_names': {
       'colname': 'txkea_letter_names',
       'descriptor': 'Letter Names',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_letter_names_txkea_letter_names_1', 'set_descriptor':'Letter Names Set 1', 'set_has_cp_col': True}]},
@@ -171,7 +172,7 @@ sources:
     'txkea_spelling': {
       'colname': 'txkea_spelling',
       'descriptor': 'Spelling',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_spelling_txkea_spelling_1', 'set_descriptor':'Spelling Set 1', 'set_has_cp_col': True}]},
@@ -184,7 +185,7 @@ sources:
     'txkea_listening_comp': { 
       'colname': 'txkea_listening_comp',
       'descriptor': 'Listening Comp',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_listening_comp_txkea_listening_comp_1', 'set_descriptor':'Listening Comprehension 1', 'set_has_cp_col': True}]},
@@ -203,7 +204,7 @@ sources:
     'txkea_vocabulary': {
       'colname': 'txkea_vocabulary',
       'descriptor': 'Vocabulary',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_vocabulary_txkea_vocabulary_1', 'set_descriptor':'Vocabulary Set 1', 'set_has_cp_col': True}]},
@@ -216,7 +217,7 @@ sources:
     'txkea_decoding': {
       'colname': 'txkea_decoding',
       'descriptor': 'Decoding',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_decoding_txkea_decoding_1', 'set_descriptor':'Decoding Set 1', 'set_has_cp_col': True}]},
@@ -229,7 +230,7 @@ sources:
     'txkea_letter_sounds': { 
       'colname': 'txkea_letter_sounds',
       'descriptor': 'Letter Sounds',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_letter_sounds_txkea_letter_sounds_1', 'set_descriptor':'Letter Sounds 1', 'set_has_cp_col': True}]},
@@ -248,7 +249,7 @@ sources:
     'txkea_blending': {
       'colname': 'txkea_blending',
       'descriptor': 'Blending',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_blending_txkea_blending_1', 'set_descriptor':'Blending 1', 'set_has_cp_col': True}]},
@@ -264,7 +265,7 @@ sources:
     'txkea_math': {
       'colname': 'txkea_math',
       'descriptor': 'Math',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[
@@ -286,7 +287,7 @@ sources:
     'txkea_science': {
       'colname': 'txkea_science',
       'descriptor': 'Science',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'sets':[
         {'set_1':[{'set_colname':'txkea_science_txkea_science_1', 'set_descriptor':'Science 1', 'set_has_cp_col': True}]},
@@ -299,7 +300,7 @@ sources:
     'txkea_social_emotional': {
       'colname': 'txkea_social_emotional',
       'descriptor': 'Social Emotional Competence',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -307,7 +308,7 @@ sources:
     'txkea_emotional_management': {
       'colname': 'txkea_emotional_management',
       'descriptor': 'Emotion Management',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -315,7 +316,7 @@ sources:
     'txkea_working_memory': {
       'colname': 'txkea_working_memory',
       'descriptor': 'Working Memory',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -323,7 +324,7 @@ sources:
     'txkea_inhibition': {
       'colname': 'txkea_inhibition',
       'descriptor': 'Inhibition',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -331,7 +332,7 @@ sources:
     'txkea_attention': {
       'colname': 'txkea_attention',
       'descriptor': 'Attention',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -339,7 +340,7 @@ sources:
     'txkea_academic_motor': {
       'colname': 'txkea_academic_motor',
       'descriptor': 'Academic Motor Skills',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': True
@@ -347,7 +348,7 @@ sources:
     'txkea_en_admin_mode': {
       'colname': 'txkea_en_admin_mode',
       'descriptor': 'Administration Mode',
-      'assess_type':'subject',
+      'subject_assess_type':'subject',
       'objective_assessments': [],
       'assessment_language': 'English',
       'subject_has_cp_col': False
@@ -367,6 +368,8 @@ transformations:
         columns:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
 
+
+#--Subject Columns Creation------------------------------------
 {% for subject_name, subject_values in subjects.items() %}
   cli_tx_kea_student_{{ subject_name }}:
     source: $transformations.cli_tx_kea_student_assessment
@@ -390,9 +393,10 @@ transformations:
         columns:
           subject_name: {{ subject_values.colname }}
           subject_descriptor: {{ subject_values.descriptor }}
+          subject_type: {{ subject_values.subject_assess_type }}
 
 
-#-----------------
+#--Set Columns Creation------------------------------------
     {% set set_numbers = [] %}
     {% set set_n_list = [] %}
     {% for set in subject_values.sets %}
@@ -472,78 +476,68 @@ transformations:
       {% endfor %} 
     {% endfor %}  
 
-#------------------------------------------------------
-      {% set screen_assess_ref_numbers = [] %}
-      {% for screener_assessments in subject_values.screener_assessments %}
-        {% for screen_assess_ref, screen_assess_ref_values in screener_assessments.items() %}
-          {% for screener_assessment in screen_assess_ref_values%}
+#--Screening/Composite Column Creation------------------------------------
+    {% if subject_assess_type in ['composite', 'screener'] %}
+      {% set remainder_subject_assess_type = (['composite', 'screener'] | reject("==", subject_assess_type) | list ) %}
+      {% set subject_assess_ref_numbers = [] %}
+      {% for subject_assessments in subject_values.subject_assessments %}
+        {% for subject_assess_ref, subject_assess_ref_values in subject_assessments.items() %}
+          {% for subject_assess_item in subject_assess_ref_values%}
             {% if subject_values.assessment_language == 'English' %}
-              {% set screen_assess_ref_values_colname = screener_assessment.screen_asses_ref_colname %}
+              {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname %}
             {% elif subject_values.assessment_language == 'Spanish' %}
-              {% set screen_assess_ref_values_colname = screener_assessment.screen_asses_ref_colname_spa %}
+              {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname_spa %}
             {% endif %}
 
       - operation: rename_columns
         columns:
-      {% set screener_n = screen_assess_ref.split('_')[-1] %}
-          {{ screen_assess_ref_values_colname }}: screen_assess_ref_{{ screener_n }}_score
+      {% set sa_n = subject_assess_ref.split('_')[-1] %}
+          {{ subject_assess_ref_values_colname }}: {{subject_values.subject_assess_type}}_assess_ref_{{ sa_n }}_score
       - operation: add_columns
         columns:
-          screen_assess_ref_{{ screener_n }}_name: {{ screen_assess_ref_values_colname }}
-          screen_assess_ref_{{ screener_n }}_descriptor: {{ screener_assessment.screen_asses_ref_descriptor }}
-          screen_assess_ref_{{ screener_n }}_number: {{ screener_n }}
+          {{subject_values.subject_assess_type}}_assess_ref_{{ sa_n }}_name: {{ subject_assess_ref_values_colname }}
+          {{subject_values.subject_assess_type}}_assess_ref_{{ sa_n }}_descriptor: {{ subject_assess_item.subject_asses_ref_descriptor }}
+          {{subject_values.subject_assess_type}}_assess_ref_{{ sa_n }}_number: {{ sa_n }}
 
-      {% set screen_assess_ref_append = screen_assess_ref_numbers.append(screener_n) %}
-            {% endfor %}
+      {% set subject_assess_ref_append = subject_assess_ref_numbers.append(sa_n) %}
           {% endfor %}
         {% endfor %}
+      {% endfor %}
 
+      {% for n in range(1, 4) %}
+        {% if n|string not in subject_assess_ref_numbers %}
+      - operation: add_columns
+        columns:
+          {{subject_values.subject_assess_type}}_assess_ref_{{ n }}_number: ''  
+          {{subject_values.subject_assess_type}}_assess_ref_{{ n }}_name: ''  
+          {{subject_values.subject_assess_type}}_assess_ref_{{ n }}_descriptor: '' 
+          {{subject_values.subject_assess_type}}_assess_ref_{{ n }}_score: ''  
+        {%- endif -%}      
+      {%- endfor %}
+      
+      {% for remainder_subject in remainder_subject_assess_type %}
+      - operation: add_columns
+        columns:
+          {{ remainder_subject }}_assess_ref_{{ n }}_number: ''  
+          {{ remainder_subject }}_assess_ref_{{ n }}_name: ''  
+          {{ remainder_subject }}_assess_ref_{{ n }}_descriptor: '' 
+          {{ remainder_subject }}_assess_ref_{{ n }}_score: ''          
+      {% endfor %}
+      
+    {% else %}
         {% for n in range(1, 4) %}
-          {% if n|string not in screen_assess_ref_numbers %}
       - operation: add_columns
         columns:
-          screen_assess_ref_{{ n }}_number: ''  
-          screen_assess_ref_{{ n }}_name: ''  
-          screen_assess_ref_{{ n }}_descriptor: '' 
-          screen_assess_ref_{{ n }}_score: ''  
-          {%- endif -%}      
-        {%- endfor %}
-
-      {% set comp_assess_ref_numbers = [] %}
-        {% for comp_assessments in subject_values.composite_assessments %}
-          {% for comp_assess_ref, comp_assess_ref_values in comp_assessments.items() %}
-            {% for comp_assessment in comp_assess_ref_values%}
-              {% if subject_values.assessment_language == 'English' %}
-                {% set comp_assess_ref_values_colname = comp_assessment.comp_asses_ref_colname %}
-              {% elif subject_values.assessment_language == 'Spanish' %}
-                {% set comp_assess_ref_values_colname = comp_assessment.comp_asses_ref_colname_spa %}
-              {% endif %}
-
-      - operation: rename_columns
-        columns:
-      {% set comp_n = comp_assess_ref.split('_')[-1] %}
-          {{ comp_assess_ref_values_colname }}: comp_assess_ref_{{ comp_n }}_score
-      - operation: add_columns
-        columns:
-          comp_assess_ref_{{ comp_n }}_name: {{ comp_assess_ref_values_colname }}
-          comp_assess_ref_{{ comp_n }}_descriptor: {{ comp_assessment.comp_asses_ref_descriptor }}
-          comp_assess_ref_{{ comp_n }}_number: {{ comp_n }}
-
-      {% set comp_assess_ref_append = comp_assess_ref_numbers.append(comp_n) %}
-            {% endfor %}
-          {% endfor %}
-        {% endfor %}
-
-        {% for n in range(1, 4) %}
-          {% if n|string not in comp_assess_ref_numbers %}
-      - operation: add_columns
-        columns:
-          comp_assess_ref_{{ n }}_number: ''  
-          comp_assess_ref_{{ n }}_name: ''  
-          comp_assess_ref_{{ n }}_descriptor: ''
-          comp_assess_ref_{{ n }}_score: '' 
-          {%- endif -%}      
-        {%- endfor %}
+          screener_assess_ref_{{ n }}_number: ''  
+          screener_assess_ref_{{ n }}_name: ''  
+          screener_assess_ref_{{ n }}_descriptor: '' 
+          screener_assess_ref_{{ n }}_score: ''  
+          composite_assess_ref_{{ n }}_number: ''  
+          composite_assess_ref_{{ n }}_name: ''  
+          composite_assess_ref_{{ n }}_descriptor: '' 
+          composite_assess_ref_{{ n }}_score: ''           
+        {%- endfor %}      
+    {% endif %}
 
       - operation: filter_rows
         query: subject_score != '' and subject_date != ''
