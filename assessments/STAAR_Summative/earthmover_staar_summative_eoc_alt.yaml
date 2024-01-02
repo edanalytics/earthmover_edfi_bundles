@@ -86,7 +86,7 @@ sources:
 %}
 
 {% if ${API_YEAR} < 2023 %}
-   {% set dummy = conformed_columns.append('reporting_category_6_raw_score', 'reporting_category_6_name') %}
+   {% set dummy = conformed_columns.append(['reporting_category_6_raw_score', 'reporting_category_6_name']) %}
 {% endif %}
 
 
