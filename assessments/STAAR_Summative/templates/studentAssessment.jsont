@@ -28,6 +28,7 @@
                          'Course': ['Level',course_abbrev],
                          'Total Scale Score':['Integer',scale_score],
                          'Overall Raw Score':['Integer',raw_score],
+                         'Score Code':['Level',score_code],
                          'Administration Window':['Level',administration_window_label],
                          } %}
     {% for score_name, score_result in all_scores.items() %}

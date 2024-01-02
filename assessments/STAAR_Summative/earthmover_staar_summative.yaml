@@ -120,6 +120,7 @@ transformations:
           "meets_grade_level_in_reading_language_arts": meets_grade_level_in_reading
           "approaches_grade_level_in_reading_language_arts": approaches_grade_level_in_reading
           "masters_grade_level_in_reading_language_arts": masters_grade_level_in_reading
+          "score_code_reading_language_arts": score_code_reading
           "opportunity_key_reading_language_arts": opportunity_key_reading
           {% elif ${API_YEAR} == 2022 %}
           "reading_reporting_category_1_scores": reading_reporting_category_1_raw_score
@@ -185,6 +186,7 @@ transformations:
           meets_grade_level_in_{{subject}}: meets_grade_level
           approaches_grade_level_in_{{subject}}: approaches_grade_level
           masters_grade_level_in_{{subject}}: masters_grade_level
+          score_code_{{subject}}: score_code
           opportunity_key_{{subject}}: opportunity_key
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
@@ -203,6 +205,8 @@ transformations:
                 Did Not Meet
               {%- endif -%}
             {%endraw%}
+      # DEDUPE years 2021 and prior, before opportunity_key was available
+
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
