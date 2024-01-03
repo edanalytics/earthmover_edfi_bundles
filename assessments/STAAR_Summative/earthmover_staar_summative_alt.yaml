@@ -74,6 +74,7 @@ sources:
    'raw_score',
    'scale_score',
    'test_version',
+   'score_code',
    'overall_performance_level',
    'opportunity_key'
   ] 
@@ -99,6 +100,7 @@ transformations:
           "reading_language_arts_test_version": reading_test_version
           "level_ii__satisfactory_academicperformance_in_reading_languagearts": level_ii__satisfactory_academicperformance_in_reading
           "level_iii__accomplished_academicperformance_in_reading_languagearts": level_iii__accomplished_academicperformance_in_reading
+          "score_code_reading_language_arts": score_code_reading
           "opportunity_key_readinglanguage_arts": opportunity_key_reading
           "mathematics_reporting_category_1scores": mathematics_reporting_category_1_raw_score
           "mathematics_reporting_category_2scores": mathematics_reporting_category_2_raw_score
@@ -173,6 +175,7 @@ transformations:
           {{subject}}_test_version: test_version
           level_ii__satisfactory_academicperformance_in_{{subject}}: level_2_satisfactory_academic_performance
           level_iii__accomplished_academicperformance_in_{{subject}}: level_3_accomplished_academic_performance
+          score_code_{{subject}}: score_code
           opportunity_key_{{subject}}: opportunity_key
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
