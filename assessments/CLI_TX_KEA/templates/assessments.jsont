@@ -1,0 +1,102 @@
+{
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "namespace": "{{ namespace }}",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Early Education"
+    }
+  ],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Letter Names"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Spelling"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Listening Comp"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Vocabulary"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Decoding"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Letter Sounds"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Blending"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Social Emotional Competence"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Emotion Management"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Working Memory"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Inhibition"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Attention"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Academic Motor Skills"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Administration Mode"
+    }  
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Type",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Wave",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#On Track"
+    }
+  ]
+}
