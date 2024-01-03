@@ -698,15 +698,15 @@ transformations:
     {% endfor %}  
 
 #--Screening/Composite Column Creation------------------------------------
-    {% if subject_assess_type in ['composite', 'screener'] %}
-      {% set remainder_subject_assess_type = (['composite', 'screener'] | reject("==", subject_assess_type) | list ) %}
+    {% if subject_values.subject_assess_type in ['composite', 'screener'] %}
+      {% set remainder_subject_assess_type = (['composite', 'screener'] | reject("==", subject_values.subject_assess_type) | list ) %}
       {% set subject_assess_ref_numbers = [] %}
       {% for subject_assessments in subject_values.subject_assessments %}
         {% for subject_assess_ref, subject_assess_ref_values in subject_assessments.items() %}
           {% for subject_assess_item in subject_assess_ref_values%}
-            {% if subject_values.assessment_language == 'English' %}
+            {% if subject_values.subject_assess_lang == 'English' %}
               {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname %}
-            {% elif subject_values.assessment_language == 'Spanish' %}
+            {% elif subject_values.subject_assess_lang == 'Spanish' %}
               {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname_spa %}
             {% endif %}
 
@@ -736,13 +736,15 @@ transformations:
         {%- endif -%}      
       {%- endfor %}
       
-      {% for remainder_subject in remainder_subject_assess_type %}
+      {% for n in range(1, 4) %}
+        {% for remainder_subject in remainder_subject_assess_type %}
       - operation: add_columns
         columns:
           {{ remainder_subject }}_assess_ref_{{ n }}_number: ''  
           {{ remainder_subject }}_assess_ref_{{ n }}_name: ''  
           {{ remainder_subject }}_assess_ref_{{ n }}_descriptor: '' 
           {{ remainder_subject }}_assess_ref_{{ n }}_score: ''          
+        {% endfor %}
       {% endfor %}
       
     {% else %}

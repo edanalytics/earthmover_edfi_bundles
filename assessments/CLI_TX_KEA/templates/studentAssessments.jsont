@@ -57,7 +57,7 @@
           "administrationDate": "{{ subtest_assessment_date }}",
           "objectiveAssessmentReference": {
             "assessmentIdentifier": "cli_tx_kea",
-            "identificationCode": "{{ subject_name }}"
+            "identificationCode": "{{ subject_name }}",
             "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
           },          
           "performanceLevels": [
@@ -124,7 +124,7 @@
         {%- set composite_assessment_descriptor = self._TemplateReference__context.resolve('composite_assess_ref_'~n~'_descriptor') -%}
         {%- set composite_assessment_score = self._TemplateReference__context.resolve('composite_assess_ref_'~n~'_score') -%}
 
-        {%- if screener_assessment_score is not none and screener_assessment_score | length -%}
+        {%- if composite_assessment_score is not none and composite_assessment_score | length -%}
           {%- if not loop.first -%},{% endif %}
         {
           "objectiveAssessmentReference": {
