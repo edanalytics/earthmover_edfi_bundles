@@ -1,0 +1,153 @@
+[
+    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
+    "assessmentReference": {
+      "assessmentIdentifier": "cli_tx_kea",
+      "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ school_year }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ local_student_id }}"
+    },
+    "administrationDate": "{{ subject_date }}",
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
+        "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_cut_point }}"
+      }
+    ],
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ subject_score }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Subject",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ subject_descriptor }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Type",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ subject_assessment_type }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Wave",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ wave }}"
+      }
+    ]
+        
+    "studentObjectiveAssessments": [
+      {%- for n in range(1,4) -%}
+        {%- for x in range(1,3) -%}
+          {%- set subtest_assessment_name = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_name') -%}
+          {%- set subtest_assessment_descriptor = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_descriptor') -%}
+          {%- set subtest_assessment_date = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_date') -%}
+          {%- set subtest_assessment_score = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_score') -%}
+          {%- set subtest_assessment_performance = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_performance') -%}
+          {%- set subtest_assessment_module = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_module') -%}
+
+          {%- if subtest_assessment_score is not none and subtest_assessment_score | length -%}
+            {%- if not loop.first -%},{% endif %}
+        {
+          "administrationDate": "{{ subtest_assessment_date }}",
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "cli_tx_kea",
+            "identificationCode": "{{ subject_name }}"
+            "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
+          },          
+          "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subtest_assessment_performance }}"
+            }
+          ],
+          "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Score",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ subtest_assessment_score }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Subject",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ subtest_assessment_descriptor }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Module",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ subtest_assessment_module }}"
+            }
+          ]
+        }
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+
+      {%- for n in range(1,4) -%}=
+        {%- set screener_assessment_descriptor = self._TemplateReference__context.resolve('screener_assess_ref_'~n~'_descriptor') -%}
+        {%- set screener_assessment_score = self._TemplateReference__context.resolve('screener_assess_ref_'~n~'_score') -%}
+
+        {%- if screener_assessment_score is not none and screener_assessment_score | length -%}
+          {%- if not loop.first -%},{% endif %}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "cli_tx_kea",
+            "identificationCode": "{{ subject_name }}"
+            "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
+          },          
+          "performanceLevels": [],
+          "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Score",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ screener_assessment_score }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Subject",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ screener_assessment_descriptor }}"
+            }
+          ]
+        }
+        {%- endif -%}
+      {%- endfor -%}
+
+
+      {%- for n in range(1,4) -%}=
+        {%- set composite_assessment_descriptor = self._TemplateReference__context.resolve('composite_assess_ref_'~n~'_descriptor') -%}
+        {%- set composite_assessment_score = self._TemplateReference__context.resolve('composite_assess_ref_'~n~'_score') -%}
+
+        {%- if screener_assessment_score is not none and screener_assessment_score | length -%}
+          {%- if not loop.first -%},{% endif %}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "cli_tx_kea",
+            "identificationCode": "{{ subject_name }}"
+            "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
+          },          
+          "performanceLevels": [],
+          "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Score",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ composite_assessment_score }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Subject",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ composite_assessment_descriptor }}"
+            }
+          ]
+        }
+        {%- endif -%}
+      {%- endfor -%}
+
+    ],
+]
