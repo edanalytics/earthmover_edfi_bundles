@@ -1,7 +1,7 @@
 {
   "assessmentIdentifier": "{{assessment_id}}",
-  "assessmentTitle": "Indicadores Dinámicos del Éxito en la Lectura",
-  "namespace": "uri://dibels.uoregon.edu/assessment/idel",
+  "assessmentTitle": "mCLASS Lectura",
+  "namespace": "uri://amplify.com/programs/mclass-lectura",
   "languages" : [
     {
       "languageDescriptor": "uri://ed-fi.org/LanguageDescriptor#spa"
@@ -37,29 +37,47 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   "performanceLevels":[
     {
-      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Intensive",
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Above Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Strategic",
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Benchmark",
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Below Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Not Determined",
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Well Below Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Risk",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Low Risk",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]
