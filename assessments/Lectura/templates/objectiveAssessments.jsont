@@ -1,8 +1,8 @@
 {
   "assessmentItems": [],
   "assessmentReference": {
-    "assessmentIdentifier": "IDEL",
-    "namespace": "uri://dibels.uoregon.edu/assessment/idel"
+    "assessmentIdentifier": "{{assessment_id}}",
+    "namespace": "uri://amplify.com/programs/mclass-lectura"
   },
   "description": "{{description}}",
   "identificationCode": "{{identification_code}}",
@@ -10,29 +10,56 @@
   "learningStandards": [],
   "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-        "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Red",
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Above Benchmark",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-        "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Yellow",
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Benchmark",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-        "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Green",
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Below Benchmark",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
-        "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Not Determined",
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Well Below Benchmark",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Not Determined",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Pass",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#No Pass",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       }
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Score",
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Local Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Correct Responses",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Incorrect Responses",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ]
