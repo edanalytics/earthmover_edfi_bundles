@@ -2,7 +2,7 @@
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessment_id}}",
-    "namespace": "{{namespace}}"
+    "namespace": "uri://amplify.com/programs/mclass-lectura"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -11,69 +11,96 @@
     "studentUniqueId": "{{primary_id_student_id}}"
   },
   "administrationDate": "{{client_date}}",
-  {% if composite_level != '' %}
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#composite_level",
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{composite_level}}",
+      "performanceLevelMet": true
+    }
+    {% if risk_indicator_espanol_level != '' %},
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{risk_indicator_espanol_level}}",
       "performanceLevelMet": true
     }
   ],
   {% endif %}
   "scoreResults": [
-    {% set all_scores = [] %}
-    {% if composite_score != '' %}
-      {% set _= all_scores.append(["Composite Score", composite_score]) %}
-    {% endif %}
-    {% if composite_local_percentile != '' %}
-      {% set _= all_scores.append(["Composite Local Percentile", composite_local_percentile]) %}
-    {% endif %}
-    {% if benchmark_period != '' %}
-      {% set _= all_scores.append(["Benchmark Period", benchmark_period]) %}
-    {% endif %}
-
-    {%- for score in all_scores -%}
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{score[1]}}"
-    }
-    {%- if not loop.last -%},
-    {%- else %}{% endif %}{%- endfor -%}
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{composite_score}}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{composite_local_percentile}}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{benchmark_period}}"
+      }
   ],
-
-  {% set possible_obj_assess = ['FNL', 'FSF', 'FPS', 'FLO', 'FUP', 'FRO', 
-                                'FSS', 'QQ', 'FSL', 'FSL K-Inicio', 'LSS',
-                                'FEP', 'FLO-Prec', 'CP'] %}
 
   "studentObjectiveAssessments": [
     {% set possible_obj_assessments = 
-        {'FNL':'fluidez_en_nombrar_letras',
-         'FSF':'fluidez_en_la_segmentacion_de_fonemas',
-         'FPS':'fluidez_en_las_palabras_sin_sentido',
-         'FLO':'fluidez_en_la_lectura_oral',
-         'FUP':'fluidez_en_el_uso_de_las_palabras',
-         'FRO':'fluidez_en_el_relato_oral'} %}
+        {'FNL':[nombrar_letras_fnl_score, nombrar_letras_fnl_local_percentile, nombrar_letras_fnl_level],
+         'FSS':[conciencia_fonologica_fss_score, conciencia_fonologica_fss_local_percentile, conciencia_fonologica_fss_level],
+         'QQ':[conciencia_fonologica_qq_score, conciencia_fonologica_qq_local_percentile, conciencia_fonologica_qq_level],
+         'FSL':[sonidos_de_letras_fsl_score, sonidos_de_letras_fsl_local_percentile, sonidos_de_letras_fsl_level],
+         'FSL K-Inicio':[sonidos_de_letras_fsl_k_inicio_score, sonidos_de_letras_fsl_k_inicio_local_percentile, sonidos_de_letras_fsl_k_inicio_level],
+         'LSS':[decodificacion_lss_score, decodificacion_lss_local_percentile, decodificacion_lss_level],
+         'FEP':[lectura_de_palabras_fep_score, lectura_de_palabras_fep_local_percentile, lectura_de_palabras_fep_level],
+         'FLO':[fluidez_en_la_lectura_flo_score, fluidez_en_la_lectura_flo_local_percentile, fluidez_en_la_lectura_flo_level],
+         'FLO-Prec':[precision_en_la_lectura_flo_prec_score, precision_en_la_lectura_flo_prec_local_percentile, precision_en_la_lectura_flo_prec_level],
+         'CP':[comprension_basica_cp_score, comprension_basica_cp_local_percentile, comprension_basica_cp_level]} %}
 
-    {% for obj_id, obj_name in possible_obj_assessments.items() %}
+    {% set all_obj_assessment = {} %}
+    {% for obj_id, obj_names in possible_obj_assessments.items() %}
+      {% if (obj_names[2] != '') %}
+        {% set _ = all_obj_assessment.update({obj_id: obj_names}) %}
+      {% endif %}
+    {% endfor %}
+
+    {% for obj_id, obj_names in all_obj_assessment.items() %}
     {
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": {{assessment_id}}
+        "assessmentIdentifier": "{{assessment_id}}"
         "identificationCode": "{{obj_id}}",
-        "namespace": "{{namespace}}"
+        "assessment_namespace": "uri://amplify.com/programs/mclass-lectura"
       }
       ,
+      {% if (obj_names[0] != '') %}
       "scoreResults": [
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Score",
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Score",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-          "result": "assessment_measure_{{obj_name}}_score"
+          "result": "{{obj_names[0]}}"
+        },
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Local Percentile",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{obj_names[1]}}"
         }
+        {% if obj_id == 'CP' %},
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Correct Responses",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{correct_responses_cp_score}}"          
+        },
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Incorrect Responses",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{incorrect_responses_cp_score}}"          
+        }
+        {% endif %}
       ],
+      {% endif %}
       "performanceLevels": [
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Score",
-          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#assessment_measure_{{obj_name}}_level",
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+          "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{obj_names[2]}}",
           "performanceLevelMet": true
         }
       ]
