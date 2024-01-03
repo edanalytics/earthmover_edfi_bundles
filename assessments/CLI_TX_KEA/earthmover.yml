@@ -130,9 +130,9 @@ sources:
       'descriptor': 'Literacy Screening',
       'subject_assess_type':'screener',
       'subject_assessments': [
-        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
-        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Set 1'}]},
-        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_spelling_1', 'subject_asses_ref_descriptor':'Spelling Set 1'}]}
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Wave 1'}]},
+        {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Wave 1'}]},
+        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_spelling_1', 'subject_asses_ref_descriptor':'Spelling Wave 1'}]}
       ],
       'subject_assess_lang': 'English',
       'has_cp_col': False
@@ -142,7 +142,7 @@ sources:
       'descriptor': 'Literacy Reading Composite',
       'subject_assess_type':'composite',
       'subject_assessments': [
-        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Set 1'}]},
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_letter_names_1', 'subject_asses_ref_descriptor':'Letter Names Wave 1'}]},
         {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_sounds_1', 'subject_asses_ref_descriptor':'Letter Sounds 1'}]},
         {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_blending_1', 'subject_asses_ref_descriptor':'Blending 1'}]}
       ],
@@ -154,7 +154,7 @@ sources:
       'descriptor': 'Language Composite',
       'subject_assess_type':'composite',
       'subject_assessments': [
-        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_descriptor':'Vocabulary Wave 1'}]},
         {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_listening_comp_1', 'subject_asses_ref_descriptor':'Listening Comprehension 1'}]}
       ],
       'subject_assess_lang': 'English',
@@ -165,9 +165,9 @@ sources:
       'descriptor': 'Letter Names',
       'subject_assess_type':'subject',
       'waves':[
-        {'wave_1':[{'colname':'txkea_letter_names_txkea_letter_names_1', 'descriptor':'Letter Names Set 1', 'has_cp_col': True}]},
-        {'wave_2':[{'colname':'txkea_letter_names_txkea_letter_names_2', 'descriptor':'Letter Names Set 2', 'has_cp_col': True}]},
-        {'wave_3':[{'colname':'txkea_letter_names_txkea_letter_names_3', 'descriptor':'Letter Names Set 3', 'has_cp_col': True}]}
+        {'wave_1':[{'colname':'txkea_letter_names_txkea_letter_names_1', 'descriptor':'Letter Names Wave 1', 'has_cp_col': True}]},
+        {'wave_2':[{'colname':'txkea_letter_names_txkea_letter_names_2', 'descriptor':'Letter Names Wave 2', 'has_cp_col': True}]},
+        {'wave_3':[{'colname':'txkea_letter_names_txkea_letter_names_3', 'descriptor':'Letter Names Wave 3', 'has_cp_col': True}]}
       ],
       'subject_assess_lang': 'English',
       'has_cp_col': True
@@ -177,9 +177,9 @@ sources:
       'descriptor': 'Spelling',
       'subject_assess_type':'subject',
       'waves':[
-        {'wave_1':[{'colname':'txkea_spelling_txkea_spelling_1', 'descriptor':'Spelling Set 1', 'has_cp_col': True}]},
-        {'wave_2':[{'colname':'txkea_spelling_txkea_spelling_2', 'descriptor':'Spelling Set 2', 'has_cp_col': True}]},
-        {'wave_3':[{'colname':'txkea_spelling_txkea_spelling_3', 'descriptor':'Spelling Set 3', 'has_cp_col': True}]}
+        {'wave_1':[{'colname':'txkea_spelling_txkea_spelling_1', 'descriptor':'Spelling Wave 1', 'has_cp_col': True}]},
+        {'wave_2':[{'colname':'txkea_spelling_txkea_spelling_2', 'descriptor':'Spelling Wave 2', 'has_cp_col': True}]},
+        {'wave_3':[{'colname':'txkea_spelling_txkea_spelling_3', 'descriptor':'Spelling Wave 3', 'has_cp_col': True}]}
       ],
       'subject_assess_lang': 'English',
       'has_cp_col': True
@@ -369,9 +369,9 @@ sources:
       'descriptor': 'Literacy Screening',
       'subject_assess_type':'screener',
       'subject_assessments': [
-        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_colname_spa': 'txkea_vocabulary_1_sp', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_colname_spa': 'txkea_vocabulary_1_sp', 'subject_asses_ref_descriptor':'Vocabulary Wave 1'}]},
         {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_letter_names', 'subject_asses_ref_colname_spa': 'txkea_letter_names_sp', 'subject_asses_ref_descriptor':'Letter Names'}]},
-        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_spelling_1', 'subject_asses_ref_colname_spa': 'txkea_spelling_1_sp', 'subject_asses_ref_descriptor':'Spelling Set 1'}]}
+        {'subject_assess_ref_3':[{'subject_asses_ref_colname':'txkea_spelling_1', 'subject_asses_ref_colname_spa': 'txkea_spelling_1_sp', 'subject_asses_ref_descriptor':'Spelling Wave 1'}]}
       ],
       'subject_assess_lang': 'Spanish',
       'has_cp_col': False
@@ -393,7 +393,7 @@ sources:
       'descriptor': 'Language Composite',
       'subject_assess_type':'composite',
       'subject_assessments': [
-        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_colname_spa': 'txkea_vocabulary_1_sp', 'subject_asses_ref_descriptor':'Vocabulary Set 1'}]},
+        {'subject_assess_ref_1':[{'subject_asses_ref_colname':'txkea_vocabulary_1', 'subject_asses_ref_colname_spa': 'txkea_vocabulary_1_sp', 'subject_asses_ref_descriptor':'Vocabulary Wave 1'}]},
         {'subject_assess_ref_2':[{'subject_asses_ref_colname':'txkea_listening_comp_1', 'subject_asses_ref_colname_spa': 'txkea_listening_comp_1_sp',  'subject_asses_ref_descriptor':'Listening Comprehension 1'}]}
       ],
       'subject_assess_lang': 'Spanish',
@@ -412,9 +412,9 @@ sources:
       'descriptor': 'Spelling',
       'subject_assess_type':'subject',
       'waves':[
-        {'wave_1':[{'colname':'txkea_spelling_txkea_spelling_1', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_1_sp', 'descriptor':'Spelling Set 1', 'has_cp_col': True}]},
-        {'wave_2':[{'colname':'txkea_spelling_txkea_spelling_2', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_2_sp', 'descriptor':'Spelling Set 2', 'has_cp_col': True}]},
-        {'wave_3':[{'colname':'txkea_spelling_txkea_spelling_3', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_3_sp', 'descriptor':'Spelling Set 3', 'has_cp_col': True}]}
+        {'wave_1':[{'colname':'txkea_spelling_txkea_spelling_1', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_1_sp', 'descriptor':'Spelling Wave 1', 'has_cp_col': True}]},
+        {'wave_2':[{'colname':'txkea_spelling_txkea_spelling_2', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_2_sp', 'descriptor':'Spelling Wave 2', 'has_cp_col': True}]},
+        {'wave_3':[{'colname':'txkea_spelling_txkea_spelling_3', 'colname_spa': 'txkea_spelling_sp_txkea_spelling_3_sp', 'descriptor':'Spelling Wave 3', 'has_cp_col': True}]}
       ],
       'subject_assess_lang': 'Spanish',
       'has_cp_col': True
@@ -442,9 +442,9 @@ sources:
       'descriptor': 'Vocabulary',
       'subject_assess_type':'subject',
       'waves':[
-        {'wave_1':[{'colname':'txkea_vocabulary_txkea_vocabulary_1', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_1_sp', 'descriptor':'Vocabulary Set 1', 'has_cp_col': True}]},
-        {'wave_2':[{'colname':'txkea_vocabulary_txkea_vocabulary_2', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_2_sp', 'descriptor':'Vocabulary Set 2', 'has_cp_col': True}]},
-        {'wave_3':[{'colname':'txkea_vocabulary_txkea_vocabulary_3', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_3_sp', 'descriptor':'Vocabulary Set 3', 'has_cp_col': True}]}
+        {'wave_1':[{'colname':'txkea_vocabulary_txkea_vocabulary_1', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_1_sp', 'descriptor':'Vocabulary Wave 1', 'has_cp_col': True}]},
+        {'wave_2':[{'colname':'txkea_vocabulary_txkea_vocabulary_2', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_2_sp', 'descriptor':'Vocabulary Wave 2', 'has_cp_col': True}]},
+        {'wave_3':[{'colname':'txkea_vocabulary_txkea_vocabulary_3', 'colname_spa': 'txkea_vocabulary_sp_txkea_vocabulary_3_sp', 'descriptor':'Vocabulary Wave 3', 'has_cp_col': True}]}
       ],
       'subject_assess_lang': 'Spanish',
       'has_cp_col': True
@@ -454,9 +454,9 @@ sources:
       'descriptor': 'Decoding',
       'subject_assess_type':'subject',
       'waves':[
-        {'wave_1':[{'colname':'txkea_decoding_txkea_decoding_1', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_1_sp', 'descriptor':'Decoding Set 1', 'has_cp_col': True}]},
-        {'wave_2':[{'colname':'txkea_decoding_txkea_decoding_2', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_2_sp', 'descriptor':'Decoding Set 2', 'has_cp_col': True}]},
-        {'wave_3':[{'colname':'txkea_decoding_txkea_decoding_3', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_3_sp', 'descriptor':'Decoding Set 3', 'has_cp_col': True}]}
+        {'wave_1':[{'colname':'txkea_decoding_txkea_decoding_1', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_1_sp', 'descriptor':'Decoding Wave 1', 'has_cp_col': True}]},
+        {'wave_2':[{'colname':'txkea_decoding_txkea_decoding_2', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_2_sp', 'descriptor':'Decoding Wave 2', 'has_cp_col': True}]},
+        {'wave_3':[{'colname':'txkea_decoding_txkea_decoding_3', 'colname_spa': 'txkea_decoding_sp_txkea_decoding_3_sp', 'descriptor':'Decoding Wave 3', 'has_cp_col': True}]}
       ],
       'subject_assess_lang': 'Spanish',
       'has_cp_col': True
@@ -786,26 +786,26 @@ destinations:
     source: $transformations.stacked_subject_scores
     template: assessments/CLI_TX_KEA/templates/studentAssessments.jsont
     extension: jsonl
-    linearize: True
+    linearize: False
     show_progress: True
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: assessments/CLI_TX_KEA/templates/objectiveAssessments.jsont
     extension: jsonl
-    linearize: True
+    linearize: False
     show_progress: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: assessments/CLI_TX_KEA/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
-    linearize: True
+    linearize: False
     show_progress: True
 
   assessments:
     source: $sources.assessments
     template: assessments/CLI_TX_KEA/templates/assessments.jsont
     extension: jsonl
-    linearize: True
+    linearize: False
     show_progress: True
