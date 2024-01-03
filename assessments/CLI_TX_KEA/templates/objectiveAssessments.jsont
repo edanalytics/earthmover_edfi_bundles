@@ -1,0 +1,43 @@
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessmentIdentifier }}",
+    "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
+  },
+  "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}",
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Module",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Wave",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cliengage.org/TX-KEA/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/TX-KEA/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cliengage.org/TX-KEA/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/TX-KEA/PerformanceLevelDescriptor#Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://www.cliengage.org/TX-KEA/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/TX-KEA/PerformanceLevelDescriptor#On Track"
+    }
+  ]
+}
