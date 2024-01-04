@@ -35,10 +35,14 @@ sources:
 {% set conformed_columns = [
   'wave',
   'student_wave_id', 
+  'local_student_id',
   'school_year',
   'subject_name',
   'subject_descriptor',
-  'subject_assess_lang', 
+  'subject_score',
+  'subject_cut_point',
+  'subject_date',
+  'subject_assess_lang',
   'subject_set_1_number',   
   'subject_set_2_number',
   'subject_set_3_number',  
@@ -511,7 +515,7 @@ transformations:
         columns:
           subject_name: {{ subject_values.colname }}
           subject_descriptor: {{ subject_values.descriptor }}
-          subject_assess_lang: {{ subject_assess_lang }}
+          subject_assess_lang: {{ subject_values.subject_assess_lang }}
             
 
     # Handling subjects with multiple sets for student assessments:  ------------------------------------------------------------------------------
@@ -615,7 +619,7 @@ transformations:
         {% endfor %}
       {% endfor %}
       
-      # Create additional null columns if not found in the liist for this subject (need this for the keep columns operation).
+      # Create additional null columns if not found in the list for this subject (need this for the keep columns operation).
         {% for n in range(1, 8) %}
           {% if n|string not in cat_numbers %}
       - operation: add_columns
