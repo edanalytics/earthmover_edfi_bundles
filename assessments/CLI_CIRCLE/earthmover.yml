@@ -573,9 +573,9 @@ transformations:
         {% for objective_assessment in subject_values.objective_assessments %}
           {% for oa_category, oa_values in objective_assessment.items() %}
             # Dealing with Spanish and English colname differences.
-            {% if subject_values.assessment_language == 'English' %}
+            {% if subject_values.subject_assess_lang == 'English' %}
               {% set colname = oa_values.colname %}
-            {% elif subject_values.assessment_language == 'Spanish' %}
+            {% elif subject_values.subject_assess_lang == 'Spanish' %}
               {% set colname = oa_values.colname_spa %}
             {% endif %}
 
