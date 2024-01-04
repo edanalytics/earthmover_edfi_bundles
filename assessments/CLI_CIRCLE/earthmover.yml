@@ -37,7 +37,8 @@ sources:
   'student_wave_id', 
   'school_year',
   'subject_name',
-  'subject_descriptor', 
+  'subject_descriptor',
+  'subject_assess_lang', 
   'subject_wave_1_name',   
   'subject_wave_2_name',
   'subject_wave_3_name',  
@@ -507,6 +508,7 @@ transformations:
         columns:
           subject_name: {{ subject_values.colname }}
           subject_descriptor: {{ subject_values.descriptor }}
+          subject_assess_lang: {{ subject_assess_lang }}
             
 
     # Handling subjects with multiple waves for student assessments:  ------------------------------------------------------------------------------
