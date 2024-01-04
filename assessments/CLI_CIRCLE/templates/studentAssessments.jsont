@@ -15,7 +15,7 @@
       {
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_performance }}"
+        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_cut_point  }}"
       }
     ],
     "scoreResults": [
@@ -28,19 +28,16 @@
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ subject_name }}"
-      }
-      {% if subject_set_score is not none and subject_set_score | length %}
-      ,
+      },
       {
-        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Set",
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Wave",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "result": "{{ subject_set }}"
+        "result": "{{ wave }}"
       }
-      {% endif %}
     ]
         
     "studentObjectiveAssessments": [
-      {%- for n in range(1,7) -%}
+      {%- for n in range(1,8) -%}
       
         {%- set objective_assessment_name = self._TemplateReference__context.resolve('oa_category_'~n~'_name') -%}
         {%- set objective_assessment_descriptor = self._TemplateReference__context.resolve('oa_category_'~n~'_descriptor') -%}
@@ -74,6 +71,46 @@
               "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
               "result": "{{ objective_assessment_name }}"
+            }
+          ]
+        }
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- for n in range(1,4) -%}
+      
+        {%- set wave_assessment_name = self._TemplateReference__context.resolve('subject_wave_'~n~'_name') -%}
+        {%- set wave_assessment_descriptor = self._TemplateReference__context.resolve('subject_wave_'~n~'_descriptor') -%}
+        {%- set wave_assessment_date = self._TemplateReference__context.resolve('subject_wave_'~n~'_date') -%}
+        {%- set wave_assessment_score = self._TemplateReference__context.resolve('subject_wave_'~n~'_score') -%}
+        {%- set wave_assessment_performance = self._TemplateReference__context.resolve('subject_wave_'~n~'_cut_point') -%}
+
+        {%- if wave_assessment_score is not none and wave_assessment_score | length -%}
+          {%- if not loop.first -%},{% endif %}
+        {
+          "administrationDate": "{{ wave_assessment_date }}",
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "cli_circle",
+            "identificationCode": "{{ subject_name }}"
+            "namespace": "uri://www.cli.org/circle/Assessment"
+          },          
+          "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ wave_assessment_performance }}"
+            }
+          ],
+          "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Score",
+              "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ wave_assessment_score }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ wave_assessment_name }}"
             }
           ]
         }
