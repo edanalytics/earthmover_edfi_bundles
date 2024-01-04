@@ -4,7 +4,7 @@
     "assessmentIdentifier": "{{ assessmentIdentifier }}",
     "namespace": "uri://www.cli.org/circle/Assessment"
   },
-  "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}",
+  "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ AcademicSubjectDescriptor }}",
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Score",
@@ -14,6 +14,10 @@
       "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Wave",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
   ],
   "performanceLevels": [
     {
