@@ -3,7 +3,7 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: assessments/CLI_TX_KEA/output
+  output_dir:  ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is.
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
@@ -12,19 +12,19 @@ config:
 
 sources:
   cli_tx_kea_input:
-    file: '/mnt/n/texas_esc_4/data/assessment/CLI TX-KEA/lamar_cisd/CircleDataExport_Texas Kindergarten Entry Assessment Results Export_20220720_210712210D80A/Report - deduped.csv'
+    file: ${INPUT_FILE}
     header_rows: 3
 
   assessmentReportingMethodDescriptors:
-    file: assessments/CLI_TX_KEA/seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   assessments:
-    file: assessments/CLI_TX_KEA/seeds/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
 
   objectiveAssessments:
-    file: assessments/CLI_TX_KEA/seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
 
 # PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
@@ -852,28 +852,22 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.stacked_subject_scores
-    template: assessments/CLI_TX_KEA/templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
     linearize: False
     show_progress: True
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: assessments/CLI_TX_KEA/templates/objectiveAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
-    linearize: False
-    show_progress: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: assessments/CLI_TX_KEA/templates/assessmentReportingMethodDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
-    linearize: False
-    show_progress: True
 
   assessments:
     source: $sources.assessments
-    template: assessments/CLI_TX_KEA/templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
-    linearize: False
-    show_progress: True
