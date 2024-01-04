@@ -12,11 +12,13 @@
     },
     "administrationDate": "{{ subject_date }}",
     "performanceLevels": [
+      {%- if subject_cut_point is not none and subject_cut_point | length -%}
       {
         "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_cut_point }}"
       }
+      {%- endif -%}
     ],
     "scoreResults": [
       {
