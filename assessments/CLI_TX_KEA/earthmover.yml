@@ -646,12 +646,12 @@ transformations:
 
     # Handling subjects with multiple waves for student assessments:  ------------------------------------------------------------------------------
     # CLI TX-KEA is assessed at three different points in a school year: BOY, MOY, and EOY.
-    # Each of these assessment periods are called waves; for student there is a colname representing the wave and subject assessed. 
+    # Each of these assessment periods are called waves; for each student there is a colname representing the wave and subject assessed. 
     # For example for certain subjects, like "txkea_vocabulary" there are three additional cols to represent the scores at a certain wave: 
       # "txkea_vocabulary_1" (BOY) 
       # "txkea_vocabulary_2" (MOY) 
       # "txkea_vocabulary_3" (EOY) 
-    # Furthermore, there are subjects with "waved" assessments (per the example above) that also contain Objective Assessments (or subtests as described by TX-KEA):
+    # Furthermore, there are subjects with "waved" assessments (per the example above) that also contain Objective Assessments (or Subtests as described by TX-KEA):
       # "txkea_blending" (BOY) 
       # "txkea_blending_2_receptive" (MOY) 
       # "txkea_blending_2_expressive" (MOY) 
@@ -672,48 +672,54 @@ transformations:
             {% set colname = subtest.colname_spa %}
           {% endif %}
 
-          # Extracting wave number (1,2,3) and number of subsets within an assessment.
-          {% set number_of_subtests_in_wave = [] %}
-          {% set wave_number = wave_item.split('_')[-1] %}
-          {% set subtest_number = loop.index %}
+          # Extracting wave number (1,2,3) and the current subset number within an assessment.
+          {% set wave_n = wave_item.split('_')[-1] %}
+          {% set subtest_n = loop.index %}
 
-          # This operation will count the number of subtests in the current wave, to ensure we create null columns of the difference if necessary for the "keep columns" operation.
+          # This operation will count the total number of subtests in the current wave, to ensure we create null columns of the difference if necessary for the "keep columns" operation.
+          # Most waves in our dictionary have up to two subsets, so if the current wave we are working with only has one, then we need to create null "subject_wave_2_subtest_2" columns for our "keep columns" op.
+          {% set number_of_subtests_in_wave = [] %}
           {% for n in range(1, wave_values | length + 1) %}
               {% set number_of_subtests_in_wave__append = number_of_subtests_in_wave.append(n) %}
           {% endfor %}
 
-          {% set wave_numbers_list__append = wave_numbers_list.append(wave_number) %}
-          {% set wave_number_subtest_number_dict__append = wave_number_subtest_number_dict.append({'wave_n': wave_number, 'subtest_n': [number_of_subtests_in_wave]}) %}
+          # Append the current wave number, and a dictionary entry of the wave number and subtest list created above, so that we can keep track of all the waves and subtests we are creating.
+          # This will help us down the line to figure out if we need to create any null "subject_wave_x_subtest_x" columns for our "keep columns" operation.
+          {% set wave_numbers_list__append = wave_numbers_list.append(wave_n) %}
+          {% set wave_number_subtest_number_dict__append = wave_number_subtest_number_dict.append({'wave_n': wave_n, 'subtest_n': [number_of_subtests_in_wave]}) %}
 
+      # Creating basic columns for waves and subtests.
       - operation: rename_columns
         columns:
-          {{ colname }}_date: subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_date
-          {{ colname }}: subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_score
+          {{ colname }}_date: subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_date
+          {{ colname }}: subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_score
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_name: {{ colname }}
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_descriptor: {{ subtest.descriptor }}
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_number: {{ wave_number }}
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_name: {{ colname }}
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_descriptor: {{ subtest.descriptor }}
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_number: {{ wave_n }}
 
       # Modules will help us identify subtests assignments like "txkea_blending_2_receptive" and "txkea_blending_2_expressive" by extracting the unique difference between them ("receptive", "expressive").
       {% if subtest.module is not none %}
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_module: {{ subtest.module }}
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_module: {{ subtest.module }}
       {% else %}
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_module: ''
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_module: ''
       {% endif %}
 
+      # In cases where a cut point column is missing for a particular subtest in the dataset,
+      # we generate a null column named "subject_wave_x_subtest_x_cut_point" to prevent any disruption of our "keep columns" transformation.
       {% if subtest.has_cp_col %}
       - operation: rename_columns
         columns:
-          cp_{{ colname }}: subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_cut_point
+          cp_{{ colname }}: subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_cut_point
       {% else %}
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_cut_point: ''
+          subject_wave_{{ wave_n }}_subtest_{{ subtest_n }}_cut_point: ''
       {% endif %}
       
         {% endfor %}
@@ -729,17 +735,17 @@ transformations:
 
     # Create additional null columns if not found in the dictionary for this subject (need this for the keep columns operation).
     {% for wave_number in wave_number_subtest_number_dict %}
-      {% for subtest_number in range(1, 3) %}
-        {% if subtest_number|string not in wave_number.subtest_n|string %}
+      {% for subtest_n in range(1, 3) %}
+        {% if subtest_n|string not in wave_number.subtest_n|string %}
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_number: ''  
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_name: ''  
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_descriptor: '' 
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_date: '' 
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_score: '' 
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_cut_point: '' 
-          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_number }}_module: '' 
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_number: ''  
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_name: ''  
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_descriptor: '' 
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_date: '' 
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_score: '' 
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_cut_point: '' 
+          subject_wave_{{ wave_number.wave_n }}_subtest_{{ subtest_n }}_module: '' 
         {% endif %} 
       {% endfor %} 
     {% endfor %}  
@@ -768,6 +774,7 @@ transformations:
               {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname_spa %}
             {% endif %}
 
+      # Creating basic columns for screener/composite subjects.
       - operation: rename_columns
         columns:
           {% set sa_n = subject_assess_ref.split('_')[-1] %}
