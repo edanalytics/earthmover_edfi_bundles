@@ -35,11 +35,6 @@
         "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Type",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ subject_assessment_type }}"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Wave",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "result": "{{ wave }}"
       }
     ]
         
@@ -84,6 +79,11 @@
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Module",
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
               "result": "{{ subtest_assessment_module }}"
+            },   
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Wave",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ wave }}"
             }
           ]
         }

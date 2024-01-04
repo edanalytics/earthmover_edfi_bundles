@@ -16,53 +16,8 @@
   "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
   "academicSubjects": [
     {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Letter Names"
-    },
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Spelling"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Listening Comp"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Vocabulary"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Decoding"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Letter Sounds"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Blending"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Social Emotional Competence"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Emotion Management"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Working Memory"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Inhibition"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Attention"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Academic Motor Skills"
-    }, 
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Administration Mode"
-    }  
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ assessmentCategoryDescriptor }}"
+    }
   ],
   "scores": [
     {
@@ -75,10 +30,6 @@
     },
     {
       "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Type",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Wave",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ],
