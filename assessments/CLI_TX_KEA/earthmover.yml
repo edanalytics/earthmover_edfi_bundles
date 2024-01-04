@@ -27,6 +27,11 @@ sources:
     file: assessments/CLI_TX_KEA/seeds/objectiveAssessments.csv
     header_rows: 1
 
+# PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
+# The CLI TX-KEA Data arrives in a wide format with each row representing a single student. To use this data in our templates, we need to pivot the table into a long format.
+# This involves standardizing the column titles of subject/objective assessments (e.g., "txkea_letter_names") to generic titles (e.g., "subject_name").
+# The objective is to stack these conformed columns so that one row represents a student/subject assessed.
+# This list will be used in our final "keep columns" step, to indicate the conformed columns we want to retain in the final transformation.
 {% set conformed_columns = [
   'wave',
   'student_wave_id', 
@@ -105,6 +110,18 @@ sources:
   'composite_assess_ref_3_score'
   ] 
 %}
+
+
+# PREP-STEP 2: CREATE A DICTIONARY OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK.
+# We need this comprehensive dictionary to pass on values to our conformed columns above.
+# In CLI TX-KEA data, the subject column names vary between English and Spanish assessments.
+# For example, "txkea_letter_names" is used for English assessments, while "txkea_letter_names_sp" is used for Spanish assessments.
+# To handle these distinctions, we create two distinct dictionaries, which eventually merge to undergo the final transformations.
+
+# An output eventually created by this dictionary would look like:
+  # student_id | subject_name | subject_descriptor    | ...subject_cut_point   | subject_wave_1_subtest_1_name       | ...subject_wave_1_subtest_1_score
+  # 1234       | pa_v2        | Phonological Awareness| ...Support             | txkea_letter_names                  | ...10
+  # 1234       | math_v1      | Math                  | ...On Track            | txkea_blending                      | ...80
 
 {% set subjects_en = {
     'txkea_dyslexia_checklist': {
@@ -572,8 +589,14 @@ sources:
   }
 %}
 
+# Combine the dictionaries into a single, comprehensive, dictionary that we can iterate through below.
 {% set subjects = subjects_en.copy() %}
 {% set _ = subjects.update(subjects_spa) %}
+
+
+# TRANSFORMATION-STEP 1: CONVERT COLUMNS TO SNAKE CASE
+# Certain columns in the data arrive with spaces or use "-" symbols instead of "_" as separators.
+# For uniformity, we convert all columns to snake case before we begin working on the data. 
 
 transformations:
   cli_tx_kea_student_assessment:
@@ -588,7 +611,9 @@ transformations:
           student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
 
 
-#--Subject Columns Creation------------------------------------
+# TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
+# This loop creates the main subject columns in our conformed columns list.
+
 {% for subject_name, subject_values in subjects.items() %}
   cli_tx_kea_student_{{ subject_name }}:
     source: $transformations.cli_tx_kea_student_assessment
@@ -597,6 +622,16 @@ transformations:
         columns:
           {{ subject_name }}: subject_score
           {{ subject_name }}_date: subject_date
+
+      - operation: add_columns
+        columns:
+          subject_name: {{ subject_values.colname }}
+          subject_descriptor: {{ subject_values.descriptor }}
+          subject_assessment_type: {{ subject_values.subject_assess_type }}
+
+      # Addressing subjects without a Cut Point column: -------------------------------------------------------------------
+      # In cases where a cut point column is missing for a particular subject in the dataset,
+      # we generate a null column named "subject_cut_point" to prevent any disruption of our "keep columns" transformation.
 
       {% if subject_values.has_cp_col %}
       - operation: rename_columns
@@ -608,32 +643,41 @@ transformations:
           subject_cut_point: ''
       {% endif %}
 
-      - operation: add_columns
-        columns:
-          subject_name: {{ subject_values.colname }}
-          subject_descriptor: {{ subject_values.descriptor }}
-          subject_assessment_type: {{ subject_values.subject_assess_type }}
 
+    # Handling subjects with multiple waves for student assessments:  ------------------------------------------------------------------------------
+    # CLI TX-KEA is assessed at three different points in a school year: BOY, MOY, and EOY.
+    # Each of these assessment periods are called waves; for student there is a colname representing the wave and subject assessed. 
+    # For example for certain subjects, like "txkea_vocabulary" there are three additional cols to represent the scores at a certain wave: 
+      # "txkea_vocabulary_1" (BOY) 
+      # "txkea_vocabulary_2" (MOY) 
+      # "txkea_vocabulary_3" (EOY) 
+    # Furthermore, there are subjects with "waved" assessments (per the example above) that also contain Objective Assessments (or subtests as described by TX-KEA):
+      # "txkea_blending" (BOY) 
+      # "txkea_blending_2_receptive" (MOY) 
+      # "txkea_blending_2_expressive" (MOY) 
+      # "txkea_blending_3_receptive" (EOY) 
+      # "txkea_blending_3_expressive" (EOY) 
+    # To capture this information, we introduce a "subject_wave_x_subtest_x" column, indicating the subject, wave, and subtest on which a student was assessed.
 
-#--Set Columns Creation------------------------------------
     {% set wave_number_subtest_number_dict = [] %}
     {% set wave_numbers_list = [] %}
 
     {% for wave in subject_values.waves %}
       {% for wave_item, wave_values in wave.items() %}
         {% for subtest in wave_values %}
+          # Dealing with Spanish and English colname differences.
           {% if subject_values.subject_assess_lang == 'English' %}
             {% set colname = subtest.colname %}
           {% elif subject_values.subject_assess_lang == 'Spanish' %}
             {% set colname = subtest.colname_spa %}
           {% endif %}
 
+          # Extracting wave number (1,2,3) and number of subsets within an assessment.
           {% set number_of_subtests_in_wave = [] %}
           {% set wave_number = wave_item.split('_')[-1] %}
           {% set subtest_number = loop.index %}
 
-          # This operation will count the number of subtests in the current wave, to ensure we create null columns
-          # of the difference.
+          # This operation will count the number of subtests in the current wave, to ensure we create null columns of the difference if necessary for the "keep columns" operation.
           {% for n in range(1, wave_values | length + 1) %}
               {% set number_of_subtests_in_wave__append = number_of_subtests_in_wave.append(n) %}
           {% endfor %}
@@ -651,6 +695,7 @@ transformations:
           subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_descriptor: {{ subtest.descriptor }}
           subject_wave_{{ wave_number }}_subtest_{{ subtest_number }}_number: {{ wave_number }}
 
+      # Modules will help us identify subtests assignments like "txkea_blending_2_receptive" and "txkea_blending_2_expressive" by extracting the unique difference between them ("receptive", "expressive").
       {% if subtest.module is not none %}
       - operation: add_columns
         columns:
@@ -675,12 +720,14 @@ transformations:
       {% endfor %}
     {% endfor %}
 
+    # Append an empty record to our dictionary above if a total of 3 waves is not found on the subject record (need this for the keep columns operation).
     {% for n in range(1, 4) %}
       {% if n|string not in wave_numbers_list %}
         {% set wave_number_subtest_number_dict__append = wave_number_subtest_number_dict.append({'wave_n': n, 'subtest_n': []}) %}
       {% endif %}
     {% endfor %}
 
+    # Create additional null columns if not found in the dictionary for this subject (need this for the keep columns operation).
     {% for wave_number in wave_number_subtest_number_dict %}
       {% for subtest_number in range(1, 3) %}
         {% if subtest_number|string not in wave_number.subtest_n|string %}
@@ -697,13 +744,24 @@ transformations:
       {% endfor %} 
     {% endfor %}  
 
-#--Screening/Composite Column Creation------------------------------------
+
+    # Handling screening and composite subject assessments:  ------------------------------------------------------------------------------
+    # CLI TX-KEA contains screening and composite assessments - these assessments use combined values from other subjects to grade a student on a specific focus area:
+      # kea_dyslexia_screener: Letter Sounds, Blending, Decoding.
+      # kea_literacy_screening: Vocabulary 1, Letter Names, Spelling 1.
+      # txkea_literacy_reading_composite: Letter Names, Letter Sounds, Blending 1.
+      # txkea_language_composite: Vocabulary 1, Listenining Comp 1.
+    # To capture this information, we introduce a "screener_assess_ref_x" and "screener_assess_ref_x" columns, indicating the subject, type, and subtest reference that builds the respective assessment.
+    
+    # Make sure the assessment type is either 'composite' or 'screener'
     {% if subject_values.subject_assess_type in ['composite', 'screener'] %}
+      # If we are building this loop for "composite" types, then set remainder_subject_assess_type= 'screener' and viceversa.
       {% set remainder_subject_assess_type = (['composite', 'screener'] | reject("==", subject_values.subject_assess_type) | list ) %}
       {% set subject_assess_ref_numbers = [] %}
       {% for subject_assessments in subject_values.subject_assessments %}
         {% for subject_assess_ref, subject_assess_ref_values in subject_assessments.items() %}
           {% for subject_assess_item in subject_assess_ref_values%}
+          # Dealing with Spanish and English colname differences.
             {% if subject_values.subject_assess_lang == 'English' %}
               {% set subject_assess_ref_values_colname = subject_assess_item.subject_asses_ref_colname %}
             {% elif subject_values.subject_assess_lang == 'Spanish' %}
@@ -712,7 +770,7 @@ transformations:
 
       - operation: rename_columns
         columns:
-      {% set sa_n = subject_assess_ref.split('_')[-1] %}
+          {% set sa_n = subject_assess_ref.split('_')[-1] %}
           {{ subject_assess_ref_values_colname }}: {{subject_values.subject_assess_type}}_assess_ref_{{ sa_n }}_score
       - operation: add_columns
         columns:
@@ -725,6 +783,7 @@ transformations:
         {% endfor %}
       {% endfor %}
 
+      # Create additional null columns if not found in the dictionary for this subject (need this for the keep columns operation).
       {% for n in range(1, 4) %}
         {% if n|string not in subject_assess_ref_numbers %}
       - operation: add_columns
@@ -736,6 +795,7 @@ transformations:
         {%- endif -%}      
       {%- endfor %}
       
+      # Create additional null columns for the remainder subject assessment type.
       {% for n in range(1, 4) %}
         {% for remainder_subject in remainder_subject_assess_type %}
       - operation: add_columns
@@ -748,6 +808,7 @@ transformations:
       {% endfor %}
       
     {% else %}
+      # Create additional null columns for any other subject assessment type that is not 'composite' or 'screener'.
         {% for n in range(1, 4) %}
       - operation: add_columns
         columns:
@@ -762,21 +823,26 @@ transformations:
         {%- endfor %}      
     {% endif %}
 
+      # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
       - operation: filter_rows
         query: subject_score != '' and subject_date != ''
         behavior: include 
 
+      # Finally, we keep the conformed columns we need for the templates.
       - operation: keep_columns
         columns: {{conformed_columns}}
 
 {% endfor %}
 
 
+# TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
+# Stack all the data we created together.
   stacked_subject_scores:
     source: $transformations.cli_tx_kea_student_txkea_dyslexia_checklist
     operations:
       - operation: union
         sources:
+# To avoid duplicates, we remove txkea_dyslexia_checklist from this join (so we don't join txkea_dyslexia_checklist twice - once as a source above and as a joined table below)
 {% for subject_name, subject_values in subjects.items() %}
     {% if subject_name != 'txkea_dyslexia_checklist' %}
           - $transformations.cli_tx_kea_student_{{ subject_name }}
