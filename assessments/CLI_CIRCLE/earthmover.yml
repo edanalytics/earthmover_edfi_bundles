@@ -524,9 +524,9 @@ transformations:
           {% for wave_item, wave_values in wave.items() %}
             # Dealing with Spanish and English colname differences.
             {% if subject_values.subject_assess_lang == 'English' %}
-              {% set colname = subtest.colname %}
+              {% set colname = wave_values.colname %}
             {% elif subject_values.subject_assess_lang == 'Spanish' %}
-              {% set colname = subtest.colname_spa %}
+              {% set colname = wave_values.colname_spa %}
             {% endif %}
 
             # Extracting wave number (1,2,3) within an assessment.
