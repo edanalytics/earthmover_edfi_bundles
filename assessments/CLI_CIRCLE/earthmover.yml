@@ -3,7 +3,7 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir:  ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is.
+  output_dir: assessments/CLI_CIRCLE/output
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
@@ -12,19 +12,19 @@ config:
 
 sources:
   cli_circle_input:
-    file: ${INPUT_FILE}
+    file: '/mnt/n/texas_esc_4/data/assessment/cli circle/lamar_cisd/CircleDataExport_CIRCLE Progress Monitoring Pre-K Results Export_20220618_031032842D80A/report.csv'
     header_rows: 3
 
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: assessments/CLI_CIRCLE/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: assessments/CLI_CIRCLE/seeds/assessments.csv
     header_rows: 1
 
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: assessments/CLI_CIRCLE/seeds/objectiveAssessments.csv
     header_rows: 1
 
 # PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
@@ -39,21 +39,24 @@ sources:
   'subject_name',
   'subject_descriptor',
   'subject_assess_lang', 
-  'subject_wave_1_name',   
-  'subject_wave_2_name',
-  'subject_wave_3_name',  
-  'subject_wave_1_descriptor', 
-  'subject_wave_2_descriptor',
-  'subject_wave_3_descriptor',
-  'subject_wave_1_date',
-  'subject_wave_2_date',
-  'subject_wave_3_date', 
-  'subject_wave_1_score',
-  'subject_wave_2_score',
-  'subject_wave_3_score',
-  'subject_wave_1_cut_point',
-  'subject_wave_2_cut_point',
-  'subject_wave_3_cut_point',
+  'subject_set_1_number',   
+  'subject_set_2_number',
+  'subject_set_3_number',  
+  'subject_set_1_name',   
+  'subject_set_2_name',
+  'subject_set_3_name',  
+  'subject_set_1_descriptor', 
+  'subject_set_2_descriptor',
+  'subject_set_3_descriptor',
+  'subject_set_1_date',
+  'subject_set_2_date',
+  'subject_set_3_date', 
+  'subject_set_1_score',
+  'subject_set_2_score',
+  'subject_set_3_score',
+  'subject_set_1_cut_point',
+  'subject_set_2_cut_point',
+  'subject_set_3_cut_point',
   'oa_category_1_name',
   'oa_category_2_name',
   'oa_category_3_name',
@@ -114,10 +117,10 @@ sources:
       'colname': 'rapid_vocabulary_v1',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
-      'waves':[
-        {'wave_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
-        {'wave_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
-        {'wave_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
+      'sets':[
+        {'set_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
+        {'set_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
+        {'set_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
       ],
       'subject_assess_lang': 'English',
       'subject_has_cp_col': True,
@@ -291,10 +294,10 @@ sources:
       'colname': 'rapid_vocabulary_v1',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
-      'waves':[
-        {'wave_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
-        {'wave_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
-        {'wave_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
+      'sets':[
+        {'set_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
+        {'set_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
+        {'set_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
       ],
       'subject_assess_lang': 'Spanish',
       'subject_has_cp_col': True,
@@ -511,7 +514,7 @@ transformations:
           subject_assess_lang: {{ subject_assess_lang }}
             
 
-    # Handling subjects with multiple waves for student assessments:  ------------------------------------------------------------------------------
+    # Handling subjects with multiple sets for student assessments:  ------------------------------------------------------------------------------
     # CLI CIRCLE is assessed at three different points in a school year: BOY, MOY, and EOY.
     # Each of these assessment periods are called waves; for each student there is a colname representing the wave and subject assessed. 
     # For example for certain subjects, like "rapid_vocabulary_v1" there are three additional cols to represent the scores at a certain wave: 
@@ -520,49 +523,49 @@ transformations:
       # "rapid_vocabulary_v1_rv_set3_v1" (EOY) 
     # To capture this information, we introduce a "subject_wave_x" column, indicating the subject and wave on which a student was assessed.
 
-        {% set wave_numbers_list = [] %}
+        {% set set_numbers_list = [] %}
 
-        {% for wave in subject_values.waves %}
-          {% for wave_item, wave_values in wave.items() %}
+        {% for set in subject_values.sets %}
+          {% for set_item, set_values in set.items() %}
             # Dealing with Spanish and English colname differences.
             {% if subject_values.subject_assess_lang == 'English' %}
-              {% set colname = wave_values.colname %}
+              {% set colname = set_values.colname %}
             {% elif subject_values.subject_assess_lang == 'Spanish' %}
-              {% set colname = wave_values.colname_spa %}
+              {% set colname = set_values.colname_spa %}
             {% endif %}
 
-            # Extracting wave number (1,2,3) within an assessment.
-            {% set wave_n = wave_item.split('_')[-1] %}
+            # Extracting set number (1,2,3) within an assessment.
+            {% set set_n = set_item.split('_')[-1] %}
 
-      # Creating basic columns for waves.
+      # Creating basic columns for sets.
       - operation: rename_columns
         columns:
-          {{ colname }}_date: subject_wave_{{ wave_n }}_date
-          {{ colname }}: subject_wave_{{ wave_n }}_score
-          cp_{{ colname }}: subject_wave_{{ wave_n }}_cut_point
+          {{ colname }}_date: subject_set_{{ set_n }}_date
+          {{ colname }}: subject_set_{{ set_n }}_score
+          cp_{{ colname }}: subject_set_{{ set_n }}_cut_point
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_n }}_name: {{ colname }}
-          subject_wave_{{ wave_n }}_descriptor: {{ wave_values.descriptor }}
-          subject_wave_{{ wave_n }}_number: {{ wave_n }}
+          subject_set_{{ set_n }}_name: {{ colname }}
+          subject_set_{{ set_n }}_descriptor: {{ set_values.descriptor }}
+          subject_set_{{ set_n }}_number: {{ set_n }}
         
-            # Append the current wave number, so that we can keep track of all the waves we are creating.  
-            {% set wave_numbers_list__append = wave_numbers_list.append(wave_n) %}
+            # Append the current set number, so that we can keep track of all the sets we are creating.  
+            {% set set_numbers_list__append = set_numbers_list.append(set_n) %}
 
           {% endfor %}
         {% endfor %}
 
-        # Create additional null columns if the wave number is not found for this subject in the list above (need this for the "keep columns" operation).
-        {% for wave_n in range(1, 4) %}
-          {% if wave_n|string not in wave_numbers_list %}
+        # Create additional null columns if the set number is not found for this subject in the list above (need this for the "keep columns" operation).
+        {% for set_n in range(1, 4) %}
+          {% if set_n|string not in set_numbers_list %}
       - operation: add_columns
         columns:
-          subject_wave_{{ wave_n }}_number: ''  
-          subject_wave_{{ wave_n }}_name: ''  
-          subject_wave_{{ wave_n }}_descriptor: '' 
-          subject_wave_{{ wave_n }}_date: '' 
-          subject_wave_{{ wave_n }}_score: '' 
-          subject_wave_{{ wave_n }}_cut_point: '' 
+          subject_set_{{ set_n }}_number: ''  
+          subject_set_{{ set_n }}_name: ''  
+          subject_set_{{ set_n }}_descriptor: '' 
+          subject_set_{{ set_n }}_date: '' 
+          subject_set_{{ set_n }}_score: '' 
+          subject_set_{{ set_n }}_cut_point: '' 
           {%- endif -%}      
         {%- endfor %}
 
@@ -654,20 +657,28 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.stacked_subject_scores
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: assessments/CLI_CIRCLE/templates/studentAssessments.jsont
     extension: jsonl
+    linearize: True
+    show_progress: True
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: assessments/CLI_CIRCLE/templates/objectiveAssessments.jsont
     extension: jsonl
+    linearize: True
+    show_progress: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: assessments/CLI_CIRCLE/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
+    linearize: True
+    show_progress: True
 
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: assessments/CLI_CIRCLE/templates/assessments.jsont
     extension: jsonl
+    linearize: True
+    show_progress: True
