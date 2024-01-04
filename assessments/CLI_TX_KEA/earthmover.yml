@@ -854,8 +854,6 @@ destinations:
     source: $transformations.stacked_subject_scores
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
-    linearize: False
-    show_progress: True
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
