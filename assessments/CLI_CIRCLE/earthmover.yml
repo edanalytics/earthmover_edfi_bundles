@@ -291,9 +291,9 @@ sources:
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
       'waves':[
-        {'wave_1':{'colname': 'rapid_vocabulary_v1_rv_set1_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
-        {'wave_2':{'colname': 'rapid_vocabulary_v1_rv_set2_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
-        {'wave_3':{'colname': 'rapid_vocabulary_v1_rv_set3_v1', 'set_colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
+        {'wave_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
+        {'wave_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
+        {'wave_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
       ],
       'subject_assess_lang': 'Spanish',
       'subject_has_cp_col': True,
@@ -588,7 +588,7 @@ transformations:
       - operation: add_columns
         columns:
           {{ oa_category }}_name: {{colname }}
-          {{ oa_category }}_descriptor: {{ oa_values.oa_descriptor }} 
+          {{ oa_category }}_descriptor: {{ oa_values.descriptor }} 
 
       # In cases where a cut point column is missing for a particular OA in the dataset,
       # we generate a null column named "oa_category_x_cut_point" to prevent any disruption of our "keep columns" transformation.
