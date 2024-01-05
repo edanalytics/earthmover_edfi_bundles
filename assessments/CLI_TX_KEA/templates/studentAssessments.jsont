@@ -45,7 +45,7 @@
         {%- set objective_assessment_descriptor = self._TemplateReference__context.resolve('oa_category_'~n~'_descriptor') -%}
         {%- set objective_assessment_date = self._TemplateReference__context.resolve('oa_category_'~n~'_date') -%}
         {%- set objective_assessment_score = self._TemplateReference__context.resolve('oa_category_'~n~'_score') -%}
-        {%- set objective_assessment_performance = self._TemplateReference__context.resolve('oa_category_'~n~'_performance') -%}
+        {%- set objective_assessment_cut_point = self._TemplateReference__context.resolve('oa_category_'~n~'_cut_point') -%}
 
         {%- if objective_assessment_score is not none and objective_assessment_score | length -%}
           {%- if not loop.first -%},{% endif %}
@@ -57,11 +57,13 @@
             "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
           },          
           "performanceLevels": [
+            {%- if objective_assessment_cut_point is not none and objective_assessment_cut_point | length -%}
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_performance }}"
+              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_cut_point }}"
             }
+            {%- endif -%}
           ],
           "scoreResults": [
             {
