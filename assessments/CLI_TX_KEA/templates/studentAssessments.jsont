@@ -39,19 +39,18 @@
     ]
         
     "studentObjectiveAssessments": [
-      {%- for n in range(1,4) -%}
-        {%- for x in range(1,3) -%}
-          {%- set subtest_assessment_name = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_name') -%}
-          {%- set subtest_assessment_descriptor = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_descriptor') -%}
-          {%- set subtest_assessment_date = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_date') -%}
-          {%- set subtest_assessment_score = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_score') -%}
-          {%- set subtest_assessment_performance = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_performance') -%}
-          {%- set subtest_assessment_module = self._TemplateReference__context.resolve('subject_wave_'~n~'_subtest_'~x~'_module') -%}
+      {%- for n in range(1,7) -%}
 
-          {%- if subtest_assessment_score is not none and subtest_assessment_score | length -%}
-            {%- if not loop.first -%},{% endif %}
+        {%- set objective_assessment_name = self._TemplateReference__context.resolve('oa_category_'~n~'_name') -%}
+        {%- set objective_assessment_descriptor = self._TemplateReference__context.resolve('oa_category_'~n~'_descriptor') -%}
+        {%- set objective_assessment_date = self._TemplateReference__context.resolve('oa_category_'~n~'_date') -%}
+        {%- set objective_assessment_score = self._TemplateReference__context.resolve('oa_category_'~n~'_score') -%}
+        {%- set objective_assessment_performance = self._TemplateReference__context.resolve('oa_category_'~n~'_performance') -%}
+
+        {%- if objective_assessment_score is not none and objective_assessment_score | length -%}
+          {%- if not loop.first -%},{% endif %}
         {
-          "administrationDate": "{{ subtest_assessment_date }}",
+          "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
             "assessmentIdentifier": "cli_tx_kea",
             "identificationCode": "{{ subject_name }}",
@@ -61,25 +60,20 @@
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Cut Point",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subtest_assessment_performance }}"
+              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_performance }}"
             }
           ],
           "scoreResults": [
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Score",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-              "result": "{{ subtest_assessment_score }}"
+              "result": "{{ objective_assessment_score }}"
             },
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Subject",
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "result": "{{ subtest_assessment_descriptor }}"
-            },
-            {
-              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Module",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "result": "{{ subtest_assessment_module }}"
-            },   
+              "result": "{{ objective_assessment_descriptor }}"
+            }, 
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/TX-KEA/AssessmentReportingMethodDescriptor#Wave",
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
@@ -87,8 +81,7 @@
             }
           ]
         }
-          {%- endif -%}
-        {%- endfor -%}
+        {%- endif -%}
       {%- endfor -%}
 
 
