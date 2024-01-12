@@ -38,11 +38,13 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_score}}"
     },
+    {% if dibels_composite_national_norm_percentile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite National Norm Percentile",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_national_norm_percentile}}"
     },
+    {% endif %}
     {% if dibels_composite_score_lexile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score Lexile",
