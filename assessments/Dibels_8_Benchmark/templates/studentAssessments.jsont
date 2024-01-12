@@ -22,6 +22,9 @@
     {% if composite_year_growth != '' %}
       {% set _= all_pls.append(["Composite Year Growth", composite_year_growth]) %}
     {% endif %}
+    {% if risk_indicator_level != '' %}
+      {% set _= all_pls.append(["Risk Indicator", risk_indicator_level]) %}
+    {% endif %}
   
     {%- for pl in all_pls -%}
     {
@@ -38,7 +41,7 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_score}}"
     },
-    {% if dibels_composite_national_norm_percentile != '' %}
+    {% if composite_national_norm_percentile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite National Norm Percentile",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
@@ -51,7 +54,7 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
       "result": "{{dibels_composite_score_lexile}}"
     },
-    {% endif %}
+    {% endif %} 
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
@@ -70,8 +73,7 @@
                                   ['Reading-Comprehension-Maze', ['Assessment Measure Level', reading_comprehension_maze_level], ['Assessment Measure Score', reading_comprehension_maze_score], ['Assessment Measure National Norm Percentile', reading_comprehension_maze_national_norm_percentile], ['Assessment Measure Semester Growth', reading_comprehension_maze_semester_growth], ['Assessment Measure Year Growth', reading_comprehension_maze_year_growth]],
                                   ['Vocabulary', ['Assessment Measure Level', vocabulary_level], ['Assessment Measure Score', vocabulary_score]],
                                   ['Spelling', ['Assessment Measure Level', spelling_level], ['Assessment Measure Score', spelling_score]],
-                                  ['RAN', ['Assessment Measure Level', ran_level], ['Assessment Measure Score', ran_score]],
-                                  ['Risk-Indicator', ['Assessment Measure Level', risk_indicator_level]]] %}
+                                  ['RAN', ['Assessment Measure Level', ran_level], ['Assessment Measure Score', ran_score]]] %}
     {% set all_obj_assessment = [] %}
     {%- for obj in possible_obj_assess -%}
       {% if (obj[1]|length > 0 and obj[1][1] != '') or (obj[2] is defined and obj[2][1] != '') %}
