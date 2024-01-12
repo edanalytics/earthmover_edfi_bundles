@@ -23,8 +23,8 @@
       "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{risk_indicator_espanol_level}}",
       "performanceLevelMet": true
     }
+    {% endif %}
   ],
-  {% endif %}
   "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
@@ -94,6 +94,13 @@
           "result": "{{incorrect_responses_cp_score}}"          
         }
         {% endif %}
+        {% endif %}
+        {% if obj_id in ('FEP',  'FLO', 'FLO-Prec') and  obj_names[0] == '' %} 
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Discontinued",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "True"      
+        }
         {% endif %}
       ],
       "performanceLevels": [
