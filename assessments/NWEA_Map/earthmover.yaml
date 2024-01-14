@@ -27,6 +27,9 @@ sources:
   academicSubjectDescriptors:
     file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -181,6 +184,11 @@ destinations:
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
     template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/gradeLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
