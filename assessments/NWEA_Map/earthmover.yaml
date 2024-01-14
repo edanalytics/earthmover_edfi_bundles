@@ -24,6 +24,9 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -173,6 +176,11 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
