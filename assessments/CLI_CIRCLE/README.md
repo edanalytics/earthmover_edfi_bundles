@@ -16,9 +16,9 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 - INPUT_FILE: The path to the CLI CIRCLE .csv file you want to transform.
 
 ### Examples
-Running a STAAR Summative 3-8 file:
+Running a CLI Circle file:
 ```bash
-earthmover run -c ./earthmover_staar_summative.yaml -p '{
+earthmover run -c ./earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "path/to/CLI_CIRCLE.csv",
 "OUTPUT_DIR": "./output"}'
