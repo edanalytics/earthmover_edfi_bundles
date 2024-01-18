@@ -42,24 +42,6 @@ sources:
   'subject_cut_point',
   'subject_date',
   'subject_assess_lang',
-  'subject_set_1_number',   
-  'subject_set_2_number',
-  'subject_set_3_number',  
-  'subject_set_1_name',   
-  'subject_set_2_name',
-  'subject_set_3_name',  
-  'subject_set_1_descriptor', 
-  'subject_set_2_descriptor',
-  'subject_set_3_descriptor',
-  'subject_set_1_date',
-  'subject_set_2_date',
-  'subject_set_3_date', 
-  'subject_set_1_score',
-  'subject_set_2_score',
-  'subject_set_3_score',
-  'subject_set_1_cut_point',
-  'subject_set_2_cut_point',
-  'subject_set_3_cut_point',
   'oa_category_1_name',
   'oa_category_2_name',
   'oa_category_3_name',
@@ -122,11 +104,6 @@ sources:
       'colname': 'rapid_vocabulary_v1',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
-      'sets':[
-        {'set_1':{'colname':'rapid_vocabulary_v1_rv_set1_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set1_spa_v1', 'descriptor':'Rapid Vocabulary Set 1'}},
-        {'set_2':{'colname':'rapid_vocabulary_v1_rv_set2_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set2_spa_v1', 'descriptor':'Rapid Vocabulary Set 2'}},
-        {'set_3':{'colname':'rapid_vocabulary_v1_rv_set3_v1', 'colname_spa':'rapid_vocabulary_spa_v1_rv_set3_spa_v1', 'descriptor':'Rapid Vocabulary Set 3'}}
-      ],
       'subject_assess_lang': ['English','Spanish'],
       'subject_has_cp_col': True,
       'oa_has_cp_col': True
@@ -329,11 +306,9 @@ transformations:
     
     {% if assess_lang == 'English' %}
       {% set subject_colname = subject_name %}
-      {% set colname = subject_values.colname %}
       {% set subject_assess_lang = 'English' %}
     {% elif assess_lang == 'Spanish' %}
       {% set subject_colname = subject_values.subject_name_spa %}
-      {% set colname = subject_values.colname_spa %}
       {% set subject_assess_lang = 'Spanish' %}
     {% endif %}
 
@@ -367,62 +342,6 @@ transformations:
           subject_assess_lang: {{ assess_lang }}
             
 
-    # Handling subjects with multiple sets for student assessments:  ------------------------------------------------------------------------------
-    # CLI CIRCLE is assessed at three different points in a school year: BOY, MOY, and EOY.
-    # Each of these assessment periods are called waves; for each student there is a colname representing the wave and subject assessed. 
-    # For example for certain subjects, like "rapid_vocabulary_v1" there are three additional cols to represent the scores at a certain wave: 
-      # "rapid_vocabulary_v1_rv_set1_v1" (BOY) 
-      # "rapid_vocabulary_v1_rv_set2_v1" (MOY) 
-      # "rapid_vocabulary_v1_rv_set3_v1" (EOY) 
-    # To capture this information, we introduce a "subject_wave_x" column, indicating the subject and wave on which a student was assessed.
-
-        {% set set_numbers_list = [] %}
-
-        {% for set in subject_values.sets %}
-          {% for set_item, set_values in set.items() %}
-            # Dealing with Spanish and English colname differences.
-            {% if assess_lang == 'English' %}
-              {% set colname = set_values.colname %}
-            {% elif assess_lang == 'Spanish' %}
-              {% set colname = set_values.colname_spa %}
-            {% endif %}
-
-            # Extracting set number (1,2,3) within an assessment.
-            {% set set_n = set_item.split('_')[-1] %}
-
-      # Creating basic columns for sets.
-      - operation: rename_columns
-        columns:
-          {{ colname }}_date: subject_set_{{ set_n }}_date
-          {{ colname }}: subject_set_{{ set_n }}_score
-          cp_{{ colname }}: subject_set_{{ set_n }}_cut_point
-      - operation: add_columns
-        columns:
-          subject_set_{{ set_n }}_name: {{ colname }}
-          subject_set_{{ set_n }}_descriptor: {{ set_values.descriptor }}
-          subject_set_{{ set_n }}_number: {{ set_n }}
-        
-            # Append the current set number, so that we can keep track of all the sets we are creating.  
-            {% set set_numbers_list__append = set_numbers_list.append(set_n) %}
-
-          {% endfor %}
-        {% endfor %}
-
-        # Create additional null columns if the set number is not found for this subject in the list above (need this for the "keep columns" operation).
-        {% for set_n in range(1, 4) %}
-          {% if set_n|string not in set_numbers_list %}
-      - operation: add_columns
-        columns:
-          subject_set_{{ set_n }}_number: ''  
-          subject_set_{{ set_n }}_name: ''  
-          subject_set_{{ set_n }}_descriptor: '' 
-          subject_set_{{ set_n }}_date: '' 
-          subject_set_{{ set_n }}_score: '' 
-          subject_set_{{ set_n }}_cut_point: '' 
-          {%- endif -%}      
-        {%- endfor %}
-
-
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
     # When subjects have listed objective assessments, we standardize them by assigning generic names such as "oa_category_x" to "oa_category_7."
 
@@ -432,21 +351,21 @@ transformations:
           {% for oa_category, oa_values in objective_assessment.items() %}
             # Dealing with Spanish and English colname differences.
             {% if assess_lang == 'English' %}
-              {% set colname = oa_values.colname %}
+              {% set oa_colname = oa_values.colname %}
             {% elif assess_lang == 'Spanish' %}
-              {% set colname = oa_values.colname_spa %}
+              {% set oa_colname = oa_values.colname_spa %}
             {% endif %}
 
             {% if oa_colname is not none and oa_colname | length %}
       # Creating basic columns for OAs.      
       - operation: rename_columns
         columns:
-          {{ colname }}: {{ oa_category }}_score
-          {{ colname }}_date: {{ oa_category }}_date    
+          {{ oa_colname }}: {{ oa_category }}_score
+          {{ oa_colname }}_date: {{ oa_category }}_date    
             
       - operation: add_columns
         columns:
-          {{ oa_category }}_name: {{colname }}
+          {{ oa_category }}_name: {{oa_colname }}
           {{ oa_category }}_descriptor: {{ oa_values.descriptor }} 
 
       # In cases where a cut point column is missing for a particular OA in the dataset,
@@ -454,7 +373,7 @@ transformations:
               {% if subject_values.oa_has_cp_col %}
       - operation: rename_columns
         columns:
-          cp_{{ colname }}: {{ oa_category }}_cut_point
+          cp_{{ oa_colname }}: {{ oa_category }}_cut_point
               {% else %}
       - operation: add_columns
         columns:
