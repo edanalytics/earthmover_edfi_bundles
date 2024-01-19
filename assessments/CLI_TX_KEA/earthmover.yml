@@ -3,26 +3,26 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir:  ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is.
+  output_dir: assessments/CLI_TX_KEA/output # this will be a parameter that is passed through from the command line, leave this as-is.
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
 
 sources:
   cli_tx_kea_input:
-    file: ${INPUT_FILE}
+    file: '/mnt/n/texas_esc_4/data/assessment/CLI TX-KEA/lamar_cisd/CircleDataExport_Texas Kindergarten Entry Assessment Results Export_20220720_210712210D80A/Report - deduped.csv'
     header_rows: 3
 
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: assessments/CLI_TX_KEA//seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: assessments/CLI_TX_KEA/seeds/assessments.csv
     header_rows: 1
 
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: assessments/CLI_TX_KEA/seeds/objectiveAssessments.csv
     header_rows: 1
 
 # PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
@@ -424,7 +424,7 @@ transformations:
 
       # In cases where a cut point column is missing for a particular OA in the dataset,
       # we generate a null column named "oa_category_x_cut_point" to prevent any disruption of our "keep columns" transformation.
-            {% if subject_values.oa_has_cp_col %}
+            {% if subject_values.has_cp_col %}
       - operation: rename_columns
         columns:
           cp_{{ oa_colname }}: {{ oa_category }}_cut_point
@@ -564,7 +564,7 @@ transformations:
       {% set subject_colname = subject_values.subject_name_spa %}
     {% endif %}
 
-    {% if subject_name != 'txkea_dyslexia_checklist' %}
+    {% if subject_colname != 'txkea_dyslexia_checklist' %}
           - $transformations.cli_tx_kea_student_{{ subject_colname }}
     {% endif %}  
   {% endfor %} 
@@ -573,20 +573,20 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.stacked_subject_scores
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: assessments/CLI_TX_KEA/templates/studentAssessments.jsont
     extension: jsonl
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: assessments/CLI_TX_KEA/templates/objectiveAssessments.jsont
     extension: jsonl
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: assessments/CLI_TX_KEA/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
 
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: assessments/CLI_TX_KEA/templates/assessments.jsont
     extension: jsonl
