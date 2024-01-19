@@ -14,9 +14,11 @@
     "administrationLanguageDescriptor": "{{ subject_assess_lang }}",
     "performanceLevels": [
       {
+        {%- if subject_cut_point is not none and subject_cut_point | length -%}
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_cut_point  }}"
+        {%- endif -%}
       }
     ],
     "scoreResults": [
@@ -51,11 +53,13 @@
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
           "performanceLevels": [
+            {%- if objective_assessment_cut_point is not none and objective_assessment_cut_point | length -%}
             {
               "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
               "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_cut_point }}"
             }
+            {%- endif -%}
           ],
           "scoreResults": [
             {
