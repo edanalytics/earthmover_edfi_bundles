@@ -3,26 +3,26 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir:  ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is.
+  output_dir: assessments/CLI_CIRCLE/output # this will be a parameter that is passed through from the command line, leave this as-is.
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
 
 sources:
   cli_circle_input:
-    file: ${INPUT_FILE}
+    file: '/mnt/n/texas_esc_4/data/assessment/CLI CIRCLE/lamar_cisd/CircleDataExport_CIRCLE Progress Monitoring Pre-K Results Export_20220618_031032842D80A/report.csv'
     header_rows: 3
 
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: assessments/CLI_CIRCLE/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: assessments/CLI_CIRCLE/seeds/assessments.csv
     header_rows: 1
 
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: assessments/CLI_CIRCLE/seeds/objectiveAssessments.csv
     header_rows: 1
 
 # PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
@@ -431,7 +431,7 @@ transformations:
       {% set subject_colname = subject_values.subject_name_spa %}
     {% endif %}
 
-    {% if subject_name != 'rln_v1' %}
+    {% if subject_colname != 'rln_v1' %}
           - $transformations.cli_circle_student_{{ subject_colname }}
     {% endif %}  
   {% endfor %} 
@@ -441,20 +441,20 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.stacked_subject_scores
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: assessments/CLI_CIRCLE/templates/studentAssessments.jsont
     extension: jsonl
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: assessments/CLI_CIRCLE/templates/objectiveAssessments.jsont
     extension: jsonl
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: assessments/CLI_CIRCLE/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
 
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: assessments/CLI_CIRCLE/templates/assessments.jsont
     extension: jsonl
