@@ -27,6 +27,9 @@ sources:
   academicSubjectDescriptors:
     file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   gradeLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
     header_rows: 1
@@ -174,6 +177,11 @@ destinations:
   assessmentReportingMethodDescriptors:
     source: $transformations.reporting_methods
     template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentCategoryDescriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
