@@ -33,6 +33,7 @@
         [subject, "Subject", "Level"],
         [SchoolID, "SchoolID", "Integer"],
         [TestAdmin, "TestAdmin", "Level"],
+        [student_grade, "AssessmentGradeLevel", "Level"],
     ] -%}
 
     {%- if Lex -%}
@@ -178,5 +179,5 @@
     } {%-if not loop.last -%}, {%- endif -%}
     {%- endfor -%}
   ],
-    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{student_grade | int}}"
+    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade | int}}"
 }
