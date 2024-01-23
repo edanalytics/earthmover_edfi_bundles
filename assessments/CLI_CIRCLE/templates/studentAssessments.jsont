@@ -1,7 +1,7 @@
 {
     "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
     "assessmentReference": {
-      "assessmentIdentifier": "cli_circle",
+      "assessmentIdentifier": "{{ subject_assessment_id }}",
       "namespace": "uri://www.cli.org/circle/Assessment"
     },
     "schoolYearTypeReference": {
@@ -31,6 +31,11 @@
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ subject_descriptor }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Wave",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ wave }}"
       }
     ]
         
@@ -48,7 +53,7 @@
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "cli_circle",
+            "assessmentIdentifier": {{ subject_assessment_id }},
             "identificationCode": "{{ subject_name }}"
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
