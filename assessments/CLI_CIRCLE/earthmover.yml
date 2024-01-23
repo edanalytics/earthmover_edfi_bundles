@@ -36,6 +36,7 @@ sources:
   'local_student_id',
   'student_state_id',
   'school_year',
+  'subject_assessment_id',
   'subject_name',
   'subject_descriptor',
   'subject_score',
@@ -93,6 +94,7 @@ sources:
 {% set subjects = {
     'rln_v1': {
       'subject_name_spa': 'rlna_spa_v1',
+      'subject_assess_id': 'rln',
       'colname': 'rln_v1',
       'descriptor': 'Rapid Letter Naming',
       'objective_assessments': [],
@@ -292,10 +294,18 @@ transformations:
       - operation: snake_case_columns 
       - operation: modify_columns
         columns:
-          wave: "{%raw%}{{ wave |replace(' ', '_') }}{%endraw%}"
+          school_year: "{%raw%}20{{ value[-2:] }}{%endraw%}"
+          wave: "{%raw%}{{ wave | replace(' ', '_') }}{%endraw%}"
+      - operation: group_by_with_rank
+        group_by_columns:
+          - wave
+          - school_year
+          - school_engage_id
+          - student_engage_id
+        rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
+          student_wave_id: '{%raw%}{{ rank }}_{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
@@ -337,11 +347,12 @@ transformations:
       # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
       - operation: add_columns
         columns:
+          subject_assessment_id: {{ subject_values.subject_assess_id }}
           subject_name: {{ subject_values.colname }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ assess_lang }}
-            
 
+            
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
     # When subjects have listed objective assessments, we standardize them by assigning generic names such as "oa_category_x" to "oa_category_7."
 
@@ -436,6 +447,10 @@ transformations:
     {% endif %}  
   {% endfor %} 
 {% endfor %} 
+      - operation: date_format
+        column: subject_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d" 
 
 
 destinations:
