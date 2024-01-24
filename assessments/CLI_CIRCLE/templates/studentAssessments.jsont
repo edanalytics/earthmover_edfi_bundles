@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
+    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_assessment_id }}",
     "assessmentReference": {
       "assessmentIdentifier": "{{ subject_assessment_id }}",
       "namespace": "uri://www.cli.org/circle/Assessment"
@@ -60,7 +60,7 @@
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
             "assessmentIdentifier": "{{ subject_assessment_id }}",
-            "identificationCode": "{{ subject_name }}",
+            "identificationCode": "{{ objective_assessment_descriptor }}",
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
           "performanceLevels": [
