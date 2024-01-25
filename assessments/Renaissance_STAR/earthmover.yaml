@@ -2,7 +2,7 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: '/mnt/n/south_carolina/EdFi/Assessments/earthmover/'
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
   show_graph: False
@@ -33,7 +33,8 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: StudentStateID
     STUDENT_ID_FROM: StudentStateID
-    # INPUT_FILE_SA: ''
+    INPUT_FILE_DS: ''
+    INPUT_FILE_SA: ''
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
 
