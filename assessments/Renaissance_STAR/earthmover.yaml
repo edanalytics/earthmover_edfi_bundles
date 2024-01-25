@@ -2,11 +2,21 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: ${OUTPUT_DIR}
+  output_dir: '/mnt/n/south_carolina/EdFi/Assessments/earthmover/'
   memory_limit: 1GB
   state_file: ${STATE_FILE}
   show_graph: False
   macros: > 
+      {% macro extract_subject(file_path) %}
+      {%- if 'SEL' in file_path -%}
+          SEL
+      {%- elif 'SM' in file_path -%}
+          SM
+      {%- elif 'SR' in file_path -%}
+          SR
+      {%- endif %}
+      {% endmacro %}
+
       {% macro map_subject_values(value) -%}
       {%- if 'SM' in value -%}Math
       {%- elif 'SR' in value -%}Reading
@@ -23,8 +33,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: StudentStateID
     STUDENT_ID_FROM: StudentStateID
-    INPUT_FILE_DS: ''
-    INPUT_FILE_SA: ''
+    # INPUT_FILE_SA: ''
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
 
@@ -54,6 +63,8 @@ sources:
     optional: True
     type: csv
     columns:
+      - LEA_ID
+      - API_YEAR
       - RenaissanceClientID
       - SchoolYear
       - StudentRenaissanceID
@@ -78,7 +89,7 @@ sources:
 
   star_skill_area_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ${INPUT_FILE_SA}
+    file: ''
     header_rows: 1
     optional: True
     type: csv
@@ -147,7 +158,7 @@ transformations:
           file_path: *overall_file_name
       - operation: modify_columns
         columns:
-          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+          file_path: "{%raw%}{{extract_subject(file_path)}}{%endraw%}"
       - operation: add_columns
         columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
