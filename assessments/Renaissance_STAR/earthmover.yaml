@@ -35,6 +35,7 @@ config:
     STUDENT_ID_FROM: StudentStateID
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
+    INPUT_FILETYPE: csv
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
 
@@ -56,13 +57,14 @@ sources:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE_OVERALL}
     header_rows: 1
+    type: ${INPUT_FILETYPE}
 
   star_dashboard_standards_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE_DS}
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - LEA_ID
       - API_YEAR
@@ -93,7 +95,7 @@ sources:
     file: ''
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - RenaissanceClientID
       - SchoolYear
