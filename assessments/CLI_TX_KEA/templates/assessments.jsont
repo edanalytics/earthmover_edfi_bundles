@@ -1,5 +1,5 @@
 {
-  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentIdentifier": "cli_tx_kea_{{ assessmentIdentifier }}",
   "assessmentTitle": "{{ assessmentTitle }}",
   "namespace": "{{ namespace }}",
   "assessedGradeLevels": [
@@ -14,9 +14,10 @@
     }
   ],
   "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
   "academicSubjects": [
     {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ AcademicSubjectDescriptor }}"
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}"
     }
   ],
   "scores": [
