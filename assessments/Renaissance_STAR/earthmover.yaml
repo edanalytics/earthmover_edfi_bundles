@@ -7,16 +7,6 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   macros: > 
-      {% macro extract_subject(file_path) %}
-      {%- if 'SEL' in file_path -%}
-          SEL
-      {%- elif 'SM' in file_path -%}
-          SM
-      {%- elif 'SR' in file_path -%}
-          SR
-      {%- endif %}
-      {% endmacro %}
-
       {% macro map_subject_values(value) -%}
       {%- if 'SM' in value -%}Math
       {%- elif 'SR' in value -%}Reading
@@ -30,6 +20,13 @@ config:
       {%- else -%}EARLY-LIT
       {%- endif -%}
       {%- endmacro %}
+
+      {%- macro extract_subject(value) -%}
+      {%- if 'SEL' in value -%}SEL
+      {%- elif 'SM' in value -%}SM
+      {%- elif 'SR' in value -%}SR
+      {%- endif -%}
+      {%- endmacro %}   
   parameter_defaults:
     STUDENT_ID_NAME: StudentStateID
     STUDENT_ID_FROM: StudentStateID
