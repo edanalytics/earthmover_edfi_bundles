@@ -36,6 +36,7 @@ sources:
   'local_student_id',
   'student_state_id',
   'school_year',
+  'subject_assessment_id',
   'subject_name',
   'subject_descriptor', 
   'subject_assessment_type',
@@ -108,7 +109,7 @@ sources:
 {% set subjects = {
     'txkea_dyslexia_checklist': {
       'subject_name_spa': 'txkea_dyslexia_checklist_sp',
-      'colname': 'txkea_dyslexia_checklist',
+      'subject_assess_id': 'dyslexia_checklist',
       'descriptor': 'KG Dyslexia Referral Checklist',
       'subject_assess_type':'checklist',
       'subject_assess_lang': ['English','Spanish'],
@@ -116,7 +117,7 @@ sources:
     },
     'kea_dyslexia_screener': {
       'subject_name_spa': 'kea_dyslexia_screener_sp',
-      'colname': 'kea_dyslexia_screener',
+      'subject_assess_id': 'dyslexia_screener',
       'descriptor': 'Dyslexia Screener',
       'subject_assess_type':'screener',
       'subject_assessments': [
@@ -129,7 +130,7 @@ sources:
     },
     'kea_literacy_screening': {
       'subject_name_spa': 'kea_literacy_screening_sp',
-      'colname': 'kea_literacy_screening',
+      'subject_assess_id': 'literacy_screening',
       'descriptor': 'Literacy Screening',
       'subject_assess_type':'screener',
       'subject_assessments': [
@@ -142,7 +143,7 @@ sources:
     },
     'txkea_literacy_reading_composite': {
       'subject_name_spa': 'txkea_literacy_reading_composite_sp',
-      'colname': 'txkea_literacy_reading_composite',
+      'subject_assess_id': 'literacy_reading_composite',
       'descriptor': 'Literacy Reading Composite',
       'subject_assess_type':'composite',
       'subject_assessments': [
@@ -155,7 +156,7 @@ sources:
     },
     'txkea_language_composite': {
       'subject_name_spa': 'txkea_language_composite_sp',
-      'colname': 'txkea_language_composite',
+      'subject_assess_id': 'language_composite',
       'descriptor': 'Language Composite',
       'subject_assess_type':'composite',
       'subject_assessments': [
@@ -167,7 +168,7 @@ sources:
     },
     'txkea_letter_names': {
       'subject_name_spa': 'txkea_letter_names_sp',
-      'colname': 'txkea_letter_names',
+      'subject_assess_id': 'letter_names',
       'descriptor': 'Letter Names',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -176,7 +177,7 @@ sources:
     },
     'txkea_spelling': {
       'subject_name_spa': 'txkea_spelling_sp',
-      'colname': 'txkea_spelling',
+      'subject_assess_id': 'spelling',
       'descriptor': 'Spelling',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -185,7 +186,7 @@ sources:
     },
     'txkea_listening_comp': { 
       'subject_name_spa': 'txkea_listening_comp_sp',
-      'colname': 'txkea_listening_comp',
+      'subject_assess_id': 'listening_comp',
       'descriptor': 'Listening Comp',
       'subject_assess_type':'subject',
       'objective_assessments':[
@@ -199,7 +200,7 @@ sources:
     },
     'txkea_vocabulary': {
       'subject_name_spa': 'txkea_vocabulary_sp',
-      'colname': 'txkea_vocabulary',
+      'subject_assess_id': 'vocabulary',
       'descriptor': 'Vocabulary',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -208,7 +209,7 @@ sources:
     },
     'txkea_decoding': {
       'subject_name_spa': 'txkea_decoding_sp',
-      'colname': 'txkea_decoding',
+      'subject_assess_id': 'decoding',
       'descriptor': 'Decoding',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -217,7 +218,7 @@ sources:
     },
     'txkea_letter_sounds': { 
       'subject_name_spa': 'txkea_letter_sounds_sp',
-      'colname': 'txkea_letter_sounds',
+      'subject_assess_id': 'letter_sounds',
       'descriptor': 'Letter Sounds',
       'subject_assess_type':'subject',
       'objective_assessments':[
@@ -231,7 +232,7 @@ sources:
     },
     'txkea_blending': {
       'subject_name_spa': 'txkea_blending_sp',
-      'colname': 'txkea_blending',
+      'subject_assess_id': 'blending',
       'descriptor': 'Blending',
       'subject_assess_type':'subject',
       'objective_assessments':[
@@ -245,7 +246,7 @@ sources:
     },
     'txkea_math': {
       'subject_name_spa': 'txkea_math_sp',
-      'colname': 'txkea_math',
+      'subject_assess_id': 'math',
       'descriptor': 'Math',
       'subject_assess_type':'subject',
       'objective_assessments':[
@@ -261,7 +262,7 @@ sources:
     },
     'txkea_science': {
       'subject_name_spa': 'txkea_science_sp',
-      'colname': 'txkea_science',
+      'subject_assess_id': 'science',
       'descriptor': 'Science',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -270,7 +271,7 @@ sources:
     },
     'txkea_social_emotional': {
       'subject_name_spa': 'txkea_social_emotional_sp',
-      'colname': 'txkea_social_emotional',
+      'subject_assess_id': 'social_emotional',
       'descriptor': 'Social Emotional Competence',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -279,7 +280,7 @@ sources:
     },
     'txkea_emotional_management': {
       'subject_name_spa': 'txkea_emotional_management_sp',
-      'colname': 'txkea_emotional_management',
+      'subject_assess_id': 'emotional_management',
       'descriptor': 'Emotion Management',
       'subject_assess_type':'subject',
       'subject_assess_lang': ['English','Spanish'],
@@ -287,7 +288,7 @@ sources:
     },
     'txkea_working_memory': {
       'subject_name_spa': 'txkea_working_memory_sp',
-      'colname': 'txkea_working_memory',
+      'subject_assess_id': 'working_memory',
       'descriptor': 'Working Memory',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -296,7 +297,7 @@ sources:
     },
     'txkea_inhibition': {
       'subject_name_spa': 'txkea_inhibition_sp',
-      'colname': 'txkea_inhibition',
+      'subject_assess_id': 'inhibition',
       'descriptor': 'Inhibition',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -305,7 +306,7 @@ sources:
     },
     'txkea_attention': {
       'subject_name_spa': 'txkea_attention_sp',
-      'colname': 'txkea_attention',
+      'subject_assess_id': 'attention',
       'descriptor': 'Attention',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -314,7 +315,7 @@ sources:
     },
     'txkea_academic_motor': {
       'subject_name_spa': 'txkea_academic_motor_sp',
-      'colname': 'txkea_academic_motor',
+      'subject_assess_id': 'academic_motor',
       'descriptor': 'Academic Motor Skills',
       'subject_assess_type':'subject',
       'objective_assessments':[],
@@ -323,13 +324,13 @@ sources:
     },
     'txkea_en_admin_mode': {
       'subject_name_spa': 'txkea_sp_admin_mode',
-      'colname': 'txkea_en_admin_mode',
+      'subject_assess_id': 'admin_mode',
       'descriptor': 'Administration Mode',
       'subject_assess_type':'subject',
       'objective_assessments':[],
       'subject_assess_lang': ['English','Spanish'],
       'has_cp_col': False
-    },
+    }
   }
 %}
 
@@ -345,10 +346,18 @@ transformations:
       - operation: snake_case_columns 
       - operation: modify_columns
         columns:
+          school_year: "{%raw%}20{{ value[-2:] }}{%endraw%}"
           wave: "{%raw%}{{ wave |replace(' ', '_') }}{%endraw%}"
+      - operation: group_by_with_rank
+        group_by_columns:
+          - wave
+          - school_year
+          - school_engage_id
+          - student_engage_id
+        rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
+          student_wave_id: '{%raw%}{{ rank }}_{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
@@ -375,7 +384,8 @@ transformations:
 
       - operation: add_columns
         columns:
-          subject_name: {{ subject_values.colname }}
+          subject_assessment_id: {{ subject_values.subject_assess_id }}
+          subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assessment_type: {{ assess_lang }}
 
@@ -537,6 +547,18 @@ transformations:
         query: subject_score != '' and subject_date != ''
         behavior: include 
 
+      {% if subject_name not in ('kea_dyslexia_screener', 'kea_literacy_screening', 'txkea_literacy_reading_composite', 'txkea_language_composite') %}
+      - operation: date_format
+        column: subject_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d" 
+      {% else %}
+      - operation: date_format
+        column: subject_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d" 
+      {% endif %}
+
       # Finally, we keep the conformed columns we need for the templates.
       - operation: keep_columns
         columns: {{conformed_columns}}
@@ -567,6 +589,7 @@ transformations:
     {% endif %}  
   {% endfor %} 
 {% endfor %} 
+        
 
 destinations:
   studentAssessments:
