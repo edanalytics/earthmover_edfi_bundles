@@ -1,5 +1,5 @@
 {
-  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentIdentifier": "cli_circle_{{ assessmentIdentifier }}",
   "assessmentTitle": "{{ assessmentTitle }}",
   "namespace": "{{ namespace }}",
   "assessedGradeLevels": [
@@ -14,6 +14,7 @@
     }
   ],
   "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}"
