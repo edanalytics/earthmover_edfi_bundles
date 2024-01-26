@@ -1,7 +1,7 @@
 {
     "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_assessment_id }}",
     "assessmentReference": {
-      "assessmentIdentifier": "{{ subject_assessment_id }}",
+      "assessmentIdentifier": "cli_circle_{{ subject_assessment_id }}",
       "namespace": "uri://www.cli.org/circle/Assessment"
     },
     "schoolYearTypeReference": {
@@ -59,7 +59,7 @@
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{ subject_assessment_id }}",
+            "assessmentIdentifier": "cli_circle_{{ subject_assessment_id }}",
             "identificationCode": "{{ objective_assessment_descriptor }}",
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
