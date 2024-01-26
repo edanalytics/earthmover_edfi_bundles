@@ -304,7 +304,7 @@ transformations:
         rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{ rank }}_{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{%endraw%}'
+          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{{ rank }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
@@ -416,6 +416,21 @@ transformations:
         query: subject_score != '' and subject_date != ''
         behavior: include 
 
+      # Transform date formatting
+      - operation: date_format
+        columns: 
+          - subject_date
+          - oa_category_1_date
+          - oa_category_2_date
+          - oa_category_3_date
+          - oa_category_4_date
+          - oa_category_5_date
+          - oa_category_6_date
+          - oa_category_7_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d" 
+        ignore_errors: True
+
       # Finally, we keep the conformed columns we need for the templates.
       - operation: keep_columns
         columns: {{conformed_columns}}
@@ -446,10 +461,6 @@ transformations:
     {% endif %}  
   {% endfor %} 
 {% endfor %} 
-      - operation: date_format
-        column: subject_date
-        from_format: "%m/%d/%Y %H:%M"
-        to_format: "%Y-%m-%d" 
 
 
 destinations:
