@@ -1,7 +1,7 @@
 [
     "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
     "assessmentReference": {
-      "assessmentIdentifier": "{{ subject_assessment_id }}",
+      "assessmentIdentifier": "cli_tx_kea_{{ subject_assessment_id }}",
       "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
     },
     "schoolYearTypeReference": {
@@ -63,7 +63,7 @@
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{ subject_assessment_id }}",
+            "assessmentIdentifier": "cli_tx_kea_{{ subject_assessment_id }}",
             "identificationCode": "{{ subject_name }}",
             "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
           },          
@@ -112,8 +112,8 @@
         {%- if not loop.first -%},{% endif %}
         {
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "cli_tx_kea",
-            "identificationCode": "{{ subject_name }}"
+            "assessmentIdentifier": "cli_tx_kea_{{ subject_assessment_id }}",
+            "identificationCode": "{{ subject_name }}",
             "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
           },          
           "performanceLevels": [],
@@ -148,8 +148,8 @@
         {%- if not loop.first -%},{% endif %}
         {
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "cli_tx_kea",
-            "identificationCode": "{{ subject_name }}"
+            "assessmentIdentifier": "cli_tx_kea_{{ subject_assessment_id }}",
+            "identificationCode": "{{ subject_name }}",
             "namespace": "uri://www.cliengage.org/TX-KEA/Assessment"
           },          
           "performanceLevels": [],
