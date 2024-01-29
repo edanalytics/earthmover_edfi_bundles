@@ -312,7 +312,7 @@ transformations:
               {% set all_pls = {"Domain Mastery Level":DomainMasteryLevel, 
                                 "Standard Mastery Level":StandardMasteryLevel} %} 
               {% for pl_name, pl_result in all_pls.items() %}
-                {% if pl_result is not none and pl_result | length %} 
+                {% if pl_result is not none and pl_result | length and pl_result != "<NA>" %} 
                   {% set _= pls_present.append([pl_name, pl_result]) %} 
                 {% endif %} 
               {% endfor %} 
@@ -332,7 +332,7 @@ transformations:
                                    "Skill Area Mastery Score":SkillAreaMasteryScore, 
                                    "Standard Percent Mastery":StandardPercentMastery} %} 
               {% for score_name, score_result in all_scores.items() %} 
-                {% if score_result is not none and score_result | length %} 
+                {% if score_result is not none and score_result | length and score_result != "<NA>" %} 
                   {% set _= scores_present.append([score_name, score_result]) %} 
                 {% endif %} 
               {% endfor %} 
