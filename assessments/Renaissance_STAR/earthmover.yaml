@@ -49,6 +49,9 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
 
   star_overall_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
@@ -413,5 +416,10 @@ destinations:
   studentAssessments:
     source: $transformations.star_with_obj_assessment
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
     extension: jsonl
     linearize: True
