@@ -298,9 +298,9 @@ transformations:
         columns:
           student_objective_assessment_json: >
             {%raw-%}  
-            {% if (DomainPercentMastery is not none and DomainPercentMastery | length) 
-               or (SkillAreaMasteryScore is not none and SkillAreaMasteryScore | length) 
-               or (StandardPercentMastery is not none and StandardPercentMastery | length) %}
+            {% if (DomainPercentMastery is not none and DomainPercentMastery | length and DomainPercentMastery != "<NA>") 
+               or (SkillAreaMasteryScore is not none and SkillAreaMasteryScore | length and SkillAreaMasteryScore != "<NA>") 
+               or (StandardPercentMastery is not none and StandardPercentMastery | length and StandardPercentMastery != "<NA>") %}
             { 
               "objectiveAssessmentReference": 
                 { 
