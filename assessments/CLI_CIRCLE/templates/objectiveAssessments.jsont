@@ -1,7 +1,7 @@
 {
   "identificationCode": "{{ identificationCode }}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{ assessmentIdentifier }}",
+    "assessmentIdentifier": "cli_circle_{{ assessmentIdentifier }}",
     "namespace": "uri://www.cli.org/circle/Assessment"
   },
   "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ AcademicSubjectDescriptor }}",
@@ -38,6 +38,6 @@
       "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
-    },
+    }
   ]
 }

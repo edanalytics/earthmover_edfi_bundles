@@ -36,6 +36,7 @@ sources:
   'local_student_id',
   'student_state_id',
   'school_year',
+  'subject_assessment_id',
   'subject_name',
   'subject_descriptor',
   'subject_score',
@@ -93,7 +94,7 @@ sources:
 {% set subjects = {
     'rln_v1': {
       'subject_name_spa': 'rlna_spa_v1',
-      'colname': 'rln_v1',
+      'subject_assess_id': 'rln',
       'descriptor': 'Rapid Letter Naming',
       'objective_assessments': [],
       'subject_assess_lang':  ['English','Spanish'],
@@ -101,7 +102,7 @@ sources:
     },
     'rapid_vocabulary_v1': {
       'subject_name_spa': 'rlna_spa_v1',
-      'colname': 'rapid_vocabulary_v1',
+      'subject_assess_id': 'rapid_vocabulary',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -110,7 +111,7 @@ sources:
     },
     'pa_v2': {
       'subject_name_spa': 'pa_spa_v2',
-      'colname': 'pa_v2',
+      'subject_assess_id': 'pa',
       'descriptor': 'Phonological Awareness',
       'objective_assessments': [
         {'oa_category_1':{'colname':'pa_v2_syllabication_v2', 'colname_spa': 'pa_spa_v2_syllabication_spa_v2', 'descriptor':'Phonological Awareness Syllabication'}},
@@ -124,7 +125,7 @@ sources:
     },
     'pa_opt_v1': {
       'subject_name_spa': 'pa_optional_spa_v1',
-      'colname': 'pa_opt_v1',
+      'subject_assess_id': 'pa_opt',
       'descriptor': 'Optional Phonological Awareness',
       'objective_assessments': [
         {'oa_category_1':{'colname':'pa_opt_v1_listening_v2', 'colname_spa': 'pa_optional_spa_v1_listening_spa_v2', 'descriptor':'Optional Phonological Awareness Listening'}},
@@ -137,7 +138,7 @@ sources:
     },
     'math_v1': {
       'subject_name_spa': 'math_spa_v1',
-      'colname': 'math_v1',
+      'subject_assess_id': 'math',
       'descriptor': 'Math',
       'objective_assessments': [
         {'oa_category_1':{'colname':'math_v1_rote_counting_v1', 'colname_spa': 'math_spa_v1_rote_counting_spa_v1', 'descriptor':'Math Rote Counting'}},
@@ -154,7 +155,7 @@ sources:
     },
     'math_opt_v1': {
       'subject_name_spa': 'math_opt_spa_v1',
-      'colname': 'math_opt_v1',
+      'subject_assess_id': 'math_opt',
       'descriptor': 'Optional Math',
       'objective_assessments': [
         {'oa_category_1':{'colname':'math_opt_v1_patterns_v1', 'colname_spa': 'math_opt_spa_v1_patterns_spa_v1', 'descriptor':'Optional Math Patterns'}},
@@ -166,7 +167,7 @@ sources:
     },
     'letter_sound_v1': {
       'subject_name_spa': 'letter_sound_spa_v1',
-      'colname': 'letter_sound_v1',
+      'subject_assess_id': 'letter_sound',
       'descriptor': 'Letter-Sound Correspondence',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -174,7 +175,7 @@ sources:
     },
     'story_retell_comp_v1': {
       'subject_name_spa': 'story_retell_comp_spa_v1',
-      'colname': 'story_retell_comp_v1',
+      'subject_assess_id': 'story_retell_comp',
       'descriptor': 'Story Retell and Comprehension',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -182,7 +183,7 @@ sources:
     },
     'book_print_v1': {
       'subject_name_spa': 'book_print_spa_v1',
-      'colname': 'book_print_v1',
+      'subject_assess_id': 'book_print',
       'descriptor': 'Book and Print Knowledge',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -190,7 +191,7 @@ sources:
     },
     'science_v1': {
       'subject_name_spa': 'science_spa_v1',
-      'colname': 'science_v1',
+      'subject_assess_id': 'science',
       'descriptor': 'Science',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -198,7 +199,7 @@ sources:
     },
     'social_studies_v1': {
       'subject_name_spa': 'social_studies_spa_v1',
-      'colname': 'social_studies_v1',
+      'subject_assess_id': 'social_studies',
       'descriptor': 'Social Studies',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -206,7 +207,7 @@ sources:
     },
     'social_emotional_v1': {
       'subject_name_spa': 'social_emotional_spa_v2',
-      'colname': 'social_emotional_v1',
+      'subject_assess_id': 'social_emotional',
       'descriptor': 'Social Emotional Behaviors',
       'objective_assessments': [
         {'oa_category_1':{'colname':'social_emotional_v1_positive_social_v1', 'colname_spa': 'social_emotional_spa_v2_positive_social_spa_v1', 'descriptor':'Positive Social Behaviors'}},
@@ -221,7 +222,7 @@ sources:
     },
     'early_writing_v1': {
       'subject_name_spa': 'early_writing_spa_v1',
-      'colname': 'early_writing_v1',
+      'subject_assess_id': 'early_writing',
       'descriptor': 'Early Writing Skills Early Writing Skills',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -229,7 +230,7 @@ sources:
     },
     'approaches_to_learning_exp_v2': {
       'subject_name_spa': 'early_writing_spa_v1',
-      'colname': 'approaches_to_learning_exp_v2',
+      'subject_assess_id': 'approaches_to_learning_exp',
       'descriptor': 'Approaches to Learning Expanded',
       'objective_assessments': [
         {'oa_category_1':{'colname':'approaches_to_learning_exp_v2_initiative_curiosity_v1', 'colname_spa': 'approaches_to_learning_extended_spa_v1_initiative_curiosity_spa_v1', 'descriptor':'Initiative and Curiosity'}},
@@ -242,7 +243,7 @@ sources:
     },
     'physical_dev_health_v1': {
       'subject_name_spa': 'physical_dev_health_spa_v1',
-      'colname': 'physical_dev_health_v1',
+      'subject_assess_id': 'physical_dev_health',
       'descriptor': 'Physical Development and Health',
       'objective_assessments': [
         {'oa_category_1':{'colname':'physical_dev_health_v1_fine_visual_motor_v1', 'colname_spa': 'physical_dev_health_spa_v1_fine_visual_motor_spa_v1', 'descriptor':'Fine and Visual Motor'}},
@@ -255,7 +256,7 @@ sources:
     },
     'language_communication_2016_v1': {
       'subject_name_spa': 'language_communication_2016_spa_v1',
-      'colname': 'language_communication_2016_v1',
+      'subject_assess_id': 'language_communication',
       'descriptor': 'Speech Production and Sentence Skills',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -263,7 +264,7 @@ sources:
     },
     'motivation_to_read_2016_v1': {
       'subject_name_spa': 'motivation_to_read_2016_spa_v1',
-      'colname': 'motivation_to_read_2016_v1',
+      'subject_assess_id': 'motivation_to_read',
       'descriptor': 'Motivation to Read',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -271,7 +272,7 @@ sources:
     },
     'cpm_admin_mode': {
       'subject_name_spa': 'cpm_admin_mode_sp',
-      'colname': 'cpm_admin_mode',
+      'subject_assess_id': 'cpm_admin_mode',
       'descriptor': 'Administration Mode',
       'objective_assessments': [],
       'subject_assess_lang': ['English','Spanish'],
@@ -292,10 +293,18 @@ transformations:
       - operation: snake_case_columns 
       - operation: modify_columns
         columns:
-          wave: "{%raw%}{{ wave |replace(' ', '_') }}{%endraw%}"
+          school_year: "{%raw%}20{{ value[-2:] }}{%endraw%}"
+          wave: "{%raw%}{{ wave | replace(' ', '_') }}{%endraw%}"
+      - operation: group_by_with_rank
+        group_by_columns:
+          - wave
+          - school_year
+          - school_engage_id
+          - student_engage_id
+        rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{wave}}_{{school_year}}_{{student_engage_id}}{%endraw%}'
+          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{{ rank }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
@@ -337,11 +346,12 @@ transformations:
       # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
       - operation: add_columns
         columns:
-          subject_name: {{ subject_values.colname }}
+          subject_assessment_id: {{ subject_values.subject_assess_id }}
+          subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ assess_lang }}
-            
 
+            
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
     # When subjects have listed objective assessments, we standardize them by assigning generic names such as "oa_category_x" to "oa_category_7."
 
@@ -405,6 +415,21 @@ transformations:
       - operation: filter_rows
         query: subject_score != '' and subject_date != ''
         behavior: include 
+
+      # Transform date formatting
+      - operation: date_format
+        columns: 
+          - subject_date
+          - oa_category_1_date
+          - oa_category_2_date
+          - oa_category_3_date
+          - oa_category_4_date
+          - oa_category_5_date
+          - oa_category_6_date
+          - oa_category_7_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d" 
+        ignore_errors: True
 
       # Finally, we keep the conformed columns we need for the templates.
       - operation: keep_columns
