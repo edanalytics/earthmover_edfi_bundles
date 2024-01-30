@@ -126,6 +126,14 @@ transformations:
                 Developing
               {%- endif -%}
             {%endraw%} 
+          {% if ${API_YEAR} <= 2021 %}
+          reporting_category_1_raw_score: "{%raw%}{{reporting_category_scores[0:2]}}{%endraw%}"
+          reporting_category_2_raw_score: "{%raw%}{{reporting_category_scores[2:4]}}{%endraw%}"
+          reporting_category_3_raw_score: "{%raw%}{{reporting_category_scores[4:6]}}{%endraw%}"
+          reporting_category_4_raw_score: "{%raw%}{{reporting_category_scores[6:8]}}{%endraw%}"
+          reporting_category_5_raw_score: "{%raw%}{{reporting_category_scores[8:10]}}{%endraw%}"
+          reporting_category_6_raw_score: "{%raw%}{{reporting_category_scores[10:12]}}{%endraw%}"
+          {% endif %} 
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
