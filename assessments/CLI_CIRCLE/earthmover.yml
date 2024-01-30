@@ -324,7 +324,7 @@ transformations:
       # In cases where a cut point column is missing for a particular subject in the dataset,
       # we generate a null column named "subject_cut_point" to prevent any disruption of our "keep columns" transformation.
       
-      {% if subject_values.subject_has_cp_col %}
+      {% if self._TemplateReference__context.resolve('cp_'~subject_colname) is defined %}
       - operation: rename_columns
         columns:
           cp_{{ subject_colname }}: subject_cut_point
