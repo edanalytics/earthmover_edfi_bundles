@@ -1,8 +1,8 @@
-[
-    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_name }}",
+{
+    "studentAssessmentIdentifier": "{{ student_wave_id }}__{{ subject_assessment_id }}",
     "assessmentReference": {
-      "assessmentIdentifier": "cli_circle",
-      "namespace": "uri://www.cli.org/circle/Assessment"
+      "assessmentIdentifier": "cli_circle_{{ subject_assessment_id }}",
+      "namespace": "uri://www.cliengage.org/circle/Assessment"
     },
     "schoolYearTypeReference": {
       "schoolYear": {{ school_year }}
@@ -31,25 +31,36 @@
         "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Subject",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ subject_descriptor }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.cli.org/circle/AssessmentReportingMethodDescriptor#Wave",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ wave }}"
       }
-    ]
+    ],
         
     "studentObjectiveAssessments": [
+      {%- set oa_n = [] -%}
       {%- for n in range(1,8) -%}
-      
+        {%- set objective_assessment_score = self._TemplateReference__context.resolve('oa_category_'~n~'_score') -%}
+        {%- if objective_assessment_score is not none and objective_assessment_score | length -%}
+          {%- set _ = oa_n.append(n) -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- for n in oa_n -%}
         {%- set objective_assessment_name = self._TemplateReference__context.resolve('oa_category_'~n~'_name') -%}
         {%- set objective_assessment_descriptor = self._TemplateReference__context.resolve('oa_category_'~n~'_descriptor') -%}
         {%- set objective_assessment_date = self._TemplateReference__context.resolve('oa_category_'~n~'_date') -%}
         {%- set objective_assessment_score = self._TemplateReference__context.resolve('oa_category_'~n~'_score') -%}
         {%- set objective_assessment_cut_point = self._TemplateReference__context.resolve('oa_category_'~n~'_cut_point') -%}
 
-        {%- if objective_assessment_score is not none and objective_assessment_score | length -%}
-          {%- if not loop.first -%},{% endif %}
+        {%- if not loop.first -%},{% endif %}
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "cli_circle",
-            "identificationCode": "{{ subject_name }}"
+            "assessmentIdentifier": "cli_circle_{{ subject_assessment_id }}",
+            "identificationCode": "{{ objective_assessment_descriptor }}",
             "namespace": "uri://www.cli.org/circle/Assessment"
           },          
           "performanceLevels": [
@@ -79,7 +90,6 @@
             }
           ]
         }
-        {%- endif -%}
       {%- endfor -%}
     ]
-]
+}

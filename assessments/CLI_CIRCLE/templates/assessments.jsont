@@ -1,5 +1,5 @@
 {
-  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentIdentifier": "cli_circle_{{ assessmentIdentifier }}",
   "assessmentTitle": "{{ assessmentTitle }}",
   "namespace": "{{ namespace }}",
   "assessedGradeLevels": [
@@ -14,6 +14,7 @@
     }
   ],
   "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}"
@@ -27,6 +28,10 @@
     {
       "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Wave"
     }
   ],
   "performanceLevels": [
@@ -48,6 +53,6 @@
       "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
-    },
+    }
   ]
 }
