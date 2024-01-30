@@ -148,6 +148,27 @@ transformations:
           {% if ${API_YEAR} >= 2023 %}
           reading_reporting_category_3_raw_score: ""
           {% endif %}
+          # in 2021 and earlier, reporting category scores were store in one column, e.g. '423' represented ['4','2','3']
+          {% if ${API_YEAR} <= 2021 %}
+          reading_reporting_category_1_raw_score: "{%raw%}{{reading_reporting_category_scores[0:2]}}{%endraw%}"
+          reading_reporting_category_2_raw_score: "{%raw%}{{reading_reporting_category_scores[2:4]}}{%endraw%}"
+          reading_reporting_category_3_raw_score: "{%raw%}{{reading_reporting_category_scores[4:6]}}{%endraw%}"
+          mathematics_reporting_category_1_raw_score: "{%raw%}{{mathematics_reporting_category_scores[0:2]}}{%endraw%}"
+          mathematics_reporting_category_2_raw_score: "{%raw%}{{mathematics_reporting_category_scores[2:4]}}{%endraw%}"
+          mathematics_reporting_category_3_raw_score: "{%raw%}{{mathematics_reporting_category_scores[4:6]}}{%endraw%}"
+          mathematics_reporting_category_4_raw_score: "{%raw%}{{mathematics_reporting_category_scores[6:8]}}{%endraw%}"
+          social_studies_reporting_category_1_raw_score: "{%raw%}{{social_studies_reporting_category_scores[0:2]}}{%endraw%}"
+          social_studies_reporting_category_2_raw_score: "{%raw%}{{social_studies_reporting_category_scores[2:4]}}{%endraw%}"
+          social_studies_reporting_category_3_raw_score: "{%raw%}{{social_studies_reporting_category_scores[4:6]}}{%endraw%}"
+          social_studies_reporting_category_4_raw_score: "{%raw%}{{social_studies_reporting_category_scores[6:8]}}{%endraw%}"
+          science_reporting_category_1_raw_score: "{%raw%}{{science_reporting_category_scores[0:2]}}{%endraw%}"
+          science_reporting_category_2_raw_score: "{%raw%}{{science_reporting_category_scores[2:4]}}{%endraw%}"
+          science_reporting_category_3_raw_score: "{%raw%}{{science_reporting_category_scores[4:6]}}{%endraw%}"
+          science_reporting_category_4_raw_score: "{%raw%}{{science_reporting_category_scores[6:8]}}{%endraw%}"
+          writing_reporting_category_1_raw_score: "{%raw%}{{writing_reporting_category_scores[0:2]}}{%endraw%}"
+          writing_reporting_category_2_raw_score: "{%raw%}{{writing_reporting_category_scores[2:4]}}{%endraw%}"
+          writing_reporting_category_3_raw_score: "{%raw%}{{writing_reporting_category_scores[4:6]}}{%endraw%}"
+          {% endif %}
 
 
   # 3-8 ALT -- CONVERT FROM WIDE TO LONG
@@ -158,6 +179,9 @@ transformations:
     'science': 'Science'
     }
   %}
+  {% if ${API_YEAR} <= 2021 %}
+    {% set _ = subjects.update({'writing': 'Writing'}) %}
+  {% endif %}
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_alt_scores_{{subject}}:
@@ -181,6 +205,11 @@ transformations:
       - operation: add_columns
         columns:
           subject: {{descriptor_subject}}
+          # in 2021 and earlier, opportunity key didn't exist, so create own unique key
+          {% if ${API_YEAR} <= 2021 %}
+          #TODO: confirm with lots of data that this is correct unique key
+          stu_assess_id: "{%raw%}{{document_number}}_{{subject}}{%endraw%}"
+          {% endif %}
           # use component PL columns to create overall PL
           overall_performance_level: >
             {%raw%}
@@ -192,6 +221,16 @@ transformations:
                 Developing
               {%- endif -%}
             {%endraw%}
+      # DEDUPE years 2021 and prior, before opportunity_key was available
+      {% if ${API_YEAR} <= 2021 %}
+      - operation: group_by_with_rank
+        group_by_columns:
+          - stu_assess_id
+        rank_column: stu_assess_row_number
+      - operation: modify_columns
+        columns:
+          stu_assess_id: "{%raw%}{{value}}_{{stu_assess_row_number}}{%endraw%}"
+      {% endif %}
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
@@ -246,6 +285,9 @@ transformations:
           - $transformations.staar_summative_alt_scores_mathematics
           - $transformations.staar_summative_alt_scores_social_studies
           - $transformations.staar_summative_alt_scores_science
+        {% if ${API_YEAR} <= 2021 %} 
+          - $transformations.staar_summative_scores_writing
+        {% endif %}
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
