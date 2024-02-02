@@ -430,6 +430,7 @@ transformations:
         from_format: "%m/%d/%Y %H:%M"
         to_format: "%Y-%m-%d" 
         ignore_errors: True
+        exact_match: False
 
       # Finally, we keep the conformed columns we need for the templates.
       - operation: keep_columns
