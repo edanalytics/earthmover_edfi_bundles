@@ -599,7 +599,7 @@ transformations:
       # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
       - operation: add_columns
         columns:
-          subject_assessment_id: cli_{{ subject_values.subject_assess_id }}
+          subject_assessment_id: cli_circle_{{ subject_values.subject_assess_id }}
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ assess_lang }}
