@@ -58,6 +58,12 @@
       {% if user_percentile_math_section_score != '' %}
         {% set _= all_scores.append(["User Percentile Section Score", user_percentile_math_section_score]) %}
       {% endif %}
+      {% if analysis_in_science_xtest_score != '' %}
+        {% set _= all_scores.append(["Analysis in Science Cross-Test Score", analysis_in_science_xtest_score]) %}
+      {% endif %}
+      {% if analysis_in_history_xtest_score != '' %}
+        {% set _= all_scores.append(["Analysis in History Social Sci Cross-Test Score", analysis_in_history_xtest_score]) %}
+      {% endif %}
       {% if subject != '' %}
         {% set _= all_scores.append(["Subject", subject]) %}
       {% endif %}
