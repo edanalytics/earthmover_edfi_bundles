@@ -1,0 +1,121 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_id}}",
+    "namespace": "uri://amplify.com/programs/mclass-lectura"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{primary_id_student_id}}"
+  },
+  "administrationDate": "{{client_date}}",
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{composite_level}}",
+      "performanceLevelMet": true
+    }
+    {% if risk_indicator_espanol_level != '' %},
+    {
+      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{risk_indicator_espanol_level}}",
+      "performanceLevelMet": true
+    }
+    {% endif %}
+  ],
+  "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{composite_score}}"
+      },
+      {% if composite_local_percentile != '' %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{composite_local_percentile}}"
+      },
+      {% endif %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{benchmark_period}}"
+      }
+  ],
+
+  "studentObjectiveAssessments": [
+    {% set possible_obj_assessments = 
+        {'FNL':[nombrar_letras_fnl_score, nombrar_letras_fnl_local_percentile, nombrar_letras_fnl_level],
+         'FSS':[conciencia_fonologica_fss_score, conciencia_fonologica_fss_local_percentile, conciencia_fonologica_fss_level],
+         'QQ':[conciencia_fonologica_qq_score, conciencia_fonologica_qq_local_percentile, conciencia_fonologica_qq_level],
+         'FSL':[sonidos_de_letras_fsl_score, sonidos_de_letras_fsl_local_percentile, sonidos_de_letras_fsl_level],
+         'FSL K-Inicio':[sonidos_de_letras_fsl_k_inicio_score, sonidos_de_letras_fsl_k_inicio_local_percentile, sonidos_de_letras_fsl_k_inicio_level],
+         'LSS':[decodificacion_lss_score, decodificacion_lss_local_percentile, decodificacion_lss_level],
+         'FEP':[lectura_de_palabras_fep_score, lectura_de_palabras_fep_local_percentile, lectura_de_palabras_fep_level],
+         'FLO':[fluidez_en_la_lectura_flo_score, fluidez_en_la_lectura_flo_local_percentile, fluidez_en_la_lectura_flo_level],
+         'FLO-Prec':[precision_en_la_lectura_flo_prec_score, precision_en_la_lectura_flo_prec_local_percentile, precision_en_la_lectura_flo_prec_level],
+         'CP':[comprension_basica_cp_score, comprension_basica_cp_local_percentile, comprension_basica_cp_level]} %}
+
+    {% set all_obj_assessment = {} %}
+    {% for obj_id, obj_names in possible_obj_assessments.items() %}
+      {% if (obj_names[2] != '') %}
+        {% set _ = all_obj_assessment.update({obj_id: obj_names}) %}
+      {% endif %}
+    {% endfor %}
+
+    {% for obj_id, obj_names in all_obj_assessment.items() %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessment_id}}",
+        "identificationCode": "{{obj_id}}",
+        "assessment_namespace": "uri://amplify.com/programs/mclass-lectura"
+      },
+      "scoreResults": [
+        {% if (obj_names[0] != '') %}
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{obj_names[0]}}"
+        }
+        {% if (obj_names[1] != '') %},
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Local Percentile",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{obj_names[1]}}"
+        }
+        {% endif %}
+        {% if obj_id == 'CP' %},
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Correct Responses",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{correct_responses_cp_score}}"          
+        },
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Incorrect Responses",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{incorrect_responses_cp_score}}"          
+        }
+        {% endif %}
+        {% endif %}
+        {% if obj_id in ('FEP',  'FLO', 'FLO-Prec') and  obj_names[0] == '' %} 
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Discontinued",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "True"      
+        }
+        {% endif %}
+      ],
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
+          "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{obj_names[2]}}",
+          "performanceLevelMet": true
+        }
+      ]
+    }{%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+}
