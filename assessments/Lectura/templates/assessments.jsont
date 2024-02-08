@@ -1,0 +1,84 @@
+{
+  "assessmentIdentifier": "{{assessment_id}}",
+  "assessmentTitle": "mCLASS Lectura",
+  "namespace": "uri://amplify.com/programs/mclass-lectura",
+  "languages" : [
+    {
+      "languageDescriptor": "uri://ed-fi.org/LanguageDescriptor#spa"
+    }
+  ],
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
+    }
+  ],
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels":[
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Below Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Well Below Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Risk",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Low Risk",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
