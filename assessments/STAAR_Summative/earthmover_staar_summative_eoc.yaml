@@ -82,7 +82,7 @@ sources:
    'test_version',
    'score_code',
    'overall_performance_level',
-   'opportunity_key'
+   'stu_assess_id'
   ] 
 %}
 
@@ -103,19 +103,26 @@ transformations:
       - operation: rename_columns
         columns:
           "administration_date": administration_window
+        {% if ${API_YEAR} >= 2022 %}
+          opportunity_key: stu_assess_id
+        {% endif %}
       # ADD assess_id & overall_pl
       - operation: add_columns
         columns:
           assessment_identifier: staar_summative_eoc
           school_year: "${API_YEAR}"
           subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
+          # in 2021 and earlier, opportunity key didn't exist, so create own unique key
+          {% if ${API_YEAR} <= 2021 %}
+          stu_assess_id: "{%raw%}{{document_number}}_{{end_of_course_code}}{%endraw%}"
+          {% endif %}
           overall_performance_level: >
             {%raw%}
               {%- if masters_grade_level == "1" -%}
                 Masters
               {%- elif meets_grade_level == "1" -%}
                 Meets
-              {%- elif approaches_grade_level_at_thestudents_standard == "1" -%}
+              {%- elif approaches_grade_level_at_the_students_standard == "1" -%}
                 Approaches
               {%- else -%}
                 Did Not Meet
