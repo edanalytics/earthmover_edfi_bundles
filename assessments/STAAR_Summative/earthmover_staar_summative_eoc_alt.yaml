@@ -82,7 +82,7 @@ sources:
    'test_version',
    'score_code',
    'overall_performance_level',
-   'opportunity_key'
+   'stu_assess_id'
   ] 
 %}
 
@@ -109,18 +109,24 @@ transformations:
       - operation: rename_columns
         columns:
           "administration_date": administration_window
+          {% if ${API_YEAR} >= 2022 %}
+          opportunity_key: stu_assess_id
+          {% endif %}
       # ADD assess_id & overall_pl
       - operation: add_columns
         columns:
           assessment_identifier: staar_summative_eoc_alt
           school_year: "${API_YEAR}"
           subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
+          {% if ${API_YEAR} <= 2021 %}
+          stu_assess_id: "{%raw%}{{tx_unique_student_id}}_{{end_of_course_code}}{%endraw%}"
+          {% endif %}
           # use component PL columns to create overall PL
           overall_performance_level: >
             {%raw%}
-              {%- if level_iii__accomplished_academicperformance == "1" -%}
+              {%- if level_iii__accomplished_academic_performance == "1" -%}
                 Accomplished
-              {%- elif level_ii__satisfactory_academicperformance == "1" -%}
+              {%- elif level_ii__satisfactory_academic_performance == "1" -%}
                 Satisfactory
               {%- else -%}
                 Developing

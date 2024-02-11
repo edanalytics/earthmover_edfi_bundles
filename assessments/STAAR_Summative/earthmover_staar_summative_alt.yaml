@@ -76,7 +76,7 @@ sources:
    'test_version',
    'score_code',
    'overall_performance_level',
-   'opportunity_key'
+   'stu_assess_id'
   ] 
 %}
 
@@ -115,9 +115,7 @@ transformations:
           "science_reporting_category_3scores": science_reporting_category_3_raw_score
           "science_reporting_category_4scores": science_reporting_category_4_raw_score
           # This column doesn't exist after 2022 -- TODO better way to handle this case?
-          {% else %}
-          # '_5' comes from the scrape from PDF, bc there are duplicate colnames. 5 represents colindex in the file. county_district_campus_number_xyz in this file are the campus from previous year scores
-          "county_district_campus_number_5": county_district_campus_number
+          {% elif ${API_YEAR} == 2022 %}
           # standardize score names so we can easily convert from wide to long
           "reading_reporting_category_1scores": reading_reporting_category_1_raw_score
           "reading_reporting_category_2scores": reading_reporting_category_2_raw_score
@@ -168,6 +166,7 @@ transformations:
           writing_reporting_category_1_raw_score: "{%raw%}{{writing_reporting_category_scores[0:2]}}{%endraw%}"
           writing_reporting_category_2_raw_score: "{%raw%}{{writing_reporting_category_scores[2:4]}}{%endraw%}"
           writing_reporting_category_3_raw_score: "{%raw%}{{writing_reporting_category_scores[4:6]}}{%endraw%}"
+          writing_reporting_category_4_raw_score: ""
           {% endif %}
 
 
@@ -200,15 +199,16 @@ transformations:
           level_ii__satisfactory_academicperformance_in_{{subject}}: level_2_satisfactory_academic_performance
           level_iii__accomplished_academicperformance_in_{{subject}}: level_3_accomplished_academic_performance
           score_code_{{subject}}: score_code
-          opportunity_key_{{subject}}: opportunity_key
+          {% if ${API_YEAR} >= 2022 %}
+          opportunity_key_{{subject}}: stu_assess_id
+          {% endif %}
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
         columns:
           subject: {{descriptor_subject}}
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
-          #TODO: confirm with lots of data that this is correct unique key
-          stu_assess_id: "{%raw%}{{document_number}}_{{subject}}{%endraw%}"
+          stu_assess_id: "{%raw%}{{tx_unique_student_id}}_{{subject}}{%endraw%}"
           {% endif %}
           # use component PL columns to create overall PL
           overall_performance_level: >
@@ -267,7 +267,7 @@ transformations:
         join_type: inner
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        query: opportunity_key != ''
+        query: stu_assess_id != ''
         behavior: include 
       # KEEP conformed columns
       - operation: keep_columns
@@ -286,7 +286,7 @@ transformations:
           - $transformations.staar_summative_alt_scores_social_studies
           - $transformations.staar_summative_alt_scores_science
         {% if ${API_YEAR} <= 2021 %} 
-          - $transformations.staar_summative_scores_writing
+          - $transformations.staar_summative_alt_scores_writing
         {% endif %}
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year

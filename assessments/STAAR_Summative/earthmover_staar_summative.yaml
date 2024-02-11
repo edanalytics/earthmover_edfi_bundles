@@ -61,7 +61,6 @@ sources:
    'administration_window_label',
    'administration_window_start_date',
    'administration_window_end_date',
-   'school_year',
    'county_district_campus_number',
    'subject',
    'course_abbrev',
@@ -203,7 +202,6 @@ transformations:
           subject: {{descriptor_subject}}
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
-          #TODO: confirm with lots of data that this is correct unique key
           stu_assess_id: "{%raw%}{{document_number}}_{{subject}}{%endraw%}"
           {% endif %}
           # use component PL columns to create overall PL
