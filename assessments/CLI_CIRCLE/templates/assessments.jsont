@@ -17,40 +17,40 @@
   "assessmentFamily": "{{ assessmentFamily }}",
   "academicSubjects": [
     {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{ academicSubjectDescriptor }}"
+      "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
     } 
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Score",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Subject",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Subject",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Subject",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Wave"
     }
   ],
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Monitor"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Needs Support"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#On Track"
     },    {
-      "assessmentReportingMethodDescriptor": "uri://www.cli.org/Circle/AssessmentReportingMethodDescriptor#Cut Point",
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/AssessmentReportingMethodDescriptor#Cut Point",
       "resultDatatypeTypeDescriptor": "uri://www.cli.org/Circle/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cli.org/Circle/PerformanceLevelDescriptor#Out of Range"
     }
