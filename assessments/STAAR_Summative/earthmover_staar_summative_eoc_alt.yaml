@@ -142,6 +142,10 @@ transformations:
           reporting_category_5_raw_score: "{%raw%}{{reporting_category_scores[8:10]}}{%endraw%}"
           reporting_category_6_raw_score: "{%raw%}{{reporting_category_scores[10:12]}}{%endraw%}"
           {% endif %} 
+          # in 2023, reporting category 6 was dropped. add blank so template can work
+          {% if ${API_YEAR} == 2023 %}
+          reporting_category_6_raw_score: ""
+          {% endif %}
       # JOIN ADMIN WINDOWS
       - operation: join
         sources:
