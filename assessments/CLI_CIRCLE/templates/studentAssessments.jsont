@@ -59,7 +59,7 @@
         {
           "administrationDate": "{{ objective_assessment_date }}",
           "objectiveAssessmentReference": {
-            "assessmentIdentifier": "cli_circle_{{ subject_assessment_id }}",
+            "assessmentIdentifier": "{{ subject_assessment_id }}",
             "identificationCode": "{{ objective_assessment_descriptor }}",
             "namespace": "uri://www.cliengage.org/circle/Assessment"
           },          
