@@ -586,10 +586,10 @@ transformations:
     
     {% if assess_lang == 'English' %}
       {% set subject_colname = subject_name %}
-      {% set subject_assess_lang = 'English' %}
+      {% set subject_assess_lang = 'eng' %}
     {% elif assess_lang == 'Spanish' %}
       {% set subject_colname = subject_values.subject_name_spa %}
-      {% set subject_assess_lang = 'Spanish' %}
+      {% set subject_assess_lang = 'spa' %}
     {% endif %}
 
   cli_circle_student_{{ subject_colname }}:
