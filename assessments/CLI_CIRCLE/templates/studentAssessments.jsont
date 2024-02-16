@@ -17,7 +17,8 @@
         {%- if subject_cut_point is not none and subject_cut_point | length -%}
         "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/assessment/AssessmentReportingMethodDescriptor#Cut Point",
         "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ subject_cut_point  }}"
+        "performanceLevelDescriptor": "uri://www.cliengage.org/circle/assessment/PerformanceLevelDescriptor#{{ subject_cut_point  }}",
+        "performanceLevelMet": true
         {%- endif -%}
       }
     ],
@@ -68,7 +69,8 @@
             {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/assessment/AssessmentReportingMethodDescriptor#Cut Point",
               "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "performanceLevelDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ objective_assessment_cut_point }}"
+              "performanceLevelDescriptor": "uri://www.cliengage.org/circle/assessment/PerformanceLevelDescriptor#{{ objective_assessment_cut_point }}",
+              "performanceLevelMet": true
             }
             {%- endif -%}
           ],
