@@ -81,11 +81,6 @@
               "result": "{{ objective_assessment_score }}"
             },
             {
-              "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/assessment/AssessmentReportingMethodDescriptor#Subject",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "result": "{{ objective_assessment_descriptor }}"
-            },
-            {
               "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/assessment/AssessmentReportingMethodDescriptor#Wave",
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
               "result": "{{ wave }}"
