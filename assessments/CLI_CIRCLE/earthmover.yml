@@ -607,6 +607,7 @@ transformations:
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ assess_lang }}
+          generated_test_id: {{ student_wave_id }}__{{ subject_assessment_id }}
 
             
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
