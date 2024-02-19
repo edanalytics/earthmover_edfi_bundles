@@ -1,0 +1,132 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: True
+  parameter_defaults:
+    source_encoding: latin-1
+    INPUT_FILE: ''
+    API_YEAR: ''
+    BUNDLE_DIR: ''
+    INPUT_FILETYPE: csv
+
+sources:
+
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  iready_input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+#    encoding: ${source_encoding}
+
+
+transformations:
+
+  iready_student_assessment:
+    source: $sources.iready_input
+    operations:
+      - operation: keep_columns
+        columns:
+          # Generic fields
+          - Student ID
+          - LEA_ID
+          - Student Grade
+          - Start Date
+
+          #Lexiles
+          - Lexile Measure
+          - Lexile Range
+
+          #Quantiles
+          - Quantile Measure
+          - Quantile Range
+
+          #ELA Specific
+          - Phonological Awareness Scale Score
+          - Phonological Awareness Placement
+          - Phonics Scale Score
+          - Phonics Placement
+          - High-Frequency Words Scale Score
+          - High-Frequency Words Placement
+          - Vocabulary Scale Score
+          - Vocabulary Placement
+          - 'Comprehension: Literature Scale Score'
+          - 'Comprehension: Literature Placement'
+          - 'Comprehension: Informational Text Scale Score'
+          - 'Comprehension: Informational Text Placement'
+
+          #Math Specific
+          - Number and Operations Scale Score
+          - Number and Operations Placement
+          - Algebra and Algebraic Thinking Scale Score
+          - Algebra and Algebraic Thinking Placement
+          - Measurement and Data Scale Score
+          - Measurement and Data Placement
+          - Geometry Scale Score
+          - Geometry Placement
+
+      - operation: rename_columns
+        columns:
+          Student ID: student_unique_id
+          Start Date: administration_date
+      - operation: add_columns
+        columns:
+          school_year:  ${API_YEAR}
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
+
+  iready_student_assessment_ela:
+    source: $transformations.iready_student_assessment
+    operations:
+      - operation: modify_columns
+        columns:
+
+  iready_student_assessment_math:
+    source: $transformations.iready_student_assessment
+    operations:
+      - operation: modify_columns
+        columns:
+
+destinations:
+
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessments:
+    source: 
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
