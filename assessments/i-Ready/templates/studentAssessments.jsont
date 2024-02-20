@@ -1,0 +1,20 @@
+{
+  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "",
+    "namespace": "uri://curriculumassociates.com/Assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "performanceLevels": [
+  ],
+   "scoreResults": [
+  ],
+  "studentObjectiveAssessments": [
+  ]
+}
