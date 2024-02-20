@@ -86,12 +86,12 @@ transformations:
         columns:
           Student ID: student_unique_id
           Start Date: administration_date
-      - operation: add_columns
-        columns:
-          school_year:  ${API_YEAR}
+          Academic Year: school_year
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
+      - operation: modify_columns
+          school_year: "{%raw%}{{value[:4]}}{%endraw%}"
 
   iready_student_assessment_ela:
     source: $transformations.iready_student_assessment
