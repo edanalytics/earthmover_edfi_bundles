@@ -98,12 +98,49 @@ transformations:
     operations:
       - operation: modify_columns
         columns:
+          Quantile Measure: ''
+          Quantile Range: ''
+          Number and Operations Scale Score: ''
+          Number and Operations Placement: ''
+          Algebra and Algebraic Thinking Scale Score: ''
+          Algebra and Algebraic Thinking Placement: ''
+          Measurement and Data Scale Score: ''
+          Measurement and Data Placement: ''
+          Geometry Scale Score: ''
+          Geometry Placement: ''
+      - operation: add_columns
+        columns:
+        subject: 'ELA'
 
   iready_student_assessment_math:
     source: $transformations.iready_student_assessment
     operations:
       - operation: modify_columns
         columns:
+          Lexile Measure: ''
+          Lexile Range: ''
+          Phonological Awareness Scale Score: ''
+          Phonological Awareness Placement: ''
+          Phonics Scale Score: ''
+          Phonics Placement: ''
+          High-Frequency Words Scale Score: ''
+          High-Frequency Words Placement: ''
+          Vocabulary Scale Score: ''
+          Vocabulary Placement: ''
+          Comprehension: Literature Scale Score: ''
+          Comprehension: Literature Placement: ''
+          Comprehension: Informational Text Scale Score: ''
+          Comprehension: Informational Text Placement: ''
+      - operation: add_columns
+        columns:
+        subject: 'Math'
+
+  iready_student_assessment_stacked:
+    source: $transformations.iready_student_assessment_ela
+    operations: 
+      - operation: union 
+        sources:
+          - $transformations.iready_student_assessment_math
 
 destinations:
 
