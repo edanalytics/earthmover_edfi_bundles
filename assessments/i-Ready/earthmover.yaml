@@ -12,6 +12,52 @@ config:
     API_YEAR: ''
     BUNDLE_DIR: ''
     INPUT_FILETYPE: csv
+  optional_fields:
+    #ELA Specific
+    - Phonological Awareness Scale Score
+    - Phonological Awareness Placement
+    - Phonological Awareness Relative Placement
+    - Phonics Scale Score
+    - Phonics Placement
+    - Phonics Relative Placement
+    - High-Frequency Words Scale Score
+    - High-Frequency Words Placement
+    - High-Frequency Words Relative Placement
+    - Vocabulary Scale Score
+    - Vocabulary Placement
+    - Vocabulary Relative Placement
+    - 'Comprehension: Overall Scale Score'
+    - 'Comprehension: Overall Placement'
+    - 'Comprehension: Overall Relative Placement'
+    - 'comprehension: Literature Scale Score'
+    - 'Comprehension: Literature Placement'
+    - 'Comprehension: Literature Relative Placement'
+    - 'Comprehension: Informational Text Scale Score'
+    - 'Comprehension: Informational Text Placement'
+    - 'Comprehension: Informational Text Relative Placement'
+    - Reading Difficulty Indicator (Y/N)
+
+    #Lexiles
+    - Lexile Measure
+    - Lexile Range
+
+    #Math Specific
+    - Number and Operations Scale Score
+    - Number and Operations Placement
+    - Number and Operations Relative Placement
+    - Algebra and Algebraic Thinking Scale Score
+    - Algebra and Algebraic Thinking Placement
+    - Algebra and Algebraic Thinking Relative Placement
+    - Measurement and Data Scale Score
+    - Measurement and Data Placement
+    - Measurement and Data Relative Placement
+    - Geometry Scale Score
+    - Geometry Placement
+    - Geometry Relative Placement
+
+    #Quantiles
+    - Quantile Measure
+    - Quantile Range
 
 sources:
 
@@ -51,100 +97,30 @@ transformations:
           - Start Date
           - Overall Scale Score
           - Overall Placement
+          - Overall Relative Placement
           - Percentile
           - Grouping
-
-          #Lexiles
-          - Lexile Measure
-          - Lexile Range
-
-          #Quantiles
-          - Quantile Measure
-          - Quantile Range
-
-          #ELA Specific
-          - Phonological Awareness Scale Score
-          - Phonological Awareness Placement
-          - Phonics Scale Score
-          - Phonics Placement
-          - High-Frequency Words Scale Score
-          - High-Frequency Words Placement
-          - Vocabulary Scale Score
-          - Vocabulary Placement
-          - 'Comprehension: Literature Scale Score'
-          - 'Comprehension: Literature Placement'
-          - 'Comprehension: Informational Text Scale Score'
-          - 'Comprehension: Informational Text Placement'
-
-          #Math Specific
-          - Number and Operations Scale Score
-          - Number and Operations Placement
-          - Algebra and Algebraic Thinking Scale Score
-          - Algebra and Algebraic Thinking Placement
-          - Measurement and Data Scale Score
-          - Measurement and Data Placement
-          - Geometry Scale Score
-          - Geometry Placement
+          - Percent Progress to Annual Typical Growth (%)
+          - Percent Progress to Annual Stretch Growth (%)
+          - Mid On Grade Level Scale Score
 
       - operation: rename_columns
         columns:
           Student ID: student_unique_id
           Start Date: administration_date
           Academic Year: school_year
+          Overall Scale Score: overall_scale_score
+          Overall Placement: overall_placement
+          Overall Relative Placement: overall_relative_placement
+          Lexile Measure: lexile_measure
+          Lexile Range: lexile_range
+          Quantile Measure: quantile_measure
+          Quantile Range: quantile_range
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
       - operation: modify_columns
           school_year: "{%raw%}{{value[:4]}}{%endraw%}"
-
-  iready_student_assessment_ela:
-    source: $transformations.iready_student_assessment
-    operations:
-      - operation: modify_columns
-        columns:
-          Quantile Measure: ''
-          Quantile Range: ''
-          Number and Operations Scale Score: ''
-          Number and Operations Placement: ''
-          Algebra and Algebraic Thinking Scale Score: ''
-          Algebra and Algebraic Thinking Placement: ''
-          Measurement and Data Scale Score: ''
-          Measurement and Data Placement: ''
-          Geometry Scale Score: ''
-          Geometry Placement: ''
-      - operation: add_columns
-        columns:
-        subject: 'ELA'
-
-  iready_student_assessment_math:
-    source: $transformations.iready_student_assessment
-    operations:
-      - operation: modify_columns
-        columns:
-          Lexile Measure: ''
-          Lexile Range: ''
-          Phonological Awareness Scale Score: ''
-          Phonological Awareness Placement: ''
-          Phonics Scale Score: ''
-          Phonics Placement: ''
-          High-Frequency Words Scale Score: ''
-          High-Frequency Words Placement: ''
-          Vocabulary Scale Score: ''
-          Vocabulary Placement: ''
-          Comprehension: Literature Scale Score: ''
-          Comprehension: Literature Placement: ''
-          Comprehension: Informational Text Scale Score: ''
-          Comprehension: Informational Text Placement: ''
-      - operation: add_columns
-        columns:
-        subject: 'Math'
-
-  iready_student_assessment_stacked:
-    source: $transformations.iready_student_assessment_ela
-    operations: 
-      - operation: union 
-        sources:
-          - $transformations.iready_student_assessment_math
 
 destinations:
 
