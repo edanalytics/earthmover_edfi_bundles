@@ -12,9 +12,89 @@
   },
   "administrationDate": "{{administration_date}}",
   "performanceLevels": [
+
+    {%- set perf_levels = [] -%}
+    {%- if overall_placement | int -%}
+      {%- set _= perf_levels.append([overall_placement, "Overall Placement"]) -%}
+    {%- endif -%}
+    {%- if overall_relative_placement | int -%}
+      {%- set _= perf_levels.append([overall_relative_placement, "Overall Relative Placement"]) -%}
+    {%- endif -%}
+
+    {%- for perf_level in perf_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] | int }}",
+      "performanceLevelMet": true
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
   ],
    "scoreResults": [
+    {%- set all_scores = [
+        [subject, "Subject", "Level"],
+        [SchoolID, "SchoolID", "Integer"],
+        [TestAdmin, "TestAdmin", "Level"],
+        [student_grade, "AssessmentGradeLevel", "Level"],
+    ] -%}
+
+    {%- if overall_scale_score -%}
+        {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if lexile_measure -%}
+        {%- set _ = all_scores.append([lexile_measure, "Lexile Measure", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if lexile_range -%}
+        {%- set _ = all_scores.append([lexile_range, "Lexile Range", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if quantile_measure -%}
+        {%- set _ = all_scores.append([quantile_measure, "Quantile Measure", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if quantile_range -%}
+        {%- set _ = all_scores.append([quantile_range, "Quantile Range", "Level"]) -%}
+    {%- endif -%}
+
+    {%- for score in all_scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/curriculumassociates#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
   ],
   "studentObjectiveAssessments": [
+
+    {%- set all_obj_assess = [] -%}
+
+    {%- if ELALev1 | int -%}
+      {%- set _= all_obj_assess.append([ELALev1, ELALev1_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- for obj_assess in all_obj_assess -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "",
+        "identificationCode": "{{ obj_assess[1] }}",
+        "namespace": "uri://curriculumassociates.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[0] | int}}",
+          "performanceLevelMet": true
+        }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "{{ obj_assess[0] | int}}"
+        }
+      ]
+    } {%-if not loop.last -%}, {%- endif -%}
+    {%- endfor -%}
   ]
 }
