@@ -6,6 +6,7 @@ config:
   memory_limit: 1GB
   state_file: ${STATE_FILE}
   show_graph: False
+  tmp_dir: ${TEMPORARY_DIRECTORY}
   macros: > 
       {% macro map_subject_values(value) -%}
       {%- if 'SM' in value -%}Math

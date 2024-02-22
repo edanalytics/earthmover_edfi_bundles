@@ -8,6 +8,7 @@ config:
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
+  tmp_dir: ${TEMPORARY_DIRECTORY}
   parameter_defaults:
     STUDENT_ID_NAME: Student_StateID
     STUDENT_ID_FROM: Student_StateID
