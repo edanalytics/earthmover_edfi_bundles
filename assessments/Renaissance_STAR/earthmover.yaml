@@ -20,11 +20,19 @@ config:
       {%- else -%}EARLY-LIT
       {%- endif -%}
       {%- endmacro %}
+
+      {%- macro extract_subject(value) -%}
+      {%- if 'SEL' in value -%}SEL
+      {%- elif 'SM' in value -%}SM
+      {%- elif 'SR' in value -%}SR
+      {%- endif -%}
+      {%- endmacro %}   
   parameter_defaults:
     STUDENT_ID_NAME: StudentStateID
     STUDENT_ID_FROM: StudentStateID
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
+    INPUT_FILETYPE: csv
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
 
@@ -41,18 +49,25 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
 
   star_overall_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE_OVERALL}
     header_rows: 1
+    type: ${INPUT_FILETYPE}
 
   star_dashboard_standards_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE_DS}
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - RenaissanceClientID
       - SchoolYear
@@ -78,10 +93,10 @@ sources:
 
   star_skill_area_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ${INPUT_FILE_SA}
+    file: ''
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - RenaissanceClientID
       - SchoolYear
@@ -147,7 +162,7 @@ transformations:
           file_path: *overall_file_name
       - operation: modify_columns
         columns:
-          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+          file_path: "{%raw%}{{extract_subject(file_path)}}{%endraw%}"
       - operation: add_columns
         columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
@@ -289,9 +304,9 @@ transformations:
         columns:
           student_objective_assessment_json: >
             {%raw-%}  
-            {% if (DomainPercentMastery is not none and DomainPercentMastery | length) 
-               or (SkillAreaMasteryScore is not none and SkillAreaMasteryScore | length) 
-               or (StandardPercentMastery is not none and StandardPercentMastery | length) %}
+            {% if (DomainPercentMastery is not none and DomainPercentMastery | length and DomainPercentMastery != "<NA>") 
+               or (SkillAreaMasteryScore is not none and SkillAreaMasteryScore | length and SkillAreaMasteryScore != "<NA>") 
+               or (StandardPercentMastery is not none and StandardPercentMastery | length and StandardPercentMastery != "<NA>") %}
             { 
               "objectiveAssessmentReference": 
                 { 
@@ -303,7 +318,7 @@ transformations:
               {% set all_pls = {"Domain Mastery Level":DomainMasteryLevel, 
                                 "Standard Mastery Level":StandardMasteryLevel} %} 
               {% for pl_name, pl_result in all_pls.items() %}
-                {% if pl_result is not none and pl_result | length %} 
+                {% if pl_result is not none and pl_result | length and pl_result != "<NA>" %} 
                   {% set _= pls_present.append([pl_name, pl_result]) %} 
                 {% endif %} 
               {% endfor %} 
@@ -323,7 +338,7 @@ transformations:
                                    "Skill Area Mastery Score":SkillAreaMasteryScore, 
                                    "Standard Percent Mastery":StandardPercentMastery} %} 
               {% for score_name, score_result in all_scores.items() %} 
-                {% if score_result is not none and score_result | length %} 
+                {% if score_result is not none and score_result | length and score_result != "<NA>" %} 
                   {% set _= scores_present.append([score_name, score_result]) %} 
                 {% endif %} 
               {% endfor %} 
@@ -404,5 +419,15 @@ destinations:
   studentAssessments:
     source: $transformations.star_with_obj_assessment
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/gradeLevelDescriptors.jsont
     extension: jsonl
     linearize: True
