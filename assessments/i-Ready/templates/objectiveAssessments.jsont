@@ -5,5 +5,58 @@
     "namespace": "uri://curriculumassociates.com/Assessment"
   },
   "performanceLevels": [
+    {% set placement_levels = [
+        'Early 6',
+        'Early 7',
+        'Early 8',
+        'Late 6',
+        'Late 7',
+        'Late 8',
+        'Level 1',
+        'Level 10',
+        'Level 11',
+        'Level 2',
+        'Level 3',
+        'Level 4',
+        'Level 5',
+        'Level 6',
+        'Level 7',
+        'Level 8',
+        'Level 9',
+        'Level K',
+        'Mid 6',
+        'Mid 7',
+        'Mid 8',
+        'Max Score',
+        'Tested Out'
+    ] %}
+    {% set rel_placement_levels = [
+        '1 Grade Level Below',
+        '2 Grade Levels Below',
+        '3 or More Grade Levels Below',
+        'Early On Grade Level',
+        'Mid or Above Grade Level'
+    ] %}
+    {%- for level in placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Placement",
+      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{level}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- endfor -%}
+    {%- for rel_level in rel_placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Relative Placement",
+      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{rel_level}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Scale score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
   ]
 }
