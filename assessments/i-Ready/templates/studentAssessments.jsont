@@ -105,15 +105,15 @@
     {%- set _= all_obj_assess.append([vocabulary_scale_score,vocabulary_placement,vocabulary_relative_placement,"Vocabulary"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_overall_scale_score', 'comprehension:_overall_placement', 'comprehension:_overall_relative_placement', 'Comprehension: Overall'] | int -%}
+    {%- if ['comprehension:_overall_scale_score', 'comprehension_overall_placement', 'comprehension:_overall_relative_placement', 'Comprehension: Overall'] | int -%}
     {%- set _= all_obj_assess.append([comprehension:_overall_scale_score,comprehension:_overall_placement,comprehension:_overall_relative_placement,"Comprehension: Overall"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_literature_scale_score', 'comprehension:_literature_placement', 'comprehension:_literature_relative_placement', 'Comprehension: Literature'] | int -%}
+    {%- if ['comprehension:_literature_scale_score', 'comprehension_literature_placement', 'comprehension:_literature_relative_placement', 'Comprehension: Literature'] | int -%}
     {%- set _= all_obj_assess.append([comprehension:_literature_scale_score,comprehension:_literature_placement,comprehension:_literature_relative_placement,"Comprehension: Literature"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_informational_text_scale_score', 'comprehension:_informational_text_placement', 'comprehension:_informational_text_relative_placement', 'Comprehension: Informational'] | int -%}
+    {%- if ['comprehension:_informational_text_scale_score', 'comprehension_informational_text_placement', 'comprehension:_informational_text_relative_placement', 'Comprehension: Informational'] | int -%}
     {%- set _= all_obj_assess.append([comprehension:_informational_text_scale_score,comprehension:_informational_text_placement,comprehension:_informational_text_relative_placement,"Comprehension: Informational"]) -%}
     {%- endif -%}
 
