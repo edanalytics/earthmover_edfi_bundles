@@ -145,34 +145,12 @@ transformations:
           school_year: "{%raw%}{{value[:4]}}{%endraw%}"
       - operation: add_columns
         columns:
-          subject: '{% raw %}{% if quantile_measure | int %}Math{% endif %}{% if lexile_measure | int %}ELA{% endif %}{% endraw %}'
+          subject: '{% raw %}{% if quantile_measure %}Math{% endif %}{% if lexile_measure %}ELA{% endif %}{% endraw %}'
+          student_assessment_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
 
 
 destinations:
 
-  assessments:
-    source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
-    extension: jsonl
-    linearize: True
-
-  objective_assessments:
-    source: $sources.objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
-
-  assessment_reporting_method_descriptors:
-    source: $sources.assessment_reporting_method_descriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
-    extension: jsonl
-    linearize: True
-
-  performance_level_descriptors:
-    source: $sources.performance_level_descriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
-    extension: jsonl
-    linearize: True
   student_assessments:
     source: $transformations.iready_student_assessments
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
