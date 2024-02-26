@@ -1,7 +1,7 @@
 {
-  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "studentAssessmentIdentifier": "",
   "assessmentReference": {
-    "assessmentIdentifier": "",
+    "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
     "namespace": "uri://curriculumassociates.com/Assessment"
   },
   "schoolYearTypeReference": {
@@ -33,7 +33,7 @@
    "scoreResults": [
     {%- set all_scores = [
         [subject, "Subject", "Level"],
-        [student_grade, "AssessmentGradeLevel", "Level"],
+        [student_grade, "AssessmentGradeLevel", "Level"]
     ] -%}
 
     {%- if overall_scale_score -%}
@@ -57,10 +57,10 @@
     {%- endif -%}
 
     {%- if annual_typical_growth_measure -%}
-        {%- set _ = all_scores.append([pannual_typical_growth_measure, "Annual Typical Growth Measure", "Integer"]) -%}
+        {%- set _ = all_scores.append([annual_typical_growth_measure, "Annual Typical Growth Measure", "Integer"]) -%}
     {%- endif -%}
 
-    {%- if annual_stretch_growth measure -%}
+    {%- if annual_stretch_growth_measure -%}
         {%- set _ = all_scores.append([annual_stretch_growth_measure, "Annual Stretch Growth Measure", "Integer"]) -%}
     {%- endif -%}
 
@@ -88,74 +88,73 @@
 
     {%- set all_obj_assess = [] -%}
 
-
-    {%- if ['phonological_awareness_scale_score', 'phonological_awareness_placement', 'phonological_awareness_relative_placement', 'Phonological Awareness'] | int -%}
+    {%- if phonological_awareness_scale_score | int -%}
     {%- set _= all_obj_assess.append([phonological_awareness_scale_score,phonological_awareness_placement,phonological_awareness_relative_placement,"Phonological Awareness"]) -%}
     {%- endif -%}
 
-    {%- if ['phonics_scale_score', 'phonics_placement', 'phonics_relative_placement', 'Phonics'] | int -%}
+    {%- if phonics_scale_score | int -%}
     {%- set _= all_obj_assess.append([phonics_scale_score,phonics_placement,phonics_relative_placement,"Phonics"]) -%}
     {%- endif -%}
 
-    {%- if ['highfrequency_words_scale_score', 'highfrequency_words_placement', 'highfrequency_words_relative_placement', 'High-Frequency Words'] | int -%}
+    {%- if highfrequency_words_scale_score | int -%}
     {%- set _= all_obj_assess.append([highfrequency_words_scale_score,highfrequency_words_placement,highfrequency_words_relative_placement,"High-Frequency Words"]) -%}
     {%- endif -%}
 
-    {%- if ['vocabulary_scale_score', 'vocabulary_placement', 'vocabulary_relative_placement', 'Vocabulary'] | int -%}
+    {%- if vocabulary_scale_score | int -%}
     {%- set _= all_obj_assess.append([vocabulary_scale_score,vocabulary_placement,vocabulary_relative_placement,"Vocabulary"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_overall_scale_score', 'comprehension_overall_placement', 'comprehension:_overall_relative_placement', 'Comprehension: Overall'] | int -%}
-    {%- set _= all_obj_assess.append([comprehension:_overall_scale_score,comprehension:_overall_placement,comprehension:_overall_relative_placement,"Comprehension: Overall"]) -%}
+    {%- if comprehension_overall_scale_score | int -%}
+    {%- set _= all_obj_assess.append([comprehension_overall_scale_score,comprehension_overall_placement,comprehension_overall_relative_placement,"Comprehension: Overall"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_literature_scale_score', 'comprehension_literature_placement', 'comprehension:_literature_relative_placement', 'Comprehension: Literature'] | int -%}
-    {%- set _= all_obj_assess.append([comprehension:_literature_scale_score,comprehension:_literature_placement,comprehension:_literature_relative_placement,"Comprehension: Literature"]) -%}
+    {%- if comprehension_literature_scale_score | int -%}
+    {%- set _= all_obj_assess.append([comprehension_literature_scale_score,comprehension_literature_placement,comprehension_literature_relative_placement,"Comprehension: Literature"]) -%}
     {%- endif -%}
 
-    {%- if ['comprehension:_informational_text_scale_score', 'comprehension_informational_text_placement', 'comprehension:_informational_text_relative_placement', 'Comprehension: Informational'] | int -%}
-    {%- set _= all_obj_assess.append([comprehension:_informational_text_scale_score,comprehension:_informational_text_placement,comprehension:_informational_text_relative_placement,"Comprehension: Informational"]) -%}
+    {%- if comprehension_informational_text_scale_score | int -%}
+    {%- set _= all_obj_assess.append([comprehension_informational_text_scale_score,comprehension_informational_text_placement,comprehension_informational_text_relative_placement,"Comprehension: Informational"]) -%}
     {%- endif -%}
 
-    {%- if ['number_and_operations_scale_score', 'number_and_operations_placement', 'number_and_operations_relative_placement', 'Number and Operations'] | int -%}
+    {%- if number_and_operations_scale_score | int -%}
     {%- set _= all_obj_assess.append([number_and_operations_scale_score,number_and_operations_placement,number_and_operations_relative_placement,"Number and Operations"]) -%}
     {%- endif -%}
 
-    {%- if ['algebra_and_algebraic_thinking_scale_score', 'algebra_and_algebraic_thinking_placement', 'algebra_and_algebraic_thinking_relative_placement', 'Algebra and Algebraic Thinking'] | int -%}
+    {%- if algebra_and_algebraic_thinking_scale_score | int -%}
     {%- set _= all_obj_assess.append([algebra_and_algebraic_thinking_scale_score,algebra_and_algebraic_thinking_placement,algebra_and_algebraic_thinking_relative_placement,"Algebra and Algebraic Thinking"]) -%}
     {%- endif -%}
 
-    {%- if ['measurement_and_data_scale_score', 'measurement_and_data_placement', 'measurement_and_data_relative_placement', 'Measurement and Data'] | int -%}
+    {%- if measurement_and_data_scale_score | int -%}
     {%- set _= all_obj_assess.append([measurement_and_data_scale_score,measurement_and_data_placement,measurement_and_data_relative_placement,"Measurement and Data"]) -%}
     {%- endif -%}
 
-    {%- if ['geometry_scale_score', 'geometry_placement', 'geometry_relative_placement', 'Geometry'] | int -%}
+    {%- if geometry_scale_score | int -%}
     {%- set _= all_obj_assess.append([geometry_scale_score,geometry_placement,geometry_relative_placement,"Geometry"]) -%}
     {%- endif -%}
 
     {%- for obj_assess in all_obj_assess -%}
     {
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "",
-        "identificationCode": "{{ obj_assess[1] }}",
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "identificationCode": "{{ obj_assess[3] }}",
         "namespace": "uri://curriculumassociates.com/Assessment"
       },
       "performanceLevels": [
         {
           "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Placement",
-          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] | int}}",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
         },
         {
           "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Relative Placement",
-          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[2] | int}}",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
           "performanceLevelMet": true
         }
       ],
       "scoreResults": [
         {
-          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Scale Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{ obj_assess[0] | int}}"
         }
       ]
