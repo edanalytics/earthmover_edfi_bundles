@@ -77,6 +77,7 @@ sources:
     # Do these need to be optional? Or just added to the Rally schema?
     - Percent Progress to Annual Typical Growth (%)
     - Percent Progress to Annual Stretch Growth (%)
+    - Diagnostic Gain
 
 transformations:
 
@@ -137,6 +138,11 @@ transformations:
           Geometry Scale Score: geometry_scale_score
           Geometry Placement: geometry_placement
           Geometry Relative Placement: geometry_relative_placement
+          Baseline Diagnostic (Y/N): baseline_diagnostic
+          Most Recent Diagnostic YTD (Y/N): most_recent_diagnostic
+          Duration (min): duration
+          Rush Flag: rush_flag
+          Diagnostic Gain: diagnostic_gain
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
