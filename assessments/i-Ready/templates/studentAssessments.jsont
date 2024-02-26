@@ -92,43 +92,43 @@
     {%- set _= all_obj_assess.append([phonological_awareness_scale_score,phonological_awareness_placement,phonological_awareness_relative_placement,"Phonological Awareness"]) -%}
     {%- endif -%}
 
-    {%- if phonics_scale_score | int -%}
+    {%- if phonics_scale_score | int or phonics_awareness_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([phonics_scale_score,phonics_placement,phonics_relative_placement,"Phonics"]) -%}
     {%- endif -%}
 
-    {%- if highfrequency_words_scale_score | int -%}
+    {%- if highfrequency_words_scale_score | int or highfrequency_words_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([highfrequency_words_scale_score,highfrequency_words_placement,highfrequency_words_relative_placement,"High-Frequency Words"]) -%}
     {%- endif -%}
 
-    {%- if vocabulary_scale_score | int -%}
+    {%- if vocabulary_scale_score | int or vocabulary_placement == "Tested Out"-%}
     {%- set _= all_obj_assess.append([vocabulary_scale_score,vocabulary_placement,vocabulary_relative_placement,"Vocabulary"]) -%}
     {%- endif -%}
 
-    {%- if comprehension_overall_scale_score | int -%}
+    {%- if comprehension_overall_scale_score | int or comprehension_overall_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([comprehension_overall_scale_score,comprehension_overall_placement,comprehension_overall_relative_placement,"Comprehension: Overall"]) -%}
     {%- endif -%}
 
-    {%- if comprehension_literature_scale_score | int -%}
+    {%- if comprehension_literature_scale_score | int or comprehension_literature_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([comprehension_literature_scale_score,comprehension_literature_placement,comprehension_literature_relative_placement,"Comprehension: Literature"]) -%}
     {%- endif -%}
 
-    {%- if comprehension_informational_text_scale_score | int -%}
+    {%- if comprehension_informational_text_scale_score | int or comprehension_informational_text_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([comprehension_informational_text_scale_score,comprehension_informational_text_placement,comprehension_informational_text_relative_placement,"Comprehension: Informational"]) -%}
     {%- endif -%}
 
-    {%- if number_and_operations_scale_score | int -%}
+    {%- if number_and_operations_scale_score | int or number_and_operations_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([number_and_operations_scale_score,number_and_operations_placement,number_and_operations_relative_placement,"Number and Operations"]) -%}
     {%- endif -%}
 
-    {%- if algebra_and_algebraic_thinking_scale_score | int -%}
+    {%- if algebra_and_algebraic_thinking_scale_score | int or algebra_and_algebraic_thinking_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([algebra_and_algebraic_thinking_scale_score,algebra_and_algebraic_thinking_placement,algebra_and_algebraic_thinking_relative_placement,"Algebra and Algebraic Thinking"]) -%}
     {%- endif -%}
 
-    {%- if measurement_and_data_scale_score | int -%}
+    {%- if measurement_and_data_scale_score | int or measurement_and_data_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([measurement_and_data_scale_score,measurement_and_data_placement,measurement_and_data_relative_placement,"Measurement and Data"]) -%}
     {%- endif -%}
 
-    {%- if geometry_scale_score | int -%}
+    {%- if geometry_scale_score | int or geometry_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([geometry_scale_score,geometry_placement,geometry_relative_placement,"Geometry"]) -%}
     {%- endif -%}
 
@@ -146,6 +146,9 @@
           "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
         }
+      ],
+      "scoreResults": [
+
       ]
     {%- elif obj_assess[1] == "Tested Out" and obj_assess[2] != '' -%}
       "objectiveAssessmentReference": {
@@ -164,6 +167,9 @@
           "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
           "performanceLevelMet": true
         }
+      ],
+      "scoreResults": [
+
       ]
     {%- elif obj_assess[1] != "Tested Out" and obj_assess[2] == '' -%}
       "objectiveAssessmentReference": {
