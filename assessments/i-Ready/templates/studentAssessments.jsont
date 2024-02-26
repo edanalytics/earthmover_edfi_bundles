@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "",
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
     "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
     "namespace": "uri://curriculumassociates.com/Assessment"
@@ -74,6 +74,18 @@
 
     {%- if mid_on_grade_level_scale_score -%}
         {%- set _ = all_scores.append([mid_on_grade_level_scale_score, "Mid On Grade Level Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if percentile -%}
+        {%- set _ = all_scores.append([percentile, "Percentile", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if Grouping -%}
+        {%- set _ = all_scores.append([grouping, "Grouping", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if diagnostic_gain -%}
+        {%- set _ = all_scores.append([diagnostic_gain, "Diagnostic Gain", "Integer"]) -%}
     {%- endif -%}
 
     {%- for score in all_scores -%}
