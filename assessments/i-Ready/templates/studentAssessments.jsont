@@ -14,18 +14,18 @@
   "performanceLevels": [
 
     {%- set perf_levels = [] -%}
-    {%- if overall_placement | int -%}
+    {%- if overall_placement -%}
       {%- set _= perf_levels.append([overall_placement, "Overall Placement"]) -%}
     {%- endif -%}
 
-    {%- if overall_relative_placement | int -%}
+    {%- if overall_relative_placement -%}
       {%- set _= perf_levels.append([overall_relative_placement, "Overall Relative Placement"]) -%}
     {%- endif -%}
 
     {%- for perf_level in perf_levels -%}
     {
       "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ perf_level[0] | int }}",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ perf_level[0]}}",
       "performanceLevelMet": true
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
@@ -88,7 +88,7 @@
 
     {%- set all_obj_assess = [] -%}
 
-    {%- if phonological_awareness_scale_score | int -%}
+    {%- if phonological_awareness_scale_score | int or phonological_awareness_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([phonological_awareness_scale_score,phonological_awareness_placement,phonological_awareness_relative_placement,"Phonological Awareness"]) -%}
     {%- endif -%}
 
@@ -134,6 +134,58 @@
 
     {%- for obj_assess in all_obj_assess -%}
     {
+    {%- if obj_assess[1] == "Tested Out" and obj_assess[2] == '' -%}
+          "objectiveAssessmentReference": {
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "identificationCode": "{{ obj_assess[3] }}",
+        "namespace": "uri://curriculumassociates.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Placement",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+          "performanceLevelMet": true
+        }
+      ]
+    {%- elif obj_assess[1] == "Tested Out" and obj_assess[2] != '' -%}
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "identificationCode": "{{ obj_assess[3] }}",
+        "namespace": "uri://curriculumassociates.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Placement",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+          "performanceLevelMet": true
+        },
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Relative Placement",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
+          "performanceLevelMet": true
+        }
+      ]
+    {%- elif obj_assess[1] != "Tested Out" and obj_assess[2] == '' -%}
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "identificationCode": "{{ obj_assess[3] }}",
+        "namespace": "uri://curriculumassociates.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Placement",
+          "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+          "performanceLevelMet": true
+        }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Scale Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{ obj_assess[0] | int}}"
+        }
+      ]
+    {%- else -%}
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
         "identificationCode": "{{ obj_assess[3] }}",
@@ -158,7 +210,9 @@
           "result": "{{ obj_assess[0] | int}}"
         }
       ]
+    {%- endif -%}
     } {%-if not loop.last -%}, {%- endif -%}
+
     {%- endfor -%}
   ]
 }
