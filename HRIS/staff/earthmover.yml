@@ -1,0 +1,26 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: HRIS/staff/output
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+
+sources:
+  hris_staff_input:
+    file: '/mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/079901_000_2024FALL1_202311281227_InterchangeStaffAssociationExtension.xml'
+
+transformations:
+  hris_staff:
+    source: $sources.hris_staff_input
+    operations:
+      - operation: add_columns
+        columns:
+          test: "test"
+
+destinations:
+  assessments:
+    source: $transformations.hris_staff
+    template: HRIS/staff/templates/staff.jsont
+    extension: jsonl
