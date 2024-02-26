@@ -90,7 +90,7 @@
       "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Overall Placement",
       "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    }
+    },
     {%- endfor -%}
     {%- for rel_level in rel_placement_levels -%}
     {
