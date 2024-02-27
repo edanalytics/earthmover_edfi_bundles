@@ -15,6 +15,10 @@ config:
 
 sources:
 
+  academic_subject_descriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
   assessment_reporting_method_descriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -156,6 +160,12 @@ transformations:
 
 
 destinations:
+
+  academicSubjectDescriptors:
+    source: $sources.academic_subject_descriptors
+    template: ${BUNDLE_DIR}/templates/academic_subject_descriptors.jsont
+    extension: jsonl
+    linearize: True
 
   assessments:
     source: $sources.assessments
