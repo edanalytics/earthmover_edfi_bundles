@@ -374,6 +374,11 @@ transformations:
         join_type: right
         left_key: StudentAssessmentID
         right_key: StudentAssessmentID
+      - operation: map_values
+        columns: 
+          - Grade
+          - CurrentGrade
+        map_file: ${BUNDLE_DIR}/seeds/grade_level_mapping.csv
 
   objective_assessments:
     source: $transformations.stacked_obj_assessment
