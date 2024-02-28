@@ -47,7 +47,7 @@
     {%- for rel_level in rel_placement_levels -%}
     {
       "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Relative Placement",
-      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptorr#{{rel_level}}",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{rel_level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
     {%- if not loop.last -%},
