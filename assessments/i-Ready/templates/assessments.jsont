@@ -87,15 +87,15 @@
     ] %}
     {%- for level in placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Overall Placement",
-      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{level}}",
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Overall Placement",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {%- endfor -%}
     {%- for rel_level in rel_placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Overall Relative Placement",
-      "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{rel_level}}",
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Overall Relative Placement",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{rel_level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
     {%- if not loop.last -%},
