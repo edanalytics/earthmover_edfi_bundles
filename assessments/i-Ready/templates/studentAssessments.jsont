@@ -108,19 +108,19 @@
     {%- set _= all_obj_assess.append([phonics_scale_score,phonics_placement,phonics_relative_placement,"Phonics"]) -%}
     {%- endif -%}
 
-    {%- if (highfrequency_words_scale_score | int and highfrequency_words_scale_score != "NA") or highfrequency_words_placement == "Tested Out" or highfrequency_words_placement != "NA" -%}
+    {%- if (highfrequency_words_scale_score | int and highfrequency_words_scale_score != "NA") or highfrequency_words_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([highfrequency_words_scale_score,highfrequency_words_placement,highfrequency_words_relative_placement,"High-Frequency Words"]) -%}
     {%- endif -%}
 
-    {%- if (vocabulary_scale_score | int or vocabulary_scale_score != "NA") vocabulary_placement == "Tested Out" or vocabulary_relative_placement != "NA" -%}
+    {%- if (vocabulary_scale_score | int or vocabulary_scale_score != "NA") vocabulary_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([vocabulary_scale_score,vocabulary_placement,vocabulary_relative_placement,"Vocabulary"]) -%}
     {%- endif -%}
 
-    {%- if (comprehension_overall_scale_score | int and comprehension_overall_scale_score != "NA") or comprehension_overall_placement == "Tested Out" or comprehension_overall_relative_placement != "NA" -%}
+    {%- if (comprehension_overall_scale_score | int and comprehension_overall_scale_score != "NA") or comprehension_overall_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([comprehension_overall_scale_score,comprehension_overall_placement,comprehension_overall_relative_placement,"Comprehension: Overall"]) -%}
     {%- endif -%}
 
-    {%- if (comprehension_literature_scale_score | int and comprehension_literature_scale_score != "NA") or comprehension_literature_placement == "Tested Out" or comprehension_literature_relative_placement != "NA" -%}
+    {%- if (comprehension_literature_scale_score | int and comprehension_literature_scale_score != "NA") or comprehension_literature_placement == "Tested Out" -%}
     {%- set _= all_obj_assess.append([comprehension_literature_scale_score,comprehension_literature_placement,comprehension_literature_relative_placement,"Comprehension: Literature"]) -%}
     {%- endif -%}
 
