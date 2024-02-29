@@ -162,7 +162,7 @@ transformations:
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[:4]}}{%endraw%}"
-          student_grade: "{%raw%}"uri://ed.sc.gov/GradeLevelDescriptor#{{value}{%endraw%}"
+          student_grade: "{%raw%}"uri://ed.sc.gov/GradeLevelDescriptor#{{value}}{%endraw%}"
       - operation: add_columns
         columns:
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
