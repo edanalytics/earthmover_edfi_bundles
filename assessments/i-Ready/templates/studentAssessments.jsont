@@ -91,7 +91,7 @@
     {%- for score in all_scores -%}
     {
       "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/curriculumassociates#{{score[2]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
@@ -158,9 +158,6 @@
           "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
         }
-      ],
-      "scoreResults": [
-
       ]
     {%- elif obj_assess[1] == "Tested Out" and obj_assess[2] != '' -%}
       "objectiveAssessmentReference": {
@@ -179,9 +176,6 @@
           "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
           "performanceLevelMet": true
         }
-      ],
-      "scoreResults": [
-
       ]
     {%- elif obj_assess[1] != "Tested Out" and obj_assess[2] == '' -%}
       "objectiveAssessmentReference": {
