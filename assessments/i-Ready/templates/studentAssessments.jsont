@@ -80,7 +80,7 @@
         {%- set _ = all_scores.append([percentile, "Percentile", "Integer"]) -%}
     {%- endif -%}
 
-    {%- if Grouping -%}
+    {%- if grouping -%}
         {%- set _ = all_scores.append([grouping, "Grouping", "Integer"]) -%}
     {%- endif -%}
 
