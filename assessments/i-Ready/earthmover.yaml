@@ -159,7 +159,6 @@ transformations:
       - operation: map_values
         column: student_grade
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
-          from: to
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[:4]}}{%endraw%}"
