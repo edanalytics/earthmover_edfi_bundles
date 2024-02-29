@@ -164,7 +164,7 @@
       ]
     {%- elif obj_assess[1] == "Tested Out" and obj_assess[2] != '' -%}
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assess",
         "identificationCode": "{{ obj_assess[3] }}",
         "namespace": "uri://curriculumassociates.com/Assessment"
       },
@@ -185,7 +185,7 @@
       ]
     {%- elif obj_assess[1] != "Tested Out" and obj_assess[2] == '' -%}
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assess",
         "identificationCode": "{{ obj_assess[3] }}",
         "namespace": "uri://curriculumassociates.com/Assessment"
       },
@@ -205,7 +205,7 @@
       ]
     {%- else -%}
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments",
+        "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assess",
         "identificationCode": "{{ obj_assess[3] }}",
         "namespace": "uri://curriculumassociates.com/Assessment"
       },
