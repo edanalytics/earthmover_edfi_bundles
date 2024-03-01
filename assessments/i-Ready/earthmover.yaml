@@ -161,7 +161,7 @@ transformations:
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
       - operation: modify_columns
         columns:
-          school_year: "{%raw%}{{value[:4]}}{%endraw%}"
+          school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
       - operation: add_columns
         columns:
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
