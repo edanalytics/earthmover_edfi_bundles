@@ -2,14 +2,14 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: '/mnt/n/south_carolina/EdFi/Assessments/CA_iReady/em_output/subset/'
+  output_dir: '/mnt/n/south_carolina/EdFi/Assessments/CA_iReady/em_output/subset'
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: True
   skip_hashing: True
   parameter_defaults:
     source_encoding: latin-1
-    INPUT_FILE: '/mnt/n/south_carolina/EdFi/Assessments/CA_iReady/sharded/20231220/ELA/API_YEAR=2023/LEA_ID=3201/part.4.parquet'
+    INPUT_FILE: '/mnt/n/south_carolina/EdFi/Assessments/CA_iReady/sharded/20231220/ELA/API_YEAR=2023/LEA_ID=4201/part.4.parquet'
     API_YEAR: '2023'
     BUNDLE_DIR: .
     INPUT_FILETYPE: parquet
@@ -162,7 +162,6 @@ transformations:
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[:4]}}{%endraw%}"
-          student_grade: "{%raw%}uri://ed.sc.gov/GradeLevelDescriptor#{{value}}{%endraw%}"
       - operation: add_columns
         columns:
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
@@ -170,6 +169,12 @@ transformations:
 
 
 destinations:
+
+  gradeLevelDescriptors:
+    source: $sources.grade_level_descriptors
+    template: ${BUNDLE_DIR}/templates/gradeLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
 
   academicSubjectDescriptors:
     source: $sources.academic_subject_descriptors
