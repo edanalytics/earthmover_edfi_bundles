@@ -1,0 +1,165 @@
+{
+  "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assess",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "uri://curriculumassociates.com/Assessment",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://curriculumassociates.com/AcademicSubjectDescriptor#Mathematics"
+    },
+    {
+      "academicSubjectDescriptor": "uri://curriculumassociates.com/AcademicSubjectDescriptor#English/Language Arts"
+    }
+  ],
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
+    }
+  ],
+  "performanceLevels": [
+    {% set placement_levels = [
+        'Early 1',
+        'Early 10',
+        'Early 11',
+        'Early 12',
+        'Early 2',
+        'Early 3',
+        'Early 4',
+        'Early 5',
+        'Early 6',
+        'Early 7',
+        'Early 8',
+        'Early 9',
+        'Early K',
+        'Late 1',
+        'Late 10',
+        'Late 11',
+        'Late 12',
+        'Late 2',
+        'Late 3',
+        'Late 4',
+        'Late 5',
+        'Late 6',
+        'Late 7',
+        'Late 8',
+        'Late 9',
+        'Late K',
+        'Emerging K',
+        'Level 1',
+        'Level 10',
+        'Level 11',
+        'Level 12',
+        'Level 2',
+        'Level 3',
+        'Level 4',
+        'Level 5',
+        'Level 6',
+        'Level 7',
+        'Level 8',
+        'Level 9',
+        'Level K',
+        'Mid 1',
+        'Mid 10',
+        'Mid 11',
+        'Mid 12',
+        'Mid 2',
+        'Mid 3',
+        'Mid 4',
+        'Mid 5',
+        'Mid 6',
+        'Mid 7',
+        'Mid 8',
+        'Mid 9',
+        'Mid K',
+        'Max Score',
+        'Tested Out'
+    ] %}
+    {% set rel_placement_levels = [
+        '1 Grade Level Below',
+        '2 Grade Levels Below',
+        '3 or More Grade Levels Below',
+        'Early On Grade Level',
+        'Mid or Above Grade Level'
+    ] %}
+    {%- for level in placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Overall Placement",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{level}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {%- endfor -%}
+    {%- for rel_level in rel_placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Overall Relative Placement",
+      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{rel_level}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Overall Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Quantile Measure",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Quantile Range",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Range"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Lexile Measure",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Lexile Range",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Range"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Grouping",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}
