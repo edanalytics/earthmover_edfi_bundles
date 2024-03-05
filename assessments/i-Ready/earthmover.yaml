@@ -116,9 +116,11 @@ transformations:
         left_key: ${STUDENT_ID_FROM}
         right_key: student_id_from
         join_type: left
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: rename_columns
         columns:
-          Student ID: student_unique_id
           Student Grade: student_grade
           Start Date: administration_date
           Academic Year: school_year
