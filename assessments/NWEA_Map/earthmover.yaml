@@ -82,6 +82,9 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: filter_rows
+        query: studentUniqueId == ''
+        behavior: exclude
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
