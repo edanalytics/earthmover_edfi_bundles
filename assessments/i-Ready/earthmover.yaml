@@ -119,6 +119,9 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
       - operation: rename_columns
         columns:
           Student Grade: student_grade
@@ -178,9 +181,6 @@ transformations:
           Rush Flag: rush_flag
           Diagnostic Gain: diagnostic_gain
           Grouping: grouping
-      - operation: filter_rows
-        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
-        behavior: include
       - operation: map_values
         column: student_grade
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
