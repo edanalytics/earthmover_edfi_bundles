@@ -1,4 +1,32 @@
+   
 {
-  "id": "{{ test }}",
-  "staffUniqueId": "{{ staffUniqueId }}"
+  {% for staff_member in Staff %}
+    "id": "{{ md5(staff_member['StaffUniqueStateId']) }}",
+    "staffUniqueId": "{{ staff_member['StaffUniqueStateId'] }}",
+    "birthDate": "{{ staff_member['BirthDate'] }}",
+    
+    "firstName": "{{ staff_member['Name']['FirstName'] }}",
+    "lastSurname": "{{ staff_member['Name']['LastSurname'] }}",
+    "middleName": "{{ staff_member['Name']['MiddleName'] }}",
+
+    "generationCodeSuffix": "{{ staff_member['TX-GenerationCode'] }}",
+    "hispanicLatinoEthnicity": "{{ staff_member['TX-HispanicLatinoEthnicity'] }}",
+    
+    "identificationCodes": [
+      {
+        "assigningOrganizationIdentificationCode": "{{ staff_member['StaffIdentificationCode']['@IdentificationSystem'] }}",
+        "identificationCode": "{{ staff_member['StaffIdentificationCode']['ID'] }}"
+      }
+    ],
+
+    "races": [
+      {
+        "raceDescriptor": "{{ staff_member['TX-Race'] }}",
+      }
+    ],
+    "sexDescriptor": "{{ staff_member['TX-Sex'] }}",
+    "yearsOfPriorProfessionalExperience": "{{ staff_member['TX-TotalYearsOfProfessionalExperience'] }}"
+
+  {% endfor %}
 }
+
