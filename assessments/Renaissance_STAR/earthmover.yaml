@@ -149,7 +149,7 @@ transformations:
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: filter_rows
-        query: studentUniqueId == ''
+        query: (studentUniqueId == '') | (studentUniqueId.isnull())
         behavior: exclude  
       - operation: modify_columns
         columns:
