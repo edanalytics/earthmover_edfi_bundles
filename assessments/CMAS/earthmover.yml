@@ -105,14 +105,14 @@ transformations:
       {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
       - operation: map_values
         column: PerfLVL
-        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
       - operation: map_values
         columns: 
           - Std1PerfLvl
           - Std2PerfLvl
           - Std3PerfLvl
           - SEPPerfLvl
-        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
+        map_file: ${BUNDLE_DIR}/seeds/mapping_sci_standards.csv
       - operation: modify_columns
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
