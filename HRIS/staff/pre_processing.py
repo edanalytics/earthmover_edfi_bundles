@@ -1,7 +1,8 @@
 import json
 import xmltodict
 import os
-import argparse
+
+from airflow.operators.python import PythonOperator
 
 def xml_to_json(xml_path, output_path=None):
     """
@@ -34,35 +35,4 @@ def xml_to_json(xml_path, output_path=None):
     with open(file_path, "w") as json_file:
         json_file.write(json_data)
         
-        
-if __name__ == '__main__':
-    """
-    This provides the command line interface to make running the script easier.
-
-    python pre_processing.py --client-secret '{YOUR_CLIENT_SECRET}' --input ./url_list.txt --output ./ips_survey_alternative.csv
-    """
-    parser = argparse.ArgumentParser(
-        prog="",
-        description="",
-        epilog=""
-    )
-
-    parser.add_argument("-i", "--xml-path",
-        type=str,
-        help="The XML file path including XML file name."
-    )
-
-    parser.add_argument("-o", "--output_path",
-        type=str,
-        help="Filepath to the output JSON file with the extracted staff data"
-    )
-
-    ### Parse and extract command-line arguments defined above.
-    args = parser.parse_known_args()
-    
-    ### Assign command-line arguments to their corresponding variables.
-    xml_path = args[0].xml_path
-    output_path = args[0].output_path
-    
-    ### Execute main function with the variable arguments defined above.
-    xml_to_json(xml_path, output_path)
+    return json_data
