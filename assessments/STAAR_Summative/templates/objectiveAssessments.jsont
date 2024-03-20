@@ -1,0 +1,13 @@
+{
+  "identificationCode": "{{ identificationCode[:60] }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "uri://tea.texas.gov/student-assessment"
+  },
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Raw Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}
