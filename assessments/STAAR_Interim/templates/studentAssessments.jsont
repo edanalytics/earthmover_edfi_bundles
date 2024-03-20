@@ -1,0 +1,89 @@
+{
+  "studentAssessmentIdentifier":"{{Opportunity_Key}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessment_identifier }}",
+    "namespace": "uri://tea.texas.gov/student-assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear":{{api_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{TEST_DATE}}",
+  "administrationLanguageDescriptor": "uri://ed-fi.org/LanguageDescriptor#{{language}}",
+  "performanceLevels": [
+    {% if Overall_Performance_Level is not none and Overall_Performance_Level | length %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Overall_Performance_Level}}",
+      "performanceLevelMet": true
+    }
+    {% endif %}
+  ],
+  "scoreResults": [
+    {% set scores_present = [] %}
+    {% set all_scores = {'Subject':['Level',subject],
+                         'Course':['Level',course],
+                         'Total Scale Score':['Integer',Total_Scale_Score],
+                         'Probability Of Achieving Approaches Grade Level':['Integer',PROBABILITY_OF_ACHIEVING_APPROACHES_GRADE_LEVEL],
+                         'Probability Of Achieving Meets Grade Level':['Integer',PROBABILITY_OF_ACHIEVING_MEETS_GRADE_LEVEL],
+                         'Probability Of Achieving Masters Grade Level':['Integer',PROBABILITY_OF_ACHIEVING_MASTERS_GRADE_LEVEL],
+                         'Overall Raw Score':['Integer',Overall_Raw_Score]
+                         } %}
+    {% for score_name, score_result in all_scores.items() %}
+      {% if score_result[1] is not none and score_result[1] | length %}
+        {% set _= scores_present.append([score_name, score_result[0], score_result[1]]) %}
+      {% endif %}
+    {% endfor %}
+
+    {%- for score in scores_present %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "result": "{{score[2]}}"
+    }
+    {%- if not loop.last %},
+    {% else %}{% endif %}{% endfor %}
+  ]
+  ,
+  "studentObjectiveAssessments": [
+    {%- for n in range(1,6) -%}
+    {% set id_code = self._TemplateReference__context.resolve('reporting_category_'~n~'_name')%}
+    {% set score_name = self._TemplateReference__context.resolve('RAW_SCORE_REPORTING_CATEGORY_'~n)%}
+    {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
+    {% if (score_name is not none and score_name | length) or (pl_name is not none and pl_name | length) %}
+    {%- if not loop.first -%},{% endif %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{ assessment_identifier }}",
+        "identificationCode": "{{ id_code }}",
+        "namespace": "uri://tea.texas.gov/student-assessment"
+      }
+      {% if pl_name is not none and pl_name | length %}
+      ,
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+          "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{pl_name}}",
+          "performanceLevelMet": true
+        }
+      ]
+      {% endif %}
+      {% if score_name is not none and score_name | length %}
+      ,
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Raw Score",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{score_name}}"
+        }
+      ]
+      {% endif %}
+    }{% endif %}{%- endfor -%}
+  ]
+  {% if grade_level_tested is not none and grade_level_tested | length %}
+  ,
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level_tested}}"
+  {% endif %}
+}
