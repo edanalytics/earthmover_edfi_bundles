@@ -1,0 +1,241 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: True
+  parameter_defaults:
+    source_encoding: latin-1
+    INPUT_FILE: ''
+    API_YEAR: ''
+    BUNDLE_DIR: ''
+    INPUT_FILETYPE: csv
+
+sources:
+
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objective_standards_mapping.csv
+    header_rows: 1
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  scready_input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+#    encoding: ${source_encoding}
+
+
+transformations:
+
+  scready_student_assessment:
+    source: $sources.scready_input
+    operations:
+      - operation: keep_columns
+        columns:
+          # Generic fields
+          - StateID
+          - SchoolID
+          - TestAdmin
+          - UID
+          - Grade
+
+          # Lexiles
+          - Lex
+          - LexLow
+          - LexUp
+          - LexNPR
+
+          # Quantiles
+          - Quant
+          - QuantLow
+          - QuantUp
+          - QuantNPR
+
+          # ELA-specific fields
+          - ELAGrade
+          - ELASS
+          - ELAVSS
+          - ELALev
+          - ELALev1 
+          - ELALev2
+          - ELALev3
+          - ELALev4
+          - ELALev5
+          - ELALev6
+          - ELALev7
+          - ELALev8
+          - ELALev9
+          - ELALev11
+
+          # Math-specific fields
+          - MathGrade
+          - MathSS
+          - MathVSS
+          - MathLev
+          - MathLev1
+          - MathLev2
+          - MathLev3
+          - MathLev4
+          - MathLev5
+
+      - operation: rename_columns
+        columns:
+          StateID: student_unique_id
+      - operation: add_columns
+        columns:
+          school_year:  ${API_YEAR}
+          administration_date: {{ ${API_YEAR} ~ "-05-15" }}
+          lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
+    
+  scready_student_assessment_ela:
+    source: $transformations.scready_student_assessment
+    operations:
+      - operation: modify_columns
+        columns: 
+          MathLev: ''
+          MathLev1: ''
+          MathLev2: ''
+          MathLev3: ''
+          MathLev4: ''
+          MathLev5: ''
+          MathVSS: ''
+          MathSS: ''
+          Quant: ''
+          QuantLow: ''
+          QuantUp: ''
+          QuantNPR: ''
+      - operation: add_columns
+        columns: 
+          subject: 'English/Language Arts'
+          student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
+
+
+  scready_student_assessment_math:
+    source: $transformations.scready_student_assessment
+    operations:
+      - operation: modify_columns
+        columns: 
+          ELALev: ''
+          ELALev1: ''
+          ELALev2: ''
+          ELALev3: ''
+          ELALev4: ''
+          ELALev5: ''
+          ELALev6: ''
+          ELALev7: ''
+          ELALev8: ''
+          ELALev9: ''
+          ELALev11: ''
+          ELAVSS: ''
+          ELASS: ''
+          Lex: ''
+          LexLow: ''
+          LexUp: ''
+          LexNPR: ''
+      - operation: add_columns
+        columns: 
+          subject: 'Mathematics'
+          student_grade: "{%raw%}{{MathGrade}}{%endraw%}"
+
+  scready_student_assessment_stacked:
+    source: $transformations.scready_student_assessment_ela
+    operations: 
+      - operation: union 
+        sources:
+          - $transformations.scready_student_assessment_math
+      - operation: add_columns
+        columns:
+          student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"  #"{%raw%}{{student_unique_id}}_{{subject}}_{{school_year}}{%endraw%}"
+          MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
+          MathLev2_name: "{%raw%}{{student_grade | int}}_MathLev2{%endraw%}"
+          MathLev3_name: "{%raw%}{{student_grade | int}}_MathLev3{%endraw%}"
+          MathLev4_name: "{%raw%}{{student_grade | int}}_MathLev4{%endraw%}"
+          MathLev5_name: "{%raw%}{{student_grade | int}}_MathLev5{%endraw%}"
+          ELALev1_name: "{%raw%}{{student_grade | int}}_ELALev1{%endraw%}"
+          ELALev2_name: "{%raw%}{{student_grade | int}}_ELALev2{%endraw%}"
+          ELALev3_name: "{%raw%}{{student_grade | int}}_ELALev3{%endraw%}"
+          ELALev4_name: "{%raw%}{{student_grade | int}}_ELALev4{%endraw%}"
+          ELALev5_name: "{%raw%}{{student_grade | int}}_ELALev5{%endraw%}"
+          ELALev6_name: "{%raw%}{{student_grade | int}}_ELALev6{%endraw%}"
+          ELALev7_name: "{%raw%}{{student_grade | int}}_ELALev7{%endraw%}"
+          ELALev8_name: "{%raw%}{{student_grade | int}}_ELALev8{%endraw%}"
+          ELALev9_name: "{%raw%}{{student_grade | int}}_ELALev9{%endraw%}"
+          ELALev10_name: "{%raw%}{{student_grade |int}}_ELALev10{%endraw%}"
+          ELALev11_name: "{%raw%}{{student_grade |int}}_ELALev11{%endraw%}"
+      - operation: map_values
+        columns: 
+          - MathLev1_name
+          - MathLev2_name
+          - MathLev3_name
+          - MathLev4_name
+          - MathLev5_name
+          - ELALev1_name
+          - ELALev2_name
+          - ELALev3_name
+          - ELALev4_name
+          - ELALev5_name
+          - ELALev6_name
+          - ELALev7_name
+          - ELALev8_name
+          - ELALev9_name
+          - ELALev10_name
+          - ELALev11_name
+        map_file: ${BUNDLE_DIR}/seeds/objective_standards_mapping.csv
+
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations: 
+      - operation: distinct_rows
+        columns: 
+          - to  
+      - operation: rename_columns
+        columns: 
+          to: identification_code 
+
+
+destinations:
+
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessments:
+    source: $transformations.scready_student_assessment_stacked
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
