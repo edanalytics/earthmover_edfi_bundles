@@ -49,13 +49,17 @@
     }
   ],
   "academicSubjects": [
-    {% if assessment_id == 'STAR-SM' %}
+    {% if assessment_id == 'STAR-MA' %}
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
     }
-    {% else %}
+    {% elif assessment_id == 'STAR-RD' %}
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
+    }
+    {% elif assessment_id == 'STAR-EARLY-LIT' %}
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Early Literacy"
     }
     {% endif %}
   ],
