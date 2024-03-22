@@ -45,7 +45,7 @@
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
     },
     {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#No grade level"
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ungraded"
     }
   ],
   "academicSubjects": [
@@ -53,9 +53,13 @@
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
     }
-    {% else %}
+    {% elif assessment_id == 'STAR-RD' %}
     {
       "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
+    }
+    {% elif assessment_id == 'STAR-EARLY-LIT' %}
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Early Literacy"
     }
     {% endif %}
   ],
