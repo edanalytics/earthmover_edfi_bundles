@@ -58,4 +58,3 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_YEAR": yourAPIYear }'
 ```
 
-(**Above**: a graphical depiction of the dataflow.)
