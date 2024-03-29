@@ -58,6 +58,4 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_YEAR": yourAPIYear }'
 ```
 
-![DAG view of transformations](graph.png)
-
 (**Above**: a graphical depiction of the dataflow.)
