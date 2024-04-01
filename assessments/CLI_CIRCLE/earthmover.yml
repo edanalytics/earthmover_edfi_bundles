@@ -397,7 +397,7 @@ sources:
       'subject_assess_lang':  ['English','Spanish']
     },
     'rapid_vocabulary_v1': {
-      'subject_name_spa': 'rlna_spa_v1',
+      'subject_name_spa': 'rapid_vocabulary_spa_v1',
       'subject_assess_id': 'rapid_vocabulary',
       'descriptor': 'Rapid Vocabulary',
       'objective_assessments': [],
@@ -507,7 +507,7 @@ sources:
       'subject_assess_lang': ['English','Spanish']
     },
     'approaches_to_learning_exp_v2': {
-      'subject_name_spa': 'early_writing_spa_v1',
+      'subject_name_spa': 'approaches_to_learning_extended_spa_v1',
       'subject_assess_id': 'approaches_to_learning_exp',
       'descriptor': 'Approaches to Learning Expanded',
       'objective_assessments': [
@@ -575,7 +575,7 @@ transformations:
         rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ school_engage_id }}{{ student_engage_id }}{{ rank }}{%endraw%}'
+          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ student_state_id }}{{ rank }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
