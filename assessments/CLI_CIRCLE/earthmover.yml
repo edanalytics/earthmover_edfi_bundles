@@ -661,7 +661,7 @@ transformations:
 
       # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
       - operation: filter_rows
-        query: subject_score != '' and subject_date != ''
+        query: subject_score != '' and subject_date != '' and student_state_id != ''
         behavior: include 
 
       # Transform date formatting
