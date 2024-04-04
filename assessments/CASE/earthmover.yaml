@@ -1,0 +1,97 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  tmp_dir: ${TEMPORARY_DIRECTORY}
+  parameter_defaults:
+    STUDENT_ID_NAME: StudentID
+    STUDENT_ID_FROM: StudentID
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+
+sources:
+
+  academic_subject_descriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+  assessment_reporting_method_descriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performance_level_descriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  case_input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    optional_fields:
+
+
+    # This file or query only needs to be supplied if the source assessment file does not
+    # contain the studentUniqueId used by Ed-Fi
+  {% if "${STUDENT_ID_QUERY}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
+
+transformations:
+
+  case_student_assessments:
+    source: $sources.case_input
+    operations:
+      - 
+
+
+destinations:
+
+  academicSubjectDescriptors:
+    source: $sources.academic_subject_descriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessment_reporting_method_descriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  performanceLevelDescriptors:
+    source: $sources.performance_level_descriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessments:
+    source: $transformations.case_student_assessments
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
