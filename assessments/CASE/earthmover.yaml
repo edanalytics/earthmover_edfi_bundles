@@ -37,7 +37,12 @@ sources:
     type: ${INPUT_FILETYPE}
     header_rows: 1
     optional_fields:
-
+    - TestID
+    - LeaID
+    - SchoolYear
+    - TestName
+    - TestSchedule
+    - TestAdmin
 
     # This file or query only needs to be supplied if the source assessment file does not
     # contain the studentUniqueId used by Ed-Fi
