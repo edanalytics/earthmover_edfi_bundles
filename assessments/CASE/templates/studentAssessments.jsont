@@ -10,11 +10,33 @@
   "studentReference": {
     "studentUniqueId": "{{}}"
   },
-  "administrationDate": "{{administration_date}}",
+  "administrationDate": "{{TestDate}}",
   "performanceLevels": [
   ],
    "scoreResults": [
   ],
   "studentObjectiveAssessments": [
+    "scoreResults": [
+    {%- set all_scores = [
+        [subject, "Subject", "Level"],
+        [PercCorr, "PercCorr", "Percent"],
+        [AchLev, "AchLev", "Level"],
+        [AchLevExt, "AchLevExt, "Level"],
+        [SuggNMark, "SuggNMark", "Integer"],
+        [SuggLMark, "SuggLMark", "Level"]
+    ] -%}
+
+    {%- if overall_scale_score and overall_scale_score != "NA" -%}
+        {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- for score in all_scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://instructure.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+
   ]
 }
