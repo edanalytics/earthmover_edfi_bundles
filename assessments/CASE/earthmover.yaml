@@ -61,7 +61,9 @@ transformations:
   case_student_assessments:
     source: $sources.case_input
     operations:
-      - 
+      - operation: modify_columns
+        columns:
+          SchoolYear: "{%raw%}{{value[-4:]}}{%endraw%}"
 
 
 destinations:
