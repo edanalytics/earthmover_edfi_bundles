@@ -14,9 +14,6 @@
   "performanceLevels": [
   ],
    "scoreResults": [
-  ],
-  "studentObjectiveAssessments": [
-    "scoreResults": [
     {%- set all_scores = [
         [subject, "Subject", "Level"],
         [PercCorr, "PercCorr", "Percent"],
@@ -37,6 +34,8 @@
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
+  ],
+  "studentObjectiveAssessments": [
 
   ]
 }
