@@ -61,14 +61,41 @@ sources:
     optional: True 
   {% endif %}
 
+
 transformations:
 
   case_student_assessments:
     source: $sources.case_input
     operations:
+      - operation: join 
+        sources: 
+          - $sources.student_id_mapping
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from
+        join_type: left
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
       - operation: modify_columns
         columns:
-          SchoolYear: "{%raw%}{{value[-4:]}}{%endraw%}"
+          SchoolYear: "{%raw%}20{{value[:-2]}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          student_assessment_id: '{% raw %}{{StudentID}}_{{TestID}}_{{TestDate}}{% endraw %}'
+
+  test_id_breakout:
+    source: $transformations.case_student_assessments
+    operations:
+      - operation: add_columns
+        columns:
+          state_extracted: "{%raw%}{{TestID[:2]}}{%endraw%}"
+          test_name_extracted: "{%raw%}{{TestID[2:6]}}{%endraw%}"
+          school_year_extracted: "{%raw%}{{TestID[6:10]}}{%endraw%}"
+          test_schedule_extracted: "{%raw%}{{TestID[14:16]}}{%endraw%}"
+          test_admin_extracted: "{%raw%}{{TestID[16:18]}}{%endraw%}"
 
 
 destinations:
@@ -98,7 +125,7 @@ destinations:
     linearize: True
 
   studentAssessments:
-    source: $transformations.case_student_assessments
+    source: $transformations.test_id_breakout
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
