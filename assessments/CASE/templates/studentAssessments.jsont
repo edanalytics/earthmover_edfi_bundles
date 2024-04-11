@@ -1,21 +1,32 @@
 {
-  "studentAssessmentIdentifier": "",
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "",
     "namespace": "uri://instructure.com/Assessment"
   },
-  "schoolYearTypeReference": {
-    "schoolYear": {{SchoolYear | int}}
-  },
+
+  {%- if (SchoolYear is not none and SchoolYear | length) and (TestName is not none and TestName | length) and (TestSchedule is not none and TestSchedule | length) and (TestAdmin is not none and TestAdmin | length) -%}
+    "schoolYearTypeReference": {
+        "schoolYear": {{SchoolYear | int}}
+    },
+  {%- else -%}
+    "schoolYearTypeReference": {
+        "schoolYear": {{school_year_extracted | int}}
+    },
+  {%- endif -%}
+
   "studentReference": {
-    "studentUniqueId": "{{}}"
+    "studentUniqueId": "{{StudentID}}"
   },
   "administrationDate": "{{TestDate}}",
   "performanceLevels": [
   ],
    "scoreResults": [
     {%- set all_scores = [
-        [subject, "Subject", "Level"],
+        [LeaID, "LeaID", "Level"],
+        [Period, "Period", "Level"],
+        [TchName, "TchName", "Level"],
+        [SchID,"SchID","Level"]
         [PercCorr, "PercCorr", "Percent"],
         [AchLev, "AchLev", "Level"],
         [AchLevExt, "AchLevExt, "Level"],
@@ -23,8 +34,14 @@
         [SuggLMark, "SuggLMark", "Level"]
     ] -%}
 
-    {%- if overall_scale_score and overall_scale_score != "NA" -%}
-        {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
+    {%- if (SchoolYear is not none and SchoolYear | length) and (TestName is not none and TestName | length) and (TestSchedule is not none and TestSchedule | length) and (TestAdmin is not none and TestAdmin | length) -%}
+        {%- set _ = all_scores.append([TestName, "TestName", "Level"]) -%}
+        {%- set _ = all_scores.append([TestSchedule, "TestSchedule", "Level"]) -%}
+        {%- set _ = all_scores.append([TestAdmin, "TestAdmin", "Level"]) -%}
+    {%- else -%}
+        {%- set _ = all_scores.append([test_name_extracted, "TestName", "Level"]) -%}
+        {%- set _ = all_scores.append([test_schedule_extracted, "TestSchedule", "Level"]) -%}
+        {%- set _ = all_scores.append([test_admin_extracted, "TestAdmin", "Level"]) -%}
     {%- endif -%}
 
     {%- for score in all_scores -%}
@@ -34,8 +51,5 @@
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
-  ],
-  "studentObjectiveAssessments": [
-
   ]
 }
