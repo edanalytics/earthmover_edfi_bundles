@@ -82,6 +82,7 @@ transformations:
       - operation: modify_columns
         columns:
           SchoolYear: "{%raw%}20{{value[:-2]}}{%endraw%}"
+          TestDate: "{%raw%}{{value[-4:]}}-{{value[3:5]}}-{{value[0:2]}}{%endraw%}"
       - operation: add_columns
         columns:
           student_assessment_id: '{% raw %}{{StudentID}}_{{TestID}}_{{TestDate}}{% endraw %}'
@@ -115,12 +116,6 @@ destinations:
   assessmentReportingMethodDescriptors:
     source: $sources.assessment_reporting_method_descriptors
     template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
-    extension: jsonl
-    linearize: True
-
-  performanceLevelDescriptors:
-    source: $sources.performance_level_descriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
 
