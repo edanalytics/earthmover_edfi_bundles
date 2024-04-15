@@ -1,7 +1,7 @@
 {
-  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
-    "assessmentIdentifier": "",
+    "assessmentIdentifier": "Mastery View Predictive Assessment",
     "namespace": "uri://instructure.com/Assessment"
   },
 
@@ -26,10 +26,10 @@
         [LeaID, "LeaID", "Level"],
         [Period, "Period", "Level"],
         [TchName, "TchName", "Level"],
-        [SchID,"SchID","Level"]
+        [SchID,"SchID", "Level"],
         [PercCorr, "PercCorr", "Percent"],
         [AchLev, "AchLev", "Level"],
-        [AchLevExt, "AchLevExt, "Level"],
+        [AchLevExt, "AchLevExt", "Level"],
         [SuggNMark, "SuggNMark", "Integer"],
         [SuggLMark, "SuggLMark", "Level"]
     ] -%}
