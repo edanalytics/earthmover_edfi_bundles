@@ -135,8 +135,8 @@ transformations:
         columns:
           - met_benchmark
         mapping:
-          0: No
-          1: Yes  
+          '0': 'No'
+          '1': 'Yes' 
 
   # this file is long by activity (which we're mapping to studentObjectiveAssessment)
   cleaned_detail:
@@ -152,8 +152,8 @@ transformations:
           - certificate_delivered
           - skillbuilder_delivered
         mapping:
-          0: No
-          1: Yes  
+          '0': 'No'
+          '1': 'Yes'
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
         columns:
