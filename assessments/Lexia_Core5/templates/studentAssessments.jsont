@@ -63,7 +63,7 @@
   {% endfor %}
   ]
 
-  {% if student_objective_assessment_json is defined %}
+  {% if student_objective_assessment_json is not none and student_objective_assessment_json | length %}
   ,
   "studentObjectiveAssessments": [{{student_objective_assessment_json}}]
   {% endif %}
