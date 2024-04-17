@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ./runs.csv
@@ -98,7 +98,7 @@ sources:
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  {% if "${STUDENT_ID_QUERY}" | length %}
+  {% if "${DATABASE_CONNECTION}" | length %}
   student_id_mapping:
     connection: ${DATABASE_CONNECTION}
     query: ${STUDENT_ID_QUERY}
@@ -121,7 +121,7 @@ transformations:
       - operation: snake_case_columns
       - operation: add_columns
         columns:
-          - school_year: ${SCHOOL_YEAR}
+          school_year: ${API_YEAR}
       - operation: join
         sources:
           - $sources.student_id_mapping
@@ -133,12 +133,7 @@ transformations:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: map_values
         columns:
-          - struggling_indicator
-          - status_flag_complete
-          - advanced
-          - meeting_target_usage
-          - certificate_delivered
-          - skillbuilder_delivered
+          - met_benchmark
         mapping:
           0: No
           1: Yes  
@@ -150,7 +145,12 @@ transformations:
       - operation: snake_case_columns
       - operation: map_values
         columns:
-          - met_benchmark
+          - needs_instruction
+          - status_flag_complete
+          - advanced
+          - meeting_target_usage
+          - certificate_delivered
+          - skillbuilder_delivered
         mapping:
           0: No
           1: Yes  
@@ -158,77 +158,77 @@ transformations:
       - operation: add_columns
         columns:
           student_objective_assessment_json: >
-          {%raw-%}
-          {
-            "objectiveAssessmentReference": {
-              "assessmentIdentifier": "Lexia Core5",
-              "identificationCode": "{{activity_name}}",
-              "namespace": "uri://www.lexialearning.com"
-            },
-            "performanceLevels": [
-              {% set pls = [] %}
-              {% set all_perf_levels = [['Risk Level', risk_level],
-                                        ['Needs Instruction', struggling_indicator],
-                                        ['Accuracy', accuracy],
-                                        ['Rate', rate],
-                                        ['Complete Flag', status_flag_complete],
-                                        ['Advanced Flag', advanced],
-                                        ['Meeting Target Usage', meeting_target_usage],
-                                        ['Certificate Delivered', certificate_delivered],
-                                        ['Skillbuilder Delivered', skillbuilder_delivered]] %}
-              
-              {% for perf_level in all_perf_levels %}
-                {% if perf_level[1] is not none and perf_level[1] | length %}
-                  {% set _ = pls.append(perf_level) %}
-                {% endif %}
-              {% endfor %}
-          
-              {% for pl in pls %}
-                {
-                  "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-                  "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{pl[1]}}",
-                  "performanceLevelMet": true
-                } {% if not loop.last %},{% endif %}
-              {% endfor %}
-            ],
-            "scoreResults": [
-              {% set srs = [] %}
-              {% set all_score_results = [['Benchmark Predictor', 'Integer', predictor],
-                                          ['Reading Focus', 'Level', reading_focus],
-                                          ['Percent Completed', 'Decimal', percent_completed],
-                                          ['Current Unit', 'Integer', current_unit],
-                                          ['Max Unit', 'Integer', max_unit],
-                                          ['Activity Time', 'Decimal', activity_time],
-                                          ['Attempts At Standard', 'Integer', attempts_at_standard],
-                                          ['Attempts At Practice', 'Integer', attempts_at_practice],
-                                          ['Attempts At Instruction', 'Integer', attempts_at_instruction],
-                                          ['Level', 'Level', levelname],
-                                          ['Grade Level of Material', 'Level', grade_level_material],
-                                          ['Units To Benchmark', 'Integer', units_to_benchmark],
-                                          ['Weekly Usage Target', 'Integer', weekly_usage_target],
-                                          ['Weekly Units Target', 'Integer', weekly_units_target],
-                                          ['Lessons Delivered', 'Integer', lessons_delivered],
-                                          ['Current Usage Target', 'Integer', current_usage_target],
-                                          ['Current Units Target', 'Integer', current_units_target],
-                                          ['Level Skill Check', 'Integer', level_skill_check],
-                                          ['Activity Skill Check', 'Integer', activity_skill_check]] %}
+            {%raw-%}
+            {
+              "objectiveAssessmentReference": {
+                "assessmentIdentifier": "Lexia Core5",
+                "identificationCode": "{{activity_name}}",
+                "namespace": "uri://www.lexialearning.com"
+              },
+              "performanceLevels": [
+                {% set pls = [] %}
+                {% set all_perf_levels = [['Risk Level', risk_level],
+                                          ['Needs Instruction', struggling_indicator],
+                                          ['Accuracy', accuracy],
+                                          ['Rate', rate],
+                                          ['Complete Flag', status_flag_complete],
+                                          ['Advanced Flag', advanced],
+                                          ['Meeting Target Usage', meeting_target_usage],
+                                          ['Certificate Delivered', certificate_delivered],
+                                          ['Skillbuilder Delivered', skillbuilder_delivered]] %}
+                
+                {% for perf_level in all_perf_levels %}
+                  {% if perf_level[1] is not none and perf_level[1] | length %}
+                    {% set _ = pls.append(perf_level) %}
+                  {% endif %}
+                {% endfor %}
+            
+                {% for pl in pls %}
+                  {
+                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                    "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{pl[1]}}",
+                    "performanceLevelMet": true
+                  } {% if not loop.last %},{% endif %}
+                {% endfor %}
+              ],
+              "scoreResults": [
+                {% set srs = [] %}
+                {% set all_score_results = [['Benchmark Predictor', 'Integer', predictor],
+                                            ['Reading Focus', 'Level', reading_focus],
+                                            ['Percent Completed', 'Decimal', percent_completed],
+                                            ['Current Unit', 'Integer', current_unit],
+                                            ['Max Unit', 'Integer', max_unit],
+                                            ['Activity Time', 'Decimal', activity_time],
+                                            ['Attempts At Standard', 'Integer', attempts_at_standard],
+                                            ['Attempts At Practice', 'Integer', attempts_at_practice],
+                                            ['Attempts At Instruction', 'Integer', attempts_at_instruction],
+                                            ['Level', 'Level', levelname],
+                                            ['Grade Level of Material', 'Level', grade_level_material],
+                                            ['Units To Benchmark', 'Integer', units_to_benchmark],
+                                            ['Weekly Usage Target', 'Integer', weekly_usage_target],
+                                            ['Weekly Units Target', 'Integer', weekly_units_target],
+                                            ['Lessons Delivered', 'Integer', lessons_delivered],
+                                            ['Current Usage Target', 'Integer', current_usage_target],
+                                            ['Current Units Target', 'Integer', current_units_target],
+                                            ['Level Skill Check', 'Integer', level_skill_check],
+                                            ['Activity Skill Check', 'Integer', activity_skill_check]] %}
 
-              {% for score_result in all_score_results %}
-                {% if score_result[2] is not none and score_result[2] | length %}
-                  {% set _ = pls.append(score_result) %}
-                {% endif %}
-              {% endfor %}
-          
-              {% for sr in srs %}
-                {
-                  "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
-                  "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
-                  "result": "{{score[2]}}"
-                } {% if not loop.last %},{% endif %}
-              {% endfor %}
-            ]
-          },
-          {%-endraw%}
+                {% for score_result in all_score_results %}
+                  {% if score_result[2] is not none and score_result[2] | length %}
+                    {% set _ = pls.append(score_result) %}
+                  {% endif %}
+                {% endfor %}
+            
+                {% for sr in srs %}
+                  {
+                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+                    "result": "{{score[2]}}"
+                  } {% if not loop.last %},{% endif %}
+                {% endfor %}
+              ]
+            },
+            {%-endraw%}
       - operation: modify_columns
         columns:
           student_objective_assessment_json: "{%raw%}{{student_objective_assessment_json | replace('\n', '')-}}{%endraw%}"
@@ -274,6 +274,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.joined_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
