@@ -1,0 +1,71 @@
+{
+  "studentAssessmentIdentifier": "{{ref_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "Lexia Core5",
+    "namespace": "uri://www.lexialearning.com"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{school_year}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id }}"
+  },
+  "administrationDate": "{{first_use}}",
+  "administrationEndDate": "{{last_use}}",
+
+  {% if met_benchmark is not none and met_benchmark | length %}
+  "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
+        "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#met_benchmark",
+        "performanceLevelMet": true
+      } 
+  ],
+  {% endif %}
+
+  "scoreResults": [
+  {% set srs = [] %}
+  {% set all_score_results = [['Start Grade Level of Material', 'Level', start_glm],
+                              ['Start Lexia Level', 'Integer', start_lexia_level],
+                              ['Start Status', 'Integer', start_status],
+                              ['Start Status Label', 'Level', start_status_label],
+                              ['Current Grade Level of Material', 'Level', current_glm],
+                              ['Current Lexia Level', 'Integer', current_lexia_level],
+                              ['Current Lexia Level Percent', 'Integer', current_lexia_level_percent],
+                              ['Current Status', 'Integer', current_status],
+                              ['Current Status Label', 'Level', current_status_label],
+                              ['Grade Levels of Material Gained YTD', 'Integer', glm_gained],
+                              ['Levels Completed YTD', 'Integer', levels_completed],
+                              ['Activities Completed YTD', 'Integer', activities_completed],
+                              ['Units Completed YTD', 'Integer', units_completed],
+                              ['Weeks of Use YTD', 'Integer', weeks_of_use],
+                              ['Weekly Average', 'Integer', weekly_average],
+                              ['Target Average', 'Integer', target_average],
+                              ['Weeks Met Usage', 'Integer', weeks_met_usage],
+                              ['Percent Weeks Met Usage', 'Decimal', percent_weeks_met_usage],
+                              ['Target Missed Average', 'Integer', target_missed_average],
+                              ['Total Minutes YTD', 'Integer', total_minutes],
+                              ['Avg Units Per Week', 'Integer', avg_units_per_week],
+                              ['Months of Growth', 'Decimal', months_of_growth_approx]] %}
+
+  {% for score_result in all_score_results %}
+    {% if score_result[2] is not none and score_result[2] | length %}
+      {% set _ = pls.append(score_result) %}
+    {% endif %}
+  {% endfor %}
+
+  {% for sr in srs %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "result": "{{score[2]}}"
+    } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+
+  {% if student_objective_assessment_json is defined %}
+  ,
+  "studentObjectiveAssessments": [{{student_objective_assessment_json}}]
+  {% endif %}
+
+}
