@@ -143,6 +143,9 @@ transformations:
     source: $sources.detail_file
     operations:
       - operation: snake_case_columns
+      - operation: filter_rows
+        query: activity_name == ''
+        behavior: exclude
       - operation: map_values
         columns:
           - needs_instruction
@@ -215,15 +218,15 @@ transformations:
 
                 {% for score_result in all_score_results %}
                   {% if score_result[2] is not none and score_result[2] | length %}
-                    {% set _ = pls.append(score_result) %}
+                    {% set _ = srs.append(score_result) %}
                   {% endif %}
                 {% endfor %}
             
                 {% for sr in srs %}
                   {
-                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
-                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
-                    "result": "{{score[2]}}"
+                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{sr[0]}}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{sr[1]}}",
+                    "result": "{{sr[2]}}"
                   } {% if not loop.last %},{% endif %}
                 {% endfor %}
               ]
