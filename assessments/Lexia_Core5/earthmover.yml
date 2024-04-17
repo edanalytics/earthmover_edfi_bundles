@@ -22,6 +22,70 @@ sources:
   detail_file:
     file: ${DETAILED_FILE}
     header_rows: 1
+    optional: True 
+    columns: 
+      - district_id
+      - District_name
+      - school_id
+      - school_name
+      - classes
+      - class_names
+      - staff
+      - Lexia_ID
+      - username
+      - fname
+      - lname
+      - grade_label
+      - Predictor_date
+      - Predictor
+      - risk_level
+      - activity_id
+      - activity_name
+      - reading_focus
+      - needs_instruction
+      - accuracy
+      - rate
+      - percent_completed
+      - current_unit
+      - max_unit
+      - status_flag_complete
+      - advanced
+      - activity_start_time
+      - activity_end_time
+      - activity_time
+      - attempts_at_standard
+      - attempts_at_practice
+      - attempts_at_instruction
+      - levelname
+      - grade_level_material
+      - units_to_benchmark
+      - today_mins
+      - today_units
+      - week_time
+      - weekly_usage_target
+      - meeting_target_usage
+      - week_units
+      - weekly_units_target
+      - certificate_delivered
+      - skillbuilder_delivered
+      - lessons_delivered
+      - current_usage_target
+      - current_units_target
+      - Level_Skill_Check
+      - Activity_Skill_Check
+      - date_of_birth
+      - gender
+      - race
+      - hispanic_latino
+      - IDEA
+      - esl_ell
+      - title_I
+      - studentrefid
+      - schoolrefid
+      - classrefid
+      - sis_id
+    optional: True 
+
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -43,10 +107,10 @@ sources:
   student_id_mapping:
     file: ${STUDENT_ID_XWALK}
     header_rows: 1
+    optional: True 
     columns: 
       - student_id_from 
       - student_id_to
-    optional: True 
   {% endif %}
 
 
