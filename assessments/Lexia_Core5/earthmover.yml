@@ -157,6 +157,9 @@ transformations:
         mapping:
           '0': 'No'
           '1': 'Yes'
+      - operation: modify_columns
+        columns:
+          activity_name: "{%raw%}{{ activity_name|replace(',', '') }}{%endraw%}"
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
         columns:
