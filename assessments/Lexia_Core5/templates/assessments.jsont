@@ -4,7 +4,7 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [
     {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Prekindergarten"
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
     },
     {
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
@@ -46,10 +46,22 @@
       "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
     }
   ],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
-      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
+      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#Yes",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
+      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#No",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   "scores": [
@@ -140,18 +152,6 @@
     {
       "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Months of Growth",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
-    }
-  ],
-  "performanceLevels": [
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
-      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#Yes",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
-      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#No",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]
 }
