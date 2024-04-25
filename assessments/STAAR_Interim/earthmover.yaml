@@ -2,7 +2,7 @@
 version: 2
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
   memory_limit: 1GB
   state_file: ./runs.csv
