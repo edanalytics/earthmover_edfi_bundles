@@ -15,7 +15,7 @@ then run the following command, noting that the <code>SCIENCE</code> parameter m
 earthmover run -c ./CMAS/earthmover.yaml -p '{
 "BUNDLE_DIR": "./CMAS/",
 "CMAS_RESULTS_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
-"CMAS_GROWTH_FILE": "./CMAS/data/cmas_Growth_file.xlsx
+"CMAS_GROWTH_FILE": "./CMAS/data/cmas_Growth_file.xlsx",
 "OUTPUT_DIR": "./CMAS/output",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",
