@@ -1,0 +1,30 @@
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "staar_interim",
+    "namespace": "uri://tea.texas.gov/student-assessment"
+  },
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Raw Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Above",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Near",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Strength/Weakness Indicator",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Under",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
