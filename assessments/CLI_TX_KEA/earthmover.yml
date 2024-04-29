@@ -371,7 +371,7 @@ sources:
   'generated_test_id',
   'subject_name',
   'subject_descriptor', 
-  'subject_assessment_type',
+  'subject_assess_lang',
   'subject_score',
   'subject_cut_point',
   'subject_date',  
@@ -740,7 +740,7 @@ transformations:
           subject_assessment_id: cli_tx_kea_{{ subject_values.subject_assess_id }}
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
-          subject_assessment_type: {{ subject_assess_lang }}
+          subject_assess_lang: {{ subject_assess_lang }}
           generated_test_id: '{%raw%}{{ student_wave_id }}_{{ subject_assessment_id }}{%endraw%}'
 
       # Addressing subjects without a Cut Point column: -------------------------------------------------------------------
@@ -903,10 +903,10 @@ transformations:
 
       # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
       - operation: filter_rows
-        query: subject_score != '' and subject_date != ''
+        query: subject_score != '' and subject_date != '' and student_state_id != ''
         behavior: include 
 
-      {% if subject_name not in ('kea_dyslexia_screener_results_kea_dyslexia_screener', 'kea_literacy_screening_results_kea_literacy_screening', 'txkea_literacy_reading_composite', 'txkea_language_composite_results_txkea_language_composite') %}
+      {% if subject_name not in ('kea_dyslexia_screener_results_kea_dyslexia_screener', 'kea_literacy_screening_results_kea_literacy_screening', 'txkea_literacy_reading_composite_results_txkea_literacy_reading_composite', 'txkea_language_composite_results_txkea_language_composite') %}
       - operation: date_format
         columns:
           - subject_date
