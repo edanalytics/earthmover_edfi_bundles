@@ -87,16 +87,16 @@ sources:
     optional: True 
 
   assessments:
-    file: ./seeds/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   {% if "${DATABASE_CONNECTION}" | length %}
   student_id_mapping:
@@ -265,21 +265,21 @@ transformations:
 destinations:
   assessments:
     source: $sources.assessments
-    template: ./templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ./templates/performanceLevelDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ./templates/objectiveAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.joined_results
-    template: ./templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
