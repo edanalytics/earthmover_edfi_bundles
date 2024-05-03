@@ -737,7 +737,7 @@ transformations:
 
       - operation: add_columns
         columns:
-          subject_assessment_id: cli_tx_kea_{{ subject_values.subject_assess_id }}
+          subject_assessment_id: tx_kea_{{ subject_values.subject_assess_id }}
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ subject_assess_lang }}
