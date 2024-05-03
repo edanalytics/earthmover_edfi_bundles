@@ -372,6 +372,7 @@ sources:
   'subject_name',
   'subject_descriptor', 
   'subject_assess_lang',
+  'subject_assess_type',
   'subject_score',
   'subject_cut_point',
   'subject_date',  
@@ -741,6 +742,7 @@ transformations:
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ subject_assess_lang }}
+          subject_assess_type: {{ subject_assess_type }}
           generated_test_id: '{%raw%}{{ student_wave_id }}_{{ subject_assessment_id }}{%endraw%}'
 
       # Addressing subjects without a Cut Point column: -------------------------------------------------------------------
