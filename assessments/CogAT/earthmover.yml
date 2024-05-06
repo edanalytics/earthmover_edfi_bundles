@@ -73,7 +73,7 @@ transformations:
         {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
         {% for test in raw_tests %}
           # 2 chars each
-          raw_score{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}(2 * {{loop.index - 1}}) + {{loop.index - 1}}:{{loop.index}}{% raw %}]}}{% endraw %}"
+          raw_score_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
         {% endfor %}
 
         {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
