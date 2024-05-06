@@ -35,7 +35,7 @@
       {% set _ = perf_levels.append([chance_composite_vqn, 'Chance Flag']) %}
     {% endif %}
 
-    {% if Ability_Profile is not none and Ability_Profile | length " %}
+    {% if Ability_Profile is not none and Ability_Profile | length %}
       {% set _ = perf_levels.append([Ability_Profile, 'Ability Profile']) %}
     {% endif %}
 
