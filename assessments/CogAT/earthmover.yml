@@ -75,6 +75,8 @@ transformations:
           completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           sas_valid_{{test}}: "{% raw %}{{SAS_Valid_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           tmo_{{test}}: "{% raw %}{{TMO_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          ev_{{test}}: "{% raw %}{{Extremely_Variable_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
         {% endfor %}
 
 

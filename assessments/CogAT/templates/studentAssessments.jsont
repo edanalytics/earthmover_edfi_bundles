@@ -27,6 +27,18 @@
       {% set _ = perf_levels.append([tmo_composite_vqn, 'Too Many Omits Flag']) %}
     {% endif %}
 
+    {% if ev_composite_vqn is not none and ev_composite_vqn == "1" %}
+      {% set _ = perf_levels.append([ev_composite_vqn, 'Extremely Variable Flag']) %}
+    {% endif %}
+
+    {% if chance_composite_vqn is not none and chance_composite_vqn == "1" %}
+      {% set _ = perf_levels.append([chance_composite_vqn, 'Chance Flag']) %}
+    {% endif %}
+
+    {% if Ability_Profile is not none and Ability_Profile | length " %}
+      {% set _ = perf_levels.append([Ability_Profile, 'Ability Profile']) %}
+    {% endif %}
+
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
