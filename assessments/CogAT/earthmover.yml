@@ -70,8 +70,16 @@ transformations:
     operations:
       - operation: add_columns
         columns:
+        {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
+        {% for test in raw_tests %}
+          # 2 chars each
+          raw_score{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}(2 * {{loop.index - 1}}) + {{loop.index - 1}}:{{loop.index}}{% raw %}]}}{% endraw %}"
+        {% endfor %}
+
         {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
-        {% for test in all_tests %} 
+        {% for test in all_tests %}
+
+          # flag variables - 1 char each
           completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           sas_valid_{{test}}: "{% raw %}{{SAS_Valid_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           tmo_{{test}}: "{% raw %}{{TMO_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
