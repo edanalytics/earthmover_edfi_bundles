@@ -30,6 +30,9 @@ df = pd.read_fwf(
     header=None,
     names=colnames,
     colspecs=colspecs,
+    # if we don't do this, columns that contain a string of flags (e.g. "0000100")
+    #    will be read in as integers and written as "100"
+    converters={c: str for c in colnames},
 )
 
 df.to_csv(os.path.join(os.getcwd(), f"{Path(filepath).stem}.csv"), index=False)

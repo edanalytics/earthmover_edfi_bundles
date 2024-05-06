@@ -11,12 +11,20 @@
     "studentUniqueId": "{{studentUniqueID}}"
   },
   "administrationDate": "{{adminDate}}",
-  "xyz": "{{Completion_Criteria_CC}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{gradeLevel}}",
   "performanceLevels": [
     {% set perf_levels = [] %}
+
     {% if completed_composite_vqn is not none and completed_composite_vqn == "1" %}
       {% set _ = perf_levels.append([completed_composite_vqn, 'Completion Criteria Met']) %}
+    {% endif %}
+
+    {% if sas_valid_composite_vqn is not none and sas_valid_composite_vqn == "1" %}
+      {% set _ = perf_levels.append([sas_valid_composite_vqn, 'Standard Age Score Valid Flag']) %}
+    {% endif %}
+
+    {% if tmo_composite_vqn is not none and tmo_composite_vqn == "1" %}
+      {% set _ = perf_levels.append([tmo_composite_vqn, 'Too Many Omits Flag']) %}
     {% endif %}
 
     {% for perf_level in perf_levels %}
