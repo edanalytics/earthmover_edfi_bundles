@@ -3,12 +3,12 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: ${OUTPUT_DIR}
+  output_dir: ./output/ #${OUTPUT_DIR} # TODO: change back
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
   show_stacktrace: true
-    parameter_defaults:
+  parameter_defaults:
     STUDENT_ID_NAME: ''
     STUDENT_ID_FROM: ''
     STUDENT_ID_XWALK: ''
@@ -49,7 +49,7 @@ sources:
 
 
 transformations:
-  clean_results:
+  clean_results: # TODO: name?
     source: $sources.results_file
     operations:
       - operation: join 
@@ -57,7 +57,23 @@ transformations:
           - $sources.student_id_mapping
         left_key: ${STUDENT_ID_FROM}
         right_key: student_id_from
-        join_type: left    
+        join_type: left
+      - operation: map_values
+        column: Class_Grade
+        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
+      - operation: date_format
+        column: Date_Tested
+        from_format: "%m%d%Y"
+        to_format: "%Y-%m-%d"
+  scored_results:
+    sources: $transformations.scored_results
+    operations:
+      - operation: add_columns
+        columns:
+        {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
+        {% for test in all_tests %} 
+          - completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+        {% endfor %}
 
 
 destinations:
@@ -78,6 +94,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.scored_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl

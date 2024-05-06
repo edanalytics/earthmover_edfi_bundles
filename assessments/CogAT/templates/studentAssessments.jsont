@@ -1,8 +1,8 @@
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{assessmentIdentifier}}",
-    "namespace": "{{namespace}}"
+    "assessmentIdentifier": "CogAT",
+    "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
   },
   "schoolYearTypeReference": {
     "schoolYear": "{{schoolYear}}"
@@ -34,8 +34,8 @@
   "performanceLevels": [
     {% set perf_levels = [] %}
 
-    {% if performanceLevel is not none and performanceLevel | length %}
-      {% set _ = perf_levels.append([performanceLevel, 'Performance Level']) %}
+    {% if completed_verbal is not none and completed_verbal == 1 %}
+      {% set _ = perf_levels.append([completed_verbal, 'Completion Criteria Met']) %}
     {% endif %}
 
     {% if goalMet is not none and goalMet | length %}
