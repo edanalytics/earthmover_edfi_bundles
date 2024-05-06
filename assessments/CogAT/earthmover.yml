@@ -11,7 +11,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: ''
     STUDENT_ID_FROM: ''
-    STUDENT_ID_XWALK: ''
+    STUDENT_ID_XWALK: './seeds/exampleXwalk.csv'
     STUDENT_ID_QUERY: ''
     DATABASE_CONNECTION: ''
 
@@ -66,13 +66,13 @@ transformations:
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
   scored_results:
-    sources: $transformations.scored_results
+    source: $transformations.clean_results
     operations:
       - operation: add_columns
         columns:
         {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
         {% for test in all_tests %} 
-          - completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
         {% endfor %}
 
 

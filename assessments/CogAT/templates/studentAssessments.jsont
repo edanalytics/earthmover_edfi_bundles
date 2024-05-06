@@ -11,76 +11,20 @@
     "studentUniqueId": "{{studentUniqueID}}"
   },
   "administrationDate": "{{adminDate}}",
+  "xyz": "{{Completion_Criteria_CC}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{gradeLevel}}",
-  "scoreResults": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{subject}}"
-    }
-    {% if scaleScore is not none and scaleScore | length %},
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{scaleScore}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SEM",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
-      "result": "{{sem}}"
-    }
-    {% endif %}
-  ],
   "performanceLevels": [
     {% set perf_levels = [] %}
-
-    {% if completed_verbal is not none and completed_verbal == 1 %}
-      {% set _ = perf_levels.append([completed_verbal, 'Completion Criteria Met']) %}
-    {% endif %}
-
-    {% if goalMet is not none and goalMet | length %}
-      {% set _ = perf_levels.append([goalMet, 'Goat Met']) %}
+    {% if completed_composite_vqn is not none and completed_composite_vqn == "1" %}
+      {% set _ = perf_levels.append([completed_composite_vqn, 'Completion Criteria Met']) %}
     {% endif %}
 
     {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{perf_level[0]}}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
-  "studentObjectiveAssessments": [
-  {% set possible_obj_assess = [['Math1-3', 'math123Percentage', 'math123Level'],
-                                ['Math4-6', 'math456Percentage', 'math456Level']] %}
-  {% set all_obj_assessment = [] %}
-  {%- for obj in possible_obj_assess -%}
-    {% if obj[1] is not none and obj[1] | length %}
-      {% set _= all_obj_assessment.append(obj) %}
-    {% endif %}
-  {% endfor %}
-  {%- for obj in all_obj_assessment -%}
-  {
-    "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
-    },
-    "scoreResults": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
-        "result": "{{obj[1]}}"
-      }
-    ],
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
-        "performanceLevelMet": true
-      }
-    ] 
-  } {% if not loop.last %},{% endif %}
-  {% endfor %}
-  ]
 }
