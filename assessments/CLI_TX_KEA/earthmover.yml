@@ -742,7 +742,7 @@ transformations:
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ subject_assess_lang }}
-          subject_assess_type: {{ subject_assess_type }}
+          subject_assess_type: {{ subject_values.subject_assess_type }}
           generated_test_id: '{%raw%}{{ student_wave_id }}_{{ subject_assessment_id }}_{{ subject_assess_lang }}{%endraw%}'
 
       # Addressing subjects without a Cut Point column: -------------------------------------------------------------------
