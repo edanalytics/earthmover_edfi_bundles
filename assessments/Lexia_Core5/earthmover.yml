@@ -18,9 +18,11 @@ config:
 sources:
   ytd_file:
     file: ${YTD_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
   detail_file:
     file: ${DETAILED_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
     optional: True 
     columns: 
