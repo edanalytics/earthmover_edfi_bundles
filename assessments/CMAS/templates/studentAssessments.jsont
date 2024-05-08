@@ -52,6 +52,18 @@
     {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
       {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
     {% endif %} 
+
+    {% if SGP != '' and SGP  %}
+      {% set _ = scores.append([SGP, 'Student Growth Percentile', 'Integer']) %}
+    {% endif %} 
+
+    {% if AGP != '' %}
+      {% set _ = scores.append([AGP, 'Adequate Student Growth Percentile', 'Integer']) %}
+    {% endif %} 
+
+    {% if SGP_BASELINE != '' %}
+      {% set _ = scores.append([SGP_BASELINE, 'Student Growth Percentile Baseline', 'Integer']) %}
+    {% endif %} 
     
     {% if CalculatedInvalidation == 'Valid Score' %}
       {% if alternate_assessment == 'N' %}
@@ -165,6 +177,38 @@
         {% if PerfLVL is not none and PerfLVL | length %}
           {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
         {% endif %}
+      {% endif %}
+
+      {% if INCLUDED_PFWK_CALCS_DIST is not none and INCLUDED_PFWK_CALCS_DIST | length %}
+        {% set _ = perf_levels.append([INCLUDED_PFWK_CALCS_DIST, 'Included in District Calculations']) %}
+      {% endif %}
+
+      {% if INCLUDED_PFWK_CALCS_SCH is not none and INCLUDED_PFWK_CALCS_SCH | length %}
+        {% set _ = perf_levels.append([INCLUDED_PFWK_CALCS_SCH, 'Included in School Calculations']) %}
+      {% endif %}
+
+      {% if ON_TRACK is not none and ON_TRACK | length %}
+        {% set _ = perf_levels.append([ON_TRACK, 'On Track']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L1_TO_L2 is not none and ON_TRACK_L1_TO_L2 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L1_TO_L2, 'On Track L1 to L2']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L2_TO_L3 is not none and ON_TRACK_L2_TO_L3 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L2_TO_L3, 'On Track L2 to L3']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L3_TO_L4 is not none and ON_TRACK_L3_TO_L4 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L3_TO_L4, 'On Track L3 to L4']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L4_TO_L4 is not none and ON_TRACK_L4_TO_L4 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L4_TO_L4, 'On Track L4 to L4']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L5_TO_L5 is not none and ON_TRACK_L5_TO_L5 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L5_TO_L5, 'On Track L5 to L5']) %}
       {% endif %}
 
     {% for perf_level in perf_levels %}

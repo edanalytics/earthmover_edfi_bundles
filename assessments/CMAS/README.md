@@ -6,17 +6,16 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 * **Submitter organization**: Education Analytics
 
 To run this bundle, please add your own source file(s):
-<details>
-<summary><code>data/cmas_Student_Data_File.csv</code></summary>
+* <code>data/cmas_Student_Data_File.csv</code>
+* (optional) <code>data/cmas_Growth_File.xlsx</code> 
 
-
-</details>
 
 then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files and N for ELA/Math files. <code>STUDENT_ID_NAME</code> will be "StateStudentIdentifier" or "LocalStudentIdentifier" depending on which field is used for <code>student_unique_id</code> in Ed-Fi:
 ```bash
 earthmover run -c ./CMAS/earthmover.yaml -p '{
 "BUNDLE_DIR": "./CMAS/",
-"INPUT_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
+"CMAS_RESULTS_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
+"CMAS_GROWTH_FILE": "./CMAS/data/cmas_Growth_file.xlsx",
 "OUTPUT_DIR": "./CMAS/output",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",
