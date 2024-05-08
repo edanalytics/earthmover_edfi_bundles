@@ -80,8 +80,6 @@ transformations:
           raw_pse_{{test}}: "{% raw %}{{Raw_Score_Personal_Standard_Error[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}]}}{% endraw %}"
           raw_upper_{{test}}: "{% raw %}{{Raw_Score_Upper_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}]}}{% endraw %}"
           raw_lower_{{test}}: "{% raw %}{{Raw_Score_Lower_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}]}}{% endraw %}"
-          
-          # TODO: raw score error, bounds
         {% endfor %}
 
         {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
@@ -111,8 +109,6 @@ transformations:
           # 6 chars each
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
-
-
         {% endfor %}
   #coded_results:
   #  source: $transformations.scored_results
