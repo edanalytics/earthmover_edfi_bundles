@@ -122,9 +122,16 @@
     {% set all_obj_assess = {
       "verbal": {
         "scores": [
-          ("Raw score", raw_score_verbal, "Integer")
-          ("Number attempted", number_attempted_verbal, "Integer")
-          ("Universal scale score", uss_verbal, "Integer")
+          ("Raw score", raw_score_verbal, "Integer"),
+          ("Number attempted", number_attempted_verbal, "Integer"),
+          ("Universal scale score", uss_verbal, "Integer"),
+          ("Standard Age Score", sas_verbal, "Integer"),
+          ("Grade Percentile Rank", gpr_verbal, "Integer"),
+          ("Age Percentile Rank", apr_verbal, "Integer"),
+          ("Local Percentile Rank", lpr_verbal, "Integer"),
+          ("Grade Stanine", gs_verbal, "Integer"),
+          ("Age Stanine", as_verbal, "Integer"),
+          ("Local Stanine", ls_verbal, "Integer")
         ],
         "performanceLevels": [
           ("Completion Criteria Met", completed_verbal)
