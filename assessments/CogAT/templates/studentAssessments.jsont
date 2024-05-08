@@ -120,7 +120,7 @@
   "studentObjectiveAssessments": [
     {# CC flag,   NA,   RS   (error, upper, lower), USS,  SAS  (upper, lower), GPR,   APR, LPR,   GS,   AS,   LS, valid flag, TMO flag, EV flag, chance flag #}
     {% set all_obj_assess = {
-      "verbal": {
+      "Verbal": {
         "scores": [
           ("Raw score", raw_score_verbal, "Integer"),
           ("Number attempted", number_attempted_verbal, "Integer"),
@@ -146,7 +146,7 @@
           ("Chance Flag", chance_verbal)
         ]
       },
-      "quantitative": {
+      "Quantitative": {
         "scores": [
           ("Raw score", raw_score_quantitative, "Integer"),
           ("Number attempted", number_attempted_quantitative, "Integer"),
@@ -172,7 +172,7 @@
           ("Chance Flag", chance_quantitative)
         ]
       },
-      "nonverbal": {
+      "Nonverbal": {
         "scores": [
           ("Raw score", raw_score_nonverbal, "Integer"),
           ("Number attempted", number_attempted_nonverbal, "Integer"),
@@ -198,7 +198,7 @@
           ("Chance Flag", chance_nonverbal)
         ]
       },
-      "composite_vq": {
+      "Composite (V+Q)": {
         "scores": [
           ("Universal scale score", uss_composite_vq, "Integer"),
           ("Standard Age Score", sas_composite_vq, "Integer"),
@@ -219,7 +219,7 @@
           ("Chance Flag", chance_composite_vq)
         ]
       },
-      "composite_vn": {
+      "Composite (V+N)": {
         "scores": [
           ("Universal scale score", uss_composite_vn, "Integer"),
           ("Standard Age Score", sas_composite_vn, "Integer"),
@@ -240,7 +240,7 @@
           ("Chance Flag", chance_composite_vn)
         ]
       },
-      "composite_qn": {
+      "Composite (Q+N)": {
         "scores": [
           ("Universal scale score", uss_composite_qn, "Integer"),
           ("Standard Age Score", sas_composite_qn, "Integer"),
