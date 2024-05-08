@@ -120,7 +120,7 @@
   "studentObjectiveAssessments": [
     {# CC flag,   NA,   RS   (error, upper, lower), USS,  SAS  (upper, lower), GPR,   APR, LPR,   GS,   AS,   LS, valid flag, TMO flag, EV flag, chance flag #}
     {% set all_obj_assess = {
-      "verbal": 
+      "verbal": {
         "scores": [
           ("Raw score", raw_score_verbal, "Integer")
         ],
