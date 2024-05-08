@@ -73,8 +73,8 @@ transformations:
         {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
         {% for test in raw_tests %}
           # 2 chars each
-          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
-          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
+          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
+          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
 
           # TODO: raw score error, bounds
         {% endfor %}
@@ -88,6 +88,9 @@ transformations:
           tmo_{{test}}: "{% raw %}{{TMO_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           ev_{{test}}: "{% raw %}{{Extremely_Variable_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+
+          # 3 chars each
+          uss_{{test}}: "{% raw %}{{Universal_Scale_Score_USS[{% endraw %}(3 * {{loop.index - 1}}):(3 * {{loop.index - 1}}) + 3{% raw %}]}}{% endraw %}"
         {% endfor %}
   #coded_results:
   #  source: $transformations.scored_results
