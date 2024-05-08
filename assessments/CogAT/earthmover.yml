@@ -114,14 +114,15 @@ transformations:
   coded_results:
     source: $transformations.scored_results
       - operation: map_values
-        columns:
-        {% for test in all_tests %}
-          - completed_{{test}}
-          - sas_valid_{{test}}
-          - tmo_{{test}}
-          - ev_{{test}}
-          - chance_{{test}}
-        {% endfor %}
+        column: completed_verbal
+
+        #{% for test in all_tests %}
+        #  - completed_{{test}}
+        #  - sas_valid_{{test}}
+        #  - tmo_{{test}}
+        #  - ev_{{test}}
+        #  - chance_{{test}}
+        #{% endfor %}
         mapping:
           1: "Y"
           0: "N"
