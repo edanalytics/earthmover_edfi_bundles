@@ -12,6 +12,75 @@
   },
   "administrationDate": "{{adminDate}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{gradeLevel}}",
+  "scoreResults": [
+  {% set scores = [] %}
+
+    {% if Battery is not none and Battery | length %}
+      {% set _ = scores.append([Battery, 'Battery', 'Level']) %}
+    {% endif %}
+
+    {% if Level is not none and Level | length %}
+      {% set _ = scores.append([Level, 'Level', 'Level']) %}
+    {% endif %}
+
+    {% if Norm_Year is not none and Norm_Year | length %}
+      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
+    {% endif %}
+
+    {% if Norm_Year is not none and Norm_Year | length %}
+      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
+    {% endif %}
+
+    {# FIXME: what if incomplete?? #}
+
+    {% if Universal_Scale_Score_USS_composite_vqn is not none and Universal_Scale_Score_USS_composite_vqn | length %}
+      {% set _ = scores.append([Universal_Scale_Score_USS_composite_vqn, 'Universal Scale Score', 'Integer']) %}
+    {% endif %}
+
+    {% if Standard_Age_Score_SAS_composite_vqn is not none and Standard_Age_Score_SAS_composite_vqn | length %}
+      {% set _ = scores.append([Standard_Age_Score_SAS_composite_vqn, 'Standard Age Score', 'Integer']) %}
+    {% endif %}
+
+    {% if SAS_Upper_Bound_composite_vqn is not none and SAS_Upper_Bound_composite_vqn | length %}
+      {% set _ = scores.append([SAS_Upper_Bound_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
+    {% endif %}
+
+    {% if SAS_Lower_Bound_composite_vqn is not none and SAS_Lower_Bound_composite_vqn | length %}
+      {% set _ = scores.append([SAS_Lower_Bound_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
+    {% endif %}
+
+    {% if Grade_Percentile_Rank_GPR_composite_vqn is not none and Grade_Percentile_Rank_GPR_composite_vqn | length %}
+      {% set _ = scores.append([Grade_Percentile_Rank_GPR_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if Age_Percentile_Rank_APR_composite_vqn is not none and Age_Percentile_Rank_APR_composite_vqn | length %}
+      {% set _ = scores.append([Age_Percentile_Rank_APR_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if Local_Percentile_Rank_composite_vqn is not none and Local_Percentile_Rank_composite_vqn | length %}
+      {% set _ = scores.append([Local_Percentile_Rank_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if Grade_Stanine_GS_composite_vqn is not none and Grade_Stanine_GS_composite_vqn | length %}
+      {% set _ = scores.append([Grade_Stanine_GS_composite_vqn, 'Grade Stanine', 'Level']) %}
+    {% endif %}
+    
+    {% if Age_Stanine_AS_composite_vqn is not none and Age_Stanine_AS_composite_vqn | length %}
+      {% set _ = scores.append([Age_Stanine_AS_composite_vqn, 'Age Stanine', 'Level']) %}
+    {% endif %}
+
+    {% if Local_Stanines_composite_vqn is not none and Local_Stanines_composite_vqn | length %}
+      {% set _ = scores.append([Local_Stanines_composite_vqn, 'Local Stanine', 'Level']) %}
+    {% endif %}
+
+        {% for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0]}}"
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
   "performanceLevels": [
     {% set perf_levels = [] %}
 
@@ -47,4 +116,65 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
+
+  "studentObjectiveAssessments": [
+    {# CC flag,   NA,   RS   (error, upper, lower), USS,  SAS  (upper, lower), GPR,   APR, LPR,   GS,   AS,   LS, valid flag, TMO flag, EV flag, chance flag #}
+    {% set all_obj_assess = {
+      "verbal": 
+        "scores": [
+          ("Raw score", raw_score_verbal, "Integer")
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_verbal)
+        ]
+    } %}
+
+    {% for obj_assess in all_obj_assess %}
+      {% set all_scores = [] %}
+      {% for score in all_obj_assess[obj_assess]["scores"] %}
+        {# TODO: indexing? #}
+        {% if score[1] is not none and score[1] | length %}
+          {% set _ = all_scores.append((score[0], score[1], score[2]))%}
+        {% endif %}
+      {% endfor %}
+
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "CogAT",
+          "identificationCode": "{{obj_assess}}",
+          "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
+        },
+
+        "performanceLevels": [
+          {# guaranteed to be some #}
+          {% for pl in all_obj_assess[obj_assess]["performanceLevels"] %}
+            {
+              "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+              "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#{{pl[1]}}",
+              "performanceLevelMet": true
+            }
+            {%- if not loop.last -%}
+              ,
+            {% endif %}
+          {%- endfor -%}
+        ],
+
+        "scoreResults": [
+          {%- for score in all_scores -%}
+            {
+              "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+              "result": "{{score[1]}}"
+            }
+            {%- if not loop.last -%}
+              ,
+            {% endif %}
+          {%- endfor -%}
+        ]
+      }
+      {%- if not loop.last -%}
+        ,
+      {% endif %} 
+    {%- endfor -%}
+  ]
 }
