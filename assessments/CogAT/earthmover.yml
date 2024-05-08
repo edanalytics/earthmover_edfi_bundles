@@ -73,7 +73,10 @@ transformations:
         {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
         {% for test in raw_tests %}
           # 2 chars each
-          raw_score_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
+          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
+          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 1{% raw %}]}}{% endraw %}"
+
+          # TODO: raw score error, bounds
         {% endfor %}
 
         {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
@@ -86,7 +89,24 @@ transformations:
           ev_{{test}}: "{% raw %}{{Extremely_Variable_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
         {% endfor %}
-
+  coded_results:
+    source: $transformations.scored_results
+      - operation: map_values
+        columns:
+          - a
+          - b
+        mapping:
+          "1": "Y"
+          "0": "N"
+          "": "N"
+          " ": "N"
+          "  ": "N"
+          "   ": "N"
+          "    ": "N"
+          "     ": "N"
+          "      ": "N"
+          "       ": "N"
+          
 
 destinations:
   assessments:
