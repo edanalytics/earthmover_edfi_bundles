@@ -75,7 +75,7 @@ transformations:
         
         {% for test in raw_tests %}
           # 2 chars each
-          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
+          number_attempted_{{test}}: "{% raw %}int({{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}){% endraw %}"
           raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
 
           # 7 chars each
@@ -85,7 +85,6 @@ transformations:
         {% endfor %}
 
         {% for test in all_tests %}
-
           # flag variables - 1 char each
           completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
           sas_valid_{{test}}: "{% raw %}{{SAS_Valid_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
@@ -111,30 +110,30 @@ transformations:
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
         {% endfor %}
-  coded_results:
-    source: $transformations.scored_results
-      - operation: map_values
-        column: completed_verbal
+  #coded_results:
+  #  source: $transformations.scored_results
+  #    - operation: map_values
+  #      column: completed_verbal#
 
-        #{% for test in all_tests %}
-        #  - completed_{{test}}
-        #  - sas_valid_{{test}}
-        #  - tmo_{{test}}
-        #  - ev_{{test}}
-        #  - chance_{{test}}
-        #{% endfor %}
-        mapping:
-          1: "Y"
-          0: "N"
-          #- "": "N"
-          #- " ": "N"
-          #- "  ": "N"
-          #- "   ": "N"
-          #- "    ": "N"
-          #- "     ": "N"
-          #- "      ": "N"
-          #- "       ": "N"
-          # TODO: nulls / na?
+  #      #{% for test in all_tests %}
+  #      #  - completed_{{test}}
+  #      #  - sas_valid_{{test}}
+  #      #  - tmo_{{test}}
+  #      #  - ev_{{test}}
+  #      #  - chance_{{test}}
+  #      #{% endfor %}
+  #      mapping:
+  #        1: "Y"
+  #        0: "N"
+  #        #- "": "N"
+  #        #- " ": "N"
+  #        #- "  ": "N"
+  #        #- "   ": "N"
+  #        #- "    ": "N"
+  #        #- "     ": "N"
+  #        #- "      ": "N"
+  #        #- "       ": "N"
+  #        # TODO: nulls / na?
 
 destinations:
   assessments:
