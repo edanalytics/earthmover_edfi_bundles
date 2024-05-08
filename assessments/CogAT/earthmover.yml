@@ -75,8 +75,8 @@ transformations:
         
         {% for test in raw_tests %}
           # 2 chars each
-          number_attempted_{{test}}: "{% raw %}int({{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}){% endraw %}"
-          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
+          number_attempted_{{test}}: int("{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %})"
+          raw_score_{{test}}: "{% raw %}int({{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}){% endraw %}"
 
           # 7 chars each
           raw_pse_{{test}}: "{% raw %}{{Raw_Score_Personal_Standard_Error[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}]}}{% endraw %}"
