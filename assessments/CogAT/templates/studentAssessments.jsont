@@ -23,8 +23,8 @@
       {% set _ = scores.append([Level, 'Level', 'Level']) %}
     {% endif %}
 
-    {% if Norm_Year is not none and Norm_Year | length %}
-      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
+    {% if Form is not none and Form | length %}
+      {% set _ = scores.append([Form, 'Form', 'Level']) %}
     {% endif %}
 
     {% if Norm_Year is not none and Norm_Year | length %}
@@ -127,8 +127,8 @@
         "performanceLevels": [
           ("Completion Criteria Met", completed_verbal)
         ]
-    }
-    %}
+      }
+    } %}
 
     {% for obj_assess in all_obj_assess %}
       {% set all_scores = [] %}
@@ -150,8 +150,8 @@
           {# guaranteed to be some #}
           {% for pl in all_obj_assess[obj_assess]["performanceLevels"] %}
             {
-              "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-              "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#{{pl[1]}}",
+              "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+              "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{pl[1]}}",
               "performanceLevelMet": true
             }
             {%- if not loop.last -%}
@@ -163,8 +163,8 @@
         "scoreResults": [
           {%- for score in all_scores -%}
             {
-              "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+              "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
               "result": "{{score[1]}}"
             }
             {%- if not loop.last -%}
