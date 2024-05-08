@@ -131,10 +131,19 @@
           ("Local Percentile Rank", lpr_verbal, "Integer"),
           ("Grade Stanine", gs_verbal, "Integer"),
           ("Age Stanine", as_verbal, "Integer"),
-          ("Local Stanine", ls_verbal, "Integer")
+          ("Local Stanine", ls_verbal, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_verbal, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_verbal, "Decimal"),
+          ("Raw Score Personal Standard Error", raw_pse_verbal, "Decimal"),
+          ("Raw Score Upper Bound", raw_upper_verbal, "Decimal"),
+          ("Raw Score Lower Bound", raw_lower_verbal, "Decimal")
         ],
         "performanceLevels": [
-          ("Completion Criteria Met", completed_verbal)
+          ("Completion Criteria Met", completed_verbal),
+          ("Standard Age Score Valid Flag", sas_valid_verbal),
+          ("Too Many Omits Flag", tmo_verbal),
+          ("Extremely Variable Flag", ev_verbal),
+          ("Chance Flag", chance_verbal)
         ]
       }
     } %}
