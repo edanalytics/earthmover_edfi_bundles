@@ -123,8 +123,16 @@ transformations:
           - chance_{{test}}
         {% endfor %}
         mapping:
-          "1": "Y"
-          "0": "N"
+          1: "Y"
+          0: "N"
+          #- "": "N"
+          #- " ": "N"
+          #- "  ": "N"
+          #- "   ": "N"
+          #- "    ": "N"
+          #- "     ": "N"
+          #- "      ": "N"
+          #- "       ": "N"
           # TODO: nulls / na?
 
 destinations:
