@@ -35,7 +35,6 @@ sources:
       - student_id_from 
       - student_id_to
     optional: True 
-  {% endif %}
 
 transformations:
   {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
