@@ -75,7 +75,7 @@ transformations:
         
         {% for test in raw_tests %}
           # 2 chars each
-          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int}}{% endraw %}"
+          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
           raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
 
           # 7 chars each
@@ -110,6 +110,16 @@ transformations:
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
         {% endfor %}
+  coded_results:
+    operations:
+      - operation: modify_columns
+        columns:
+        {% for test in raw_tests %}
+          {% for int_score in ["number_attempted", "raw_score"] %}
+          {{int_score}}_{{test}}: "{% raw %} {{value | int}} {% endraw %}"
+          {% endfor %}
+        {% endfor %}
+
   #coded_results:
   #  source: $transformations.scored_results
   #    - operation: map_values

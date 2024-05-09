@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "studentAssessmentIdentifier": "{{TestInstance_GUID}}",
   "assessmentReference": {
     "assessmentIdentifier": "CogAT",
     "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
@@ -11,7 +11,7 @@
     "studentUniqueId": "{{studentUniqueID}}"
   },
   "administrationDate": "{{adminDate}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{gradeLevel}}",
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Class_Grade}}",
   "scoreResults": [
   {% set scores = [] %}
 
