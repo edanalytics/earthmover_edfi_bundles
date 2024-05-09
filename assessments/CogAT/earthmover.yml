@@ -110,16 +110,6 @@ transformations:
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
         {% endfor %}
-  coded_results:
-    source: $transformations.scored_results
-    operations:
-      - operation: modify_columns
-        columns:
-        {% for test in raw_tests %}
-          {% for int_score in ["number_attempted", "raw_score"] %}
-          {{int_score}}_{{test}}: "{% raw %}{{value | int}}{% endraw %}"
-          {% endfor %}
-        {% endfor %}
 
   #coded_results:
   #  source: $transformations.scored_results
@@ -164,6 +154,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.coded_results
+    source: $transformations.scored_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
