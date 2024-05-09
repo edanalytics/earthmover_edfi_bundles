@@ -181,6 +181,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.scored_results
+    source: $transformations.coded_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
