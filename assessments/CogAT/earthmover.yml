@@ -81,7 +81,7 @@ transformations:
         join_type: left
       - operation: duplicate_columns
         columns:
-          - student_id_to: studentUniqueID
+          student_id_to: studentUniqueID
       - operation: map_values
         column: Class_Grade
         map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
