@@ -54,6 +54,37 @@ transformations:
   clean_results: # TODO: name?
     source: $sources.results_file
     operations:
+      - keep_columns:
+        columns:
+          - Student_ID
+          - Date_Tested
+          - Class_Grade
+          - Battery
+          - Level
+          - Form
+          - Norm_Year
+          - Number_Attempted_NA
+          - Raw_Score_RS
+          - Raw_Score_Personal_Standard_Error
+          - Raw_Score_Upper_Bound
+          - Raw_Score_Lower_Bound
+          - Completion_Criteria_CC
+          - SAS_Valid_Flags
+          - TMO_Flags
+          - Extremely_Variable_Flags
+          - Chance_Flags
+          - Grade_Stanine_GS
+          - Age_Stanine_AS
+          - Local_Stanines
+          - Grade_Percentile_Rank_GPR
+          - Age_Percentile_Rank_APR
+          - Local_Percentile_Rank
+          - Universal_Scale_Score_USS
+          - Standard_Age_Score_SAS
+          - SAS_Upper_Bound
+          - SAS_Lower_Bound
+          - Ability_Profile
+          - TestInstance_GUID
       - operation: join 
         sources: 
           - $sources.student_id_mapping
@@ -62,6 +93,11 @@ transformations:
         join_type: left
       - operation: map_values
         column: Class_Grade
+        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
+      - operation: map_values
+        column: Ability_Profile
+        mapping:
+          "": "N/A"
         map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
       - operation: date_format
         column: Date_Tested
@@ -76,7 +112,6 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-        
         {% for test in raw_tests %}
           # 2 chars each
           number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}]}}{% endraw %}"
@@ -138,30 +173,6 @@ transformations:
           "     ": "N"
           "      ": "N"
           "       ": "N"
-  #coded_results:
-  #  source: $transformations.scored_results
-  #    - operation: map_values
-  #      column: completed_verbal#
-
-  #      #{% for test in all_tests %}
-  #      #  - completed_{{test}}
-  #      #  - sas_valid_{{test}}
-  #      #  - tmo_{{test}}
-  #      #  - ev_{{test}}
-  #      #  - chance_{{test}}
-  #      #{% endfor %}
-  #      mapping:
-  #        1: "Y"
-  #        0: "N"
-  #        #- "": "N"
-  #        #- " ": "N"
-  #        #- "  ": "N"
-  #        #- "   ": "N"
-  #        #- "    ": "N"
-  #        #- "     ": "N"
-  #        #- "      ": "N"
-  #        #- "       ": "N"
-  #        # TODO: nulls / na?
 
 destinations:
   assessments:
