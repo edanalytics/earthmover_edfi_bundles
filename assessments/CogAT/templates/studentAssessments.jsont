@@ -5,7 +5,7 @@
     "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
   },
   "schoolYearTypeReference": {
-    "schoolYear": "{{schoolYear}}"
+    "schoolYear": "{{school_year}}"
   },
   "studentReference": {
     "studentUniqueId": "{{studentUniqueID}}"
@@ -81,32 +81,16 @@
     } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
+  
   "performanceLevels": [
-    {% set perf_levels = [] %}
-
-    {% if completed_composite_vqn is not none and completed_composite_vqn == "1" %}
-      {% set _ = perf_levels.append([completed_composite_vqn, 'Completion Criteria Met']) %}
-    {% endif %}
-
-    {% if sas_valid_composite_vqn is not none and sas_valid_composite_vqn == "1" %}
-      {% set _ = perf_levels.append([sas_valid_composite_vqn, 'Standard Age Score Valid Flag']) %}
-    {% endif %}
-
-    {% if tmo_composite_vqn is not none and tmo_composite_vqn == "1" %}
-      {% set _ = perf_levels.append([tmo_composite_vqn, 'Too Many Omits Flag']) %}
-    {% endif %}
-
-    {% if ev_composite_vqn is not none and ev_composite_vqn == "1" %}
-      {% set _ = perf_levels.append([ev_composite_vqn, 'Extremely Variable Flag']) %}
-    {% endif %}
-
-    {% if chance_composite_vqn is not none and chance_composite_vqn == "1" %}
-      {% set _ = perf_levels.append([chance_composite_vqn, 'Chance Flag']) %}
-    {% endif %}
-
-    {% if Ability_Profile is not none and Ability_Profile | length %}
-      {% set _ = perf_levels.append([Ability_Profile, 'Ability Profile']) %}
-    {% endif %}
+    {% set perf_levels = [
+      (completed_composite_vqn, 'Completion Criteria Met'),
+      (sas_valid_composite_vqn, 'Standard Age Score Valid'),
+      (tmo_composite_vqn, 'Too Many Omits Flag'),
+      (ev_composite_vqn, 'Extremely Variable Flag'),
+      (chance_composite_vqn, 'Chance Flag'),
+      (Ability_Profile, 'Ability Profile'), /* TODO: make sure ability profile is not nan */
+    ] %}
 
     {% for perf_level in perf_levels %}
       {
@@ -265,7 +249,6 @@
     {% for obj_assess in all_obj_assess %}
       {% set all_scores = [] %}
       {% for score in all_obj_assess[obj_assess]["scores"] %}
-        {# TODO: indexing? #}
         {% if score[1] is not none and score[1] | length %}
           {% set _ = all_scores.append((score[0], score[1], score[2]))%}
         {% endif %}
@@ -297,7 +280,7 @@
             {
               "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
-              "result": {{score[1]}}
+              "result": "{{score[1]}}"
             }
             {%- if not loop.last -%}
               ,
