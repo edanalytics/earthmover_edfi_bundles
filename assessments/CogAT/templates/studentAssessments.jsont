@@ -121,8 +121,8 @@
     {% set all_obj_assess = {
       "Verbal": {
         "scores": [
-          ("Raw score", int(raw_score_verbal), "Integer"),
-          ("Number attempted", int(number_attempted_verbal), "Integer"),
+          ("Raw score", raw_score_verbal, "Integer"),
+          ("Number attempted", number_attempted_verbal, "Integer"),
           ("Universal scale score", uss_verbal, "Integer"),
           ("Standard Age Score", sas_verbal, "Integer"),
           ("Grade Percentile Rank", gpr_verbal, "Integer"),
@@ -297,7 +297,7 @@
             {
               "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
-              "result": "{{score[1]}}"
+              "result": {{score[1]}}
             }
             {%- if not loop.last -%}
               ,
