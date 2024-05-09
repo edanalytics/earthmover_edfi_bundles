@@ -54,7 +54,7 @@ transformations:
   clean_results: # TODO: name?
     source: $sources.results_file
     operations:
-      - keep_columns:
+      - operation: keep_columns
         columns:
           - Student_ID
           - Date_Tested
