@@ -89,8 +89,9 @@
       (tmo_composite_vqn, 'Too Many Omits Flag'),
       (ev_composite_vqn, 'Extremely Variable Flag'),
       (chance_composite_vqn, 'Chance Flag'),
-      (Ability_Profile, 'Ability Profile') /* TODO: make sure ability profile is not nan */
+      (Ability_Profile, 'Ability Profile') 
     ] %}
+    {#  TODO: make sure ability profile is not nan #}
 
     {% for perf_level in perf_levels %}
       {
