@@ -117,7 +117,7 @@ transformations:
         columns:
         {% for test in raw_tests %}
           {% for int_score in ["number_attempted", "raw_score"] %}
-          {{int_score}}_{{test}}: "{% raw %} {{value | int}} {% endraw %}"
+          {{int_score}}_{{test}}: "{% raw %}{{value | int}}{% endraw %}"
           {% endfor %}
         {% endfor %}
 
