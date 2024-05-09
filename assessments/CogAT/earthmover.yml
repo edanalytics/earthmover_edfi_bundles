@@ -67,6 +67,10 @@ transformations:
         column: Date_Tested
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          school_year: ${SCHOOL_YEAR}
+
   scored_results:
     source: $transformations.clean_results
     operations:
@@ -110,7 +114,30 @@ transformations:
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}]}}{% endraw %}"
         {% endfor %}
-
+  coded_results:
+    source: $transformations.scored_results
+    operations:
+      # TODO: loop through different tests and all flag columns
+      - operation: map_values
+        columns:
+        {% for test in all_tests %}
+          - completed_{{test}}
+          - sas_valid_{{test}}
+          - tmo_{{test}}
+          - ev_{{test}}
+          - chance_{{test}}
+        {% endfor %}
+        mapping:
+          "0": "N"
+          "1": "Y"
+          "": "N"
+          " ": "N"
+          "  ": "N"
+          "   ": "N"
+          "    ": "N"
+          "     ": "N"
+          "      ": "N"
+          "       ": "N"
   #coded_results:
   #  source: $transformations.scored_results
   #    - operation: map_values
