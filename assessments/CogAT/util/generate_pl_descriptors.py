@@ -1,11 +1,19 @@
-import sys
+# Generates a CSV with all the possible CogAT performance levels. These primarily
+#   consist of "ability profiles," of which there are many.
+#
+#   Info on ability profiles: https://riversideinsights.com/citc/profile-finder
+#
+## HOW TO USE
+# python generate_pl_descriptors.py [outfile.csv]
+# Example:
+# python preprocessing.py seeds/performanceLevelDescriptors.csv
 
+import sys
 import pandas as pd
 
 outfile = sys.argv[1]
 
-# TODO: properly document this script
-# source: https://riversideinsights.com/citc/profile-finder
+
 mods = ["V-", "V+", "Q-", "Q+", "N-", "N+"]
 
 # initialize with non-abilityProfile values
