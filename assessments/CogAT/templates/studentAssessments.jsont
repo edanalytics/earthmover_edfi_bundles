@@ -276,7 +276,7 @@
 
         "scoreResults": [
           {%- for score in all_scores -%}
-            {%- if score is not none and score | int >=0 and score | len %}
+            {%- if score is not none and score | int >=0 and score | length %}
             {
               "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
