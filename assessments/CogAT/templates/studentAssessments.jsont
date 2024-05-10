@@ -282,8 +282,10 @@
               "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
               "result": "{{score[1]}}"
             }
-            {%- if not loop.last -%}
-              ,
+            {# seems problematic to mix these... #}
+              {%- if not loop.last -%}
+                ,
+              {% endif %}
             {% endif %}
           {%- endfor -%}
         ]
