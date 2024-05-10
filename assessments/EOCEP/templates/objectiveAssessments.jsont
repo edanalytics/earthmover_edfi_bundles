@@ -1,0 +1,25 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "uri://ed.sc.gov/SCDEAssessments"
+    },
+    "description": "{{description}}",
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://ed.sc.gov/SCDEAssessments/PerformanceLevelDescriptor#1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://ed.sc.gov/SCDEAssessments/PerformanceLevelDescriptor#2",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://ed.sc.gov/SCDEAssessments/PerformanceLevelDescriptor#3",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+  }
