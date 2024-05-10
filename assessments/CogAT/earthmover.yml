@@ -122,9 +122,9 @@ transformations:
           chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
 
           # 1 char each
-          gs_{{test}}: "{% raw %}{{Grade_Stanine_GS[{% endraw %}{{loop.index - 1}}{% raw %}] | int}}{% endraw %}"
-          as_{{test}}: "{% raw %}{{Age_Stanine_AS[{% endraw %}{{loop.index - 1}}{% raw %}] | int}}{% endraw %}"
-          ls_{{test}}: "{% raw %}{{Local_Stanines[{% endraw %}{{loop.index - 1}}{% raw %}] | int}}{% endraw %}"
+          gs_{{test}}: "{% raw %}{{Grade_Stanine_GS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          as_{{test}}: "{% raw %}{{Age_Stanine_AS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          ls_{{test}}: "{% raw %}{{Local_Stanines[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
 
           # 2 chars each
           gpr_{{test}}: "{% raw %}{{Grade_Percentile_Rank_GPR[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int}}{% endraw %}"
