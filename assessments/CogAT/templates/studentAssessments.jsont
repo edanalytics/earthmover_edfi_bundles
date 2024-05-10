@@ -31,45 +31,43 @@
       {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
     {% endif %}
 
-    {# FIXME: what if incomplete?? #}
-
-    {% if Universal_Scale_Score_USS_composite_vqn is not none and Universal_Scale_Score_USS_composite_vqn | length %}
+    {% if Universal_Scale_Score_USS_composite_vqn is not none and float(Universal_Scale_Score_USS_composite_vqn) >= 0 and Universal_Scale_Score_USS_composite_vqn | length %}
       {% set _ = scores.append([Universal_Scale_Score_USS_composite_vqn, 'Universal Scale Score', 'Integer']) %}
     {% endif %}
 
-    {% if Standard_Age_Score_SAS_composite_vqn is not none and Standard_Age_Score_SAS_composite_vqn | length %}
+    {% if Standard_Age_Score_SAS_composite_vqn is not none and float(Standard_Age_Score_SAS_composite_vqn) >= 0 and Standard_Age_Score_SAS_composite_vqn | length %}
       {% set _ = scores.append([Standard_Age_Score_SAS_composite_vqn, 'Standard Age Score', 'Integer']) %}
     {% endif %}
 
-    {% if SAS_Upper_Bound_composite_vqn is not none and SAS_Upper_Bound_composite_vqn | length %}
+    {% if SAS_Upper_Bound_composite_vqn is not none and float(SAS_Upper_Bound_composite_vqn) >= 0 and SAS_Upper_Bound_composite_vqn | length %}
       {% set _ = scores.append([SAS_Upper_Bound_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if SAS_Lower_Bound_composite_vqn is not none and SAS_Lower_Bound_composite_vqn | length %}
+    {% if SAS_Lower_Bound_composite_vqn is not none and float(SAS_Lower_Bound_composite_vqn) >= 0 and SAS_Lower_Bound_composite_vqn | length %}
       {% set _ = scores.append([SAS_Lower_Bound_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if Grade_Percentile_Rank_GPR_composite_vqn is not none and Grade_Percentile_Rank_GPR_composite_vqn | length %}
+    {% if Grade_Percentile_Rank_GPR_composite_vqn is not none and float(Grade_Percentile_Rank_GPR_composite_vqn) >= 0 and Grade_Percentile_Rank_GPR_composite_vqn | length %}
       {% set _ = scores.append([Grade_Percentile_Rank_GPR_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if Age_Percentile_Rank_APR_composite_vqn is not none and Age_Percentile_Rank_APR_composite_vqn | length %}
+    {% if Age_Percentile_Rank_APR_composite_vqn is not none and float(Age_Percentile_Rank_APR_composite_vqn) >= 0 and Age_Percentile_Rank_APR_composite_vqn | length %}
       {% set _ = scores.append([Age_Percentile_Rank_APR_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if Local_Percentile_Rank_composite_vqn is not none and Local_Percentile_Rank_composite_vqn | length %}
+    {% if Local_Percentile_Rank_composite_vqn is not none and float(Local_Percentile_Rank_composite_vqn) >= 0 and Local_Percentile_Rank_composite_vqn | length %}
       {% set _ = scores.append([Local_Percentile_Rank_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if Grade_Stanine_GS_composite_vqn is not none and Grade_Stanine_GS_composite_vqn | length %}
+    {% if Grade_Stanine_GS_composite_vqn is not none and float(Grade_Stanine_GS_composite_vqn) >= 0 and Grade_Stanine_GS_composite_vqn | length %}
       {% set _ = scores.append([Grade_Stanine_GS_composite_vqn, 'Grade Stanine', 'Level']) %}
     {% endif %}
     
-    {% if Age_Stanine_AS_composite_vqn is not none and Age_Stanine_AS_composite_vqn | length %}
+    {% if Age_Stanine_AS_composite_vqn is not none and float(Age_Stanine_AS_composite_vqn) >= 0 and Age_Stanine_AS_composite_vqn | length %}
       {% set _ = scores.append([Age_Stanine_AS_composite_vqn, 'Age Stanine', 'Level']) %}
     {% endif %}
 
-    {% if Local_Stanines_composite_vqn is not none and Local_Stanines_composite_vqn | length %}
+    {% if Local_Stanines_composite_vqn is not none and float(Local_Stanines_composite_vqn) >= 0 and Local_Stanines_composite_vqn | length %}
       {% set _ = scores.append([Local_Stanines_composite_vqn, 'Local Stanine', 'Level']) %}
     {% endif %}
 
@@ -278,6 +276,7 @@
 
         "scoreResults": [
           {%- for score in all_scores -%}
+            {%- if score is not none and float(score) >= 0 and score | len %}
             {
               "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
