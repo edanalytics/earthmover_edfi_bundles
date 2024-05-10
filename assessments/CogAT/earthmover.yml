@@ -142,7 +142,6 @@ transformations:
   coded_results:
     source: $transformations.scored_results
     operations:
-      # TODO: loop through different tests and all flag columns
       - operation: map_values
         columns:
         {% for test in all_tests %}
