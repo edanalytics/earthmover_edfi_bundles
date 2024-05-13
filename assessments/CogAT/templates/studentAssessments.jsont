@@ -258,7 +258,9 @@
       "myScores": [
           {%- for score in my_scores -%}
             {
-              "x": {{score}}
+              "x": {{score[0]}},
+              "y": {{score[1]}},
+              "z": {{score[2]}}
             }
               {%- if not loop.last -%}
                 ,
