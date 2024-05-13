@@ -112,7 +112,7 @@ transformations:
         - USHCLev3
         - USHCLev4
         - USHCLev5
-        mapfile: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+        mapfile: ${BUNDLE_DIR}/seeds/perf_level_xwalk.csv
       - operation: add_columns
         column:
           school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
