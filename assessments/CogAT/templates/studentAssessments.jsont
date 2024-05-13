@@ -249,7 +249,7 @@
       {% set all_scores = [] %}
       {% set my_scores = [] %}
       {% for score in all_obj_assess[obj_assess]["scores"] %}
-        {% set _ = my_scores.append((score[0], score[1]))%}
+        {% set _ = my_scores.append(score)%}
         {% if score[1] is not none and score | int >= 0 and score not in ["-1", "-1.0"] and score[1] | length %}
           {% set _ = all_scores.append((score[0], score[1], score[2]))%}
         {% endif %}
@@ -258,7 +258,7 @@
       "myScores": [
           {%- for score in my_scores -%}
             {
-              "{{scores[0]}}": "{{score[1]}}"
+              "x": {{score}}
             }
               {%- if not loop.last -%}
                 ,
