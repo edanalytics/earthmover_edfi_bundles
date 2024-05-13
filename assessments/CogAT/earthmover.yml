@@ -89,6 +89,9 @@ transformations:
         column: Ability_Profile
         mapping:
           "": "N/A"
+      - operation: modify_columns
+        columns:
+          Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
