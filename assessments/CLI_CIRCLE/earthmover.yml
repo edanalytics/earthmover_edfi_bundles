@@ -575,7 +575,7 @@ transformations:
         rank_column: rank      
       - operation: add_columns
         columns:
-          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ student_state_id }}{{ rank }}{%endraw%}'
+          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ school_engage_id }}_{{ student_engage_id }}_{{ rank }}{%endraw%}'
 
 
 # TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
