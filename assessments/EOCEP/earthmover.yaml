@@ -1,0 +1,162 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  tmp_dir: ${TEMPORARY_DIRECTORY}
+  parameter_defaults:
+    STUDENT_ID_NAME: Student ID
+    STUDENT_ID_FROM: Student ID
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+
+sources:
+
+  grade_level_descriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  academic_subject_descriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+  assessment_reporting_method_descriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performance_level_descriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  objective_assessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+
+  eocep_input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    optional_fields:
+    - AlgLev1
+    - AlgLev2
+    - AlgLev3
+    - BioLev1
+    - BioLev2
+    - BioLev3
+    - BioLev4
+    - BioLev5
+    - BioLev6
+    - Eng1Lev1
+    - Eng1Lev2
+    - Eng1Lev3
+    - Eng1Lev3
+    - Eng2Lev1
+    - Eng2Lev2
+    - Eng2Lev3
+    - Level
+    - USHCLev1
+    - USHCLev2
+    - USHCLev3
+    - USHCLev4
+    - USHCLev5
+
+#
+
+transformations:
+
+  eocep_student_assessments:
+    source: $sources.eocep_input
+    operations:
+      - operation: join 
+        sources: 
+          - $sources.student_id_mapping
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from
+        join_type: left
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
+      - operation: rename_columns
+        columns:
+          Student Grade: student_grade
+      - operation: map_values
+        column: Grade
+        map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+      - operation: map_values
+        columns: 
+        - AlgLev1
+        - AlgLev2
+        - AlgLev3
+        - BioLev1
+        - BioLev2
+        - BioLev3
+        - BioLev4
+        - BioLev5
+        - BioLev6
+        - Eng2Lev1
+        - Eng2Lev2
+        - Eng2Lev3
+        - USHCLev1
+        - USHCLev2
+        - USHCLev3
+        - USHCLev4
+        - USHCLev5
+        mapfile: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+      - operation: add_columns
+        column:
+          school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
+
+destinations:
+
+  gradeLevelDescriptors:
+    source: $sources.grade_level_descriptors
+    template: ${BUNDLE_DIR}/templates/gradeLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  academicSubjectDescriptors:
+    source: $sources.academic_subject_descriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+
+  objectiveAssessments:
+    source: $sources.objective_assessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessment_reporting_method_descriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  performanceLevelDescriptors:
+    source: $sources.performance_level_descriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessments:
+    source: $transformations.eocep_student_assessments
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
