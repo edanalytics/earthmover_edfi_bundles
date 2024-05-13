@@ -1,0 +1,162 @@
+{
+  "studentAssessmentIdentifier": "{{UID}}",
+  "assessmentReference": {
+
+    "assessmentIdentifier": "{{"EOCEP-" + Subject}}",
+    "namespace": "uri://ed.sc.gov/SCDEAssessments/EOCEP"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{TestDate}}",
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
+
+  "scoreResults": [
+  {%- set scores = [] -%}
+
+    {%- if Lex is not none and Lex | length -%}
+      {%- set _ = scores.append([Lex, 'Lex', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if LexLow is not none and LexLow | length -%}
+      {%- set _ = scores.append([LexLow, 'LexLow', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if LexUp is not none and LexUp | length -%}
+      {%- set _ = scores.append([LexUp, 'LexUp', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if QuantLow is not none and QuantLow | length -%}
+      {%- set _ = scores.append([QuantLow, 'QuantLow', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if QuantUp is not none and QuantUp | length -%}
+      {%- set _ = scores.append([QuantUp, 'QuantUp', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if Level is not none and Level | length -%}
+      {%- set _ = scores.append([Level, 'Level', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if TDAScore is not none and TDAScore | length -%}
+      {%- set _ = scores.append([TDAScore, 'TDAScore', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if TDANoScore is not none and TDANoScore | length -%}
+      {%- set _ = scores.append([TDANoScore, 'TDANoScore', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if QuantNPR is not none and QuantNPR | length -%}
+      {%- set _ = scores.append([QuantNPR, 'QuantNPR', 'Level']) -%}
+    {%- endif -%}
+
+    {%- if TestAdmin is not none and TestAdmin | length -%}
+      {%- set _ = scores.append([TestAdmin, 'TestAdmin', 'Level']) -%}
+    {%- endif -%}
+
+
+    {%- for score in scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0]}}"
+    } {%- if not loop.last -%},{%-endif -%}
+    {%- endfor -%}
+  ],
+
+  "performanceLevels": [
+
+    ],
+
+    "studentObjectiveAssessments": [
+        {%- set all_obj_assess = [] -%}
+        {%- if Subject == 'E' -%}
+          {%- if Eng2Lev1 is not none and Eng2Lev1 | length -%}
+            {%- set _ = all_obj_assess.append(['Informational Text', Eng2Lev1]) -%}
+          {%- endif -%}
+          {%- if Eng2Lev2 is not none and Eng2Lev2 | length -%}
+            {%- set _ = all_obj_assess.append(['Literary Text', Eng2Lev2]) -%}
+          {%- endif -%}
+          {%- if Eng2Lev3 is not none and Eng2Lev3 | length -%}
+            {%- set _ = all_obj_assess.append(['Writing (to include TDA and Communication)', Eng2Lev3]) -%}
+          {%- endif -%}
+        {%- endif %}
+
+        {%- if Subject == 'A' -%}
+          {%- if AlgLev1 is not none and AlgLev1 | length -%}
+            {%- set _ = all_obj_assess.append(['Algebra', AlgLev1]) -%}
+          {%- endif -%}
+          {%- if AlgLev2 is not none and AlgLev2 | length -%}
+            {%- set _ = all_obj_assess.append(['Functions', AlgLev2]) -%}
+          {%- endif -%}
+          {%- if AlgLev3 is not none and AlgLev3 | length -%}
+            {%- set _ = all_obj_assess.append(['AlgLev3	Number and Quantity; Interpreting Data', ALgLev3]) -%}
+          {%- endif -%}
+        {%- endif %}
+
+        {%- if Subject == 'B' -%}
+          {%- if BioLev1 is not none and BioLev1 | length -%}
+            {%- set _ = all_obj_assess.append(['H.B.1 Science and Engineering Practices']) -%}
+          {%- endif -%}
+          {%- if BioLev2 is not none and BioLev2 | length -%}
+            {%- set _ = all_obj_assess.append(['H.B.2 Cells as a System', BioLev2]) -%}
+          {%- endif -%}
+          {%- if BioLev3 is not none and BioLev3 | length -%}
+            {%- set _ = all_obj_assess.append(['H.B.3 Energy Transfer', BioLev3]) -%}
+          {%- endif -%}
+          {%- if BioLev4 is not none and BioLev4 | length -%}
+            {%- set _ = all_obj_assess.append(['H.B.4 Heredity-Inheritance and Variation of Traits', BioLev4]) -%}
+          {%- endif -%}
+          {%- if BioLev5 is not none and BioLev5 | length -%}
+            {%- set _ = all_obj_assess.append(['B.5 Biological Evolution and the Diversity of Life', BioLev5]) -%}
+          {%- endif -%}
+          {%- if BioLev6 is not none and BioLev6 | length -%}
+            {%- set _ = all_obj_assess.append(['H.B.6 Ecosystem Dynamics', BioLev6]) -%}
+          {%- endif -%}
+        {%- endif %}
+
+        {%- if Subject == 'H' -%}
+          {%- if USHCLev1 is not none and USHCLev1 | length -%}
+            {%- set _ = all_obj_assess.append(['Foundations of American Republicanism', USHCLev1]) -%}
+          {%- endif -%}
+          {%- if USHCLev2 is not none and USHCLev2 | length -%}
+            {%- set _ = all_obj_assess.append(['Expansion and Union', USHCLev2]) -%}
+          {%- endif -%}
+          {%- if USHCLev3 is not none and USHCLev3 | length -%}
+            {%- set _ = all_obj_assess.append(['Capitalism and Reform', USHCLev3]) -%}
+          {%- endif -%}
+          {%- if USHCLev4 is not none and USHCLev4 | length -%}
+            {%- set _ = all_obj_assess.append(['Modernism and Interventionis', USHCLev4]) -%}
+          {%- endif -%}
+          {%- if USHCLev5 is not none and USHCLev5 | length -%}
+            {%- set _ = all_obj_assess.append(['Legacy of the Cold War', USHCLev5]) -%}
+          {%- endif -%}
+        {%- endif %}
+
+        {%- for obj_assess in all_obj_assess %}
+        {
+          "objectiveAssessmentReference": {
+              "assessmentIdentifier": "{{"EOCEP-" + Subject}}",
+            "identificationCode": "{{ obj_assess[0] }}",
+            "namespace": "uri://ed.sc.gov/SCDEAssessments/EOCEP"
+          },
+          "scoreResults": [
+
+          ]
+          {-% if obj_assess[6] != 'N/A' -%},    <--------------------------------------------------------------------------------------------------
+            "performanceLevels": [ 
+              {
+                "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Performance Level",
+                "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{ obj_assess[6] }}",
+                "performanceLevelMet": true
+              }
+            ]
+          {%- endif -%} 
+        } {%- if not loop.last -%},{%- endif -%}
+        {%- endfor -%}
+    ]
+
+}
