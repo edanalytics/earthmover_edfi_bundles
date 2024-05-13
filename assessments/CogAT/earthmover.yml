@@ -39,7 +39,7 @@ sources:
 transformations:
   {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
   {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
-  clean_results: # TODO: name?
+  clean_results:
     source: $sources.results_file
     operations:
       - operation: keep_columns
