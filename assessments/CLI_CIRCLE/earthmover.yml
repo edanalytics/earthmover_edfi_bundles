@@ -608,7 +608,7 @@ transformations:
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ subject_assess_lang }}
-          generated_test_id: '{%raw%}{{ student_wave_id }}__{{ subject_assessment_id }}{%endraw%}'
+          generated_test_id: '{%raw%}{{ student_wave_id }}__{{ subject_assessment_id }}_{{ subject_assess_lang }}{%endraw%}'
 
             
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
