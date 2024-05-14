@@ -73,7 +73,7 @@
 
     "studentObjectiveAssessments": [
         {%- set all_obj_assess = [] -%}
-        {%- if Subject == 'E' -%}
+        {%- if Subject == 'E2' -%}
           {%- if Eng2Lev1 is not none and Eng2Lev1 | length -%}
             {%- set _ = all_obj_assess.append(['Informational Text', Eng2Lev1]) -%}
           {%- endif -%}
@@ -145,17 +145,15 @@
           },
           "scoreResults": [
 
-          ]
-          {-% if obj_assess[6] != 'N/A' -%},    <--------------------------------------------------------------------------------------------------
+          ],
             "performanceLevels": [ 
               {
                 "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Performance Level",
-                "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{ obj_assess[6] }}",
+                "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
                 "performanceLevelMet": true
-              }
+              }{%- if not loop.last -%},{%- endif -%}
             ]
-          {%- endif -%} 
-        } {%- if not loop.last -%},{%- endif -%}
+        }{%- if not loop.last -%},{%- endif -%}
         {%- endfor -%}
     ]
 
