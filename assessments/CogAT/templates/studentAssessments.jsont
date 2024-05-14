@@ -12,6 +12,43 @@
   },
   "administrationDate": "{{Date_Tested}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Class_Grade}}",
+  "accommodations": [
+    {% set accs = [] %}
+
+    {% if braile is not none and braile | length %}
+      {% set _ = accs.append('Braile') %}
+    {% endif %}
+
+    {% if large_print is not none and large_print | length %}
+      {% set _ = accs.append('Large Print') %}
+    {% endif %}
+
+    {% if proctor_led is not none and proctor_led | length %}
+      {% set _ = accs.append('Proctor Led') %}
+    {% endif %}
+
+    {% if self_paced is not none and self_paced | length %}
+      {% set _ = accs.append('Self-Paced') %}
+    {% endif %}
+
+    {% if audio_type is not none and audio_type | length %}
+      {% set _ = accs.append('Audio Type') %}
+    {% endif %}
+
+    {% if extended_time is not none and extended_time | length %}
+      {% set _ = accs.append('Extended Time') %}
+    {% endif %}
+
+    {% if alt_v is not none and alt_v | length %}
+      {% set _ = accs.append('Alternative Verbal Reporting') %}
+    {% endif %}
+
+        {% for acc in accs %}
+    {
+      "accommodationDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AccommodationDescriptor#{{acc}}",
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
   "scoreResults": [
   {% set scores = [] %}
 
@@ -31,43 +68,43 @@
       {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
     {% endif %}
 
-    {% if uss_composite_vqn is not none and uss_composite_vqn | int >=0 and uss_composite_vqn | length %}
+    {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vqn | length %}
       {% set _ = scores.append([uss_composite_vqn, 'Universal Scale Score', 'Integer']) %}
     {% endif %}
 
-    {% if sas_composite_vqn is not none and sas_composite_vqn | int >=0 and sas_composite_vqn | length %}
+    {% if sas_composite_vqn is not none and sas_composite_vqn | int >= 0 and sas_composite_vqn | length %}
       {% set _ = scores.append([sas_composite_vqn, 'Standard Age Score', 'Integer']) %}
     {% endif %}
 
-    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >=0 and sas_upper_composite_vqn | length %}
+    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn | length %}
       {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if sas_lower_composite_vqn is not none and sas_upper_composite_vqn | int >=0 and sas_upper_composite_vqn | length %}
+    {% if sas_lower_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn | length %}
       {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >=0 and gpr_composite_vqn | length %}
+    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn | length %}
       {% set _ = scores.append([gpr_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if apr_composite_vqn is not none and apr_composite_vqn | int >=0 and apr_composite_vqn | length %}
+    {% if apr_composite_vqn is not none and apr_composite_vqn | int >= 0 and apr_composite_vqn | length %}
       {% set _ = scores.append([apr_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >=0 and lpr_composite_vqn | length %}
+    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >= 0 and lpr_composite_vqn | length %}
       {% set _ = scores.append([lpr_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if gs_composite_vqn is not none and gs_composite_vqn | int >=0 and gs_composite_vqn | length %}
+    {% if gs_composite_vqn is not none and gs_composite_vqn | int >= 0 and gs_composite_vqn | length %}
       {% set _ = scores.append([gs_composite_vqn, 'Grade Stanine', 'Level']) %}
     {% endif %}
     
-    {% if as_composite_vqn is not none and as_composite_vqn | int >=0 and as_composite_vqn | length %}
+    {% if as_composite_vqn is not none and as_composite_vqn | int >= 0 and as_composite_vqn | length %}
       {% set _ = scores.append([as_composite_vqn, 'Age Stanine', 'Level']) %}
     {% endif %}
 
-    {% if ls_composite_vqn is not none and ls_composite_vqn | int >=0 and ls_composite_vqn | length %}
+    {% if ls_composite_vqn is not none and ls_composite_vqn | int >= 0 and ls_composite_vqn | length %}
       {% set _ = scores.append([ls_composite_vqn, 'Local Stanine', 'Level']) %}
     {% endif %}
 
