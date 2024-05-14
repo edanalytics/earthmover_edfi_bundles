@@ -83,7 +83,7 @@
   "performanceLevels": [
     {% set perf_levels = [
       (completed_composite_vqn, 'Completion Criteria Met'),
-      (sas_valid_composite_vqn, 'Standard Age Score Valid'),
+      (sas_valid_composite_vqn, 'Standard Age Score Valid Flag'),
       (tmo_composite_vqn, 'Too Many Omits Flag'),
       (ev_composite_vqn, 'Extremely Variable Flag'),
       (chance_composite_vqn, 'Chance Flag'),
