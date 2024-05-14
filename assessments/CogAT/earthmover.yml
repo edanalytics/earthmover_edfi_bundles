@@ -28,13 +28,16 @@ sources:
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
   student_id_mapping:
     file: ${STUDENT_ID_XWALK}
     header_rows: 1
     columns: 
       - student_id_from 
       - student_id_to
-    optional: True 
+    optional: True
 
 transformations:
   {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
@@ -149,13 +152,13 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          braile: "{% raw %}{% if accommodations[4] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          large_print: "{% raw %}{% if accommodations[5] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          proctor_led: "{% raw %}{% if accommodations[6] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          self_paced: "{% raw %}{% if accommodations[7] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          audio_type: "{% raw %}{% if accommodations[8] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          extended_time: "{% raw %}{% if accommodations[11] == 1%}Y{% else %}a{% endif %}{% endraw %}"
-          alt_v: "{% raw %}{% if accommodations[12] == 1%}Y{% else %}a{% endif %}{% endraw %}"
+          braile: "{% raw %}{% if accommodations[4] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          large_print: "{% raw %}{% if accommodations[5] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          proctor_led: "{% raw %}{% if accommodations[6] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          self_paced: "{% raw %}{% if accommodations[7] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          audio_type: "{% raw %}{% if accommodations[8] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          extended_time: "{% raw %}{% if accommodations[11] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          alt_v: "{% raw %}{% if accommodations[12] == 1%}Y{% else %}{% endif %}{% endraw %}"
       - operation: map_values
         columns:
         {% for test in all_tests %}
@@ -197,4 +200,8 @@ destinations:
   studentAssessments:
     source: $transformations.coded_results
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ./templates/accommodationDescriptors.jsont
     extension: jsonl
