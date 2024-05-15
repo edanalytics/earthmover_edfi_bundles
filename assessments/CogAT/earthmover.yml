@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: DEBUG
+  log_level: ERROR
   output_dir: ./output/ #${OUTPUT_DIR} # TODO: change back
   memory_limit: 1GB
   state_file: ./runs.csv
@@ -107,6 +107,7 @@ transformations:
 
   scored_results:
     source: $transformations.clean_results
+    repartition: 100MB
     operations:
       - operation: add_columns
         columns:
@@ -149,6 +150,7 @@ transformations:
         {% endfor %}
   coded_results:
     source: $transformations.scored_results
+    debug: true
     operations:
       - operation: add_columns
         columns:
