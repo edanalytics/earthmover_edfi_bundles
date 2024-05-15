@@ -207,3 +207,7 @@ destinations:
     source: $sources.accommodationDescriptors
     template: ./templates/accommodationDescriptors.jsont
     extension: jsonl
+  debug_output:
+    source: $transformations.coded_results
+    template: ./templates/debugOutput.jsont
+    extension: jsonl
