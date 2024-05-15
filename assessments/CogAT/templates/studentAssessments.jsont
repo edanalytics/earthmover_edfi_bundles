@@ -45,7 +45,7 @@
 
         {% for acc in accs %}
     {
-      "accommodationDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AccommodationDescriptor#{{acc}}",
+      "accommodationDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AccommodationDescriptor#{{acc}}"
     } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
