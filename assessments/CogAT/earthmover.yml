@@ -152,13 +152,13 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          braile: "{% raw %}{% if accommodations[4] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          large_print: "{% raw %}{% if accommodations[5] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          proctor_led: "{% raw %}{% if accommodations[6] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          self_paced: "{% raw %}{% if accommodations[7] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          audio_type: "{% raw %}{% if accommodations[8] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          extended_time: "{% raw %}{% if accommodations[11] == 1%}Y{% else %}{% endif %}{% endraw %}"
-          alt_v: "{% raw %}{% if accommodations[12] == 1%}Y{% else %}{% endif %}{% endraw %}"
+          braile: "{% raw %}{% if accommodations[4] == 1%}Y{% endif %}{% endraw %}"
+          large_print: "{% raw %}{% if accommodations[5] == 1%}Y{% endif %}{% endraw %}"
+          proctor_led: "{% raw %}{% if accommodations[6] == 1%}Y{% endif %}{% endraw %}"
+          self_paced: "{% raw %}{% if accommodations[7] == 1%}Y{% endif %}{% endraw %}"
+          audio_type: "{% raw %}{% if accommodations[8] == 1%}Y{% endif %}{% endraw %}"
+          extended_time: "{% raw %}{% if accommodations[11] == 1%}Y{% endif %}{% endraw %}"
+          alt_v: "{% raw %}{% if accommodations[12] == 1%}Y{% endif %}{% endraw %}"
       - operation: map_values
         columns:
         {% for test in all_tests %}
