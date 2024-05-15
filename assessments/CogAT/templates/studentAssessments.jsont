@@ -15,31 +15,31 @@
   "accommodations": [
     {% set accs = [] %}
 
-    {% if braile is not none and braile | length %}
+    {% if braile == 'Y' %}
       {% set _ = accs.append('Braile') %}
     {% endif %}
 
-    {% if large_print is not none and large_print | length %}
+    {% if large_print  == 'Y' %}
       {% set _ = accs.append('Large Print') %}
     {% endif %}
 
-    {% if proctor_led is not none and proctor_led | length %}
+    {% if proctor_led  == 'Y' %}
       {% set _ = accs.append('Proctor Led') %}
     {% endif %}
 
-    {% if self_paced is not none and self_paced | length %}
+    {% if self_paced  == 'Y' %}
       {% set _ = accs.append('Self-Paced') %}
     {% endif %}
 
-    {% if audio_type is not none and audio_type | length %}
+    {% if audio_type  == 'Y' %}
       {% set _ = accs.append('Audio Type') %}
     {% endif %}
 
-    {% if extended_time is not none and extended_time | length %}
+    {% if extended_time  == 'Y' %}
       {% set _ = accs.append('Extended Time') %}
     {% endif %}
 
-    {% if alt_v is not none and alt_v | length %}
+    {% if alt_v  == 'Y' %}
       {% set _ = accs.append('Alternative Verbal Reporting') %}
     {% endif %}
 
