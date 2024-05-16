@@ -107,6 +107,9 @@ transformations:
           LexUp: "{%raw%}{{ LexUp | trim }}{%endraw%}"
           QuantLow: "{%raw%}{{ QuantLow | trim }}{%endraw%}"
           QuantUp: "{%raw%}{{ QuantUp | trim }}{%endraw%}"
+          Level: "{%raw%}{{ Level | trim }}{%endraw%}"
+          TDANoScore: "{%raw%}{{ TDANoScore | trim }}{%endraw%}"
+          QuantNPR: "{%raw%}{{ QuantNPR | trim }}{%endraw%}"
       - operation: map_values
         columns: 
         - AlgLev1
