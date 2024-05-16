@@ -316,7 +316,7 @@
           {%- for score in all_scores -%}
             {
               "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
-              "resultDatatypeTypeDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/ResultDatatypeTypeDescriptor#{{score[2]}}",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
               "result": "{{score[1]}}"
             }
               {%- if not loop.last -%}
