@@ -83,6 +83,14 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 
 # Maintenance notes
+
+### Assessment ID
+The `assessmentIdentifier` used in this repo is "NWEA-Map." Some implementations may wish to spell or format this differently (e.g. "NWEA-MAP"). Double check your implementation and, if necessary, update the following files prior to running:
+  - seeds/assessments.csv
+  - templates/objectiveAssessments.jsont
+  - templates/studentAssessment.jsont
+
+### Codegen
 There's an included file called `score_codegen.py` which uses the data in the seed tables to generate the long jinja snippets in the `jsont` files. 
 
 Whenever the Map file changes format, we only need to add rows to `assessmentReportingMethodDescriptors.csv` (and change the `is_deprecated` field for any deprecated columns). 
