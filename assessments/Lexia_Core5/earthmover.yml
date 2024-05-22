@@ -13,6 +13,7 @@ config:
     STUDENT_ID_FROM: 'sis_id'
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
+    INPUT_FILETYPE: 'csv'
 
 
 sources:
@@ -181,7 +182,6 @@ transformations:
                                           ['Rate', rate],
                                           ['Complete Flag', status_flag_complete],
                                           ['Advanced Flag', advanced],
-                                          ['Meeting Target Usage', meeting_target_usage],
                                           ['Certificate Delivered', certificate_delivered],
                                           ['Skillbuilder Delivered', skillbuilder_delivered]] %}
                 
@@ -211,13 +211,8 @@ transformations:
                                             ['Attempts At Practice', 'Integer', attempts_at_practice],
                                             ['Attempts At Instruction', 'Integer', attempts_at_instruction],
                                             ['Level', 'Level', levelname],
-                                            ['Grade Level of Material', 'Level', grade_level_material],
-                                            ['Units To Benchmark', 'Integer', units_to_benchmark],
-                                            ['Weekly Usage Target', 'Integer', weekly_usage_target],
-                                            ['Weekly Units Target', 'Integer', weekly_units_target],
+                                            ['Grade Level of Material', 'Level', grade_level_material],                                                                            
                                             ['Lessons Delivered', 'Integer', lessons_delivered],
-                                            ['Current Usage Target', 'Integer', current_usage_target],
-                                            ['Current Units Target', 'Integer', current_units_target],
                                             ['Level Skill Check', 'Integer', level_skill_check],
                                             ['Activity Skill Check', 'Integer', activity_skill_check]] %}
 
@@ -244,6 +239,10 @@ transformations:
       - operation: group_by
         group_by_columns:
           - username
+          - units_to_benchmark
+          - weekly_usage_target
+          - meeting_target_usage
+          - weekly_units_target
         create_columns: 
           student_objective_assessment_json: agg(student_objective_assessment_json,)
       # remove trailing comma
@@ -262,6 +261,10 @@ transformations:
         join_type: left  
         right_keep_columns:
           - student_objective_assessment_json
+          - units_to_benchmark
+          - weekly_usage_target
+          - meeting_target_usage
+          - weekly_units_target
 
 
 destinations:
