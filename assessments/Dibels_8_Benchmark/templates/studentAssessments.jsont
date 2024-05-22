@@ -132,7 +132,7 @@
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[3][1]}}"
-        },
+        }
         {% endif %}
       ]
     }{%- if not loop.last -%},
