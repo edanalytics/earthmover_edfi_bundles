@@ -129,7 +129,7 @@
           {% endif %}
         {% elif obj[3] is defined and obj[3][1] != '' %}
         {
-          "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
+          "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[3][1]}}"
         }
