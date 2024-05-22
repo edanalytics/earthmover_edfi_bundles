@@ -5,7 +5,8 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 * **Submitter name**: Erik Joranlien
 * **Submitter organization**: Education Analytics
 
-To run this bundle, please add your own source file(s) and column(s):
+To run this bundle, you may need to update the following information:
+
 <details>
 <summary><code>data/AssessmentResults.csv</code></summary>
 This bundle works with the standard NWEA Map exports AssessmentResults.csv or 
@@ -13,7 +14,6 @@ ComboStudentAssessment.csv.
 
 It tries to retain compatibility across various versions of these file specifications
 by looking for both the old and new names of changed columns.
-
 
 </details>
 <details>
@@ -32,6 +32,15 @@ Required columns:
    - `to`
 </details>
 
+<details>
+<summary> Assessment ID </summary>
+
+The `assessmentIdentifier` used in this repo is "NWEA-Map." Some implementations may wish to spell or format this differently (e.g. "NWEA-MAP"). Double check your implementation and, if necessary, update the following files prior to running:
+  - seeds/assessments.csv
+  - templates/objectiveAssessments.jsont
+  - templates/studentAssessment.jsont
+
+</details>
 
 ## CLI Parameters
 
@@ -83,12 +92,6 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 
 # Maintenance notes
-
-### Assessment ID
-The `assessmentIdentifier` used in this repo is "NWEA-Map." Some implementations may wish to spell or format this differently (e.g. "NWEA-MAP"). Double check your implementation and, if necessary, update the following files prior to running:
-  - seeds/assessments.csv
-  - templates/objectiveAssessments.jsont
-  - templates/studentAssessment.jsont
 
 ### Codegen
 There's an included file called `score_codegen.py` which uses the data in the seed tables to generate the long jinja snippets in the `jsont` files. 
