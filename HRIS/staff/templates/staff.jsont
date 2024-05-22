@@ -8,24 +8,27 @@
     "firstName": "{{ staff_member['Name']['FirstName'] }}",
     "lastSurname": "{{ staff_member['Name']['LastSurname'] }}",
     "middleName": "{{ staff_member['Name']['MiddleName'] }}",
+    "birthDate": "{{ staff_member['BirthDate'] }}",
 
-    "generationCodeSuffix": "{{ staff_member['TX-GenerationCode'] }}",
+    "sexDescriptor": "{{ staff_member['TX-Sex'] }}",
     "hispanicLatinoEthnicity": "{{ staff_member['TX-HispanicLatinoEthnicity'] }}",
-    
-    "identificationCodes": [
-      {
-        "assigningOrganizationIdentificationCode": "{{ staff_member['StaffIdentificationCode']['@IdentificationSystem'] }}",
-        "identificationCode": "{{ staff_member['StaffIdentificationCode']['ID'] }}"
-      }
-    ],
-
     "races": [
       {
         "raceDescriptor": "{{ staff_member['TX-Race'] }}",
       }
     ],
-    "sexDescriptor": "{{ staff_member['TX-Sex'] }}",
-    "yearsOfPriorProfessionalExperience": "{{ staff_member['TX-TotalYearsOfProfessionalExperience'] }}"
+
+    "highestCompletedLevelOfEducationDescriptor": "{{ staff_member['TX-HighestDegreeLevel'] }}",
+
+    "_ext": {
+      "tx": {
+        "totalYearsProfExperience": "{{ staff_member['TX-TotalYearsOfProfessionalExperience'] }}",
+        "yearsExperienceInDistrict": "{{ staff_member['TX-YearsExperienceInDistrict'] }}",
+        "staffTypeCode": "{{ staff_member['TX-StaffTypeCode'] }}",
+        "paraprofessionalCertification": "{{ staff_member['TX-ParaprofessionalCertificationIndicator'] }}",
+        "generationCodeSuffix": "{{ staff_member['TX-GenerationCode'] }}"
+      }
+    }
 
   {% endfor %}
 }
