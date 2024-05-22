@@ -13,13 +13,24 @@
   "administrationDate": "{{first_use}}",
   "administrationEndDate": "{{last_use}}",
 
-  {% if met_benchmark is not none and met_benchmark | length %}
+  {% set pls = [] %}
+  {% set all_perf_levels = [['Meeting Target Usage', meeting_target_usage],
+                            ['Met Benchmark', met_benchmark]] %}
+  {% for perf_level in all_perf_levels %}
+    {% if perf_level[1] is not none and perf_level[1] | length %}
+      {% set _ = pls.append(perf_level) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if pls|length > 0 %}
   "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#Met Benchmark",
-        "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{met_benchmark}}",
-        "performanceLevelMet": true
-      } 
+    {% for pl in pls %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{pl[1]}}",
+      "performanceLevelMet": true
+    } {% if not loop.last %},{% endif %}
+  {% endfor %}
   ],
   {% endif %}
 
@@ -46,6 +57,9 @@
                               ['Target Missed Average', 'Integer', target_missed_average],
                               ['Total Minutes YTD', 'Integer', total_minutes],
                               ['Avg Units Per Week', 'Integer', avg_units_per_week],
+                              ['Units To Benchmark', 'Integer', units_to_benchmark],
+                              ['Weekly Usage Target', 'Integer', weekly_usage_target],
+                              ['Weekly Units Target', 'Integer', weekly_units_target],
                               ['Months of Growth', 'Decimal', months_of_growth_approx]] %}
 
   {% for score_result in all_score_results %}
