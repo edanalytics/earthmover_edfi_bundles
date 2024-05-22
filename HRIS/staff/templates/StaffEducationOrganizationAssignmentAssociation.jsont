@@ -1,0 +1,34 @@
+   
+{
+  {% for staff_member in StaffResponsibilitiesExtension %}
+    "id": "{{ md5(staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId']) }}",
+    "beginDate": "",
+    "staffClassificationDescriptor": "{{ staff_member['TX-StaffRole'] }}",
+
+    "educationOrganizationReference": {
+      "educationOrganizationId": "{{ staff_member['TX-LEAReference']['EducationalOrgIdentity']['StateOrganizationId'] }}"
+    },
+
+    "employmentStaffEducationOrganizationEmploymentAssociationReference": {
+      "educationOrganizationId": "{{ staff_member['TX-LEAReference']['EducationalOrgIdentity']['StateOrganizationId'] }}",
+      "employmentStatusDescriptor": "",
+      "staffUniqueId": "{{ staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+    },
+
+    "staffReference": {
+      "staffUniqueId": "{{ staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+    },
+
+
+    "_ext": {
+      "tx": {
+        "StaffService": "{{ staff_member['TX-ServiceId'] }}",
+        "PopulationServed": "{{ staff_member['TX-PopulationServed'] }}",
+        "MonthlyMinutes": "{{ staff_member['TX-MonthlyMinutes'] }}",
+        "NumberOfStudentsInClass": "{{ staff_member['TX-NumberOfStudentsInClass'] }}"
+      }
+    }
+
+  {% endfor %}
+}
+

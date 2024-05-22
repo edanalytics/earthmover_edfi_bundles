@@ -13,8 +13,29 @@ sources:
     object_type: frame 
     orientation: index
 
+# transformations:
+#   staff:
+#     source: $sources.hris_staff_input
+#     operations:
+#       - operation: add_columns
+#         columns:
+#         {% for staff_member in  %}
+#           - staff_unique_id: "{%raw%}{{ staff_member['StaffUniqueStateId'] }}{%endraw%}"
+#         {% endfor %}
+        
 destinations:
   staff:
     source: $sources.hris_staff_input
     template: ${BUNDLE_DIR}/templates/staff.jsont
     extension: jsonl
+    linearize: True
+  StaffEducationOrganizationAssignmentAssociation:
+    source: $sources.hris_staff_input
+    template: ${BUNDLE_DIR}/templates/StaffEducationOrganizationAssignmentAssociation.jsont
+    extension: jsonl
+    linearize: True
+  staffEducationOrganizationEmploymentAssociations:
+    source: $sources.hris_staff_input
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationEmploymentAssociations.jsont
+    extension: jsonl
+    linearize: True

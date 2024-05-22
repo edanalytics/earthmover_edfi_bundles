@@ -1,0 +1,27 @@
+   
+{
+  {% for staff_member in StaffEducationOrgEmploymentAssociation %}
+    "id": "{{ md5(staff_member['StaffReference']['StaffIdentity']['StaffUniqueStateId']) }}",
+    "employmentStatusDescriptor": "",
+    "EmploymentPeriod": "",
+
+    "educationOrganizationReference": {
+      "educationOrganizationId": "{{ staff_member['EducationOrganizationReference']['EducationalOrgIdentity']['StateOrganizationId'] }}"
+    },
+
+    "staffReference": {
+      "staffUniqueId": "{{ staff_member['StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+    },
+
+
+    "_ext": {
+      "tx": {
+        "PercentDaysEmployed": "{{ staff_member['TX-PercentDayEmployed'] }}",
+        "NumberDaysEmployed": "{{ staff_member['TX-NumberDaysEmployed'] }}",
+        "AuxiliaryRoleId": "{{ staff_member['TX-AuxiliaryRoleID'] }}",
+      }
+    }
+
+  {% endfor %}
+}
+
