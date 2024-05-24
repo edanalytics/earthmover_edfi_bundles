@@ -367,6 +367,10 @@ sources:
       {% endif %}
   accommodationDescriptors:
     file: ${BUNDLE_DIR}/seeds/accommodationDescriptors.csv
+    header_rows: 1
+  administrationEnvironmentDescriptors:
+    file: ${BUNDLE_DIR}/seeds/administrationEnvironmentDescriptors.csv
+    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -427,6 +431,10 @@ destinations:
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
     template: ${BUNDLE_DIR}/templates/accommodationDescriptors.jsont
+    extension: jsonl
+  administrationEnvironmentDescriptors:
+    source: $sources.administrationEnvironmentDescriptors
+    template: ${BUNDLE_DIR}/templates/administrationEnvironmentDescriptors.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
