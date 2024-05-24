@@ -4,11 +4,10 @@ version: 2
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
-  memory_limit: 1GB
-  state_file: ./runs.csv
-  show_graph: False
-  show_stacktrace: true
-    parameter_defaults:
+  state_file: ${STATE_FILE}
+  show_graph: True
+  show_stacktrace: True
+  parameter_defaults:
     STUDENT_ID_NAME: ''
     STUDENT_ID_FROM: ''
     STUDENT_ID_XWALK: ''
@@ -28,9 +27,6 @@ sources:
     header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   {% if "${STUDENT_ID_QUERY}" | length %}
   student_id_mapping:
