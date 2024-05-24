@@ -8,7 +8,7 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 To run this bundle, please add your own source file(s):
 * <code>data/ACCESS_Results_File.csv</code>
 
-then run the following command, noting that the <code>ALTERNATE</code> parameter must be set to Y for Alternate results files and N for Summative files. <code>STUDENT_ID_NAME</code> will be "StateStudentID" or "District Student ID" depending on which field is used for <code>student_unique_id</code> in Ed-Fi:
+then run the following command, noting that the <code>ALTERNATE</code> parameter must be set to Y for Alternate results files and N for Summative/Standard files. <code>STUDENT_ID_NAME</code> will be "StateStudentID" or "District Student ID" depending on which field is used for <code>student_unique_id</code> in your ODS:
 ```bash
 earthmover run -c earthmover.yml -p '{
 "BUNDLE_DIR": ".",
