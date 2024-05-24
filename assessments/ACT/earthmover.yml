@@ -45,15 +45,72 @@ sources:
 
 
 transformations:
-  clean_results:
-    source: $sources.results_file
+  act_student_assessment:
+    source: $sources.act_input
     operations:
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: ${STUDENT_ID_FROM}
-        right_key: student_id_from
-        join_type: left    
+      - operation: keep_columns
+        columns: 
+        # Generic fields
+        - ID_StateAssign
+        - ID_Local
+        - HS_GradeLev
+        - Test_Dte
+        - Test_Loc
+
+        # Scores
+        - Composite
+        - Sum_Scale
+        - StRnk_Comp
+        - USRnk_Comp
+        - Sup_Composite
+        - Sup_Sum_Scale
+
+        # ELA specific scores
+        - ELA
+        - StRnk_ELA
+        - USRnk_ELA
+        - Sup_ELA
+
+        # English specific scores  
+        - Eng
+        - StRnk_Eng
+        - USRnk_Eng
+        - Sup_Eng_Sc
+
+        # Math specific scores
+        - Mth
+        - StRnk_Math
+        - USRnk_Math
+        - Sup_Mth_Sc
+
+        # Reading specific scores 
+        - Rdg
+        - StRnk_Read
+        - USRnk_Read
+        - R_CmplxTxt
+        - Sup_Rdg_Sc
+
+        # Science specific scores
+        - Sci
+        - StRnk_Sci
+        - USRnk_Sci
+        - Sup_Sci_Sc
+
+        # STEM specific scores
+        - STEM
+        - StRnk_STEM
+        - USRnk_STEM
+        - Sup_STEM
+
+        # Writing specific scores
+        - Writing
+        - StRnk_W
+        - W_USRnk
+        - W_Dom_Ideas
+        - W_Dom_Supt
+        - W_Dom_Org
+        - W_Dom_LangUs
+        - Sup_Writ_Sc
 
 
 destinations:
