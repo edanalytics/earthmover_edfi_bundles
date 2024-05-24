@@ -122,19 +122,21 @@
   ],
 
   "performanceLevels": [
-    {% set perf_levels = [] %}
-
-      {% if PerformanceLevelOverall != 'NA' and PerformanceLevelOverall is not none and PerformanceLevelOverall | length %}
-        {% set _ = perf_levels.append(['Performance Level', PerformanceLevelOverall|float()|round(1, 'floor')|int]) %}
-      {% endif %}
-
-    {% for perf_level in perf_levels %}
+    {% if alternate_assessment == 'N' %}
+    {# Standard assessment has a numeric performance level #}
       {
-        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#{{perf_level[0]}}",
-        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#{{ perf_level[1] }}",
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#{{ PerformanceLevelOverall|float()|round(1, 'floor')|int }}",
         "performanceLevelMet": true
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
+      }
+    {% else %}
+    {# Alternate assessment has an alphanumeric performance (proficiency) level #}
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#{{ProficiencyLevelOverall}}",
+        "performanceLevelMet": true
+      }
+    {% endif %}
     ],
 
     "studentObjectiveAssessments": [
