@@ -16,7 +16,7 @@ earthmover run -c earthmover.yml -p '{
 "OUTPUT_DIR": "output",
 "STUDENT_ID_NAME": "StateStudentID",
 "SCHOOL_YEAR" : "2024",
-"ALTERNATE_ASSESSMENT": "N" }'
+"ALTERNATE": "N" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
