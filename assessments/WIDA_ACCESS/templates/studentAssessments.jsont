@@ -213,77 +213,77 @@
               "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
               "result": "{{ obj_assess[4] }}"
             }
-            {% if obj_assess[5] != 'N/A' %}
+            {% if obj_assess[5] != 'N/A' and obj_assess[5] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cluster",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
                 "result": "{{ obj_assess[5] }}"
               }
             {% endif %}
-            {% if obj_assess[6] != 'N/A' %}
+            {% if obj_assess[6] != 'N/A' and obj_assess[6] | length %}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Tier",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[6] }}"
               }
             {% endif %}
-            {% if obj_assess[7] != 'N/A' %}
+            {% if obj_assess[7] != 'N/A'  and obj_assess[7] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Domain Termination",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[7] }}"
               }
             {% endif %}
-            {% if obj_assess[8] != 'N/A' %}
+            {% if obj_assess[8] != 'N/A'  and obj_assess[8] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Status",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[8] }}"
               }
             {% endif %}
-            {% if obj_assess[9] != 'N/A' %}
+            {% if obj_assess[9] != 'N/A'  and obj_assess[9] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Number of Correct Responses",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[9] }}"
               }
             {% endif %}
-            {% if obj_assess[10] != 'N/A' %}
+            {% if obj_assess[10] != 'N/A'  and obj_assess[10] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue A Number Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[10] }}"
               }
             {% endif %}
-            {% if obj_assess[11] != 'N/A' %}
+            {% if obj_assess[11] != 'N/A'  and obj_assess[11] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue A Percent Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[11] }}"
               }
             {% endif %}
-            {% if obj_assess[12] != 'N/A' %}
+            {% if obj_assess[12] != 'N/A'  and obj_assess[12] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue B Number Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[12] }}"
               }
             {% endif %}
-            {% if obj_assess[13] != 'N/A' %}
+            {% if obj_assess[13] != 'N/A'  and obj_assess[13] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue B Percent Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[13] }}"
               }
             {% endif %}
-            {% if obj_assess[14] != 'N/A' %}
+            {% if obj_assess[14] != 'N/A'  and obj_assess[14] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue C Number Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
                 "result": "{{ obj_assess[14] }}"
               }
             {% endif %}
-            {% if obj_assess[15] != 'N/A' %}
+            {% if obj_assess[15] != 'N/A'  and obj_assess[15] | length%}
               ,{
                 "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue C Percent Correct",
                 "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
