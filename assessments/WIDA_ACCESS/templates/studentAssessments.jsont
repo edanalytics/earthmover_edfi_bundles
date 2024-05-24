@@ -16,80 +16,53 @@
   },
 
 
+  {% set accommodations = [] %}
+
   "accommodations": [
-    {% if AccommodationMC == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{MC}}"},
+    {% if AccommodationMC == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#MC")%}{% endif %}
+    {% if AccommodationRA == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RA")%}{% endif %}
+    {% if AccommodationES == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#ES")%}{% endif %}
+    {% if AccommodationLP == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#LP")%}{% endif %}
+    {% if AccommodationBR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#BR")%}{% endif %}
+    {% if AccommodationSD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SD")%}{% endif %}
+    {% if AccommodationIR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#IR")%}{% endif %}
+    {% if AccommodationRP == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RP")%}{% endif %}
+    {% if AccommodationSR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SR")%}{% endif %}
+    {% if AccommodationWD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#WD")%}{% endif %}
+    {% if AccommodationRD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RD")%}{% endif %}
+    {% if AccommodationNS == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#NS")%}{% endif %}
+    {% if AccommodationEM == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#EM")%}{% endif %}
+    {% if alternate_assessment == 'Y' %}
+      {# These accommodation fields are specific to the alternate assessment#}
+      {% if TestEnvironmentFamiliarenvironmenttostudent is not none and TestEnvironmentFamiliarenvironmenttostudent | length %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Familiar environment to student")%}{% endif %}
+      {% if TestEnvironmentQuietEnvironment is not none and TestEnvironmentQuietEnvironment | length %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Quiet Environment")%}{% endif %}
+      {% if TestEnvironmentMinimaldistractions is not none and TestEnvironmentMinimaldistractions | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Minimal distractions")%}{% endif %}
+      {% if TestEnvironmentOnetooneinteractionwithtestadministrator is not none and TestEnvironmentOnetooneinteractionwithtestadministrator | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#One-to-one interaction with test administrator")%}{% endif %}
+      {% if AccommodationsTestdirections is not none and AccommodationsTestdirections | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Test directions")%}{% endif %}
+      {% if AccommodationsPresentationFormat is not none and zAccommodationsPresentationFormatzz | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Presentation Format")%}{% endif %}
+      {% if AccommodationsResponseFormat is not none and AccommodationsResponseFormat | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Response Format")%}{% endif %}
+      {% if AccommodationsSettingformatenvironment is not none and AccommodationsSettingformatenvironment | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Setting format/environment")%}{% endif %}
+      {% if AccommodationsTimingscheduling is not none and AccommodationsTimingscheduling | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Timing/scheduling")%}{% endif %}
+      {% if AccommodationsOther is not none and AccommodationsOther | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Other")%}{% endif %}
     {% endif %}
-    {% if AccommodationRA == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{RA}}"},
-    {% endif %}
-    {% if AccommodationES == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{ES}}"},
-    {% endif %}
-    {% if AccommodationLP == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{LP}}"},
-    {% endif %}
-    {% if AccommodationBR is not none and AccommodationBR | length %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{BR}}"},
-    {% endif %}
-    {% if AccommodationSD == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{SD}}"},
-    {% endif %}
-    {% if AccommodationIR == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{IR}}"},
-    {% endif %}
-    {% if AccommodationRP == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{RP}}"},
-    {% endif %}
-    {% if AccommodationSR == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{SR}}"},
-    {% endif %}
-    {% if AccommodationWD == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{WD}}"},
-    {% endif %}
-    {% if AccommodationRD == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{RD}}"},
-    {% endif %}
-    {% if AccommodationNS == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{NS}}"},
-    {% endif %}
-    {% if AccommodationEM == 'Y' %}
-      {"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#{{EM}}"}
+    {% if accommodations | length %}
+      {% for accommodation in accommodations %}
+      {
+        "accommodationDescriptor": "{{accommodation}}"
+      } {% if not loop.last %},{% endif %}
+      {% endfor %}
     {% endif %}
 
-    {% if alternate_assessment == 'Y' %}
-    {# These accommodation fields are specific to the alternate assessment#}
-      {% if TestEnvironmentFamiliarenvironmenttostudent is not none and TestEnvironmentFamiliarenvironmenttostudent | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Familiar environment to student"}
-      {% endif %}
-      {% if TestEnvironmentQuietEnvironment is not none and TestEnvironmentQuietEnvironment | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Quiet Environment"}
-      {% endif %}
-      {% if TestEnvironmentMinimaldistractions is not none and TestEnvironmentMinimaldistractions | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Minimal distractions"}
-      {% endif %}
-      {% if TestEnvironmentOnetooneinteractionwithtestadministrator is not none and TestEnvironmentOnetooneinteractionwithtestadministrator | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#One-to-one interaction with test administrator"}
-      {% endif %}
-      {% if AccommodationsTestdirections is not none and AccommodationsTestdirections | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Test directions"}
-      {% endif %}
-      {% if AccommodationsPresentationFormat is not none and AccommodationsPresentationFormat | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Presentation Format"}
-      {% endif %}
-      {% if AccommodationsResponseFormat is not none and AccommodationsResponseFormat | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Response Format"}
-      {% endif %}
-      {% if AccommodationsSettingformatenvironment is not none and AccommodationsSettingformatenvironment | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Setting format/environment"}
-      {% endif %}
-      {% if AccommodationsTimingscheduling is not none and AccommodationsTimingscheduling | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Timing/scheduling"}
-      {% endif %}
-      {% if AccommodationsOther is not none and AccommodationsOther | length %}
-        ,{"accommodationDescriptor": "uri://wida.wisc.edu/assess/access/AccommodationDescriptors#Other"}
-      {% endif %}
-    {% endif %}
   ],
   
   {% if TestCompletionDate is not none and TestCompletionDate | length %}
