@@ -22,10 +22,10 @@
 
     "_ext": {
       "tx": {
-        "StaffService": "{{ staff_member['TX-ServiceId'] }}",
-        "PopulationServed": "{{ staff_member['TX-PopulationServed'] }}",
-        "MonthlyMinutes": "{{ staff_member['TX-MonthlyMinutes'] }}",
-        "NumberOfStudentsInClass": "{{ staff_member['TX-NumberOfStudentsInClass'] }}"
+        "staffServiceSets": "{{ staff_member['TX-ServiceId'] }}",
+        "populationServedDescriptor": "{{ staff_member['TX-PopulationServed'] }}",
+        "monthlyMinutes": "{{ staff_member['TX-MonthlyMinutes'] }}",
+        "numberOfStudentsInClass": "{{ staff_member['TX-NumberOfStudentsInClass'] }}"
       }
     }
 

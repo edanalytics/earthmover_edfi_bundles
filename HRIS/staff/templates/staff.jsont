@@ -24,9 +24,9 @@
       "tx": {
         "totalYearsProfExperience": "{{ staff_member['TX-TotalYearsOfProfessionalExperience'] }}",
         "yearsExperienceInDistrict": "{{ staff_member['TX-YearsExperienceInDistrict'] }}",
-        "staffTypeCode": "{{ staff_member['TX-StaffTypeCode'] }}",
-        "paraprofessionalCertification": "{{ staff_member['TX-ParaprofessionalCertificationIndicator'] }}",
-        "generationCodeSuffix": "{{ staff_member['TX-GenerationCode'] }}"
+        "typeSets": "{{ staff_member['TX-StaffTypeCode'] }}",
+        "paraprofessionalCertificationSet": "{{ staff_member['TX-ParaprofessionalCertificationIndicator'] }}",
+        "generationCodeDescriptor": "{{ staff_member['TX-GenerationCode'] }}"
       }
     }
 
