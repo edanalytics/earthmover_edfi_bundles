@@ -78,13 +78,13 @@
   {% endif %}
 
   {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length %}
-    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/reasonNotTestedDescriptor#{{DoNotScoreCodeListening}}",
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeListening}}",
   {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length %}
-    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/reasonNotTestedDescriptor#{{DoNotScoreCodeReading}}",
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeReading}}",
   {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length %}
-    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/reasonNotTestedDescriptor#{{DoNotScoreCodeSpeaking}}",
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeSpeaking}}",
   {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length %}
-    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/reasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
   {% endif %}
 
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
