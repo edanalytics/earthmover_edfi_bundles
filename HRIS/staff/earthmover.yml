@@ -4,8 +4,8 @@ config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
   show_graph: False
+  show_stacktrace: True
 
 sources:
   hris_staff_input:
@@ -13,22 +13,12 @@ sources:
     object_type: frame 
     orientation: index
 
-# transformations:
-#   staff:
-#     source: $sources.hris_staff_input
-#     operations:
-#       - operation: add_columns
-#         columns:
-#         {% for staff_member in  %}
-#           - staff_unique_id: "{%raw%}{{ staff_member['StaffUniqueStateId'] }}{%endraw%}"
-#         {% endfor %}
-        
 destinations:
   staff:
     source: $sources.hris_staff_input
     template: ${BUNDLE_DIR}/templates/staff.jsont
-    extension: jsonl
-    linearize: True
+    extension: json
+    inearize: False
   StaffEducationOrganizationAssignmentAssociation:
     source: $sources.hris_staff_input
     template: ${BUNDLE_DIR}/templates/StaffEducationOrganizationAssignmentAssociation.jsont
