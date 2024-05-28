@@ -1,0 +1,183 @@
+{
+  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
+    "namespace": "uri://datarecognitioncorp.com/Assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "performanceLevels": [
+    {%- set perf_levels = [] -%}
+    {%- if ELALev | int -%}
+      {%- set _= perf_levels.append([ELALev, "Overall Performance Level"]) -%}
+    {%- endif -%}
+    {%- if MathLev | int -%}
+      {%- set _= perf_levels.append([MathLev, "Overall Performance Level"]) -%}
+    {%- endif -%}
+
+    {%- for perf_level in perf_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] | int }}",
+      "performanceLevelMet": true
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ],
+  "scoreResults": [
+    {%- set all_scores = [
+        [subject, "Subject", "Level"],
+        [SchoolID, "SchoolID", "Integer"],
+        [TestAdmin, "TestAdmin", "Level"],
+        [student_grade, "AssessmentGradeLevel", "Level"],
+    ] -%}
+
+    {%- if Lex -%}
+        {%- set _ = all_scores.append([Lex, "Lexile Score", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if LexLow -%}
+        {%- set _ = all_scores.append([LexLow, "Lexile Min", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if LexUp -%}
+        {%- set _ = all_scores.append([LexUp, "Lexile Max", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if Quant -%}
+        {%- set _ = all_scores.append([Quant, "Quantile Score", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if QuantLow -%}
+        {%- set _ = all_scores.append([QuantLow, "Quantile Min", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if QuantUp -%}
+        {%- set _ = all_scores.append([QuantUp, "Quantile Max", "Level"]) -%}
+    {%- endif -%}
+
+    {%- if LexNPR | int -%}
+        {%- set _ = all_scores.append([LexNPR, "Lexile National Percentile Rank", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if QuantNPR | int -%}
+        {%- set _ = all_scores.append([QuantNPR, "Quantile National Percentile Rank", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if ELASS | int -%}
+      {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if MathSS | int -%}
+      {%- set _= all_scores.append([MathSS, "Overall Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if ELAVSS | int -%}
+      {%- set _= all_scores.append([ELAVSS, "Overall Vertical Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- if MathVSS | int -%}
+      {%- set _= all_scores.append([MathVSS, "Overall Vertical Scale Score", "Integer"]) -%}
+    {%- endif -%}
+
+    {%- for score in all_scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ],
+  "studentObjectiveAssessments": [
+    {%- set all_obj_assess = [] -%}
+
+    {%- if ELALev1 | int -%}
+      {%- set _= all_obj_assess.append([ELALev1, ELALev1_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev2 | int -%}
+      {%- set _= all_obj_assess.append([ELALev2, ELALev2_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev3 | int -%}
+      {%- set _= all_obj_assess.append([ELALev3, ELALev3_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev4 | int -%}
+      {%- set _= all_obj_assess.append([ELALev4, ELALev4_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev5 | int -%}
+      {%- set _= all_obj_assess.append([ELALev5, ELALev5_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev6 | int -%}
+      {%- set _= all_obj_assess.append([ELALev6, ELALev6_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev7 | int -%}
+      {%- set _= all_obj_assess.append([ELALev7, ELALev7_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev8 | int -%}
+      {%- set _= all_obj_assess.append([ELALev8, ELALev8_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev9 | int -%}
+      {%- set _= all_obj_assess.append([ELALev9, ELALev9_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if ELALev11 | int -%}
+      {%- set _= all_obj_assess.append([ELALev11, ELALev11_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if MathLev1 | int -%}
+      {%- set _= all_obj_assess.append([MathLev1, MathLev1_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if MathLev2 | int -%}
+      {%- set _= all_obj_assess.append([MathLev2, MathLev2_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if MathLev3 | int -%}
+      {%- set _= all_obj_assess.append([MathLev3, MathLev3_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if MathLev4 | int -%}
+      {%- set _= all_obj_assess.append([MathLev4, MathLev4_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- if MathLev5 | int -%}
+      {%- set _= all_obj_assess.append([MathLev5, MathLev5_name, 'Standards Performance Level']) -%}
+    {%- endif -%}
+
+    {%- for obj_assess in all_obj_assess -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
+        "identificationCode": "{{ obj_assess[1] }}",
+        "namespace": "uri://datarecognitioncorp.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[0] | int}}",
+          "performanceLevelMet": true
+        }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "{{ obj_assess[0] | int}}"
+        }
+      ]
+    } {%-if not loop.last -%}, {%- endif -%}
+    {%- endfor -%}
+  ],
+    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade | int}}"
+}
