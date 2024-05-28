@@ -1,0 +1,89 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{school_year}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{submitted}}",
+  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
+  "scoreResults": [
+    {% set scores_present = [] %}
+    {% if teacher is not none and teacher | length %}
+      {% set _= scores_present.append(['Teacher', teacher]) %}
+    {% endif %}
+    {% if respondent is not none and respondent | length %}
+      {% set _= scores_present.append(['Respondent', respondent]) %}
+    {% endif %}
+    {%- for score in scores_present -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "result": "{{score[1]}}"
+    },
+    {%- endfor -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{beri}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI Raw Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{beri_raw_score}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{beri_percentile}}"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI Risk",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{beri_risk}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "studentObjectiveAssessments": [
+  {% set possible_obj_assess = {'Externalizing':['ERI', eri, 'ERI Risk', eri_risk],
+                                 'Internalizing':['IRI', iri, 'IRI Risk', iri_risk],
+                                 'Adaptive Skills':['ARI', ari, 'ARI Risk', ari_risk],
+                                 'Self-Regulation':['SRI', sri, 'SRI Risk', sri_risk],
+                                 'Personal Adjustment':['PRI', pri, 'PRI Risk', pri_risk]} %}
+  {% set all_obj_assessment = [] %}
+  {%- for id_code, score_name in possible_obj_assess.items() -%}
+    {% if score_name[1] is not none and score_name[1] | length %}
+      {% set _= all_obj_assessment.append([id_code,score_name[0], score_name[1], score_name[2], score_name[3]]) %}
+    {% endif %}
+  {% endfor %}
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessment_identifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{obj[2]}}"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj[3]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[4]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ] 
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+}
