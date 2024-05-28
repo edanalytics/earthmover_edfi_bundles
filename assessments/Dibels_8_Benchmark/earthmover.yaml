@@ -114,7 +114,7 @@ transformations:
   {% if $sources.academicSubject_expectations | length %}
   expect:
     - namespace != ''
-    - codeValyue != ''
+    - codeValue != ''
   {% endif %}
 
  academic_subject_descriptors:
