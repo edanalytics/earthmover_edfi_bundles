@@ -37,7 +37,7 @@ Required columns:
 
 The `assessmentIdentifier` used in this repo is "NWEA-Map." Some implementations may wish to spell or format this differently (e.g. "NWEA-MAP"). Double check your implementation and, if necessary, update the following files prior to running:
   - seeds/assessments.csv
-  - templates/objectiveAssessments.jsont
+  - templates/objectiveAssessments.jsont (2 instances)
   - templates/studentAssessment.jsont
 
 </details>
