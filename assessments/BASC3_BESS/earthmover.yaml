@@ -101,6 +101,10 @@ transformations:
       - operation: filter_rows
         query: BERI != ''
         behavior: include
+      - operation: date_format
+        column: Submitted
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
       - operation: snake_case_columns
 
   academic_subject_descriptors:
