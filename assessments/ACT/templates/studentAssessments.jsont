@@ -72,14 +72,7 @@
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
         "result": "{{obj[1]}}"
       }
-    ],
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
-        "performanceLevelMet": true
-      }
-    ] 
+    ], 
   } {% if not loop.last %},{% endif %}
   {% endfor %}
   ]

@@ -1,0 +1,47 @@
+{
+  "assessmentIdentifier": "ACT",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#9th Grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#10th Grade"
+    }, 
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#11th Grade"
+    }, 
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#12th Grade"
+    }
+  ],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#English"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#English/Langauge Arts"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Mathematics"
+    }, 
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Reading"
+    }
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Science"
+    }
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Writing"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://act.org//AssessmentReportingMethodDescriptor#Composite",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+
+  ]
+}
