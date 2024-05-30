@@ -1,40 +1,10 @@
 {
-  "assessmentIdentifier": "{{assessment_id}}",
+  "assessmentIdentifier": "{{assessment_identifier}}",
   "assessmentTitle": "Indicadores Dinámicos del Éxito en la Lectura",
-  "namespace": "uri://dibels.uoregon.edu/assessment/idel",
-  "languages" : [
-    {
-      "languageDescriptor": "uri://ed-fi.org/LanguageDescriptor#spa"
-    }
-  ],
-  "assessedGradeLevels": [
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
-    }
-  ],
-  "academicSubjects": [
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
-    }
-  ],
+  "namespace": "{{namespace}}",
+  "languages" : [{{language_json}}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Benchmark Period",

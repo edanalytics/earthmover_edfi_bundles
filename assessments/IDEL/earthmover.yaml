@@ -22,6 +22,15 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  languageDescriptors:
+    file: ${BUNDLE_DIR}/seeds/languageDescriptors.csv
+    header_rows: 1
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
@@ -56,9 +65,12 @@ transformations:
       join_type: left
       left_key: ${STUDENT_ID_FROM}
       right_key: student_id_from
-    - operation: map_values
-      column: Assessment Grade
-      map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
+    - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: Assessment Grade
+        right_key: idel_grade
     - operation: rename_columns
       columns: 
         ${STUDENT_ID_NAME}: primary_id_student_id
@@ -66,20 +78,113 @@ transformations:
     - operation: add_columns
       columns:
         student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
-        assessment_id: "IDEL"
+        assessment_identifier: "IDEL"
         namespace: "uri://dibels.uoregon.edu/assessment/idel" 
     - operation: modify_columns
       columns:
         school_year: *year_mapping
         student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}"
   
+ academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{subject_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+ grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+ language_descriptors:
+    source: $sources.languageDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          language_json: >
+            {%raw-%}  
+            {
+              "languageDescriptor": "{{language_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          language_json: "{%raw%}{{language_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          language_json: agg(language_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          language_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
  assessments:
   source: $transformations.idel_student_assessment
   operations:
     - operation: keep_columns
       columns: 
-        - assessment_id
+        - assessment_identifier
     - operation: distinct_rows
+    - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
+      - operation: join
+        sources:
+          - $transformations.language_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
 
 destinations:
   objectiveAssessments:
