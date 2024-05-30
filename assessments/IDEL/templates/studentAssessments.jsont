@@ -16,7 +16,7 @@
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{assessment_measure_instructional_recommendation_levels}}",
-      "performanceLevelMet": true
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   {% endif %}
@@ -67,7 +67,7 @@
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj_name[1]}}",
-          "performanceLevelMet": true
+          "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
         }
       ]
       {% endif %}
