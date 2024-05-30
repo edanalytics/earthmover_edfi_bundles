@@ -1,7 +1,7 @@
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{assessment_id}}",
+    "assessmentIdentifier": "{{assessment_identifier}}",
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
@@ -74,5 +74,5 @@
     }{%- if not loop.last -%},
     {%- else %}{% endif %}{%- endfor -%}
   ],
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}"
 }
