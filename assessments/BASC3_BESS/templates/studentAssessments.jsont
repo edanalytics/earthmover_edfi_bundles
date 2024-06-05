@@ -5,7 +5,7 @@
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
-    "schoolYear": "{{school_year}}"
+    "schoolYear": {{school_year}}
   },
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
@@ -22,7 +22,7 @@
     {% endif %}
     {%- for score in scores_present -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
       "result": "{{score[1]}}"
     },
