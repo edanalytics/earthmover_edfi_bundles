@@ -78,7 +78,7 @@ transformations:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: add_columns
         columns:
-          assessment_identifier: "{%raw%}{{map_form_to_assess_id(Form)}}{%endraw%}"
+          assessment_identifier: "{%raw%}{{ map_form_to_assess_id(Form) }}{%endraw%}"
           namespace: "uri://pearsonassessments.com"
           school_year: ${API_YEAR}
       - operation: join
