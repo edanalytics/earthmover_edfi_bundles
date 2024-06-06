@@ -33,46 +33,46 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#Level",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Level",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {% if assessmentIdentifier == 'EOCEP-E2' %}
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#Lex",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Lex",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#LexLow",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#LexLow",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#LexUp",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#LexUp",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#TDAScore",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#TDAScore",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#TDANoScore",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#TDANoScore",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
         {% elif assessmentIdentifier == 'EOCEP-A' %}
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#QuantLow",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#QuantLow",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#QuantUp",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#QuantUp",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#QuantNPR",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#QuantNPR",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {% endif %}
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#TestAdmin",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#TestAdmin",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]
