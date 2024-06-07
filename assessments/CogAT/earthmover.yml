@@ -3,14 +3,14 @@ version: 2
 
 config:
   log_level: INFO
-  output_dir: ${OUTPUT_DIR} 
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
     BUNDLE_DIR: '.'
-    OUTPUR_DIR: './output/'
+    OUTPUT_DIR: './output/'
     STUDENT_ID_NAME: ''
 
 sources:
