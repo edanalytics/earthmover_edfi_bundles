@@ -10,7 +10,7 @@ To run this bundle, please add your own source file(s):
 
 then run the following command, noting that the <code>ALTERNATE</code> parameter must be set to Y for Alternate results files and N for Summative/Standard files. <code>STUDENT_ID_NAME</code> will be "StateStudentID" or "District Student ID" depending on which field is used for <code>student_unique_id</code> in your ODS:
 ```bash
-earthmover run -c earthmover.yml -p '{
+earthmover run -c earthmover.yaml -p '{
 "BUNDLE_DIR": ".",
 "ACCESS_RESULTS_FILE": "data/ACCESS_Results_File.csv",
 "OUTPUT_DIR": "output",
@@ -21,7 +21,7 @@ earthmover run -c earthmover.yml -p '{
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash
-lightbeam validate+send -c lightbeam.yml -p '{
+lightbeam validate+send -c lightbeam.yaml -p '{
 "DATA_DIR": "output/",
 "API_YEAR": "2024",
 "EDFI_API_CLIENT_ID": "yourID",
