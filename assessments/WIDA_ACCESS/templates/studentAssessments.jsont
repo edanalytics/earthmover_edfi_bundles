@@ -27,10 +27,15 @@
     {% if AccommodationSD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SD")%}{% endif %}
     {% if AccommodationIR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#IR")%}{% endif %}
     {% if AccommodationRP == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RP")%}{% endif %}
+    {% if AccommodationHR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#HR")%}{% endif %}
+    {% if AccommodationRR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RR")%}{% endif %}
+    {% if AccommodationHI == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#HI")%}{% endif %}
+    {% if AccommodationRI == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RI")%}{% endif %}
     {% if AccommodationSR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SR")%}{% endif %}
     {% if AccommodationWD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#WD")%}{% endif %}
     {% if AccommodationRD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RD")%}{% endif %}
     {% if AccommodationNS == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#NS")%}{% endif %}
+    {% if AccommodationET == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#ET")%}{% endif %}
     {% if AccommodationEM == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#EM")%}{% endif %}
     {% if alternate_assessment == 'Y' %}
       {# These accommodation fields are specific to the alternate assessment#}
