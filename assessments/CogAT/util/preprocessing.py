@@ -30,9 +30,14 @@ df = pd.read_fwf(
     header=None,
     names=colnames,
     colspecs=colspecs,
-    # if we don't do this, columns that contain a string of flags (e.g. "0000100")
+    # if we don't do this, read_fwf strips leading whitespaces - 'delimiter' is kind of a
+    #    misnomer and the default value is " ". When leading spaces are removed, all values
+    #    in score columns become misaligned
+    # ref: https://stackoverflow.com/questions/57012437/pandas-read-fwf-removes-white-space
+    delimiter="\n\t",
+    # if we don't cast to string, columns that contain a string of flags (e.g. "0000100")
     #    will be read in as integers and written as "100"
-    converters={c: str for c in colnames},
+    converters={c: str.rstrip for c in colnames},
 )
 
 df.to_csv(os.path.join(os.getcwd(), f"{Path(filepath).stem}.csv"), index=False)
