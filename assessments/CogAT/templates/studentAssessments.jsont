@@ -80,8 +80,8 @@
       {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if sas_lower_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn | length %}
-      {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
+    {% if sas_lower_composite_vqn is not none and sas_lower_composite_vqn | int >= 0 and sas_lower_composite_vqn | length %}
+      {% set _ = scores.append([sas_lower_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
     {% endif %}
 
     {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn | length %}
