@@ -1,11 +1,11 @@
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{ACT}}",
-    "namespace": "{{namespace}}"
+    "assessmentIdentifier": "American College Test",
+    "namespace": "uri://datarecognitioncorp.com/Assessment"
   },
   "schoolYearTypeReference": {
-    "schoolYear": "{{schoolYear}}"
+    "schoolYear": "{{school_year | int}}"
   },
   "studentReference": {
     "studentUniqueId": "{{ID_StateAssign}}"
@@ -30,25 +30,6 @@
       "result": "{{sem}}"
     }
     {% endif %}
-  ],
-  "performanceLevels": [
-    {% set perf_levels = [] %}
-
-    {% if performanceLevel is not none and performanceLevel | length %}
-      {% set _ = perf_levels.append([performanceLevel, 'Performance Level']) %}
-    {% endif %}
-
-    {% if goalMet is not none and goalMet | length %}
-      {% set _ = perf_levels.append([goalMet, 'Goat Met']) %}
-    {% endif %}
-
-    {% for perf_level in perf_levels %}
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
-        "performanceLevelMet": true
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
   ],
   "studentObjectiveAssessments": [
   {% set possible_obj_assess = [['Math1-3', 'math123Percentage', 'math123Level'],
