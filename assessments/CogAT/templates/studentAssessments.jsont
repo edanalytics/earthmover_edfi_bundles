@@ -52,31 +52,31 @@
   "scoreResults": [
   {% set scores = [] %}
 
-    {% if Battery is not none and Battery | length %}
+    {% if Battery is not none and Battery.strip() | length %}
       {% set _ = scores.append([Battery, 'Battery', 'Level']) %}
     {% endif %}
 
-    {% if Level is not none and Level | length %}
+    {% if Level is not none and Level.strip() | length %}
       {% set _ = scores.append([Level, 'Level', 'Level']) %}
     {% endif %}
 
-    {% if Form is not none and Form | length %}
+    {% if Form is not none and Form.strip() | length %}
       {% set _ = scores.append([Form, 'Form', 'Level']) %}
     {% endif %}
 
-    {% if Norm_Year is not none and Norm_Year | length %}
+    {% if Norm_Year is not none and Norm_Year.strip() | length %}
       {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
     {% endif %}
 
-    {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vqn | length %}
+    {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vq.strip() | length %}
       {% set _ = scores.append([uss_composite_vqn, 'Universal Scale Score', 'Integer']) %}
     {% endif %}
 
-    {% if sas_composite_vqn is not none and sas_composite_vqn | int >= 0 and sas_composite_vqn | length %}
+    {% if sas_composite_vqn is not none and sas_composite_vqn | int >= 0 and sas_composite_vqn.strip() | length %}
       {% set _ = scores.append([sas_composite_vqn, 'Standard Age Score', 'Integer']) %}
     {% endif %}
 
-    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn | length %}
+    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn.strip() | length %}
       {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
     {% endif %}
 
@@ -84,27 +84,27 @@
       {% set _ = scores.append([sas_lower_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
     {% endif %}
 
-    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn | length %}
+    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn.strip() | length %}
       {% set _ = scores.append([gpr_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if apr_composite_vqn is not none and apr_composite_vqn | int >= 0 and apr_composite_vqn | length %}
+    {% if apr_composite_vqn is not none and apr_composite_vqn | int >= 0 and apr_composite_vqn.strip() | length %}
       {% set _ = scores.append([apr_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >= 0 and lpr_composite_vqn | length %}
+    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >= 0 and lpr_composite_vqn.strip() | length %}
       {% set _ = scores.append([lpr_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
     {% endif %}
 
-    {% if gs_composite_vqn is not none and gs_composite_vqn | int >= 0 and gs_composite_vqn | length %}
+    {% if gs_composite_vqn is not none and gs_composite_vqn | int >= 0 and gs_composite_vqn.strip() | length %}
       {% set _ = scores.append([gs_composite_vqn, 'Grade Stanine', 'Level']) %}
     {% endif %}
     
-    {% if as_composite_vqn is not none and as_composite_vqn | int >= 0 and as_composite_vqn | length %}
+    {% if as_composite_vqn is not none and as_composite_vqn | int >= 0 and as_composite_vqn.strip() | length %}
       {% set _ = scores.append([as_composite_vqn, 'Age Stanine', 'Level']) %}
     {% endif %}
 
-    {% if ls_composite_vqn is not none and ls_composite_vqn | int >= 0 and ls_composite_vqn | length %}
+    {% if ls_composite_vqn is not none and ls_composite_vqn | int >= 0 and ls_composite_vqn.strip() | length %}
       {% set _ = scores.append([ls_composite_vqn, 'Local Stanine', 'Level']) %}
     {% endif %}
 
@@ -136,8 +136,7 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
-
-  "studentObjectiveAssessments": [
+  
     {% set all_obj_assess = {
       "Verbal": {
         "scores": [
@@ -282,52 +281,63 @@
       }
     } %}
 
+    {% set all_obj_assess_with_scores = [] %}
     {% for obj_assess in all_obj_assess %}
       {% set all_scores = [] %}
       {% for score in all_obj_assess[obj_assess]["scores"] %}
-        {% if score[1] is not none and score[1] | int >= 0 and score[1] not in ["-1", "-1.0"] and score[1] | length %}
-          {% set _ = all_scores.append(score)%}
+        {% if score[1] is not none and score[1] | int >= 0 and score[1] not in ["-1", "-1.0"] and score[1].strip() | length %}
+          {% set _ = all_scores.append(score) %}
         {% endif %}
       {% endfor %}
 
+      {% if all_scores | length > 0 %}
+        {% set _ = all_obj_assess_with_scores.append([obj_assess, all_obj_assess[obj_assess]["performanceLevels"], all_scores]) %}
+      {% endif %}
+    {% endfor %}
 
-      {
-        "objectiveAssessmentReference": {
-          "assessmentIdentifier": "CogAT",
-          "identificationCode": "{{obj_assess}}",
-          "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
-        },
 
-        "performanceLevels": [
-          {# guaranteed to be some #}
-          {% for pl in all_obj_assess[obj_assess]["performanceLevels"] %}
-            {
-              "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-              "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{pl[1]}}",
-              "performanceLevelMet": true
-            }
-            {%- if not loop.last -%}
-              ,
-            {% endif %}
-          {%- endfor -%}
-        ],
+    {% if all_obj_assess_with_scores | length %}
+    "studentObjectiveAssessments": [
+      {% for obj_assess in all_obj_assess_with_scores %}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "CogAT",
+            "identificationCode": "{{obj_assess[0]}}",
+            "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
+          },
 
-        "scoreResults": [
-          {%- for score in all_scores -%}
-            {
-              "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
-              "result": "{{score[1]}}"
-            }
+          "performanceLevels": [
+            {# guaranteed to be some #}
+            {% for pl in obj_assess[1] %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{pl[1]}}",
+                "performanceLevelMet": true
+              }
               {%- if not loop.last -%}
                 ,
               {% endif %}
-          {%- endfor -%}
-        ]
-      }
-      {%- if not loop.last -%}
-        ,
-      {% endif %} 
-    {%- endfor -%}
-  ]
+            {%- endfor -%}
+          ],
+
+            "scoreResults": [
+              {# guaranteed to be some #}
+              {%- for score in obj_assess[2] -%}
+                {
+                  "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
+                  "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+                  "result": "{{score[1]}}"
+                }
+                  {%- if not loop.last -%}
+                    ,
+                  {% endif %}
+              {%- endfor -%}
+            ]
+        }
+        {%- if not loop.last -%}
+          ,
+        {% endif %} 
+      {%- endfor -%}
+    ]
+    {% endif %}
 }
