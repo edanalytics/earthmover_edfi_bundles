@@ -11,7 +11,7 @@
     "studentUniqueId": "{{ID_StateAssign}}"
   },
   "administrationDate": "{{Test_Dte}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{gradeLevel}}",
+  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{HS_GradeLev | int}}",
   "scoreResults": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
