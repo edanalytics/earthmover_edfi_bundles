@@ -1,31 +1,66 @@
 version: 2
 
 config:
-  log_level: DEBUG
-  output_dir: ${OUTPUT_DIR}
+  log_level: INFO
+  output_dir: HRIS/staff/output/
   memory_limit: 1GB
   show_graph: False
   show_stacktrace: True
+  # This macro allows us to turn a python dictionary to a json dictionary.
+  # This is critical because as part of Earthmover's code behind the scenes any input gets converted into a string for ease of transformation/manipulation.
+  # This converts any nested JSON dictionaries into python dictionaries, and for a successful earthmover run we have to convert these dicts back to valid json.
+  macros: >
+    {% macro pydict_string_to_json(s) %}
+    {{ s | replace("{'", '{"') | replace("': \"", '": "') | replace("': {", '": {') | replace("': '", '": "') | replace("', '",'", "') | replace("\", '",'", "') | replace("'}", '"}') }}
+    {% endmacro %}
 
 sources:
   hris_staff_input:
-    file: ${INPUT_FILE}
-    object_type: frame 
-    orientation: index
+    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/Staff.jsonl
+  hris_staff_responsibilities_input:
+    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/StaffResponsibilitiesExtension.jsonl
+  hris_staff_edu_org_employment_association_input:
+    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/StaffEducationOrgEmploymentAssociation.jsonl
+  hris_payroll_input:
+    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/PayrollExtension.jsonl
+
+transformations:
+  hris_staff:
+    source: $sources.hris_staff_input
+    operations:
+    - operation: snake_case_columns
+  hris_staff_responsibilities:
+    source: $sources.hris_staff_responsibilities_input
+    operations:
+    - operation: snake_case_columns
+  hris_staff_edu_org_employment_association:
+    source: $sources.hris_staff_edu_org_employment_association_input
+    operations:
+    - operation: snake_case_columns
+  hris_payroll:
+    source: $sources.hris_payroll_input
+    operations:
+    - operation: snake_case_columns
+
 
 destinations:
   staff:
-    source: $sources.hris_staff_input
-    template: ${BUNDLE_DIR}/templates/staff.jsont
-    extension: json
-    inearize: False
-  StaffEducationOrganizationAssignmentAssociation:
-    source: $sources.hris_staff_input
-    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationAssignmentAssociation.jsont
+    source: $transformations.hris_staff
+    template: HRIS/staff/templates/staff.jsont
+    extension: jsonl
+    linearize: True
+  staffEducationOrganizationAssignmentAssociation:
+    source: $transformations.hris_staff_responsibilities
+    template: HRIS/staff/templates/staffEducationOrganizationAssignmentAssociation.jsont
     extension: jsonl
     linearize: True
   staffEducationOrganizationEmploymentAssociations:
-    source: $sources.hris_staff_input
-    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationEmploymentAssociations.jsont
+    source: $transformations.hris_staff_edu_org_employment_association
+    template: HRIS/staff/templates/staffEducationOrganizationEmploymentAssociations.jsont
+    extension: jsonl
+    linearize: True
+  payrollExt:
+    source: $transformations.hris_payroll_input
+    template: HRIS/staff/templates/payrollExt.jsont
     extension: jsonl
     linearize: True

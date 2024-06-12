@@ -1,27 +1,23 @@
-   
 {
-  {% for staff_member in StaffEducationOrgEmploymentAssociation %}
-    "id": "{{ md5(staff_member['StaffReference']['StaffIdentity']['StaffUniqueStateId']) }}",
+    {% set staff_reference = fromjson(pydict_string_to_json(staff_reference)) %}
+    "id": "{{ md5(staff_reference['StaffIdentity']['StaffUniqueStateId']) }}",
     "employmentStatusDescriptor": "",
     "EmploymentPeriod": "",
-
+    
+    {% set edu_org_reference = fromjson(pydict_string_to_json(education_organization_reference)) %}
     "educationOrganizationReference": {
-      "educationOrganizationId": "{{ staff_member['EducationOrganizationReference']['EducationalOrgIdentity']['StateOrganizationId'] }}"
+      "educationOrganizationId": "{{ edu_org_reference['EducationalOrgIdentity']['StateOrganizationId'] }}"
     },
 
     "staffReference": {
-      "staffUniqueId": "{{ staff_member['StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+      "staffUniqueId": "{{ staff_reference['StaffIdentity']['StaffUniqueStateId'] }}"
     },
-
 
     "_ext": {
       "tx": {
-        "percentDayEmployed": "{{ staff_member['TX-PercentDayEmployed'] }}",
-        "numberDaysEmployed": "{{ staff_member['TX-NumberDaysEmployed'] }}",
-        "auxiliaryRoleIdSets": "{{ staff_member['TX-AuxiliaryRoleID'] }}",
+        "percentDayEmployed": "{{ tx_percent_day_employed }}",
+        "numberDaysEmployed": "{{ tx_number_days_employed }}",
+        "auxiliaryRoleIdSets": "{{ tx_auxiliary_role_id }}",
       }
     }
-
-  {% endfor %}
 }
-

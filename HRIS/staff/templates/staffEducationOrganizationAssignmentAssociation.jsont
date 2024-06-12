@@ -1,34 +1,27 @@
-   
 {
-  {% for staff_member in StaffResponsibilitiesExtension %}
-    "id": "{{ md5(staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId']) }}",
+    {% set staff_reference = fromjson(pydict_string_to_json(tx_staff_reference)) %}
+    "id": "{{ md5(staff_reference['StaffIdentity']['StaffUniqueStateId']) }}",
     "beginDate": "",
-    "staffClassificationDescriptor": "{{ staff_member['TX-StaffRole'] }}",
+    "staffClassificationDescriptor": "{{ tx_staff_role }}",
 
-    "educationOrganizationReference": {
-      "educationOrganizationId": "{{ staff_member['TX-LEAReference']['EducationalOrgIdentity']['StateOrganizationId'] }}"
-    },
-
+    {% set school_reference = fromjson(pydict_string_to_json(tx_school_reference)) %}
     "employmentStaffEducationOrganizationEmploymentAssociationReference": {
-      "educationOrganizationId": "{{ staff_member['TX-LEAReference']['EducationalOrgIdentity']['StateOrganizationId'] }}",
+      "educationOrganizationId": "{{ school_reference['EducationalOrgIdentity']['StateOrganizationId'] }}",
       "employmentStatusDescriptor": "",
-      "staffUniqueId": "{{ staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+      "staffUniqueId": "{{ staff_reference['StaffIdentity']['StaffUniqueStateId'] }}"
     },
 
     "staffReference": {
-      "staffUniqueId": "{{ staff_member['TX-StaffReference']['StaffIdentity']['StaffUniqueStateId'] }}"
+      "staffUniqueId": "{{ staff_reference['StaffIdentity']['StaffUniqueStateId'] }}"
     },
 
-
+    
     "_ext": {
       "tx": {
-        "staffServiceSets": "{{ staff_member['TX-ServiceId'] }}",
-        "populationServedDescriptor": "{{ staff_member['TX-PopulationServed'] }}",
-        "monthlyMinutes": "{{ staff_member['TX-MonthlyMinutes'] }}",
-        "numberOfStudentsInClass": "{{ staff_member['TX-NumberOfStudentsInClass'] }}"
+        "staffServiceSets": "{{ tx_service_id }}",
+        "populationServedDescriptor": "{{ tx_population_served }}",
+        "monthlyMinutes": "{{ tx_monthly_minutes }}",
+        "numberOfStudentsInClass": "{{ tx_number_of_students_in_class }}"
       }
     }
-
-  {% endfor %}
 }
-

@@ -1,35 +1,36 @@
-   
 {
-  {% for staff_member in Staff %}
-    "id": "{{ md5(staff_member['StaffUniqueStateId']) }}",
-    "staffUniqueId": "{{ staff_member['StaffUniqueStateId'] }}",
-    "birthDate": "{{ staff_member['BirthDate'] }}",
+    "id": "{{ md5(staff_unique_state_id) }}",
+    "staffUniqueId": "{{ staff_unique_state_id }}",
     
-    "firstName": "{{ staff_member['Name']['FirstName'] }}",
-    "lastSurname": "{{ staff_member['Name']['LastSurname'] }}",
-    "middleName": "{{ staff_member['Name']['MiddleName'] }}",
-    "birthDate": "{{ staff_member['BirthDate'] }}",
+    {% set name = fromjson(pydict_string_to_json(name)) %}
+    "firstName": "{{ name['FirstName'] }}",
+    "lastSurname": "{{ name['LastSurname'] }}",
+    "middleName": "{{ name['MiddleName'] }}",
+    "birthDate": "{{ birth_date }}",
 
-    "sexDescriptor": "{{ staff_member['TX-Sex'] }}",
-    "hispanicLatinoEthnicity": "{{ staff_member['TX-HispanicLatinoEthnicity'] }}",
+    "sexDescriptor": "{{ tx_sex }}",
+    "hispanicLatinoEthnicity": "{{ tx_hispanic_latino_ethnicity }}",
+    
+    {% set race = fromjson(pydict_string_to_json(tx_race)) %}
     "races": [
+      {%- for race_value in race.keys() -%}
+      {% if race[race_value]=='1' %}
       {
-        "raceDescriptor": "{{ staff_member['TX-Race'] }}",
-      }
+        "raceDescriptor": "{{ race_value }}"
+      }{%- if not loop.last %},{% endif -%}
+      {%- endif -%}
+      {%- endfor -%}
     ],
 
-    "highestCompletedLevelOfEducationDescriptor": "{{ staff_member['TX-HighestDegreeLevel'] }}",
+    "highestCompletedLevelOfEducationDescriptor": "{{ tx_highest_degree_level }}",
 
     "_ext": {
       "tx": {
-        "totalYearsProfExperience": "{{ staff_member['TX-TotalYearsOfProfessionalExperience'] }}",
-        "yearsExperienceInDistrict": "{{ staff_member['TX-YearsExperienceInDistrict'] }}",
-        "typeSets": "{{ staff_member['TX-StaffTypeCode'] }}",
-        "paraprofessionalCertificationSet": "{{ staff_member['TX-ParaprofessionalCertificationIndicator'] }}",
-        "generationCodeDescriptor": "{{ staff_member['TX-GenerationCode'] }}"
+        "totalYearsProfExperience": "{{ tx_total_years_of_professional_experience }}",
+        "yearsExperienceInDistrict": "{{ tx_years_experience_in_district }}",
+        "typeSets": "{{ tx_staff_type_code }}",
+        "paraprofessionalCertificationSet": "{{ tx_paraprofessional_certification_indicator }}",
+        "generationCodeDescriptor": "{{ tx_generation_code }}"
       }
     }
-
-  {% endfor %}
 }
-
