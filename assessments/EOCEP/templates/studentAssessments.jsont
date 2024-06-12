@@ -99,7 +99,7 @@
 
         {%- if Subject == 'B' -%}
           {%- if BioLev1 is not none and BioLev1 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.1 Science and Engineering Practices']) -%}
+            {%- set _ = all_obj_assess.append(['H.B.1 Science and Engineering Practices', BioLev1]) -%}
           {%- endif -%}
           {%- if BioLev2 is not none and BioLev2 | length -%}
             {%- set _ = all_obj_assess.append(['H.B.2 Cells as a System', BioLev2]) -%}
