@@ -114,6 +114,7 @@ transformations:
           Level: "{%raw%}{{ Level | trim }}{%endraw%}"
           TDANoScore: "{%raw%}{{ TDANoScore | trim }}{%endraw%}"
           QuantNPR: "{%raw%}{{ QuantNPR | trim }}{%endraw%}"
+          Subject: "{%raw%}{{ Subject | trim }}{%endraw%}"
           TestDate: "{%raw%}{{ TestDate[0:4] }}-{{ TestDate[4:6] }}-{{ TestDate[6:8] }}{%endraw%}"
       - operation: map_values
         columns: 
