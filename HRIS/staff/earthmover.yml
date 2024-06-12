@@ -2,7 +2,7 @@ version: 2
 
 config:
   log_level: INFO
-  output_dir: HRIS/staff/output/
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   show_graph: False
   show_stacktrace: True
@@ -16,13 +16,13 @@ config:
 
 sources:
   hris_staff_input:
-    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/Staff.jsonl
+    file: ${INPUT_FILE_STAFF}
   hris_staff_responsibilities_input:
-    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/StaffResponsibilitiesExtension.jsonl
+    file: ${INPUT_FILE_RESP}
   hris_staff_edu_org_employment_association_input:
-    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/StaffEducationOrgEmploymentAssociation.jsonl
+    file: ${INPUT_FILE_EMP}
   hris_payroll_input:
-    file: /mnt/n/texas_esc_4/data/staff/lamar_cisd/STAFF/json/PayrollExtension.jsonl
+    file: ${INPUT_FILE_PAY}
 
 transformations:
   hris_staff:
@@ -46,21 +46,21 @@ transformations:
 destinations:
   staff:
     source: $transformations.hris_staff
-    template: HRIS/staff/templates/staff.jsont
+    template: ${BUNDLE_DIR}/templates/staff.jsont
     extension: jsonl
     linearize: True
   staffEducationOrganizationAssignmentAssociation:
     source: $transformations.hris_staff_responsibilities
-    template: HRIS/staff/templates/staffEducationOrganizationAssignmentAssociation.jsont
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationAssignmentAssociation.jsont
     extension: jsonl
     linearize: True
   staffEducationOrganizationEmploymentAssociations:
     source: $transformations.hris_staff_edu_org_employment_association
-    template: HRIS/staff/templates/staffEducationOrganizationEmploymentAssociations.jsont
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationEmploymentAssociations.jsont
     extension: jsonl
     linearize: True
   payrollExt:
     source: $transformations.hris_payroll_input
-    template: HRIS/staff/templates/payrollExt.jsont
+    template: ${BUNDLE_DIR}/templates/payrollExt.jsont
     extension: jsonl
     linearize: True
