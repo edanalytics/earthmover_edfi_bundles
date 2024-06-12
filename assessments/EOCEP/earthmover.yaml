@@ -32,6 +32,10 @@ sources:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
 
+  academic_subject_descriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
   eocep_input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
@@ -110,6 +114,7 @@ transformations:
           Level: "{%raw%}{{ Level | trim }}{%endraw%}"
           TDANoScore: "{%raw%}{{ TDANoScore | trim }}{%endraw%}"
           QuantNPR: "{%raw%}{{ QuantNPR | trim }}{%endraw%}"
+          TestDate: "{%raw%}{{ TestDate[0:4] }}-{{ TestDate[4:6] }}-{{ TestDate[6:8] }}{%endraw%}"
       - operation: map_values
         columns: 
         - AlgLev1
@@ -163,5 +168,11 @@ destinations:
   studentAssessments:
     source: $transformations.eocep_student_assessments
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  academicSubjectDescriptors:
+    source: $sources.academic_subject_descriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
     extension: jsonl
     linearize: True
