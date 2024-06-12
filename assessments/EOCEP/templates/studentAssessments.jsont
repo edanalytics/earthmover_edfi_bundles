@@ -3,7 +3,7 @@
   "assessmentReference": {
 
     "assessmentIdentifier": "{{"EOCEP-" + Subject}}",
-    "namespace": "uri://ed.sc.gov/SCDEAssessments/EOCEP"
+    "namespace": "uri://ed.sc.gov/"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -12,7 +12,7 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{TestDate}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
+  "whenAssessedLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
 
   "scoreResults": [
   {%- set scores = [] -%}
@@ -60,7 +60,7 @@
 
     {%- for score in scores -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/SCDEAssessments/EOCEP/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": "{{score[0]}}"
     } {%- if not loop.last -%},{%-endif -%}
@@ -141,7 +141,7 @@
           "objectiveAssessmentReference": {
               "assessmentIdentifier": "{{"EOCEP-" + Subject}}",
             "identificationCode": "{{ obj_assess[0] }}",
-            "namespace": "uri://ed.sc.gov/SCDEAssessments/EOCEP"
+            "namespace": "uri://ed.sc.gov/"
           },
           "scoreResults": [
 
@@ -151,7 +151,7 @@
                 "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
                 "performanceLevelMet": true
-              }{%- if not loop.last -%},{%- endif -%}
+              }
             ]
         }{%- if not loop.last -%},{%- endif -%}
         {%- endfor -%}
