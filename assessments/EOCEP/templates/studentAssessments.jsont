@@ -129,7 +129,7 @@
             {%- set _ = all_obj_assess.append(['Capitalism and Reform', USHCLev3]) -%}
           {%- endif -%}
           {%- if USHCLev4 is not none and USHCLev4 | length -%}
-            {%- set _ = all_obj_assess.append(['Modernism and Interventionis', USHCLev4]) -%}
+            {%- set _ = all_obj_assess.append(['Modernism and Interventionism', USHCLev4]) -%}
           {%- endif -%}
           {%- if USHCLev5 is not none and USHCLev5 | length -%}
             {%- set _ = all_obj_assess.append(['Legacy of the Cold War', USHCLev5]) -%}
