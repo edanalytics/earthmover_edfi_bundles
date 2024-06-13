@@ -1,12 +1,15 @@
 import json
 import xmltodict
+import os
 
-def xml_to_jsonl(input, output):
-    # TODO: maybe there's anice way to parameterize these, so you can call `python preprocess.py /path/to/my/file.xml`
-    xml_file = input
-    output_folder = output
+def xml_to_jsonl(xml_file_dir):
+    output_path = os.path.dirname(xml_file_dir) + "/json/"
 
-    with open(xml_file) as xml_file_handle:
+    # Check if the directory exists, and create it if it doesn't
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+        
+    with open(xml_file_dir) as xml_file_handle:
         # convert entire XML to a Python dict:
         data_dict = xmltodict.parse(xml_file_handle.read())
         # descend into the top-level `InterchangeStaffAssociation` key:
@@ -15,7 +18,9 @@ def xml_to_jsonl(input, output):
         # for the other keys (`Staff`, `PayrollExts`, etc.):
         for key in data_dict.keys():
             # make a separate JSONL file for each
-            with open(f"{output_folder}{key}.jsonl", "w") as json_file:
+            with open(f"{output_path}{key}.jsonl", "w") as json_file:
                 for item in data_dict[key]:
                     # convert each item (which is a dict) to a JSON object string and write it out with a newline
                     json_file.write(json.dumps(item) + "\n")
+                
+    return output_path
