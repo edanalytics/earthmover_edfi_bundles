@@ -20,29 +20,11 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ./seeds/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
 
 transformations:
   act_student_assessment:
@@ -52,7 +34,6 @@ transformations:
         columns: 
         # Generic fields
         - ID_StateAssign
-        - ID_Local
         - HS_GradeLev
         - Test_Dte
         - Test_Loc
@@ -64,12 +45,6 @@ transformations:
         - USRnk_Comp
         - Sup_Composite
         - Sup_Sum_Scale
-
-        # ELA specific scores
-        - ELA
-        - StRnk_ELA
-        - USRnk_ELA
-        - Sup_ELA
 
         # English specific scores  
         - Eng
@@ -96,12 +71,6 @@ transformations:
         - USRnk_Sci
         - Sup_Sci_Sc
 
-        # STEM specific scores
-        - STEM
-        - StRnk_STEM
-        - USRnk_STEM
-        - Sup_STEM
-
         # Writing specific scores
         - Writing
         - StRnk_W
@@ -112,21 +81,168 @@ transformations:
         - W_Dom_LangUs
         - Sup_Writ_Sc
 
+        # STEM (Math and Science) specific scores
+        - STEM
+        - StRnk_STEM
+        - USRnk_STEM
+        - Sup_STEM
+
+        # ELA (English, Reading, and Writing) specific scores
+        - ELA
+        - StRnk_ELA
+        - USRnk_ELA
+        - Sup_ELA
+
+      - operation: add_columns
+        columns:
+          school_year:  ${API_YEAR}
+      - operation: rename_columns
+        columns:
+          ID_StateAssign: student_unique_id
+          Test_Dte: administrationDate
+      - operation: date_format
+        column: administrationDate
+        from_format: "%m%d%y"
+        to_format: "%Y-%m-%d"
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
+
+  act_student_assessment_composite: 
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Composite
+        - Sum_Scale
+        - StRnk_Comp
+        - USRnk_Comp
+        - Sup_Composite
+        - Sup_Sum_Scale
+      - operation: add_columns
+        columns: 
+          subject: 'Composite'
+
+  act_student_assessment_english:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Eng
+        - StRnk_Eng
+        - USRnk_Eng
+        - Sup_Eng_Sc
+      - operation: add_columns
+        columns: 
+          subject: 'English'
+
+  act_student_assessment_math:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Mth
+        - StRnk_Math
+        - USRnk_Math
+        - Sup_Mth_Sc
+      - operation: add_columns
+        columns: 
+          subject: 'Math'
+
+  act_student_assessment_reading:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Rdg
+        - StRnk_Read
+        - USRnk_Read
+        - R_CmplxTxt
+        - Sup_Rdg_Sc
+      - operation: add_columns
+        columns: 
+          subject: 'Reading'
+
+  act_student_assessment_science:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Sci
+        - StRnk_Sci
+        - USRnk_Sci
+        - Sup_Sci_Sc
+      - operation: add_columns
+        columns: 
+          subject: 'Science'
+
+  act_student_assessment_writing:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - Writing
+        - StRnk_W
+        - W_USRnk
+        - W_Dom_Ideas
+        - W_Dom_Supt
+        - W_Dom_Org
+        - W_Dom_LangUs
+        - Sup_Writ_Sc
+      - operation: add_columns
+        columns: 
+          subject: 'Writing'
+
+  act_student_assessment_stem:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - STEM
+        - StRnk_STEM
+        - USRnk_STEM
+        - Sup_STEM
+      - operation: add_columns
+        columns: 
+          subject: 'STEM'
+
+  act_student_assessment_ela:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        - ELA
+        - StRnk_ELA
+        - USRnk_ELA
+        - Sup_ELA
+      - operation: add_columns
+        columns: 
+          subject: 'ELA'
+
+  act_student_assessment_stacked:
+    source: $transformations.act_student_assessment_composite
+    operations: 
+      - operation: union 
+        sources:
+          - $transformations.act_student_assessment_english
+          - $transformations.act_student_assessment_math
+          - $transformations.act_student_assessment_reading
+          - $transformations.act_student_assessment_science
+          - $transformations.act_student_assessment_writing
+          - $transformations.act_student_assessment_stem
+          - $transformations.act_student_assessment_ela
+        fill_missing_columns: True
 
 destinations:
   assessments:
     source: $sources.assessments
-    template: ./templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  assessmentSubjectDescriptors:
+    source: $sources.assessmentSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentSubjectDescriptors.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ./templates/objectiveAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.clean_results
-    template: ./templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
