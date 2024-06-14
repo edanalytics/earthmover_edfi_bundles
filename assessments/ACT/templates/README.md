@@ -1,5 +1,5 @@
-Title: American College Test Assessment Results
-Description: 
+Title: ACT Assessment Results
+Description: American College Test Assessment Results
 API version: 5.3
 Submitter name: Ludmila Janda
 Submitter organization: Education Analytics

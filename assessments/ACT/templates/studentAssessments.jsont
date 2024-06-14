@@ -2,59 +2,65 @@
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "American College Test",
-    "namespace": "uri://datarecognitioncorp.com/Assessment"
-  },
-  "schoolYearTypeReference": {
-    "schoolYear": "{{school_year | int}}"
+    "namespace": "uri://act.org/Assessment"
   },
   "studentReference": {
     "studentUniqueId": "{{ID_StateAssign}}"
   },
   "administrationDate": "{{Test_Dte}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{HS_GradeLev | int}}",
-  "scoreResults": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{subject}}"
-    }
-    {% if scaleScore is not none and scaleScore | length %},
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{scaleScore}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SEM",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
-      "result": "{{sem}}"
-    }
-    {% endif %}
-  ],
-  "studentObjectiveAssessments": [
-  {% set possible_obj_assess = [['Math1-3', 'math123Percentage', 'math123Level'],
-                                ['Math4-6', 'math456Percentage', 'math456Level']] %}
-  {% set all_obj_assessment = [] %}
-  {%- for obj in possible_obj_assess -%}
-    {% if obj[1] is not none and obj[1] | length %}
-      {% set _= all_obj_assessment.append(obj) %}
-    {% endif %}
-  {% endfor %}
-  {%- for obj in all_obj_assessment -%}
-  {
-    "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
-    },
+  
+  
     "scoreResults": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
-        "result": "{{obj[1]}}"
-      }
-    ], 
-  } {% if not loop.last %},{% endif %}
+    {%- set all_scores = [
+        [Composite, "Composite Score", "Integer"],
+        [Sum_Scale, "Sum of Scale Scores", "Integer"],
+        [StRnk_Comp, "Composite State Rank", "Integer"],
+        [USRnk_Comp, "Composite US Rank", "Integer"],
+        [Sup_Composite, "Composite Superscore", "Integer"],
+        [Sup_Sum_Scale, "Sum of Supscore Scale Scores", "Integer"],
+        [Eng, "English Score", "Integer"],
+        [StRnk_Eng, "English State Rank", "Integer"],
+        [USRnk_Eng, "English US Rank", "Integer"],
+        [Sup_Eng_Sc, "English Superscore", "Integer"],
+        [Mth, "Math Score", "Integer"],
+        [StRnk_Math, "Math State Rank", "Integer"],
+        [USRnk_Math, "Math US Rank", "Integer"],
+        [Sup_Mth_Sc, "Math Superscore", "Integer"],
+        [Rdg, "Reading Score", "Integer"],
+        [StRnk_Read, "Reading State Rank", "Integer"],
+        [USRnk_Read, "Reading US Rank", "Integer"],
+        [R_CmplxTxt, "Reading Complex Text", "Integer"],
+        [Sup_Rdg_Sc, "Reading Superscore", "Integer"],
+        [Sci, "Science Score", "Integer"],
+        [StRnk_Sci, "Science State Rank", "Integer"],
+        [USRnk_Sci, "Science US Rank", "Integer"],
+        [Sup_Sci_Sc, "Science Superscore", "Integer"],
+        [Writing, "Writing Score", "Integer"],
+        [StRnk_W, "Writing State Rank", "Integer"],
+        [W_USRnk, "Writing US Rank", "Integer"],
+        [W_Dom_Ideas, "Writing Domain Ideas and Analysis Score", "Integer"],
+        [W_Dom_Supt, "Writing Domain Development and Support Score", "Integer"],
+        [W_Dom_Org, "Writing Domain Organization Score", "Integer"],
+        [W_Dom_LangUs, "Writing Domain Language Use and Conventions Score", "Integer"],
+        [Sup_Writ_Sc, "Writing Superscore", "Integer"],
+        [ELA, "ELA Score", "Integer"],
+        [StRnk_ELA, "ELA State Rank", "Integer"],
+        [USRnk_ELA, "ELA US Rank", "Integer"],
+        [Sup_ELA, "ELA Superscore", "Integer"],
+        [STEM, "STEM Score", "Integer"],
+        [StRnk_STEM, "STEM State Rank", "Integer"],
+        [USRnk_STEM, "STEM US Rank", "Integer"],
+        [Sup_STEM, "STEM Superscore", "Integer"]
+    ] -%}
+  
+  {%- for score in all_scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    } 
+  {% if not loop.last %},{% endif %}
   {% endfor %}
   ]
 }
