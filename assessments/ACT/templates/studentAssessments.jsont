@@ -20,7 +20,7 @@
   ],
 {% endif %}
   
-    "scoreResults": [
+"scoreResults": [
     {%- set all_scores = [
         [Composite, "Composite Score", "Integer"],
         [Sum_Scale, "Sum of Scale Scores", "Integer"],
@@ -53,11 +53,11 @@
         [W_Dom_LangUse, "Writing Domain Language Use and Conventions Score", "Integer"],
         [Sup_Writ_Sc, "Writing Superscore", "Integer"],
         [ELA, "ELA Score", "Integer"],
-        [StRnk_ELA, "ELA State Rank", "Integer"],
+        [Strnk_ELA, "ELA State Rank", "Integer"],
         [USRnk_ELA, "ELA US Rank", "Integer"],
         [Sup_ELA, "ELA Superscore", "Integer"],
         [STEM, "STEM Score", "Integer"],
-        [StRnk_STEM, "STEM State Rank", "Integer"],
+        [Strnk_STEM, "STEM State Rank", "Integer"],
         [USRnk_STEM, "STEM US Rank", "Integer"],
         [Sup_STEM, "STEM Superscore", "Integer"]
     ] -%}
