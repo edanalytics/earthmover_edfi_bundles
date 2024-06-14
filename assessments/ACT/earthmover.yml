@@ -37,9 +37,9 @@ transformations:
         columns:
           # Generic fields
           - ID_StateAssign
-          - HS_GradeLev
+          #- HS_GradeLev
           - Test_Dte
-          - Test_Loc
+          #- Test_Loc
 
           # Scores
           - Composite
@@ -86,13 +86,13 @@ transformations:
 
           # STEM (Math and Science) specific scores
           - STEM
-          - StRnk_STEM
+          - Strnk_STEM
           - USRnk_STEM
           - Sup_STEM
 
           # ELA (English, Reading, and Writing) specific scores
           - ELA
-          - StRnk_ELA
+          - Strnk_ELA
           - USRnk_ELA
           - Sup_ELA
 
@@ -202,7 +202,7 @@ transformations:
       - operation: keep_columns
         columns:
           - STEM
-          - StRnk_STEM
+          - Strnk_STEM
           - USRnk_STEM
           - Sup_STEM
       - operation: add_columns
@@ -215,7 +215,7 @@ transformations:
       - operation: keep_columns
         columns:
           - ELA
-          - StRnk_ELA
+          - Strnk_ELA
           - USRnk_ELA
           - Sup_ELA
       - operation: add_columns
