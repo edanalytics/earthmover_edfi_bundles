@@ -5,7 +5,7 @@ config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   state_file: ${STATE_FILE}
-  show_graph: True
+  show_graph: False
   show_stacktrace: True
   parameter_defaults:
     STUDENT_ID_NAME: ''
@@ -34,67 +34,67 @@ transformations:
     source: $sources.act_input
     operations:
       - operation: keep_columns
-        columns: 
-        # Generic fields
-        - ID_StateAssign
-        - HS_GradeLev
-        - Test_Dte
-        - Test_Loc
+        columns:
+          # Generic fields
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
 
-        # Scores
-        - Composite
-        - Sum_Scale
-        - StRnk_Comp
-        - USRnk_Comp
-        - Sup_Composite
-        - Sup_Sum_Scale
+          # Scores
+          - Composite
+          - Sum_Scale
+          - StRnk_Comp
+          - USRnk_Comp
+          - Sup_Composite
+          - Sup_Sum_Scale
 
-        # English specific scores  
-        - Eng
-        - StRnk_Eng
-        - USRnk_Eng
-        - Sup_Eng_Sc
+          # English specific scores
+          - Eng
+          - StRnk_Eng
+          - USRnk_Eng
+          - Sup_Eng_Sc
 
-        # Math specific scores
-        - Mth
-        - StRnk_Math
-        - USRnk_Math
-        - Sup_Mth_Sc
+          # Math specific scores
+          - Mth
+          - StRnk_Math
+          - USRnk_Math
+          - Sup_Mth_Sc
 
-        # Reading specific scores 
-        - Rdg
-        - StRnk_Read
-        - USRnk_Read
-        - R_CmplxTxt
-        - Sup_Rdg_Sc
+          # Reading specific scores 
+          - Rdg
+          - StRnk_Read
+          - USRnk_Read
+          - R_CmplxTxt
+          - Sup_Rdg_Sc
 
-        # Science specific scores
-        - Sci
-        - StRnk_Sci
-        - USRnk_Sci
-        - Sup_Sci_Sc
+          # Science specific scores
+          - Sci
+          - StRnk_Sci
+          - USRnk_Sci
+          - Sup_Sci_Sc
 
-        # Writing specific scores
-        - Writing
-        - StRnk_W
-        - W_USRnk
-        - W_Dom_Ideas
-        - W_Dom_Supt
-        - W_Dom_Org
-        - W_Dom_LangUs
-        - Sup_Writ_Sc
+          # Writing specific scores
+          - Writing
+          - StRnk_W
+          - W_USRnk
+          - W_Dom_Ideas
+          - W_Dom_Supt
+          - W_Dom_Org
+          - W_Dom_LangUse
+          - Sup_Writ_Sc
 
-        # STEM (Math and Science) specific scores
-        - STEM
-        - StRnk_STEM
-        - USRnk_STEM
-        - Sup_STEM
+          # STEM (Math and Science) specific scores
+          - STEM
+          - StRnk_STEM
+          - USRnk_STEM
+          - Sup_STEM
 
-        # ELA (English, Reading, and Writing) specific scores
-        - ELA
-        - StRnk_ELA
-        - USRnk_ELA
-        - Sup_ELA
+          # ELA (English, Reading, and Writing) specific scores
+          - ELA
+          - StRnk_ELA
+          - USRnk_ELA
+          - Sup_ELA
 
       - operation: add_columns
         columns:
@@ -116,14 +116,14 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Composite
-        - Sum_Scale
-        - StRnk_Comp
-        - USRnk_Comp
-        - Sup_Composite
-        - Sup_Sum_Scale
+          - Composite
+          - Sum_Scale
+          - StRnk_Comp
+          - USRnk_Comp
+          - Sup_Composite
+          - Sup_Sum_Scale
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'Composite'
 
   act_student_assessment_english:
@@ -131,12 +131,12 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Eng
-        - StRnk_Eng
-        - USRnk_Eng
-        - Sup_Eng_Sc
+          - Eng
+          - StRnk_Eng
+          - USRnk_Eng
+          - Sup_Eng_Sc
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'English'
 
   act_student_assessment_math:
@@ -144,12 +144,12 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Mth
-        - StRnk_Math
-        - USRnk_Math
-        - Sup_Mth_Sc
+          - Mth
+          - StRnk_Math
+          - USRnk_Math
+          - Sup_Mth_Sc
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'Math'
 
   act_student_assessment_reading:
@@ -157,13 +157,13 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Rdg
-        - StRnk_Read
-        - USRnk_Read
-        - R_CmplxTxt
-        - Sup_Rdg_Sc
+          - Rdg
+          - StRnk_Read
+          - USRnk_Read
+          - R_CmplxTxt
+          - Sup_Rdg_Sc
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'Reading'
 
   act_student_assessment_science:
@@ -171,12 +171,12 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Sci
-        - StRnk_Sci
-        - USRnk_Sci
-        - Sup_Sci_Sc
+          - Sci
+          - StRnk_Sci
+          - USRnk_Sci
+          - Sup_Sci_Sc
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'Science'
 
   act_student_assessment_writing:
@@ -184,16 +184,16 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - Writing
-        - StRnk_W
-        - W_USRnk
-        - W_Dom_Ideas
-        - W_Dom_Supt
-        - W_Dom_Org
-        - W_Dom_LangUs
-        - Sup_Writ_Sc
+          - Writing
+          - StRnk_W
+          - W_USRnk
+          - W_Dom_Ideas
+          - W_Dom_Supt
+          - W_Dom_Org
+          - W_Dom_LangUse
+          - Sup_Writ_Sc
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'Writing'
 
   act_student_assessment_stem:
@@ -201,12 +201,12 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - STEM
-        - StRnk_STEM
-        - USRnk_STEM
-        - Sup_STEM
+          - STEM
+          - StRnk_STEM
+          - USRnk_STEM
+          - Sup_STEM
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'STEM'
 
   act_student_assessment_ela:
@@ -214,17 +214,17 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-        - ELA
-        - StRnk_ELA
-        - USRnk_ELA
-        - Sup_ELA
+          - ELA
+          - StRnk_ELA
+          - USRnk_ELA
+          - Sup_ELA
       - operation: add_columns
-        columns: 
+        columns:
           subject: 'ELA'
 
   act_student_assessment_stacked:
     source: $transformations.act_student_assessment_composite
-    operations: 
+    operations:
       - operation: union 
         sources:
           - $transformations.act_student_assessment_english
