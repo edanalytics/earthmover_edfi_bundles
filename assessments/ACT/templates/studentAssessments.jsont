@@ -9,7 +9,16 @@
   },
   "administrationDate": "{{Test_Dte}}",
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{HS_GradeLev | int}}",
-  
+
+{% if R_CmplxTxt %}
+"performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ R_CmplxTxt }}",
+      "performanceLevelMet": true
+    }
+  ],
+{% endif %}
   
     "scoreResults": [
     {%- set all_scores = [
@@ -30,7 +39,6 @@
         [Rdg, "Reading Score", "Integer"],
         [StRnk_Read, "Reading State Rank", "Integer"],
         [USRnk_Read, "Reading US Rank", "Integer"],
-        [R_CmplxTxt, "Reading Complex Text", "Integer"],
         [Sup_Rdg_Sc, "Reading Superscore", "Integer"],
         [Sci, "Science Score", "Integer"],
         [StRnk_Sci, "Science State Rank", "Integer"],

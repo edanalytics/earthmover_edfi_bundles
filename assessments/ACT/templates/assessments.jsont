@@ -197,5 +197,27 @@
       "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Sup_Writ_Sc,
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
+  ], 
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Below Proficiency",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Proficient",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Above proficiency",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Unable to Calculate",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
   ]
 }

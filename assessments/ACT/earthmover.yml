@@ -16,11 +16,14 @@ config:
 
 
 sources:
-  academicSubjectDesriptors:
-    file: ${BUNDLE_DIR}/seeds/academicSubjectDesriptors.csv
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   act_input:
     file: ${INPUT_FILE}
@@ -112,6 +115,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Composite
         - Sum_Scale
         - StRnk_Comp
@@ -126,6 +130,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Eng
         - StRnk_Eng
         - USRnk_Eng
@@ -138,6 +143,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Mth
         - StRnk_Math
         - USRnk_Math
@@ -150,6 +156,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Rdg
         - StRnk_Read
         - USRnk_Read
@@ -163,6 +170,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Sci
         - StRnk_Sci
         - USRnk_Sci
@@ -175,6 +183,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - Writing
         - StRnk_W
         - W_USRnk
@@ -191,6 +200,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - STEM
         - StRnk_STEM
         - USRnk_STEM
@@ -203,6 +213,7 @@ transformations:
     source: $transformations.act_student_assessment
     operations:
       - operation: keep_columns
+        columns:
         - ELA
         - StRnk_ELA
         - USRnk_ELA
@@ -226,19 +237,23 @@ transformations:
         fill_missing_columns: True
 
 destinations:
-  assessments:
-    source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
-    extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
-  assessmentSubjectDescriptors:
-    source: $sources.assessmentSubjectDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentSubjectDescriptors.jsont
+    linearize: True
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
     extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.act_student_assessment_stacked
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
-    extension: jsonl
+    extension: json1
+    linearize: True
