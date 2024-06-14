@@ -16,14 +16,14 @@ config:
 
 
 sources:
-  results_file:
-    file: ${INPUT_FILE}
-    header_rows: 1
-  assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+  academicSubjectDesriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDesriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  act_input:
+    file: ${INPUT_FILE}
     header_rows: 1
 
 transformations:
@@ -237,10 +237,6 @@ destinations:
   assessmentSubjectDescriptors:
     source: $sources.assessmentSubjectDescriptors
     template: ${BUNDLE_DIR}/templates/assessmentSubjectDescriptors.jsont
-    extension: jsonl
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.clean_results
