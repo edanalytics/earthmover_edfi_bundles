@@ -22,6 +22,7 @@
 "scoreResults": [
     {%- set all_scores = [
         [HS_GradeLev, "AssessmentGradeLevel", "Level"],
+        [Test_Loc, "Test Location", "Level"],
         [Composite, "Composite Score", "Integer"],
         [Sum_Scale, "Sum of Scale Scores", "Integer"],
         [StRnk_Comp, "Composite State Rank", "Integer"],
@@ -63,12 +64,14 @@
     ] -%}
   
   {%- for score in all_scores -%}
+  {% if score[0] %}
     {
       "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } 
   {% if not loop.last %},{% endif %}
+  {% endif %}
   {% endfor %}
   ]
 }

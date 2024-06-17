@@ -4,7 +4,7 @@ version: 2
 config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
-  state_file: ${STATE_FILE}
+  # state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: True
   parameter_defaults:
@@ -39,6 +39,7 @@ transformations:
       - operation: keep_columns
         columns:
           # Generic fields
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -106,6 +107,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -125,6 +127,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -142,6 +145,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -159,6 +163,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -177,6 +182,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -194,6 +200,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -215,6 +222,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
@@ -232,6 +240,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ID_ACT
           - ID_StateAssign
           - HS_GradeLev
           - Test_Dte
