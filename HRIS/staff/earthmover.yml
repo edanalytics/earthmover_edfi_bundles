@@ -60,7 +60,7 @@ destinations:
     extension: jsonl
     linearize: True
   payrollExt:
-    source: $transformations.hris_payroll_input
+    source: $transformations.hris_payroll
     template: ${BUNDLE_DIR}/templates/payrollExt.jsont
     extension: jsonl
     linearize: True
