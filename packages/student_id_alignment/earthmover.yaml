@@ -78,10 +78,12 @@ transformations:
     operations:
       - operation: union
         sources:
-          # TODO: this adds two copies of the first combination... should be fixed.
           {% for source_student_id_column in "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") -%}
           {% for edfi_student_id_column in "${EDFI_STUDENT_ID_TYPES}".split(",") -%}
+          {# Avoid adding two copies of the first combination: #}
+          {% if source_student_id_column!="${POSSIBLE_STUDENT_ID_COLUMNS}".split(",")[0] or edfi_student_id_column!="${EDFI_STUDENT_ID_TYPES}".split(",")[0] %}
           - $transformations.{{source_student_id_column}}_{{edfi_student_id_column}}_join
+          {% endif %}
           {% endfor %}
           {% endfor %}
   id_match_rates:
