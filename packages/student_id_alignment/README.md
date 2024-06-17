@@ -8,7 +8,8 @@ To use this package:
     packages:
       student_id_alignment:
         git: "https://github.com/edanalytics/earthmover_edfi_bundles.git"
-        subdirectory: "student_id_alignment/package"
+        branch: student_id_align
+        subdirectory: "packages/student_id_alignment"
     ```
 1. provide a source of student IDs known to EdFi as either a query against an [Enable Data Union (EDU)](https://enabledataunion.org/) Ed-Fi data warehouse:
     ```yaml
@@ -55,13 +56,6 @@ To use this package:
         - match_rate | float >= 0.50 # 50%
     ```
 
-## Example
-
-This bundle comes with an example you can try out by running:
-```bash
-cd example/
-earthmover run -p '{"INPUT_FILE":"AssessmentResults.csv"}'
-```
 
 ## Design
 
