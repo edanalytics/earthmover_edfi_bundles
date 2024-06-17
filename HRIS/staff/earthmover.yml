@@ -46,12 +46,12 @@ transformations:
 destinations:
   staff:
     source: $transformations.hris_staff
-    template: ${BUNDLE_DIR}/templates/staff.jsont
+    template: ${BUNDLE_DIR}/templates/staffs.jsont
     extension: jsonl
     linearize: True
   staffEducationOrganizationAssignmentAssociation:
     source: $transformations.hris_staff_responsibilities
-    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationAssignmentAssociation.jsont
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationAssignmentAssociations.jsont
     extension: jsonl
     linearize: True
   staffEducationOrganizationEmploymentAssociations:
@@ -61,6 +61,6 @@ destinations:
     linearize: True
   payrollExt:
     source: $transformations.hris_payroll
-    template: ${BUNDLE_DIR}/templates/payrollExt.jsont
+    template: ${BUNDLE_DIR}/templates/payrollExts.jsont
     extension: jsonl
     linearize: True
