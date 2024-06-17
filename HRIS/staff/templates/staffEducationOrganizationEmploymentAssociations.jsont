@@ -1,8 +1,10 @@
 {
     {% set staff_reference = fromjson(pydict_string_to_json(staff_reference)) %}
     "id": "{{ md5(staff_reference['StaffIdentity']['StaffUniqueStateId']) }}",
-    "employmentStatusDescriptor": "",
-    "EmploymentPeriod": "",
+    "employmentStatusDescriptor": "Not specified",
+    "EmploymentPeriod": {
+      "HireDate": "01/01/1970"
+    },
     
     {% set edu_org_reference = fromjson(pydict_string_to_json(education_organization_reference)) %}
     "educationOrganizationReference": {

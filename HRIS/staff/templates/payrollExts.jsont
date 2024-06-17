@@ -1,8 +1,8 @@
 {
     {% set staff_reference = fromjson(pydict_string_to_json(tx_staff_reference)) %}
     "id": "{{ md5(staff_reference['StaffIdentity']['StaffUniqueStateId']) }}",
-    "beginDate": "",
-    "endDate": "",
+    "beginDate": "01/01/1970",
+    "endDate": "01/01/1970",
     "fiscalYear": "{{ tx_fiscal_year }}",
     "organization": "{{ tx_organization_code }}",
 
