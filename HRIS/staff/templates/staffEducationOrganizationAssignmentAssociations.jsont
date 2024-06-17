@@ -1,8 +1,13 @@
 {
     {% set staff_reference = fromjson(pydict_string_to_json(tx_staff_reference)) %}
     "id": "{{ md5(staff_reference['StaffIdentity']['StaffUniqueStateId']) }}",
-    "beginDate": "",
+    "beginDate": "01/01/1970",
     "staffClassificationDescriptor": "{{ tx_staff_role }}",
+
+    {% set edu_org_reference = fromjson(pydict_string_to_json(education_organization_reference)) %}
+    "educationOrganizationReference": {
+      "educationOrganizationId": "{{ edu_org_reference['EducationalOrgIdentity']['StateOrganizationId'] }}"
+    },
 
     {% set school_reference = fromjson(pydict_string_to_json(tx_school_reference)) %}
     "employmentStaffEducationOrganizationEmploymentAssociationReference": {
@@ -15,7 +20,6 @@
       "staffUniqueId": "{{ staff_reference['StaffIdentity']['StaffUniqueStateId'] }}"
     },
 
-    
     "_ext": {
       "tx": {
         "staffServiceSets": "{{ tx_service_id }}",
