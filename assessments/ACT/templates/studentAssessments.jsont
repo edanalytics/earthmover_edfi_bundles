@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "studentAssessmentIdentifier": "{{ID_ACT}}",
   "assessmentReference": {
     "assessmentIdentifier": "American College Test",
     "namespace": "uri://act.org/Assessment"
@@ -12,8 +12,8 @@
 {% if R_CmplxTxt %}
 "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#R_CmplxTxt",
-      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ R_CmplxTxt }}",
+      "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#R_CmplxTxt",
+      "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{ R_CmplxTxt }}",
       "performanceLevelMet": true
     }
   ],
@@ -64,7 +64,7 @@
   
   {%- for score in all_scores -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } 

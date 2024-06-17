@@ -1,0 +1,297 @@
+version: 2
+
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: True
+  parameter_defaults:
+    STUDENT_ID_NAME: ''
+    STUDENT_ID_FROM: ''
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+
+
+sources:
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  act_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+transformations:
+  act_student_assessment:
+    source: $sources.act_input
+    operations:
+      - operation: keep_columns
+        columns:
+          # Generic fields
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+
+          # Scores
+          - Composite
+          - Sum_Scale
+          - StRnk_Comp
+          - USRnk_Comp
+          - Sup_Composite
+          - Sup_Sum_Scale
+
+          # English specific scores
+          - Eng
+          - StRnk_Eng
+          - USRnk_Eng
+          - Sup_Eng_Sc
+
+          # Math specific scores
+          - Mth
+          - StRnk_Math
+          - USRnk_Math
+          - Sup_Mth_Sc
+
+          # Reading specific scores 
+          - Rdg
+          - StRnk_Read
+          - USRnk_Read
+          - R_CmplxTxt
+          - Sup_Rdg_Sc
+
+          # Science specific scores
+          - Sci
+          - StRnk_Sci
+          - USRnk_Sci
+          - Sup_Sci_Sc
+
+          # Writing specific scores
+          - Writing
+          - StRnk_W
+          - W_USRnk
+          - W_Dom_Ideas
+          - W_Dom_Supt
+          - W_Dom_Org
+          - W_Dom_LangUse
+          - Sup_Writ_Sc
+
+          # STEM (Math and Science) specific scores
+          - STEM
+          - Strnk_STEM
+          - USRnk_STEM
+          - Sup_STEM
+
+          # ELA (English, Reading, and Writing) specific scores
+          - ELA
+          - Strnk_ELA
+          - USRnk_ELA
+          - Sup_ELA
+
+
+
+  act_student_assessment_composite: 
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Composite
+          - Sum_Scale
+          - StRnk_Comp
+          - USRnk_Comp
+          - Sup_Composite
+          - Sup_Sum_Scale
+      - operation: add_columns
+        columns:
+          subject: 'Composite'
+
+  act_student_assessment_english:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Eng
+          - StRnk_Eng
+          - USRnk_Eng
+          - Sup_Eng_Sc
+      - operation: add_columns
+        columns:
+          subject: 'English'
+
+  act_student_assessment_math:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Mth
+          - StRnk_Math
+          - USRnk_Math
+          - Sup_Mth_Sc
+      - operation: add_columns
+        columns:
+          subject: 'Math'
+
+  act_student_assessment_reading:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Rdg
+          - StRnk_Read
+          - USRnk_Read
+          - R_CmplxTxt
+          - Sup_Rdg_Sc
+      - operation: add_columns
+        columns:
+          subject: 'Reading'
+
+  act_student_assessment_science:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Sci
+          - StRnk_Sci
+          - USRnk_Sci
+          - Sup_Sci_Sc
+      - operation: add_columns
+        columns:
+          subject: 'Science'
+
+  act_student_assessment_writing:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - Writing
+          - StRnk_W
+          - W_USRnk
+          - W_Dom_Ideas
+          - W_Dom_Supt
+          - W_Dom_Org
+          - W_Dom_LangUse
+          - Sup_Writ_Sc
+      - operation: add_columns
+        columns:
+          subject: 'Writing'
+
+  act_student_assessment_stem:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - STEM
+          - Strnk_STEM
+          - USRnk_STEM
+          - Sup_STEM
+      - operation: add_columns
+        columns:
+          subject: 'STEM'
+
+  act_student_assessment_ela:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - ID_StateAssign
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+          - ELA
+          - Strnk_ELA
+          - USRnk_ELA
+          - Sup_ELA
+      - operation: add_columns
+        columns:
+          subject: 'ELA'
+
+  act_student_assessment_stacked:
+    source: $transformations.act_student_assessment
+    operations:
+      - operation: union 
+        sources:
+          - $transformations.act_student_assessment_composite
+          - $transformations.act_student_assessment_english
+          - $transformations.act_student_assessment_math
+          - $transformations.act_student_assessment_reading
+          - $transformations.act_student_assessment_science
+          - $transformations.act_student_assessment_writing
+          - $transformations.act_student_assessment_stem
+          - $transformations.act_student_assessment_ela
+        fill_missing_columns: True
+      - operation: add_columns
+        columns:
+          school_year: ${API_YEAR}
+      - operation: date_format
+        column: Test_Dte
+        from_format: "%m%d%y"
+        to_format: "%Y-%m-%d"
+      - operation: filter_rows
+        query: ID_StateAssign.notnull() & (ID_StateAssign != "") & (ID_StateAssign != "0")
+        behavior: include
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/gradeLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.act_student_assessment_stacked
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
