@@ -7,8 +7,7 @@
   "studentReference": {
     "studentUniqueId": "{{ID_StateAssign}}"
   },
-  "administrationDate": "{{Test_Dte}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{HS_GradeLev | int}}",
+  "administrationDate": "{{Test_Dte}}"
 
 {% if R_CmplxTxt %}
 "performanceLevels": [
@@ -22,6 +21,7 @@
   
 "scoreResults": [
     {%- set all_scores = [
+        [HS_GradeLev, "AssessmentGradeLevel", "Level"],
         [Composite, "Composite Score", "Integer"],
         [Sum_Scale, "Sum of Scale Scores", "Integer"],
         [StRnk_Comp, "Composite State Rank", "Integer"],
