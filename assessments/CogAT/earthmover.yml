@@ -113,7 +113,7 @@ transformations:
           - $sources.gradeLevelDescriptors
         join_type: inner
         left_keys: [Class_Grade]
-        right_keys: [cogat_grade]
+        right_keys: [cogatGrade]
       - operation: modify_columns
         columns:
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
@@ -212,7 +212,7 @@ transformations:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{grade_descriptor}}"
+              "gradeLevelDescriptor": "{{gradeDescriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -221,7 +221,7 @@ transformations:
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - assessment_identifier
+          - assessmentIdentifier
         create_columns: 
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
@@ -236,8 +236,8 @@ transformations:
         sources:
           - $transformations.grade_level_descriptors
         join_type: inner
-        left_key: assessment_identifier
-        right_key: assessment_identifier
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 destinations:
   assessments:
