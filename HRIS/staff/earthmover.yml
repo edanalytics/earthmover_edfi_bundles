@@ -6,9 +6,6 @@ config:
   memory_limit: 1GB
   show_graph: False
   show_stacktrace: True
-  # This macro allows us to turn a python dictionary to a json dictionary.
-  # This is critical because as part of Earthmover's code behind the scenes any input gets converted into a string for ease of transformation/manipulation.
-  # This converts any nested JSON dictionaries into python dictionaries, and for a successful earthmover run we have to convert these dicts back to valid json.
   
 sources:
   hris_staff_input:
