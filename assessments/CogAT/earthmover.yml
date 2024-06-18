@@ -18,19 +18,22 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ./seeds/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   accommodationDescriptors:
-    file: ./seeds/accommodationDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/accommodationDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
     header_rows: 1
   student_id_mapping:
     file: ${STUDENT_ID_XWALK}
@@ -102,12 +105,15 @@ transformations:
         columns:
           Mode_of_Administration_String: accommodations
       - operation: map_values
-        column: Class_Grade
-        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
-      - operation: map_values
         column: Ability_Profile
         mapping:
           "": "N/A"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [Class_Grade]
+        right_keys: [cogat_grade]
       - operation: modify_columns
         columns:
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
@@ -163,6 +169,7 @@ transformations:
           sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
           sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
         {% endfor %}
+
   coded_results:
     source: $transformations.scored_results
     debug: true
@@ -197,9 +204,44 @@ transformations:
           "      ": "N"
           "       ": "N"
 
-destinations:
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   assessments:
     source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
