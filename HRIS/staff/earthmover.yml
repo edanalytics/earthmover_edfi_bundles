@@ -9,11 +9,7 @@ config:
   # This macro allows us to turn a python dictionary to a json dictionary.
   # This is critical because as part of Earthmover's code behind the scenes any input gets converted into a string for ease of transformation/manipulation.
   # This converts any nested JSON dictionaries into python dictionaries, and for a successful earthmover run we have to convert these dicts back to valid json.
-  macros: >
-    {% macro pydict_string_to_json(s) %}
-    {{ s | replace("{'", '{"') | replace("': \"", '": "') | replace("': {", '": {') | replace("': '", '": "') | replace("', '",'", "') | replace("\", '",'", "') | replace("'}", '"}') }}
-    {% endmacro %}
-
+  
 sources:
   hris_staff_input:
     file: ${INPUT_FILE_STAFF}
