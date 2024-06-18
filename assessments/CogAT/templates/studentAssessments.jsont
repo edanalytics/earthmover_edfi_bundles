@@ -11,7 +11,7 @@
     "studentUniqueId": "{{studentUniqueID}}"
   },
   "administrationDate": "{{Date_Tested}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Class_Grade}}",
+  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
   "accommodations": [
     {% set accs = [] %}
 
