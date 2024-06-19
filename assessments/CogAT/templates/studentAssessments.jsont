@@ -1,0 +1,343 @@
+{
+  "studentAssessmentIdentifier": "{{TestInstance_GUID}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "CogAT",
+    "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueID}}"
+  },
+  "administrationDate": "{{Date_Tested}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeDescriptor}}",
+  "accommodations": [
+    {% set accs = [] %}
+
+    {% if braile == 'Y' %}
+      {% set _ = accs.append('Braile') %}
+    {% endif %}
+
+    {% if large_print  == 'Y' %}
+      {% set _ = accs.append('Large Print') %}
+    {% endif %}
+
+    {% if proctor_led  == 'Y' %}
+      {% set _ = accs.append('Proctor Led') %}
+    {% endif %}
+
+    {% if self_paced  == 'Y' %}
+      {% set _ = accs.append('Self-Paced') %}
+    {% endif %}
+
+    {% if audio_type  == 'Y' %}
+      {% set _ = accs.append('Audio Type') %}
+    {% endif %}
+
+    {% if extended_time  == 'Y' %}
+      {% set _ = accs.append('Extended Time') %}
+    {% endif %}
+
+    {% if alt_v  == 'Y' %}
+      {% set _ = accs.append('Alternative Verbal Reporting') %}
+    {% endif %}
+
+        {% for acc in accs %}
+    {
+      "accommodationDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AccommodationDescriptor#{{acc}}"
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "scoreResults": [
+  {% set scores = [] %}
+
+    {% if Battery is not none and Battery.strip() | length %}
+      {% set _ = scores.append([Battery, 'Battery', 'Level']) %}
+    {% endif %}
+
+    {% if Level is not none and Level.strip() | length %}
+      {% set _ = scores.append([Level, 'Level', 'Level']) %}
+    {% endif %}
+
+    {% if Form is not none and Form.strip() | length %}
+      {% set _ = scores.append([Form, 'Form', 'Level']) %}
+    {% endif %}
+
+    {% if Norm_Year is not none and Norm_Year.strip() | length %}
+      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
+    {% endif %}
+
+    {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vq.strip() | length %}
+      {% set _ = scores.append([uss_composite_vqn, 'Universal Scale Score', 'Integer']) %}
+    {% endif %}
+
+    {% if sas_composite_vqn is not none and sas_composite_vqn | int >= 0 and sas_composite_vqn.strip() | length %}
+      {% set _ = scores.append([sas_composite_vqn, 'Standard Age Score', 'Integer']) %}
+    {% endif %}
+
+    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn.strip() | length %}
+      {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
+    {% endif %}
+
+    {% if sas_lower_composite_vqn is not none and sas_lower_composite_vqn | int >= 0 and sas_lower_composite_vqn | length %}
+      {% set _ = scores.append([sas_lower_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
+    {% endif %}
+
+    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn.strip() | length %}
+      {% set _ = scores.append([gpr_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if apr_composite_vqn is not none and apr_composite_vqn | int >= 0 and apr_composite_vqn.strip() | length %}
+      {% set _ = scores.append([apr_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >= 0 and lpr_composite_vqn.strip() | length %}
+      {% set _ = scores.append([lpr_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
+    {% endif %}
+
+    {% if gs_composite_vqn is not none and gs_composite_vqn | int >= 0 and gs_composite_vqn.strip() | length %}
+      {% set _ = scores.append([gs_composite_vqn, 'Grade Stanine', 'Level']) %}
+    {% endif %}
+    
+    {% if as_composite_vqn is not none and as_composite_vqn | int >= 0 and as_composite_vqn.strip() | length %}
+      {% set _ = scores.append([as_composite_vqn, 'Age Stanine', 'Level']) %}
+    {% endif %}
+
+    {% if ls_composite_vqn is not none and ls_composite_vqn | int >= 0 and ls_composite_vqn.strip() | length %}
+      {% set _ = scores.append([ls_composite_vqn, 'Local Stanine', 'Level']) %}
+    {% endif %}
+
+        {% for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0]}}"
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  
+  "performanceLevels": [
+    {% set perf_levels = [
+      (completed_composite_vqn, 'Completion Criteria Met'),
+      (sas_valid_composite_vqn, 'Standard Age Score Valid Flag'),
+      (tmo_composite_vqn, 'Too Many Omits Flag'),
+      (ev_composite_vqn, 'Extremely Variable Flag'),
+      (chance_composite_vqn, 'Chance Flag'),
+      (Ability_Profile, 'Ability Profile') 
+    ] %}
+    {#  TODO: make sure ability profile is not nan #}
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  
+    {% set all_obj_assess = {
+      "Verbal": {
+        "scores": [
+          ("Raw Score", raw_score_verbal, "Integer"),
+          ("Number Attempted", number_attempted_verbal, "Integer"),
+          ("Universal Scale Score", uss_verbal, "Integer"),
+          ("Standard Age Score", sas_verbal, "Integer"),
+          ("Grade Percentile Rank", gpr_verbal, "Integer"),
+          ("Age Percentile Rank", apr_verbal, "Integer"),
+          ("Local Percentile Rank", lpr_verbal, "Integer"),
+          ("Grade Stanine", gs_verbal, "Integer"),
+          ("Age Stanine", as_verbal, "Integer"),
+          ("Local Stanine", ls_verbal, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_verbal, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_verbal, "Decimal"),
+          ("Raw Score Personal Standard Error", raw_pse_verbal, "Decimal"),
+          ("Raw Score Upper Bound", raw_upper_verbal, "Decimal"),
+          ("Raw Score Lower Bound", raw_lower_verbal, "Decimal")
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_verbal),
+          ("Standard Age Score Valid Flag", sas_valid_verbal),
+          ("Too Many Omits Flag", tmo_verbal),
+          ("Extremely Variable Flag", ev_verbal),
+          ("Chance Flag", chance_verbal)
+        ]
+      },
+      "Quantitative": {
+        "scores": [
+          ("Raw Score", raw_score_quantitative, "Integer"),
+          ("Number Attempted", number_attempted_quantitative, "Integer"),
+          ("Universal Scale Score", uss_quantitative, "Integer"),
+          ("Standard Age Score", sas_quantitative, "Integer"),
+          ("Grade Percentile Rank", gpr_quantitative, "Integer"),
+          ("Age Percentile Rank", apr_quantitative, "Integer"),
+          ("Local Percentile Rank", lpr_quantitative, "Integer"),
+          ("Grade Stanine", gs_quantitative, "Integer"),
+          ("Age Stanine", as_quantitative, "Integer"),
+          ("Local Stanine", ls_quantitative, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_quantitative, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_quantitative, "Decimal"),
+          ("Raw Score Personal Standard Error", raw_pse_quantitative, "Decimal"),
+          ("Raw Score Upper Bound", raw_upper_quantitative, "Decimal"),
+          ("Raw Score Lower Bound", raw_lower_quantitative, "Decimal")
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_quantitative),
+          ("Standard Age Score Valid Flag", sas_valid_quantitative),
+          ("Too Many Omits Flag", tmo_quantitative),
+          ("Extremely Variable Flag", ev_quantitative),
+          ("Chance Flag", chance_quantitative)
+        ]
+      },
+      "Nonverbal": {
+        "scores": [
+          ("Raw Score", raw_score_nonverbal, "Integer"),
+          ("Number Attempted", number_attempted_nonverbal, "Integer"),
+          ("Universal Scale Score", uss_nonverbal, "Integer"),
+          ("Standard Age Score", sas_nonverbal, "Integer"),
+          ("Grade Percentile Rank", gpr_nonverbal, "Integer"),
+          ("Age Percentile Rank", apr_nonverbal, "Integer"),
+          ("Local Percentile Rank", lpr_nonverbal, "Integer"),
+          ("Grade Stanine", gs_nonverbal, "Integer"),
+          ("Age Stanine", as_nonverbal, "Integer"),
+          ("Local Stanine", ls_nonverbal, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_nonverbal, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_nonverbal, "Decimal"),
+          ("Raw Score Personal Standard Error", raw_pse_nonverbal, "Decimal"),
+          ("Raw Score Upper Bound", raw_upper_nonverbal, "Decimal"),
+          ("Raw Score Lower Bound", raw_lower_nonverbal, "Decimal")
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_nonverbal),
+          ("Standard Age Score Valid Flag", sas_valid_nonverbal),
+          ("Too Many Omits Flag", tmo_nonverbal),
+          ("Extremely Variable Flag", ev_nonverbal),
+          ("Chance Flag", chance_nonverbal)
+        ]
+      },
+      "Composite (V+Q)": {
+        "scores": [
+          ("Universal Scale Score", uss_composite_vq, "Integer"),
+          ("Standard Age Score", sas_composite_vq, "Integer"),
+          ("Grade Percentile Rank", gpr_composite_vq, "Integer"),
+          ("Age Percentile Rank", apr_composite_vq, "Integer"),
+          ("Local Percentile Rank", lpr_composite_vq, "Integer"),
+          ("Grade Stanine", gs_composite_vq, "Integer"),
+          ("Age Stanine", as_composite_vq, "Integer"),
+          ("Local Stanine", ls_composite_vq, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_composite_vq, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_composite_vq, "Decimal"),
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_composite_vq),
+          ("Standard Age Score Valid Flag", sas_valid_composite_vq),
+          ("Too Many Omits Flag", tmo_composite_vq),
+          ("Extremely Variable Flag", ev_composite_vq),
+          ("Chance Flag", chance_composite_vq)
+        ]
+      },
+      "Composite (V+N)": {
+        "scores": [
+          ("Universal Scale Score", uss_composite_vn, "Integer"),
+          ("Standard Age Score", sas_composite_vn, "Integer"),
+          ("Grade Percentile Rank", gpr_composite_vn, "Integer"),
+          ("Age Percentile Rank", apr_composite_vn, "Integer"),
+          ("Local Percentile Rank", lpr_composite_vn, "Integer"),
+          ("Grade Stanine", gs_composite_vn, "Integer"),
+          ("Age Stanine", as_composite_vn, "Integer"),
+          ("Local Stanine", ls_composite_vn, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_composite_vn, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_composite_vn, "Decimal"),
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_composite_vn),
+          ("Standard Age Score Valid Flag", sas_valid_composite_vn),
+          ("Too Many Omits Flag", tmo_composite_vn),
+          ("Extremely Variable Flag", ev_composite_vn),
+          ("Chance Flag", chance_composite_vn)
+        ]
+      },
+      "Composite (Q+N)": {
+        "scores": [
+          ("Universal Scale Score", uss_composite_qn, "Integer"),
+          ("Standard Age Score", sas_composite_qn, "Integer"),
+          ("Grade Percentile Rank", gpr_composite_qn, "Integer"),
+          ("Age Percentile Rank", apr_composite_qn, "Integer"),
+          ("Local Percentile Rank", lpr_composite_qn, "Integer"),
+          ("Grade Stanine", gs_composite_qn, "Integer"),
+          ("Age Stanine", as_composite_qn, "Integer"),
+          ("Local Stanine", ls_composite_qn, "Integer"),
+          ("Standard Age Score Upper Bound", sas_upper_composite_qn, "Decimal"),
+          ("Standard Age Score Lower Bound", sas_lower_composite_qn, "Decimal"),
+        ],
+        "performanceLevels": [
+          ("Completion Criteria Met", completed_composite_qn),
+          ("Standard Age Score Valid Flag", sas_valid_composite_qn),
+          ("Too Many Omits Flag", tmo_composite_qn),
+          ("Extremely Variable Flag", ev_composite_qn),
+          ("Chance Flag", chance_composite_qn)
+        ]
+      }
+    } %}
+
+    {% set all_obj_assess_with_scores = [] %}
+    {% for obj_assess in all_obj_assess %}
+      {% set all_scores = [] %}
+      {% for score in all_obj_assess[obj_assess]["scores"] %}
+        {% if score[1] is not none and score[1] | int >= 0 and score[1] not in ["-1", "-1.0"] and score[1].strip() | length %}
+          {% set _ = all_scores.append(score) %}
+        {% endif %}
+      {% endfor %}
+
+      {% if all_scores | length > 0 %}
+        {% set _ = all_obj_assess_with_scores.append([obj_assess, all_obj_assess[obj_assess]["performanceLevels"], all_scores]) %}
+      {% endif %}
+    {% endfor %}
+
+
+    {% if all_obj_assess_with_scores | length %}
+    "studentObjectiveAssessments": [
+      {% for obj_assess in all_obj_assess_with_scores %}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "CogAT",
+            "identificationCode": "{{obj_assess[0]}}",
+            "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
+          },
+
+          "performanceLevels": [
+            {# guaranteed to be some #}
+            {% for pl in obj_assess[1] %}
+              {
+                "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{pl[1]}}",
+                "performanceLevelMet": true
+              }
+              {%- if not loop.last -%}
+                ,
+              {% endif %}
+            {%- endfor -%}
+          ],
+
+            "scoreResults": [
+              {# guaranteed to be some #}
+              {%- for score in obj_assess[2] -%}
+                {
+                  "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
+                  "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+                  "result": "{{score[1]}}"
+                }
+                  {%- if not loop.last -%}
+                    ,
+                  {% endif %}
+              {%- endfor -%}
+            ]
+        }
+        {%- if not loop.last -%}
+          ,
+        {% endif %} 
+      {%- endfor -%}
+    ]
+    {% endif %}
+}
