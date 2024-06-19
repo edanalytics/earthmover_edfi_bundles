@@ -7,12 +7,6 @@
       "educationOrganizationId": "{{ tx_lea_reference.EducationalOrgIdentity.StateOrganizationId }}"
     },
 
-    "employmentStaffEducationOrganizationEmploymentAssociationReference": {
-      "educationOrganizationId": "{{ tx_school_reference.EducationalOrgIdentity.StateOrganizationId }}",
-      "employmentStatusDescriptor": "",
-      "staffUniqueId": "{{ tx_staff_reference.StaffIdentity.StaffUniqueStateId }}"
-    },
-
     "staffReference": {
       "staffUniqueId": "{{ tx_staff_reference.StaffIdentity.StaffUniqueStateId }}"
     },

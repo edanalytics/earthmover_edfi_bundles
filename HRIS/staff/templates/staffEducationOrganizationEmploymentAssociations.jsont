@@ -1,9 +1,7 @@
 {
     "id": "{{ md5(staff_reference.StaffIdentity.StaffUniqueStateId) }}",
     "employmentStatusDescriptor": "Not specified",
-    "EmploymentPeriod": {
-      "HireDate": "01/01/1970"
-    },
+    "hireDate": "01/01/1970",
     
     "educationOrganizationReference": {
       "educationOrganizationId": "{{ education_organization_reference.EducationalOrgIdentity.StateOrganizationId }}"

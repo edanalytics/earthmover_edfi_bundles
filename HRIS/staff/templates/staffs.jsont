@@ -7,6 +7,7 @@
     "middleName": "{{ name.MiddleName }}",
     "birthDate": "{{ birth_date }}",
 
+    "generationCodeSuffix": "{{ tx_generation_code }}",
     "sexDescriptor": "{{ tx_sex }}",
     "hispanicLatinoEthnicity": "{{ tx_hispanic_latino_ethnicity }}",
     
@@ -33,8 +34,7 @@
         "totalYearsProfExperience": "{{ tx_total_years_of_professional_experience }}",
         "yearsExperienceInDistrict": "{{ tx_years_experience_in_district }}",
         "typeSets": "{{ tx_staff_type_code }}",
-        "paraprofessionalCertificationSet": "{{ tx_paraprofessional_certification_indicator }}",
-        "generationCodeDescriptor": "{{ tx_generation_code }}"
+        "paraprofessionalCertificationSet": "{{ tx_paraprofessional_certification_indicator }}"
       }
     }
 }
