@@ -1,0 +1,31 @@
+{
+    "identificationCode": "{{identification_code}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessment_identifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score_name}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score_name}} Risk",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Normal Risk",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score_name}} Risk",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Elevated Risk",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score_name}} Risk",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Extremely Elevated Risk",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ]
+  }
