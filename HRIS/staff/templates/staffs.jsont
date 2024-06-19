@@ -2,24 +2,28 @@
     "id": "{{ md5(staff_unique_state_id) }}",
     "staffUniqueId": "{{ staff_unique_state_id }}",
     
-    {% set name = fromjson(pydict_string_to_json(name)) %}
-    "firstName": "{{ name['FirstName'] }}",
-    "lastSurname": "{{ name['LastSurname'] }}",
-    "middleName": "{{ name['MiddleName'] }}",
+    "firstName": "{{ name.FirstName }}",
+    "lastSurname": "{{ name.LastSurname }}",
+    "middleName": "{{ name.MiddleName }}",
     "birthDate": "{{ birth_date }}",
 
     "sexDescriptor": "{{ tx_sex }}",
     "hispanicLatinoEthnicity": "{{ tx_hispanic_latino_ethnicity }}",
     
-    {% set race = fromjson(pydict_string_to_json(tx_race)) %}
     "races": [
-      {%- for race_value in race.keys() -%}
-      {% if race[race_value]=='1' %}
+      {% set races = [] %}
+      {%- for race_value in tx_race.keys() -%}
+      {% if tx_race[race_value]=='1' %}
+        {% set _ = races.append(race_value) %}
+      {%- endif -%}
+      {%- endfor -%}
+
+      {%- for race_value in races -%}
       {
         "raceDescriptor": "{{ race_value }}"
       }{%- if not loop.last %},{% endif -%}
-      {%- endif -%}
       {%- endfor -%}
+
     ],
 
     "highestCompletedLevelOfEducationDescriptor": "{{ tx_highest_degree_level }}",
