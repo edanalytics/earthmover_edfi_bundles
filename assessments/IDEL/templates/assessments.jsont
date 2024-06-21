@@ -1,0 +1,36 @@
+{
+  "assessmentIdentifier": "{{assessment_identifier}}",
+  "assessmentTitle": "Indicadores Dinámicos del Éxito en la Lectura",
+  "namespace": "{{namespace}}",
+  "languages" : [{{language_json}}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels":[
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Intensive",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Strategic",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/idel/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/idel/PerformanceLevelDescriptor#Not Determined",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}

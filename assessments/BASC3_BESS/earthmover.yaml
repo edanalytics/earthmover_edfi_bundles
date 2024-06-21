@@ -1,0 +1,201 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'Student Number'
+    STUDENT_ID_FROM: 'Student Number'
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+  macros: > 
+      {% macro map_form_to_assess_id(value) -%}
+      {%- if 'Student' in value -%}bess_3_student
+      {%- elif 'Preschool Parent' in value -%}bess_3_pk_parent
+      {%- elif 'Preschool Teacher' in value -%}bess_3_pk_teacher
+      {%- elif 'Parent' in value -%}bess_3_parent
+      {%- elif 'Teacher' in value -%}bess_3_teacher
+      {%- endif -%}
+      {%- endmacro %}
+
+
+sources:
+  bess_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  {% if "${STUDENT_ID_QUERY}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
+
+
+transformations:
+  bess_student_results:
+    source: $sources.bess_input
+    operations:
+      - operation: join 
+        sources: 
+          - $sources.student_id_mapping
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from
+        join_type: left  
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: add_columns
+        columns:
+          assessment_identifier: "{%raw%}{{ map_form_to_assess_id(Form) }}{%endraw%}"
+          namespace: "uri://pearsonassessments.com"
+          school_year: ${API_YEAR}
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [Grade, assessment_identifier]
+        right_keys: [bess_grade, assessment_identifier]
+      - operation: combine_columns
+        columns:
+          - Student Number
+          - Respondent
+          - Submitted
+          - Form
+        new_column: student_assessment_identifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          student_assessment_identifier: "{%raw%}{{ md5(student_assessment_identifier) }}{%endraw%}" 
+      - operation: filter_rows
+        query: BERI != ''
+        behavior: include
+      - operation: date_format
+        column: Submitted
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: snake_case_columns
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{subject_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+        
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.bess_student_results
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
