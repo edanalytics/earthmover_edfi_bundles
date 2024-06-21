@@ -1,0 +1,5 @@
+{
+    {% for key, value in __row_data__.items() -%}
+    "{{key}}": "{{value|trim}}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+}
