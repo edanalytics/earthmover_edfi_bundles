@@ -20,6 +20,9 @@
     {% if respondent is not none and respondent | length %}
       {% set _= scores_present.append(['Respondent', respondent]) %}
     {% endif %}
+    {% if relationship is not none and relationship | length %}
+      {% set _= scores_present.append(['Relationship', relationship]) %}
+    {% endif %}
     {%- for score in scores_present -%}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
@@ -47,7 +50,7 @@
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI Risk",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{beri_risk}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "performanceLevelMet": true
     }
   ],
   "studentObjectiveAssessments": [
@@ -80,7 +83,7 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj[3]}}",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[4]}}",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+        "performanceLevelMet": true
       }
     ] 
   } {% if not loop.last %},{% endif %}
