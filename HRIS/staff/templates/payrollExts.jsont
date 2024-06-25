@@ -9,10 +9,10 @@
       "staffUniqueId": "{{ tx_staff_reference.StaffIdentity.StaffUniqueStateId }}"
     },
 
-    "payrollActivityDescriptor": "{{ tx_payroll_activity_code }}",
-    "payrollFunctionDescriptor": "{{ tx_function_code }}",
-    "payrollFundDescriptor": "{{ tx_fund_code }}",
-    "payrollObjectDescriptor": "{{ tx_object_code }}",
-    "payrollProgramIntentDescriptor": "{{ tx_program_intent_code }}",
+    "payrollActivityDescriptor": "uri://tea.texas.gov/PayrollActivityDescriptor#{{ tx_payroll_activity_code }}",
+    "payrollFunctionDescriptor": "uri://tea.texas.gov/PayrollFunctionDescriptor#{{ tx_function_code }}",
+    "payrollFundDescriptor": "uri://tea.texas.gov/PayrollFundDescriptor#{{ tx_fund_code }}",
+    "payrollObjectDescriptor": "uri://tea.texas.gov/PayrollObjectDescriptor#{{ tx_object_code }}",
+    "payrollProgramIntentDescriptor": "uri://tea.texas.gov/PayrollProgramIntentDescriptor#{{ tx_program_intent_code }}",
     "payrollAmount": "{{ tx_amount }}"
 }

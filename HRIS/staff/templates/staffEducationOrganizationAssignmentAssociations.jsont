@@ -1,7 +1,7 @@
 {
     "id": "{{ md5(tx_staff_reference.StaffIdentity.StaffUniqueStateId) }}",
     "beginDate": "01/01/1970",
-    "staffClassificationDescriptor": "{{ tx_staff_role }}",
+    "staffClassificationDescriptor": "uri://tea.texas.gov/StaffClassificationDescriptor#{{ tx_staff_role }}",
 
     "educationOrganizationReference": {
       "educationOrganizationId": "{{ tx_lea_reference.EducationalOrgIdentity.StateOrganizationId }}"
@@ -14,7 +14,7 @@
     "_ext": {
       "tx": {
         "staffServiceSets": "{{ tx_service_id }}",
-        "populationServedDescriptor": "{{ tx_population_served }}",
+        "populationServedDescriptor": "uri://tea.texas.gov/PopulationServedDescriptor#{{ tx_population_served }}",
         "monthlyMinutes": "{{ tx_monthly_minutes }}",
         "numberOfStudentsInClass": "{{ tx_number_of_students_in_class }}"
       }
