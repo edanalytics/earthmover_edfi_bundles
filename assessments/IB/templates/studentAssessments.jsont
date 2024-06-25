@@ -31,12 +31,14 @@
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Predicted Grade",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{predicted_grade}}"
-    },
+    }
+  {% subject_grade is not none and subject_grade | length %},
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Grade",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{subject_grade}}"
     }
+  {% endif %}
   {% if category == 'DIPLOMA' %},
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#EE/TOK Bonus Points",
