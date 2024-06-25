@@ -10,24 +10,35 @@
     "generationCodeSuffix": "{{ tx_generation_code }}",
     "sexDescriptor": "{{ tx_sex }}",
     "hispanicLatinoEthnicity": "{{ tx_hispanic_latino_ethnicity }}",
-    
+
     "races": [
       {% set races = [] %}
       {%- for race_value in tx_race.keys() -%}
       {% if tx_race[race_value]=='1' %}
-        {% set _ = races.append(race_value) %}
+        {% set race_value_clean = race_value.replace('TX-', '') %}
+        {% if race_value_clean == 'AmericanIndianAlaskaNative' %}
+          {% set _ = races.append('01') %}
+        {% elif race_value_clean == 'Asian' %}
+          {% set _ = races.append('02') %}
+        {% elif race_value_clean == 'BlackAfricanAmerican' %}
+          {% set _ = races.append('03') %}
+        {% elif race_value_clean == 'NativeHawaiianPacificIslander' %}
+          {% set _ = races.append('04') %}
+        {% elif race_value_clean == 'White' %}
+          {% set _ = races.append('05') %}
+        {% endif %}
       {%- endif -%}
       {%- endfor -%}
 
       {%- for race_value in races -%}
       {
-        "raceDescriptor": "{{ race_value }}"
+        "raceDescriptor": "uri://tea.texas.gov/RaceDescriptor#{{ race_value }}"
       }{%- if not loop.last %},{% endif -%}
       {%- endfor -%}
 
     ],
 
-    "highestCompletedLevelOfEducationDescriptor": "{{ tx_highest_degree_level }}",
+    "highestCompletedLevelOfEducationDescriptor": "uri://tea.texas.gov/LevelOfEducationDescriptor#{{ tx_highest_degree_level }}",
 
     "_ext": {
       "tx": {
