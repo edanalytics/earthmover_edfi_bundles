@@ -32,7 +32,7 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{predicted_grade}}"
     }
-  {% subject_grade is not none and subject_grade | length %},
+  {% if subject_grade is not none and subject_grade | length %},
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Grade",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
