@@ -1,0 +1,290 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'sis_id'
+    STUDENT_ID_FROM: 'sis_id'
+    STUDENT_ID_XWALK: ''
+    DATABASE_CONNECTION: ''
+    INPUT_FILETYPE: 'csv'
+
+
+sources:
+  ytd_file:
+    file: ${YTD_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+  detail_file:
+    file: ${DETAILED_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    optional: True 
+    columns: 
+      - district_id
+      - District_name
+      - school_id
+      - school_name
+      - classes
+      - class_names
+      - staff
+      - Lexia_ID
+      - username
+      - fname
+      - lname
+      - grade_label
+      - Predictor_date
+      - Predictor
+      - risk_level
+      - activity_id
+      - activity_name
+      - reading_focus
+      - needs_instruction
+      - accuracy
+      - rate
+      - percent_completed
+      - current_unit
+      - max_unit
+      - status_flag_complete
+      - advanced
+      - activity_start_time
+      - activity_end_time
+      - activity_time
+      - attempts_at_standard
+      - attempts_at_practice
+      - attempts_at_instruction
+      - levelname
+      - grade_level_material
+      - units_to_benchmark
+      - today_mins
+      - today_units
+      - week_time
+      - weekly_usage_target
+      - meeting_target_usage
+      - week_units
+      - weekly_units_target
+      - certificate_delivered
+      - skillbuilder_delivered
+      - lessons_delivered
+      - current_usage_target
+      - current_units_target
+      - Level_Skill_Check
+      - Activity_Skill_Check
+      - date_of_birth
+      - gender
+      - race
+      - hispanic_latino
+      - IDEA
+      - esl_ell
+      - title_I
+      - studentrefid
+      - schoolrefid
+      - classrefid
+      - sis_id
+    optional: True 
+
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  {% if "${DATABASE_CONNECTION}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    optional: True 
+    columns: 
+      - student_id_from 
+      - student_id_to
+  {% endif %}
+
+
+transformations:
+  cleaned_ytd:
+    source: $sources.ytd_file
+    operations:
+      - operation: snake_case_columns
+      - operation: add_columns
+        columns:
+          school_year: ${API_YEAR}
+      - operation: join
+        sources:
+          - $sources.student_id_mapping
+        join_type: left
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from  
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: map_values
+        columns:
+          - met_benchmark
+        mapping:
+          '0': 'No'
+          '1': 'Yes' 
+
+  # this file is long by activity (which we're mapping to studentObjectiveAssessment)
+  cleaned_detail:
+    source: $sources.detail_file
+    operations:
+      - operation: snake_case_columns
+      - operation: filter_rows
+        query: activity_name == ''
+        behavior: exclude
+      - operation: map_values
+        columns:
+          - needs_instruction
+          - status_flag_complete
+          - advanced
+          - meeting_target_usage
+          - certificate_delivered
+          - skillbuilder_delivered
+        mapping:
+          '0': 'No'
+          '1': 'Yes'
+      - operation: modify_columns
+        columns:
+          activity_name: "{%raw%}{{ activity_name|replace(',', '') }}{%endraw%}"
+      # for each assessment record, construct a new column which will be the JSON for the item
+      - operation: add_columns
+        columns:
+          student_objective_assessment_json: >
+            {%raw-%}
+            {
+              "objectiveAssessmentReference": {
+                "assessmentIdentifier": "Lexia Core5",
+                "identificationCode": "{{activity_name}}",
+                "namespace": "uri://www.lexialearning.com"
+              },
+              "performanceLevels": [
+                {% set pls = [] %}
+                {% set all_perf_levels = [['Risk Level', risk_level],
+                                          ['Needs Instruction', struggling_indicator],
+                                          ['Accuracy', accuracy],
+                                          ['Rate', rate],
+                                          ['Complete Flag', status_flag_complete],
+                                          ['Advanced Flag', advanced],
+                                          ['Certificate Delivered', certificate_delivered],
+                                          ['Skillbuilder Delivered', skillbuilder_delivered]] %}
+                
+                {% for perf_level in all_perf_levels %}
+                  {% if perf_level[1] is not none and perf_level[1] | length %}
+                    {% set _ = pls.append(perf_level) %}
+                  {% endif %}
+                {% endfor %}
+            
+                {% for pl in pls %}
+                  {
+                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                    "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{pl[1]}}",
+                    "performanceLevelMet": true
+                  } {% if not loop.last %},{% endif %}
+                {% endfor %}
+              ],
+              "scoreResults": [
+                {% set srs = [] %}
+                {% set all_score_results = [['Benchmark Predictor', 'Integer', predictor],
+                                            ['Reading Focus', 'Level', reading_focus],
+                                            ['Percent Completed', 'Decimal', percent_completed],
+                                            ['Current Unit', 'Integer', current_unit],
+                                            ['Max Unit', 'Integer', max_unit],
+                                            ['Activity Time', 'Decimal', activity_time],
+                                            ['Attempts At Standard', 'Integer', attempts_at_standard],
+                                            ['Attempts At Practice', 'Integer', attempts_at_practice],
+                                            ['Attempts At Instruction', 'Integer', attempts_at_instruction],
+                                            ['Level', 'Level', levelname],
+                                            ['Grade Level of Material', 'Level', grade_level_material],                                                                            
+                                            ['Lessons Delivered', 'Integer', lessons_delivered],
+                                            ['Level Skill Check', 'Integer', level_skill_check],
+                                            ['Activity Skill Check', 'Integer', activity_skill_check]] %}
+
+                {% for score_result in all_score_results %}
+                  {% if score_result[2] is not none and score_result[2] | length %}
+                    {% set _ = srs.append(score_result) %}
+                  {% endif %}
+                {% endfor %}
+            
+                {% for sr in srs %}
+                  {
+                    "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{sr[0]}}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{sr[1]}}",
+                    "result": "{{sr[2]}}"
+                  } {% if not loop.last %},{% endif %}
+                {% endfor %}
+              ]
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          student_objective_assessment_json: "{%raw%}{{student_objective_assessment_json | replace('\n', '')-}}{%endraw%}"
+      # aggregate to the student level
+      - operation: group_by
+        group_by_columns:
+          - username
+          - units_to_benchmark
+          - weekly_usage_target
+          - meeting_target_usage
+          - weekly_units_target
+        create_columns: 
+          student_objective_assessment_json: agg(student_objective_assessment_json,)
+      # remove trailing comma
+      - operation: modify_columns
+        columns:
+          student_objective_assessment_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  joined_results:
+    source: $transformations.cleaned_ytd
+    operations:
+      - operation: join 
+        sources: 
+          - $transformations.cleaned_detail
+        left_key: username
+        right_key: username
+        join_type: left  
+        right_keep_columns:
+          - student_objective_assessment_json
+          - units_to_benchmark
+          - weekly_usage_target
+          - meeting_target_usage
+          - weekly_units_target
+
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.joined_results
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
