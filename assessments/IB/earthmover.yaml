@@ -1,0 +1,107 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  macros: > 
+      {% macro group_number_with_language(value) -%}
+      {%- if group_number == '1' -%}
+      {%- if language == 'ENGLISH' -%}1 - English
+      {%- else -%}1 - Foreign Language
+      {%- endif -%}
+      {%- else -%}{{group_number}}
+      {%- endif -%}
+      {%- endmacro %}
+
+
+sources:
+  ib_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  subject_group_mappings:
+    file: ${BUNDLE_DIR}/seeds/subject_group_mappings.csv
+    header_rows: 1
+
+
+transformations:
+  ib_student_results:
+    source: $sources.ib_input
+    operations:
+      - operation: snake_case_columns
+      - operation: combine_columns
+        columns:
+          - year
+          - month
+          - candidate
+          - subject
+          - level
+        new_column: combined_student_assessment_id
+        separator: '-'
+      - operation: add_columns
+        columns:
+          assessment_identifier: "{%raw%}IB - {{subject}}{%endraw%}"
+          assessment_title: "{%raw%}International Baccalaureate - {{subject}}{%endraw%}"
+          assessment_family: "International Baccalaureate"
+          namespace: "uri://ibo.org"
+          school_year: ${API_YEAR}
+          administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
+  
+  student_assessments:
+    source: $transformations.ib_student_results
+    operations:
+      - operation: join
+        sources:
+          - $sources.subject_group_mappings
+        join_type: inner
+        left_key: group_number
+        right_key: group_id
+
+  assessments:
+    source: $transformations.ib_student_results
+    operations:
+      - operation: distinct_rows
+        columns: 
+          - subject
+      - operation: add_columns
+        columns:
+          mod_group_number: "{%raw%}{{ group_number_with_language(group_number) }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.subject_group_mappings
+        join_type: inner
+        left_key: mod_group_number
+        right_key: group_id
+
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
