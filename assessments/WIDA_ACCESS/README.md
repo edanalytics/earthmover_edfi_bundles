@@ -1,4 +1,4 @@
-This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
+This is an earthmover bundle created:
 * **Title**: WIDA ACCESS for ELLs Assessment Results - API 3.X
 * **Description**: This template includes the WIDA ACCESS Summative and WIDA Alternate ACCESS assessment results. 
 * **API version**: 5.3
