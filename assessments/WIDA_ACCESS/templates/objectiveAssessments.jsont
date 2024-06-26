@@ -1,0 +1,74 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "uri://wida.wisc.edu/assess/access"
+    },
+    "description": "{{description}}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Proficiency Level",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Confidence Low Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Confidence High Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cluster",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Tier",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Domain Termination",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Status",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#2",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#3",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#4",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#5",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#6",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+  }
