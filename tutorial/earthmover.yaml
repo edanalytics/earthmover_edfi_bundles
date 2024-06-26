@@ -1,0 +1,26 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+
+sources:
+  results:
+    file: ${RESULTS_FILE}
+    header_rows: 1
+
+transformations:
+  results:
+    source: $sources.results
+    operations:
+      # to be filled out
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
