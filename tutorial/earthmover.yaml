@@ -9,18 +9,7 @@ config:
   show_stacktrace: true
 
 sources:
-  results:
-    file: ${RESULTS_FILE}
-    header_rows: 1
 
 transformations:
-  results:
-    source: $sources.results
-    operations:
-      # to be filled out
 
 destinations:
-  studentAssessments:
-    source: $transformations.results
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
-    extension: jsonl
