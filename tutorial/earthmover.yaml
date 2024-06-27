@@ -20,7 +20,7 @@ transformations:
       # to be filled out
 
 destinations:
-  assessments:
-    source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+  studentAssessments:
+    source: $transformations.results
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
