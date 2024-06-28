@@ -133,6 +133,9 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%}{{value|int|string}}{%endraw%}"
       - operation: filter_rows
         query: studentUniqueId == ''
         behavior: exclude  
