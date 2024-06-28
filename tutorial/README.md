@@ -44,7 +44,7 @@ Each of these are files that you will need to populate for your EM/LB project. I
     -   `data/` - This contains input data sources. Typically, these are your student assessment files. This directory may have a `.gitkeep` but it will typically be empty in remote. You don't want to push your student assessment files to remote. In the tutorial bundle, we've included a very simple fake assessment.
     -   `seeds/` - This contains input data sources. You will be creating and populating these, and they should be applicable to any implementation of this bundle. Typically, these are assessment metadata (e.g., name, scores) and descriptors (e.g., performanceLevelDescriptors)
 -   Templates
-    -   `templates/` - This contains are the jsont (json template) files that define how your flat files (in `data/` and `seeds/`) will get transformed into jsonl (json lines).
+    -   `templates/` - This contains the jsont (json template) files that define how your flat files (in `data/` and `seeds/`) will get transformed into jsonl (json lines).
 -   Outputs
     -   `output/` - This contains your jsonl (json lines) output files. It will be be empty in the remote bundle, but contain a `.gitkeep`. These are your input sources that have been converted into json lines.
 
