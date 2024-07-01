@@ -46,7 +46,7 @@ Each of these are files that you will need to populate for your EM/LB project. I
 -   Templates
     -   `templates/` - This contains the jsont (json template) files that define how your flat files (in `data/` and `seeds/`) will get transformed into jsonl (json lines).
 -   Outputs
-    -   `output/` - This contains your jsonl (json lines) output files. It will be be empty in the remote bundle, but contain a `.gitkeep`. These are your input sources that have been converted into json lines.
+    -   `output/` - This contains your jsonl (json lines) output files. It will be be empty in the remote bundle, but contain a `.gitkeep`. These are your input sources that have been converted into json lines. Please note that you don't want to push student assessment output files to remote.
 
 ## Earthmover flow diagram
 
