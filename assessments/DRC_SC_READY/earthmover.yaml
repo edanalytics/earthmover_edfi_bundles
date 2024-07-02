@@ -105,20 +105,6 @@ transformations:
   scready_student_assessment_ela:
     source: $transformations.scready_student_assessment
     operations:
-      - operation: modify_columns
-        columns: 
-          MathLev: ''
-          MathLev1: ''
-          MathLev2: ''
-          MathLev3: ''
-          MathLev4: ''
-          MathLev5: ''
-          MathVSS: ''
-          MathSS: ''
-          Quant: ''
-          QuantLow: ''
-          QuantUp: ''
-          QuantNPR: ''
       - operation: add_columns
         columns: 
           subject: 'English/Language Arts'
@@ -128,25 +114,6 @@ transformations:
   scready_student_assessment_math:
     source: $transformations.scready_student_assessment
     operations:
-      - operation: modify_columns
-        columns: 
-          ELALev: ''
-          ELALev1: ''
-          ELALev2: ''
-          ELALev3: ''
-          ELALev4: ''
-          ELALev5: ''
-          ELALev6: ''
-          ELALev7: ''
-          ELALev8: ''
-          ELALev9: ''
-          ELALev11: ''
-          ELAVSS: ''
-          ELASS: ''
-          Lex: ''
-          LexLow: ''
-          LexUp: ''
-          LexNPR: ''
       - operation: add_columns
         columns: 
           subject: 'Mathematics'
