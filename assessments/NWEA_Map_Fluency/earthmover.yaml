@@ -1,3 +1,5 @@
+version: 2
+
 config:
   output_dir:  ${OUTPUT_DIR}
   parameter_defaults:
@@ -29,22 +31,19 @@ sources:
 
 transformations:
   nwea_map_student_assessment:
+    source: $sources.nwea_map_fluency_input
     operations:
       - operation: duplicate_columns
-        source: $sources.nwea_map_fluency_input
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
-        source: $transformations.nwea_map_student_assessment
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
       - operation: date_format
-        source: $transformations.nwea_map_student_assessment
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
       - operation: combine_columns
-        source: $transformations.nwea_map_student_assessment
         columns:
           - studentUniqueId
           - TermName
@@ -55,24 +54,19 @@ transformations:
         new_column: generated_test_id
         separator: '-'
       - operation: map_values
-        source: $transformations.nwea_map_student_assessment
         column: Grade
         map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
       - operation: rename_columns
-        source: $transformations.nwea_map_student_assessment
         columns:
           Grade: grade_level
       - operation: map_values
-        source: $transformations.nwea_map_student_assessment
         column: TestLanguage
         map_file: ${BUNDLE_DIR}/seeds/map_language.csv
       - operation: rename_columns
-        source: $transformations.nwea_map_student_assessment
         columns:
           TestLanguage: language
         #This group by is used so we can loop over duplicate records and create a sequence number
       - operation: group_by
-        source: $transformations.nwea_map_student_assessment
         group_by_columns:
           - school_year
           - studentUniqueId
@@ -89,23 +83,23 @@ transformations:
           SentenceReadingFluencyPerformanceLevel: agg(SentenceReadingFluencyPerformanceLevel,,)
           SentenceReadingFluencyCorrect: agg(SentenceReadingFluencyCorrect,,)
           SentenceReadingFluencyAttempted: agg(SentenceReadingFluencyAttempted,,)
-          OralReadingRatePerf: agg(OralReadingRatePerf,,)
-          OralReadingWCPM: agg(OralReadingWCPM,,)
-          OralReadingAccuracyPerf: agg(OralReadingAccuracyPerf,,)
+          OralReadingRatePerf: agg(OralReadingRatePerformanceLevel,,)
+          OralReadingWCPM: agg(OralReadingWCPMScaled,,)
+          OralReadingAccuracyPerf: agg(OralReadingAccuracyPerformanceLevel,,)
           OralReadingAccuracyScore: agg(OralReadingAccuracyScore,,)
-          LiteralComprehensionPerf: agg(LiteralComprehensionPerf,,)
-          ListeningComprehensionPerf: agg(ListeningComprehensionPerf,,)
+          LiteralComprehensionPerf: agg(LiteralComprehensionPerformanceLevel,,)
+          ListeningComprehensionPerf: agg(ListeningComprehensionPerformanceLevel,,)
           ListeningComprehensionCorrect: agg(ListeningComprehensionCorrect,,)
           ListeningComprehensionAttempted: agg(ListeningComprehensionAttempted,,)
-          PictureVocabPerf: agg(PictureVocabPerf,,)
+          PictureVocabPerf: agg(PictureVocabPerformanceLevel,,)
           PictureVocabCorrect: agg(PictureVocabCorrect,,)
           PictureVocabAttempted: agg(PictureVocabAttempted,,)
-          PhonologicalAwarenessPerf: agg(PhonologicalAwarenessPerf,,)
+          PhonologicalAwarenessPerf: agg(PhonologicalAwarenessPerformanceLevel,,)
           PhonologicalAwarenessZPDLevel: agg(PhonologicalAwarenessZPDLevel,,)
           PhonologicalAwarenessZPDName: agg(PhonologicalAwarenessZPDName,,)
           PhonologicalAwarenessDomainScore: agg(PhonologicalAwarenessDomainScore,,)
           PhonologicalAwarenessTestPercentile: agg(PhonologicalAwarenessTestPercentile,,)
-          PhonicsWordRecognitionPerf: agg(PhonicsWordRecognitionPerf,,)
+          PhonicsWordRecognitionPerf: agg(PhonicsWordRecognitionPerformanceLevel,,)
           PhonicsWordRecognitionZPDLevel: agg(PhonicsWordRecognitionZPDLevel,,)
           PhonicsWordRecognitionZPDName: agg(PhonicsWordRecognitionZPDName,,)
           PhonicsWordRecognitionDomainScore: agg(PhonicsWordRecognitionDomainScore,,)
@@ -113,10 +107,10 @@ transformations:
           count: count(generated_test_id)
 
   objectiveAssessments:
+    source: $sources.objectiveAssessments
     operations:
       #This group_by operation creates one row per objective assessment, as needed by obejctiveAssessment.jsont
       - operation: group_by
-        source: $sources.objectiveAssessments
         group_by_columns:
           - identification_code
         create_columns:
@@ -148,4 +142,3 @@ destinations:
     source: $transformations.objectiveAssessments
     template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
-    
