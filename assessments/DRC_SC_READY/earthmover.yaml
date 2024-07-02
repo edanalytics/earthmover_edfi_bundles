@@ -93,14 +93,14 @@ transformations:
       - operation: rename_columns
         columns:
           StateID: student_unique_id
+      - operation: filter_rows
+        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
+        behavior: include
       - operation: add_columns
         columns:
           school_year:  ${API_YEAR}
           administration_date: {{ ${API_YEAR} ~ "-05-15" }}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
-      - operation: filter_rows
-        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
-        behavior: include
     
   scready_student_assessment_ela:
     source: $transformations.scready_student_assessment
@@ -109,7 +109,6 @@ transformations:
         columns: 
           subject: 'English/Language Arts'
           student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
-
 
   scready_student_assessment_math:
     source: $transformations.scready_student_assessment
