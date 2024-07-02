@@ -1,3 +1,67 @@
+{%- set score_results = [
+    [subject, "Subject", "Level"],
+    [SchoolID, "SchoolID", "Integer"],
+    [TestAdmin, "TestAdmin", "Level"],
+    [student_grade, "AssessmentGradeLevel", "Level"],
+] -%}
+{%- set ela_score_results = [
+    [Lex, "Lexile Score", "Level"],
+    [LexLow, "Lexile Min", "Level"],
+    [LexUp, "Lexile Max", "Level"],
+    [LexNPR, "Lexile National Percentile Rank", "Integer"],
+    [ELASS, "Overall Scale Score", "Integer"],
+    [ELAVSS, "Overall Vertical Scale Score", "Integer"],
+] -%}
+{%- set math_score_results = [
+    [Quant, "Quantile Score", "Level"],
+    [QuantLow, "Quantile Min", "Level"],
+    [QuantUp, "Quantile Max", "Level"],
+    [QuantNPR, "Quantile National Percentile Rank", "Integer"],
+    [MathSS, "Overall Scale Score", "Integer"],
+    [MathVSS, "Overall Vertical Scale Score", "Integer"],
+] -%}
+
+{%- set ela_performance_levels = [
+    [ELALev, "Overall Performance Level"],
+] -%}
+{%- set math_performance_levels = [
+    [MathLev, "Overall Performance Level"],
+] -%}
+
+{%- set ela_objective_assessments = [
+    [ELALev1, ELALev1_name, 'Standards Performance Level'],
+    [ELALev2, ELALev2_name, 'Standards Performance Level'],
+    [ELALev3, ELALev3_name, 'Standards Performance Level'],
+    [ELALev4, ELALev4_name, 'Standards Performance Level'],
+    [ELALev5, ELALev5_name, 'Standards Performance Level'],
+    [ELALev6, ELALev6_name, 'Standards Performance Level'],
+    [ELALev7, ELALev7_name, 'Standards Performance Level'],
+    [ELALev8, ELALev8_name, 'Standards Performance Level'],
+    [ELALev9, ELALev9_name, 'Standards Performance Level'],
+    [ELALev11, ELALev11_name, 'Standards Performance Level'],
+] -%}
+{%- set math_objective_assessments = [
+    [MathLev1, MathLev1_name, 'Standards Performance Level'],
+    [MathLev2, MathLev2_name, 'Standards Performance Level'],
+    [MathLev3, MathLev3_name, 'Standards Performance Level'],
+    [MathLev4, MathLev4_name, 'Standards Performance Level'],
+    [MathLev5, MathLev5_name, 'Standards Performance Level'],
+] -%}
+
+
+{%- if subject == 'English/Language Arts' -%}
+    {%- set _ = score_results.extend(ela_score_results) -%}
+    {%- set performance_levels = ela_performance_levels -%}
+    {%- set objective_assessments = ela_objective_assessments -%}
+
+{%- elif subject == 'Mathematics' -%}
+    {%- set _ = score_results.extend(math_score_results) -%}
+    {%- set performance_levels = math_performance_levels -%}
+    {%- set objective_assessments = math_objective_assessments -%}
+
+{%- endif -%}
+
+
 {
   "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
   "assessmentReference": {
@@ -12,15 +76,7 @@
   },
   "administrationDate": "{{administration_date}}",
   "performanceLevels": [
-    {%- set perf_levels = [] -%}
-    {%- if ELALev | int -%}
-      {%- set _= perf_levels.append([ELALev, "Overall Performance Level"]) -%}
-    {%- endif -%}
-    {%- if MathLev | int -%}
-      {%- set _= perf_levels.append([MathLev, "Overall Performance Level"]) -%}
-    {%- endif -%}
-
-    {%- for perf_level in perf_levels -%}
+    {%- for perf_level in performance_levels if perf_level[0] | int -%}
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
       "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] | int }}",
@@ -29,62 +85,7 @@
     {%- endfor -%}
   ],
   "scoreResults": [
-    {%- set all_scores = [
-        [subject, "Subject", "Level"],
-        [SchoolID, "SchoolID", "Integer"],
-        [TestAdmin, "TestAdmin", "Level"],
-        [student_grade, "AssessmentGradeLevel", "Level"],
-    ] -%}
-
-    {%- if Lex -%}
-        {%- set _ = all_scores.append([Lex, "Lexile Score", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if LexLow -%}
-        {%- set _ = all_scores.append([LexLow, "Lexile Min", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if LexUp -%}
-        {%- set _ = all_scores.append([LexUp, "Lexile Max", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if Quant -%}
-        {%- set _ = all_scores.append([Quant, "Quantile Score", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if QuantLow -%}
-        {%- set _ = all_scores.append([QuantLow, "Quantile Min", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if QuantUp -%}
-        {%- set _ = all_scores.append([QuantUp, "Quantile Max", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if LexNPR | int -%}
-        {%- set _ = all_scores.append([LexNPR, "Lexile National Percentile Rank", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if QuantNPR | int -%}
-        {%- set _ = all_scores.append([QuantNPR, "Quantile National Percentile Rank", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if ELASS | int -%}
-      {%- set _= all_scores.append([ELASS, "Overall Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if MathSS | int -%}
-      {%- set _= all_scores.append([MathSS, "Overall Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if ELAVSS | int -%}
-      {%- set _= all_scores.append([ELAVSS, "Overall Vertical Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if MathVSS | int -%}
-      {%- set _= all_scores.append([MathVSS, "Overall Vertical Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- for score in all_scores -%}
+    {%- for score in score_results if score[0] | (int if score[2] == 'Integer' else str)  -%}
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
@@ -93,69 +94,7 @@
     {%- endfor -%}
   ],
   "studentObjectiveAssessments": [
-    {%- set all_obj_assess = [] -%}
-
-    {%- if ELALev1 | int -%}
-      {%- set _= all_obj_assess.append([ELALev1, ELALev1_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev2 | int -%}
-      {%- set _= all_obj_assess.append([ELALev2, ELALev2_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev3 | int -%}
-      {%- set _= all_obj_assess.append([ELALev3, ELALev3_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev4 | int -%}
-      {%- set _= all_obj_assess.append([ELALev4, ELALev4_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev5 | int -%}
-      {%- set _= all_obj_assess.append([ELALev5, ELALev5_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev6 | int -%}
-      {%- set _= all_obj_assess.append([ELALev6, ELALev6_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev7 | int -%}
-      {%- set _= all_obj_assess.append([ELALev7, ELALev7_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev8 | int -%}
-      {%- set _= all_obj_assess.append([ELALev8, ELALev8_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev9 | int -%}
-      {%- set _= all_obj_assess.append([ELALev9, ELALev9_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if ELALev11 | int -%}
-      {%- set _= all_obj_assess.append([ELALev11, ELALev11_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if MathLev1 | int -%}
-      {%- set _= all_obj_assess.append([MathLev1, MathLev1_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if MathLev2 | int -%}
-      {%- set _= all_obj_assess.append([MathLev2, MathLev2_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if MathLev3 | int -%}
-      {%- set _= all_obj_assess.append([MathLev3, MathLev3_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if MathLev4 | int -%}
-      {%- set _= all_obj_assess.append([MathLev4, MathLev4_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- if MathLev5 | int -%}
-      {%- set _= all_obj_assess.append([MathLev5, MathLev5_name, 'Standards Performance Level']) -%}
-    {%- endif -%}
-
-    {%- for obj_assess in all_obj_assess -%}
+    {%- for obj_assess in objective_assessments if objective_assessments[0] | int -%}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
