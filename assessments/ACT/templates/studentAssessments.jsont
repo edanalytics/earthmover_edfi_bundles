@@ -1,15 +1,39 @@
 {
   "studentAssessmentIdentifier": "{{ID_ACT}}",
   "assessmentReference": {
-    "assessmentIdentifier": "American College Test",
-    "namespace": "uri://act.org/Assessment"
+    {% if Composite != "nan" %}
+    "assessmentIdentifier": "ACT-Composite", 
+    {% endif %}
+    {% if Eng != "nan" %}
+    "assessmentIdentifier": "ACT-English", 
+    {% endif %}
+    {% if Mth != "nan" %}
+    "assessmentIdentifier": "ACT-Math", 
+    {% endif %}
+    {% if Rdg != "nan" %}
+    "assessmentIdentifier": "ACT-Reading", 
+    {% endif %}
+    {% if Sci != "nan" %}
+    "assessmentIdentifier": "ACT-Science", 
+    {% endif %}
+    {% if Writing != "nan" %}
+    "assessmentIdentifier": "ACT-Writing", 
+    {% endif %}
+    {% if ELA != "nan" %}
+    "assessmentIdentifier": "ACT-English/Language Arts", 
+    {% endif %}
+    {% if STEM != "nan" %}
+    "assessmentIdentifier": "ACT-STEM", 
+    {% endif %}
+
+    "namespace": "uri://act.org/assessment/act"
   },
   "studentReference": {
     "studentUniqueId": "{{ID_StateAssign}}"
   },
-  "administrationDate": "{{Test_Dte}}"
+  "administrationDate": "{{Test_Dte}}",
 
-{% if R_CmplxTxt %}
+{% if R_CmplxTxt != "nan" %}
 "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#R_CmplxTxt",
@@ -21,7 +45,7 @@
   
 "scoreResults": [
     {%- set all_scores = [
-        [HS_GradeLev, "AssessmentGradeLevel", "Level"],
+        [HS_GradeLev, "Assessment Grade Level", "Level"],
         [Test_Loc, "Test Location", "Level"],
         [Composite, "Composite Score", "Integer"],
         [Sum_Scale, "Sum of Scale Scores", "Integer"],
@@ -63,15 +87,21 @@
         [Sup_STEM, "STEM Superscore", "Integer"]
     ] -%}
   
-  {%- for score in all_scores -%}
-  {% if score[0] %}
+{% set skip_values = ["nan", "--", "---", ""] %}
+{% set filtered_scores = [] %}
+{% for score in all_scores -%}
+  {% if score[0] not in skip_values -%}
+    {% set _ = filtered_scores.append(score)%}
+  {%- endif %}
+{%- endfor %}
+{% for score in filtered_scores -%}
     {
       "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
-    } 
-  {% if not loop.last %},{% endif %}
-  {% endif %}
-  {% endfor %}
+    }
+  {%if not loop.last %},{% endif %}
+{% endfor %}
   ]
 }
+

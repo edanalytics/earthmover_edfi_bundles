@@ -19,6 +19,9 @@ sources:
   academicSubjectDescriptors:
     file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -254,11 +257,10 @@ transformations:
           subject: 'ELA'
 
   act_student_assessment_stacked:
-    source: $transformations.act_student_assessment
+    source: $transformations.act_student_assessment_composite
     operations:
       - operation: union 
         sources:
-          - $transformations.act_student_assessment_composite
           - $transformations.act_student_assessment_english
           - $transformations.act_student_assessment_math
           - $transformations.act_student_assessment_reading
@@ -302,5 +304,10 @@ destinations:
   studentAssessments:
     source: $transformations.act_student_assessment_stacked
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
     linearize: True

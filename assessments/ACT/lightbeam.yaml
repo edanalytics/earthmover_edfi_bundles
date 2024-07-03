@@ -1,14 +1,14 @@
 # See accompanying README.md for details about this file.
 
-state_dir: ${STATE_DIR}
-data_dir: ${DATA_DIR}
+state_dir: ~/.lightbeam/
+data_dir: ./output
 edfi_api:
-  base_url: ${EDFI_API_BASE_URL}
+  base_url: https://lexington4-dw.districts-2324.sc.startingblocks.org
   version: 3
   mode: district_specific
-  year: ${API_YEAR}
-  client_id: ${EDFI_API_CLIENT_ID}
-  client_secret: ${EDFI_API_CLIENT_SECRET}
+  year: 2024
+  client_id: aki6n6USJVd0
+  client_secret: csqMeSQXoM1YGKWGvuiaIHT6
 connection:
   pool_size: 8
   timeout: 60
@@ -17,3 +17,4 @@ connection:
   retry_statuses: [429, 500, 502, 503, 504]
   verify_ssl: True
 log_level: DEBUG
+show_stacktrace: True
