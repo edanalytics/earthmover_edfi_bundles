@@ -19,22 +19,29 @@ To use this package:
         # This is a Snowflake SQL query which constructs a structure like the student ID portion of
         # Ed-Fi studentEducationOrganizationAssociations from EDU warehouse data:
         query: >
+          with ids as (
+              select
+                  tenant_code, api_year, k_student, ed_org_id,
+                  object_construct_keep_null('assigningOrganizationIdentificationCode', id_system,
+                      'identificationCode', id_code) as stu_id_code,
+              from analytics.prod_stage.stg_ef3__stu_ed_org__identification_codes
+          ),
+          aggd_ids as (
+              select
+                  tenant_code, api_year, k_student, ed_org_id,
+                  array_agg(stu_id_code) as stu_id_codes
+              from ids group by 1,2,3,4
+          )
           select
-            object_construct('educationOrganizationId', lea.lea_id,
-                'link', object_construct(
-                    'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
-            object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
-            array_construct(
-                object_construct_keep_null('assigningOrganizationIdentificationCode', 'District',
-                    'identificationCode', stu.district_student_id),
-                object_construct_keep_null('assigningOrganizationIdentificationCode', 'Local',
-                    'identificationCode', stu.local_student_id),
-                object_construct_keep_null('assigningOrganizationIdentificationCode', 'State',
-                    'identificationCode', stu.state_student_id)
-            ) as "studentIdentificationCodes"
-          from analytics.prod_wh.dim_student stu
-            join analytics.prod_wh.dim_lea lea on lea.tenant_code=stu.tenant_code
-          where stu.tenant_code='some_tenant'
+              object_construct('educationOrganizationId', ed_org_id,
+              'link', object_construct(
+                  'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
+              object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
+              stu_id_codes as "studentIdentificationCodes"
+          from aggd_ids
+              join analytics.prod_stage.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
+          where aggd_ids.tenant_code='some_tenant' -- UPDATE THIS!
+              and aggd_ids.api_year=2025           -- UPDATE THIS!
       # or the result of `lightbeam fetch -s studentEducationOrganizationAssociations -k studentIdentificationCodes,educationOrganizationReference,studentReference`
     ```
     or the result of
