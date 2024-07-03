@@ -25,10 +25,10 @@
 {% set PhonicsWordRecognitionZPDName = PhonicsWordRecognitionZPDName.split(',') %}
 {% set PhonicsWordRecognitionDomainScore = PhonicsWordRecognitionDomainScore.split(',') %}
 {% set PhonicsWordRecognitionTestPercentile = PhonicsWordRecognitionTestPercentile.split(',') %}
-{% for i in range(count) %}
-{% set seq = i | string %}
+{% for i in range(count | int) %}
+{% set seq = i %}
 {
-    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id + seq) }}{%endif%}",
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id + (seq | string)) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
       "namespace": "uri://www.nwea.org/mapFluency"
@@ -61,45 +61,45 @@
     ],
     "studentObjectiveAssessments": [
       {% set all_obj_assess = [
-                                ({"id_code": "Print Concept", 
+                                ({"id_code": "Print Concept",
                                   "perf_levels": [(PrintConceptPerformanceLevel, "Performance Level")],
                                   "scores": [(PrintConceptCorrect,"Correct","Integer"),
                                              (PrintConceptAttempted,"Attempted","Integer")]
                                 }),
-                                ({"id_code": "Sentence Reading Fluency", 
+                                ({"id_code": "Sentence Reading Fluency",
                                   "perf_levels": [(SentenceReadingFluencyPerformanceLevel, "Performance Level")],
                                   "scores": [(SentenceReadingFluencyCorrect,"Correct","Integer"),
                                              (SentenceReadingFluencyAttempted,"Attempted","Integer")]
                                 }),
-                                ({"id_code": "Oral Reading Rate", 
+                                ({"id_code": "Oral Reading Rate",
                                   "perf_levels": [(OralReadingRatePerf, "Performance Level")],
                                   "scores": [(OralReadingWCPM,"WCPM","Integer")]
                                 }),
-                                ({"id_code": "Oral Reading Accuracy", 
+                                ({"id_code": "Oral Reading Accuracy",
                                   "perf_levels": [(OralReadingAccuracyPerf, "Performance Level")],
                                   "scores": [(OralReadingAccuracyScore,"Oral Reading Accuracy Score","Decimal")]
                                 }),
-                                ({"id_code": "Listening Comprehension", 
+                                ({"id_code": "Listening Comprehension",
                                   "perf_levels": [(ListeningComprehensionPerf,"Performance Level")],
                                   "scores": [(ListeningComprehensionCorrect,"Correct","Integer"),
                                              (ListeningComprehensionAttempted,"Attempted","Integer")]
                                 }),
-                                ({"id_code": "Picture Vocab", 
+                                ({"id_code": "Picture Vocab",
                                   "perf_levels": [(PictureVocabPerf,"Performance Level")],
                                   "scores": [(PictureVocabCorrect,"Correct","Integer"),
                                              (PictureVocabAttempted,"Attempted", "Integer")]
                                 }),
-                                ({"id_code": "Phonological Awareness", 
+                                ({"id_code": "Phonological Awareness",
                                   "perf_levels": [(PhonologicalAwarenessPerf, "Performance Level"), (PhonologicalAwarenessZPDLevel,"ZPD Level") , (PhonologicalAwarenessZPDName,"ZPD Name")],
                                   "scores": [(PhonologicalAwarenessDomainScore,"Domain Score", "Integer"),
                                              (PhonologicalAwarenessTestPercentile,"Test Percentile", "Integer")]
                                 }),
-                                ({"id_code": "Phonics Word Recognition", 
+                                ({"id_code": "Phonics Word Recognition",
                                   "perf_levels": [(PhonicsWordRecognitionPerf, "Performance Level"), (PhonicsWordRecognitionZPDLevel, "ZPD Level"), (PhonicsWordRecognitionZPDName, "ZPD Name")],
                                   "scores": [(PhonicsWordRecognitionDomainScore,"Domain Score", "Integer"),
                                              (PhonicsWordRecognitionTestPercentile,"Test Percentile", "Integer")]
                                 }),
-                                  ({"id_code": "Literal Comprehension", 
+                                  ({"id_code": "Literal Comprehension",
                                   "perf_levels": [(LiteralComprehensionPerf,"Performance Level")],
                                   "scores": [("not_scored","Literal Comprehension Score (Not Scored)", "Integer")]
                                 })
@@ -108,7 +108,7 @@
 
       {% set filtered_obj_assess = [] %}
       {% for obj_assess in all_obj_assess %}
-        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length %}
+        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length and obj_assess["scores"][0][0][i] != 'No Score' %}
         {{ filtered_obj_assess.append(obj_assess) or "" }}
         {% endif %}
       {% endfor %}
@@ -123,7 +123,7 @@
 
         "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
-          {% if perf_level[0][i] is not none and perf_level[0][i] | length %}
+          {% if perf_level[0][i] is not none and perf_level[0][i] | length and perf_level[0][i] != 'No Score' %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ perf_level[1] }}",
             "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0][i] }}",
@@ -135,15 +135,15 @@
           ]
             ,
             "scoreResults": [
-            {% for score in obj_assess["scores"] %}
-            {% if score[0][i] is not none and score[0][i] | length %}
+            {% for item in obj_assess["scores"] %}
+            {% if item[0][i] is not none and item[0][i] | length and item[0][i] != 'No Score' %}
                 {
-                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score[1] }}",
-                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[2] }}",
+                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
                     {% if obj_assess["id_code"] == "Literal Comprehension" %}
-                    "result": "{{ score[0] }}"
+                    "result": "{{ item[0] }}"
                     {% else %}
-                    "result": "{{ score[0][i] }}"
+                    "result": "{{ item[0][i] }}"
                     {% endif %}
                 }
                 {% if not loop.last %},{% endif %}
