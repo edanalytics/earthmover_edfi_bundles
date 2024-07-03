@@ -21,16 +21,22 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ./seeds/assessments.csv
+    file: ${BUNDLE_DIR}/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/objectiveAssessments.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/performanceLevelDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/academicSubjectDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
     header_rows: 1
   {% if "${STUDENT_ID_QUERY}" | length %}
   student_id_mapping:
@@ -57,12 +63,85 @@ transformations:
           - $sources.student_id_mapping
         left_key: ${STUDENT_ID_FROM}
         right_key: student_id_from
-        join_type: left    
+        join_type: left  
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: Grade
+        right_keys: original_grade  
 
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 destinations:
   assessments:
-    source: $sources.assessments
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
