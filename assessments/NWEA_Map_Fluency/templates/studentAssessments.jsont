@@ -31,7 +31,7 @@
     "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id + (seq | string)) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "NWEA-Map-Fluency",
-      "namespace": "uri://www.nwea.org/mapFluency"
+      "namespace": "uri://www.nwea.org/mapFluency/Assessment"
     },
     "schoolYearTypeReference": {
       "schoolYear": {{ school_year }}
