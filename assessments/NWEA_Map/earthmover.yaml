@@ -18,13 +18,13 @@ config:
 
 sources:
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
   nwea_map_input:
@@ -165,26 +165,26 @@ transformations:
 destinations:
   assessmentReportingMethodDescriptors:
     source: $transformations.reporting_methods
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $transformations.objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.nwea_map_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    template: ./templates/studentAssessment.jsont
     extension: jsonl
     linearize: True
