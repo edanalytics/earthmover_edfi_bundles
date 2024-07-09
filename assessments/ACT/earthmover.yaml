@@ -103,8 +103,6 @@ transformations:
           - USRnk_ELA
           - Sup_ELA
 
-
-
   act_student_assessment_composite: 
     source: $transformations.act_student_assessment
     operations:
@@ -159,7 +157,7 @@ transformations:
           - Sup_Mth_Sc
       - operation: add_columns
         columns:
-          subject: 'Math'
+          subject: 'Mathematics'
 
   act_student_assessment_reading:
     source: $transformations.act_student_assessment
@@ -219,6 +217,12 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Writing'
+      - operation: add_columns
+        columns:
+          filter_expression: {% if Writing == "" %}1{% else %}0{% endif %}
+      - operation: add_columns
+        columns:
+          testing: {% if Writing.notnull() %}1{% else %}0{% endif %}
 
   act_student_assessment_stem:
     source: $transformations.act_student_assessment
@@ -254,7 +258,13 @@ transformations:
           - Sup_ELA
       - operation: add_columns
         columns:
-          subject: 'ELA'
+          subject: 'English/Language Arts'
+      - operation: add_columns
+        columns:
+          filter_expression: {% if ELA == '--' %}1{% else %}0{% endif %}
+      - operation: filter_rows
+        query: filter_expression == 0
+        behavior: include
 
   act_student_assessment_stacked:
     source: $transformations.act_student_assessment_composite
@@ -311,3 +321,5 @@ destinations:
     template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
     linearize: True
+
+

@@ -8,7 +8,7 @@
     "assessmentIdentifier": "ACT-English", 
     {% endif %}
     {% if Mth != "nan" %}
-    "assessmentIdentifier": "ACT-Math", 
+    "assessmentIdentifier": "ACT-Mathematics", 
     {% endif %}
     {% if Rdg != "nan" %}
     "assessmentIdentifier": "ACT-Reading", 
@@ -105,3 +105,5 @@
   ]
 }
 
+{{filter_expression}}
+{{ELA}}
