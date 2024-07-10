@@ -35,6 +35,14 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
 
+definitions:
+  operations:
+    - &map_all_null_values
+      operation: map_values
+      mapping:
+        "--": ""
+        "---": ""
+
 transformations:
   act_student_assessment:
     source: $sources.act_input
@@ -122,6 +130,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Composite'
+      - <<: *map_all_null_values
+        columns: 
+          - Composite
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if Composite is not defined or Composite == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_english:
     source: $transformations.act_student_assessment
@@ -140,6 +157,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'English'
+      - <<: *map_all_null_values
+        columns: 
+          - Eng
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if Eng is not defined or Eng == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_math:
     source: $transformations.act_student_assessment
@@ -158,6 +184,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Mathematics'
+      - <<: *map_all_null_values
+        columns: 
+          - Mth
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if Mth is not defined or Mth == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_reading:
     source: $transformations.act_student_assessment
@@ -177,6 +212,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Reading'
+      - <<: *map_all_null_values
+        columns: 
+          - Rdg
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if Rdg is not defined or Rdg == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_science:
     source: $transformations.act_student_assessment
@@ -195,6 +239,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Science'
+      - <<: *map_all_null_values
+        columns: 
+          - Sci
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if Sci is not defined or Sci == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_writing:
     source: $transformations.act_student_assessment
@@ -217,12 +270,16 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Writing'
+      - <<: *map_all_null_values
+        columns: 
+          - Writing
       - operation: add_columns
         columns:
-          filter_expression: {% if Writing == "" %}1{% else %}0{% endif %}
-      - operation: add_columns
-        columns:
-          testing: {% if Writing.notnull() %}1{% else %}0{% endif %}
+          filter_expression: '{%raw%}{% if Writing is not defined or Writing == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
+
 
   act_student_assessment_stem:
     source: $transformations.act_student_assessment
@@ -241,6 +298,15 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'STEM'
+      - <<: *map_all_null_values
+        columns: 
+          - STEM
+      - operation: add_columns
+        columns:
+          filter_expression: '{%raw%}{% if STEM is not defined or STEM == "" %}0{% else %}1{% endif %}{%endraw%}'
+      - operation: filter_rows
+        query: filter_expression == '1'
+        behavior: include
 
   act_student_assessment_ela:
     source: $transformations.act_student_assessment
@@ -259,11 +325,14 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'English/Language Arts'
+      - <<: *map_all_null_values
+        columns: 
+          - ELA
       - operation: add_columns
         columns:
-          filter_expression: {% if ELA == '--' %}1{% else %}0{% endif %}
+          filter_expression: '{%raw%}{% if ELA is not defined or ELA == "" %}0{% else %}1{% endif %}{%endraw%}'
       - operation: filter_rows
-        query: filter_expression == 0
+        query: filter_expression == '1'
         behavior: include
 
   act_student_assessment_stacked:
