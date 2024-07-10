@@ -1,10 +1,11 @@
-# See accompanying README.md for details about this file.
+version: 2
+
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
     STUDENT_ID_JOIN_COLUMN: secondary_school_student_id
@@ -13,16 +14,12 @@ config:
 
 
 sources:
-
-  {% set input_files = [['psat_sat_input_file', ''], ['psat_sat_input_file_copy', '_copy']] %}
-  {% for input_file in input_files %}
-  {{input_file[0]}}:
+  psat_sat_input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
     type: csv
     # See the accompanying README.md for a list of required columns for this file
-  {% endfor %}
 
   student_id_xwalk:
     # This file only needs to be supplied if the source assessment file does not
@@ -36,24 +33,23 @@ sources:
     type: csv
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
 transformations:
-  {% for input_file in input_files %}
-  psat_sat_student_assessment{{input_file[1]}}:
+  psat_sat_student_assessment:
+    source: $sources.psat_sat_input
     operations:
       - operation: rename_columns
-        source: $sources.{{input_file[0]}}
         columns:
           DISTRICT CODE: district_code
           SECONDARY SCHOOL STUDENT ID: secondary_school_student_id
@@ -129,38 +125,29 @@ transformations:
           STUDENT OMITTED MATH CALC TEST QUESTIONS: student_omitted_math_calc_test_questions
       - operation: join 
         sources: 
-          - $transformations.psat_sat_student_assessment{{input_file[1]}}
           - $sources.student_id_xwalk
         left_key: ${STUDENT_ID_JOIN_COLUMN}
         right_key: from
         join_type: left
       - operation: duplicate_columns
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         columns:
-          school_year: 2022
+          school_year: ${SCHOOL_YEAR}
       - operation: map_values
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: state_sponsored_grade_when_assessed
-        map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
-      - operation: filter_rows
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
-        query: valid_answer_sheet_received == 'N'
-        behavior: exclude
+        map_file: ./seeds/grade_mapping.csv
       - operation: date_format
-        source: $transformations.psat_sat_student_assessment{{input_file[1]}}
         column: state_sponsored_assessment_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-  {% endfor %}
+
   psat_sat_student_assessment_reading_writing:
+    source: $transformations.psat_sat_student_assessment
     operations:
       # need to force math columns to be null
       - operation: modify_columns
-        source: $transformations.psat_sat_student_assessment
         columns:
           state_sponsored_math_section_score: ''
           state_sponsored_math_test_score: ''
@@ -189,17 +176,17 @@ transformations:
           student_correct_answers_to_math_calc_test_questions: ''
           student_incorrect_answers_to_math_calc_test_questions: ''
           student_omitted_math_calc_test_questions: ''
-      ### todo!! what should I make the subject for reading & writing test??
       - operation: add_columns
         source: $transformations.psat_sat_student_assessment_reading_writing
         columns:
           subject: 'English Language Arts'
           student_assessment_id: "{%raw%}{{studentUniqueId}}_{{state_sponsored_assessment_date}}_ela{%endraw%}"
+
   psat_sat_student_assessment_math:
+    source: $transformations.psat_sat_student_assessment
     operations:
       # need to force reading columns to be null
       - operation: modify_columns
-        source: $transformations.psat_sat_student_assessment_copy
         columns:
           state_sponsored_reading_writing_section_score: ''
           state_sponsored_reading_test_score: ''
@@ -236,39 +223,37 @@ transformations:
           student_incorrect_answers_to_writing_and_lang_test_questions: ''
           student_omitted_writing_and_lang_test_questions: ''
       - operation: add_columns
-        source: $transformations.psat_sat_student_assessment_math
         columns:
           subject: 'Mathematics'
           student_assessment_id: "{%raw%}{{studentUniqueId}}_{{state_sponsored_assessment_date}}_mathematics{%endraw%}"
+
   psat_sat_student_assessment_stacked:
+    source: $transformations.psat_sat_student_assessment_reading_writing
     operations:
       - operation: union
         sources:
-          - $transformations.psat_sat_student_assessment_reading_writing
           - $transformations.psat_sat_student_assessment_math
-
-
 
 
 destinations:
   studentAssessments:
     source: $transformations.psat_sat_student_assessment_stacked
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
