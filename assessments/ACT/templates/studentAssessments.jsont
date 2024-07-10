@@ -1,28 +1,28 @@
 {
   "studentAssessmentIdentifier": "{{ID_ACT}}",
   "assessmentReference": {
-    {% if Composite != "nan" %}
+    {% if Composite != "" %}
     "assessmentIdentifier": "ACT-Composite", 
     {% endif %}
-    {% if Eng != "nan" %}
+    {% if Eng != "" %}
     "assessmentIdentifier": "ACT-English", 
     {% endif %}
-    {% if Mth != "nan" %}
+    {% if Mth != "" %}
     "assessmentIdentifier": "ACT-Mathematics", 
     {% endif %}
-    {% if Rdg != "nan" %}
+    {% if Rdg != "" %}
     "assessmentIdentifier": "ACT-Reading", 
     {% endif %}
-    {% if Sci != "nan" %}
+    {% if Sci != "" %}
     "assessmentIdentifier": "ACT-Science", 
     {% endif %}
-    {% if Writing != "nan" %}
+    {% if Writing != "" %}
     "assessmentIdentifier": "ACT-Writing", 
     {% endif %}
-    {% if ELA != "nan" %}
+    {% if ELA != "" %}
     "assessmentIdentifier": "ACT-English/Language Arts", 
     {% endif %}
-    {% if STEM != "nan" %}
+    {% if STEM != "" %}
     "assessmentIdentifier": "ACT-STEM", 
     {% endif %}
 
@@ -33,7 +33,7 @@
   },
   "administrationDate": "{{Test_Dte}}",
 
-{% if R_CmplxTxt != "nan" %}
+{% if R_CmplxTxt != "" %}
 "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#R_CmplxTxt",
@@ -104,6 +104,3 @@
 {% endfor %}
   ]
 }
-
-{{filter_expression}}
-{{ELA}}
