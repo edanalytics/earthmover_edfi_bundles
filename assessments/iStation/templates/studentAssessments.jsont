@@ -18,14 +18,16 @@
       "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{score}}"
-    },
+    }
+    {% if percentile is not none and percentile | length %},
     {
       "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Percentile",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{percentile}}"
     }
-  ],
-
+    {% endif %}
+  ]
+  {% if perf_lvl_value is not none and perf_lvl_value | length %},
   "performanceLevels": [
     {% if perf_lvl_type == 'level' %}
       {
@@ -41,4 +43,5 @@
       }
     {% endif %}
     ]
+  {% endif %}
 }
