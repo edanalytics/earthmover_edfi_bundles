@@ -104,7 +104,7 @@
         {% endif %}
       {% endif %}
 
-      {% if assessmentSubject == 'SCI' and school_year <= 2022 %}
+      {% if assessmentSubject == 'SCI' and (school_year | int) <= 2022 %}
         {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
           {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
         {% endif %}
@@ -118,7 +118,7 @@
         {% endif %}
       {% endif %}
 
-      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and school_year > 2022 %}
+      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and (school_year | int) > 2022 %}
         {% if SS is not none and SS | length %}
           {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
         {% endif %}
@@ -173,7 +173,7 @@
         {% set _ = perf_levels.append([ReportSuppressionAction, 'Report Suppression Action']) %}
       {% endif %}
 
-      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment == 'Y'))) %}
+      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and ((school_year | int) > 2022 or alternate_assessment == 'Y'))) %}
         {% if PerfLVL is not none and PerfLVL | length %}
           {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
         {% endif %}
@@ -420,7 +420,7 @@
           {% endif %}       
         {% endif %}
 
-        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and school_year > 2022 and alternate_assessment == 'N' %}
+        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and (school_year | int) > 2022 and alternate_assessment == 'N' %}
           {% if Std1SSCO is not none and Std1SSCO | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
           {% endif %}
