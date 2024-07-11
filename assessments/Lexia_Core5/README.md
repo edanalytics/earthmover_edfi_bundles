@@ -5,6 +5,8 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 * **Submitter name**: Sam LeBlanc
 * **Submitter organization**: Education Analytics
 
+**Important note**: Lexia Core5 results files are a snapshot of the students' usage and performance in the Lexia platform to date. This bundle creates studentAssessment Ed-Fi records at the student-year level, resulting in the studentAssessment records being overwritten with the most updated data each day rather than creating a historical record.
+
 To run this bundle, please add your own source file(s) and column(s):
 <details>
 <summary><code>core5_ytd.csv</code></summary>
@@ -63,7 +65,7 @@ earthmover run -c ./earthmover.yml -p '{
 "YTD_FILE": "path/to/Core5_YTD.csv",
 "DETAILED_FILE": "path/to/Core5_Detailed.csv",
 "OUTPUT_DIR": "./output",
-"API_YEAR": "2023",
+"API_YEAR": "20xx",
 "STUDENT_ID_NAME": "snake_case_id_column_name"}'
 ```
 
@@ -74,7 +76,7 @@ earthmover run -c ./earthmover.yml -p '{
 "YTD_FILE": "path/to/Core5_YTD.csv",
 "DETAILED_FILE": "path/to/Core5_Detailed.csv",
 "OUTPUT_DIR": "./output",
-"API_YEAR": "2023",
+"API_YEAR": "20xx",
 "STUDENT_ID_XWALK": "path/to/student_id_xwalk.csv",
 "STUDENT_ID_NAME": "student_id_to"}'
 ```
@@ -86,7 +88,7 @@ earthmover run -c ./earthmover.yml -p '{
 "YTD_FILE": "path/to/Core5_YTD.csv",
 "DETAILED_FILE": "path/to/Core5_Detailed.csv",
 "OUTPUT_DIR": "./output",
-"API_YEAR": "2023",
+"API_YEAR": "20xx",
 "DATABASE_CONNECTION": "database_connection_string"
 "STUDENT_ID_QUERY": "select id_1 as student_id_from, id_2 as student_id_to from student_table",
 "STUDENT_ID_NAME": "student_id_to"}'
@@ -96,7 +98,7 @@ Once you have inspected the output JSONL for issues, check the settings in `ligh
 ```bash
 lightbeam validate+send -c ./lightbeam.yml -p '{
 "DATA_DIR": "./output/",
-"API_YEAR": "2023",
+"API_YEAR": "20xx",
 "EDFI_API_BASE_URL": "yourURL",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
