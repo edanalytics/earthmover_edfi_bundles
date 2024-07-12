@@ -64,7 +64,6 @@
     [ELADNS1, "DNS1", "Level"],
     [ELADNS2, "DNS2", "Level"],
     [ELAFormType, "FormType", "Level"],
-    [ELALevRead, "LevRead", "Level"],
     [ELAMode, "Mode", "Level"],
     [ELANPR, "NPR", "Level"],
     [ELARCWAbs, "RCWAbs", "Level"],
@@ -268,6 +267,7 @@
 
 {%- set ela_performance_levels = [
     [ELALev, "Overall Performance Level"],
+    [ELALevRead, "LevRead", "Level"],
 ] -%}
 
 {%- set math_performance_levels = [
