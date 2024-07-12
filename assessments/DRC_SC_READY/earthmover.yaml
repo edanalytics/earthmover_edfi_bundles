@@ -409,6 +409,8 @@ transformations:
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
+          assessment_identifier: "{%raw%}SCREADY Statewide Summative Assessment {{subject}}{%endraw%}"
+
           MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
           MathLev2_name: "{%raw%}{{student_grade | int}}_MathLev2{%endraw%}"
           MathLev3_name: "{%raw%}{{student_grade | int}}_MathLev3{%endraw%}"

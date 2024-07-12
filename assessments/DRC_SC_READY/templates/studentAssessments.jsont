@@ -350,7 +350,7 @@
 {
   "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
   "assessmentReference": {
-    "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
+    "assessmentIdentifier": "{{ assessment_identifier }}",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
   },
   "schoolYearTypeReference": {
@@ -382,7 +382,7 @@
     {%- for obj_assess in objective_assessments if objective_assessments[0] | int -%}
     {
       "objectiveAssessmentReference": {
-        "assessmentIdentifier": "SCREADY Statewide Summative Assessment",
+        "assessmentIdentifier": "{{ assessment_identifier }}",
         "identificationCode": "{{ obj_assess[1] }}",
         "namespace": "uri://datarecognitioncorp.com/Assessment"
       },
