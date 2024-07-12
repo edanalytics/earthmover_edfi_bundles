@@ -370,7 +370,7 @@
     {%- endfor -%}
   ],
   "scoreResults": [
-    {%- for score in score_results if score[0] | (int if score[2] == 'Integer' else str)  -%}
+    {%- for score in score_results if score[0] | int if score[2] == 'Integer' else str -%}
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
