@@ -1,5 +1,5 @@
 {
-  "identificationCode": "{{ identification_code }}",
+  "identificationCode": "{{ identification_code[:60] }}",
   "assessmentReference": {
     "assessmentIdentifier": "{{ assessment_identifier }}",
     "namespace": "uri://datarecognitioncorp.com/Assessment"
