@@ -19,6 +19,10 @@ sources:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
+  accommodationDescriptors:
+    file: ${BUNDLE_DIR}/seeds/accommodationDescriptors.csv
+    header_rows: 1
+
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -507,6 +511,12 @@ destinations:
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
     template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl
     linearize: True
