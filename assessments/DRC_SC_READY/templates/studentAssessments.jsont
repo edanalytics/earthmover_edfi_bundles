@@ -366,10 +366,10 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- set accomodations = [] -%}
+{%- set accommodations = [] -%}
 {%- for acc in subject_variables[3] -%}
   {%- if acc[0] -%}
-    {%- set _ = accomodations.append(acc) -%}
+    {%- set _ = accommodations.append(acc) -%}
   {%- endif -%}
 {%- endfor -%}
 
