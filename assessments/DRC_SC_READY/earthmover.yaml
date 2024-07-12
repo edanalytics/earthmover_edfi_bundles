@@ -371,7 +371,7 @@ transformations:
       - operation: add_columns
         columns: 
           subject: 'English/Language Arts'
-          student_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
+          assessment_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
 
   scready_student_assessment_math:
     source: $transformations.scready_student_assessment
@@ -379,7 +379,7 @@ transformations:
       - operation: add_columns
         columns: 
           subject: 'Mathematics'
-          student_grade: "{%raw%}{{MathGrade}}{%endraw%}"
+          assessment_grade: "{%raw%}{{MathGrade}}{%endraw%}"
 
   scready_student_assessment_science:
     source: $transformations.scready_student_assessment
@@ -387,7 +387,7 @@ transformations:
       - operation: add_columns
         columns: 
           subject: 'Science'
-          student_grade: "{%raw%}{{SciGrade}}{%endraw%}"
+          assessment_grade: "{%raw%}{{SciGrade}}{%endraw%}"
 
   scready_student_assessment_social_studies:
     source: $transformations.scready_student_assessment
@@ -395,7 +395,7 @@ transformations:
       - operation: add_columns
         columns: 
           subject: 'Social Studies'
-          student_grade: "{%raw%}{{SocGrade}}{%endraw%}"
+          assessment_grade: "{%raw%}{{SocGrade}}{%endraw%}"
 
   scready_student_assessment_stacked:
     source: $transformations.scready_student_assessment_ela
@@ -411,35 +411,35 @@ transformations:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
           assessment_identifier: "{%raw%}SCREADY Statewide Summative Assessment {{subject}}{%endraw%}"
 
-          MathLev1_name: "{%raw%}{{student_grade | int}}_MathLev1{%endraw%}"
-          MathLev2_name: "{%raw%}{{student_grade | int}}_MathLev2{%endraw%}"
-          MathLev3_name: "{%raw%}{{student_grade | int}}_MathLev3{%endraw%}"
-          MathLev4_name: "{%raw%}{{student_grade | int}}_MathLev4{%endraw%}"
-          MathLev5_name: "{%raw%}{{student_grade | int}}_MathLev5{%endraw%}"
-          ELALev1_name: "{%raw%}{{student_grade | int}}_ELALev1{%endraw%}"
-          ELALev2_name: "{%raw%}{{student_grade | int}}_ELALev2{%endraw%}"
-          ELALev3_name: "{%raw%}{{student_grade | int}}_ELALev3{%endraw%}"
-          ELALev4_name: "{%raw%}{{student_grade | int}}_ELALev4{%endraw%}"
-          ELALev5_name: "{%raw%}{{student_grade | int}}_ELALev5{%endraw%}"
-          ELALev6_name: "{%raw%}{{student_grade | int}}_ELALev6{%endraw%}"
-          ELALev7_name: "{%raw%}{{student_grade | int}}_ELALev7{%endraw%}"
-          ELALev8_name: "{%raw%}{{student_grade | int}}_ELALev8{%endraw%}"
-          ELALev9_name: "{%raw%}{{student_grade | int}}_ELALev9{%endraw%}"
-          ELALev10_name: "{%raw%}{{student_grade | int}}_ELALev10{%endraw%}"
-          ELALev11_name: "{%raw%}{{student_grade | int}}_ELALev11{%endraw%}"
-          SciLev1_name: "{%raw%}{{student_grade | int}}_SciLev1{%endraw%}"
-          SciLev2_name: "{%raw%}{{student_grade | int}}_SciLev2{%endraw%}"
-          SciLev3_name: "{%raw%}{{student_grade | int}}_SciLev3{%endraw%}"
-          SciLev4_name: "{%raw%}{{student_grade | int}}_SciLev4{%endraw%}"
-          SciLev5_name: "{%raw%}{{student_grade | int}}_SciLev5{%endraw%}"
-          SciLev6_name: "{%raw%}{{student_grade | int}}_SciLev6{%endraw%}"
-          SocLev1_name: "{%raw%}{{student_grade | int}}_SocLev1{%endraw%}"
-          SocLev2_name: "{%raw%}{{student_grade | int}}_SocLev2{%endraw%}"
-          SocLev3_name: "{%raw%}{{student_grade | int}}_SocLev3{%endraw%}"
-          SocLev4_name: "{%raw%}{{student_grade | int}}_SocLev4{%endraw%}"
-          SocLev5_name: "{%raw%}{{student_grade | int}}_SocLev5{%endraw%}"
-          SocLev6_name: "{%raw%}{{student_grade | int}}_SocLev6{%endraw%}"
-          SocLev7_name: "{%raw%}{{student_grade | int}}_SocLev7{%endraw%}"
+          MathLev1_name: "{%raw%}{{assessment_grade | int}}_MathLev1{%endraw%}"
+          MathLev2_name: "{%raw%}{{assessment_grade | int}}_MathLev2{%endraw%}"
+          MathLev3_name: "{%raw%}{{assessment_grade | int}}_MathLev3{%endraw%}"
+          MathLev4_name: "{%raw%}{{assessment_grade | int}}_MathLev4{%endraw%}"
+          MathLev5_name: "{%raw%}{{assessment_grade | int}}_MathLev5{%endraw%}"
+          ELALev1_name: "{%raw%}{{assessment_grade | int}}_ELALev1{%endraw%}"
+          ELALev2_name: "{%raw%}{{assessment_grade | int}}_ELALev2{%endraw%}"
+          ELALev3_name: "{%raw%}{{assessment_grade | int}}_ELALev3{%endraw%}"
+          ELALev4_name: "{%raw%}{{assessment_grade | int}}_ELALev4{%endraw%}"
+          ELALev5_name: "{%raw%}{{assessment_grade | int}}_ELALev5{%endraw%}"
+          ELALev6_name: "{%raw%}{{assessment_grade | int}}_ELALev6{%endraw%}"
+          ELALev7_name: "{%raw%}{{assessment_grade | int}}_ELALev7{%endraw%}"
+          ELALev8_name: "{%raw%}{{assessment_grade | int}}_ELALev8{%endraw%}"
+          ELALev9_name: "{%raw%}{{assessment_grade | int}}_ELALev9{%endraw%}"
+          ELALev10_name: "{%raw%}{{assessment_grade | int}}_ELALev10{%endraw%}"
+          ELALev11_name: "{%raw%}{{assessment_grade | int}}_ELALev11{%endraw%}"
+          SciLev1_name: "{%raw%}{{assessment_grade | int}}_SciLev1{%endraw%}"
+          SciLev2_name: "{%raw%}{{assessment_grade | int}}_SciLev2{%endraw%}"
+          SciLev3_name: "{%raw%}{{assessment_grade | int}}_SciLev3{%endraw%}"
+          SciLev4_name: "{%raw%}{{assessment_grade | int}}_SciLev4{%endraw%}"
+          SciLev5_name: "{%raw%}{{assessment_grade | int}}_SciLev5{%endraw%}"
+          SciLev6_name: "{%raw%}{{assessment_grade | int}}_SciLev6{%endraw%}"
+          SocLev1_name: "{%raw%}{{assessment_grade | int}}_SocLev1{%endraw%}"
+          SocLev2_name: "{%raw%}{{assessment_grade | int}}_SocLev2{%endraw%}"
+          SocLev3_name: "{%raw%}{{assessment_grade | int}}_SocLev3{%endraw%}"
+          SocLev4_name: "{%raw%}{{assessment_grade | int}}_SocLev4{%endraw%}"
+          SocLev5_name: "{%raw%}{{assessment_grade | int}}_SocLev5{%endraw%}"
+          SocLev6_name: "{%raw%}{{assessment_grade | int}}_SocLev6{%endraw%}"
+          SocLev7_name: "{%raw%}{{assessment_grade | int}}_SocLev7{%endraw%}"
       
       - operation: map_values
         columns: 
