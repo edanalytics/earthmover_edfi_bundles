@@ -501,13 +501,13 @@ destinations:
 
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl
     linearize: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl
     linearize: True
 
