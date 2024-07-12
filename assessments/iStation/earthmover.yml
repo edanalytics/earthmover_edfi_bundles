@@ -72,7 +72,7 @@ transformations:
           July_perf_lvl: "{%raw%}{% if July_LEVEL is defined %}{{July_LEVEL}}{% else %}{{July_TIER}}{% endif %}{%endraw%}"
           perf_lvl_type: "{%raw%}{% if August_LEVEL is defined %}level{% else %}tier{% endif %}{%endraw%}"
 
-  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'] %}
+  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May', 'June'] %}
   {% for month in months %}
   scores_{{month}}:
     source: $$transformations.define_perf_levels
