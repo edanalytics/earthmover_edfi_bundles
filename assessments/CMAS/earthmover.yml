@@ -7,6 +7,8 @@ config:
   state_file: ./runs.csv
   show_graph: False
   show_stacktrace: true
+  parameter_defaults: 
+    CMAS_GROWTH_FILE: ''
 
 sources:
   cmas_results:
