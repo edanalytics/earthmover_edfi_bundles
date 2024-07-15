@@ -376,6 +376,7 @@ transformations:
         columns: 
           subject: 'English/Language Arts'
           assessment_grade: "{%raw%}{{ELAGrade}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC READY ELA{%endraw%}"
 
   scready_student_assessment_math:
     source: $transformations.scready_student_assessment
@@ -384,6 +385,7 @@ transformations:
         columns: 
           subject: 'Mathematics'
           assessment_grade: "{%raw%}{{MathGrade}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC READY Mathematics{%endraw%}"
 
   scready_student_assessment_science:
     source: $transformations.scready_student_assessment
@@ -392,6 +394,7 @@ transformations:
         columns: 
           subject: 'Science'
           assessment_grade: "{%raw%}{{SciGrade}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC READY Science{%endraw%}"
 
   scready_student_assessment_social_studies:
     source: $transformations.scready_student_assessment
@@ -400,6 +403,7 @@ transformations:
         columns: 
           subject: 'Social Studies'
           assessment_grade: "{%raw%}{{SocGrade}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC READY Social Studies{%endraw%}"
 
   scready_student_assessment_stacked:
     source: $transformations.scready_student_assessment_ela
@@ -413,8 +417,6 @@ transformations:
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
-          assessment_identifier: "{%raw%}SCREADY Statewide Summative Assessment {{subject}}{%endraw%}"
-
           MathLev1_name: "{%raw%}{{assessment_grade | int}}_MathLev1{%endraw%}"
           MathLev2_name: "{%raw%}{{assessment_grade | int}}_MathLev2{%endraw%}"
           MathLev3_name: "{%raw%}{{assessment_grade | int}}_MathLev3{%endraw%}"
