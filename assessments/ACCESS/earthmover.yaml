@@ -386,6 +386,9 @@ sources:
   objectiveAssessments:
     file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
 
 transformations:
   results:
@@ -397,6 +400,12 @@ transformations:
           defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
           school_year: ${SCHOOL_YEAR}
           alternate_assessment: ${ALTERNATE}
+          assessment_identifier:
+            {% if "${ALTERNATE}" == "N" %}
+              "ACCESS"
+            {% else %}
+              "Alternate-ACCESS"
+            {% endif %}
       - operation: date_format
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
@@ -412,12 +421,52 @@ transformations:
           ProficiencyLevelLiteracy: PerformanceLevelLiteracy
           ProficiencyLevelOral: PerformanceLevelOral
           ProficiencyLevelOverall: PerformanceLevelOverall
-      - operation: map_values
-        column: Grade
-        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
-destinations:
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [Grade, assessment_identifier]
+        right_keys: [access_grade, assessment_identifier]
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   assessments:
     source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessment_identifier
+
+
+destinations:
+  assessments:
+    source: $transformations.assessments
     template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:

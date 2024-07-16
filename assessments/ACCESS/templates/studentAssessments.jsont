@@ -1,11 +1,7 @@
 {
   "studentAssessmentIdentifier": "{{UniqueRecordID}}",
   "assessmentReference": {
-    {% if alternate_assessment == 'N' %}
-      "assessmentIdentifier": "WIDA-ACCESS",
-    {% else %}
-      "assessmentIdentifier": "WIDA-Alternate-ACCESS",
-    {% endif %}
+    "assessmentIdentifier": "{{assessment_identifier}}",
     "namespace": "uri://wida.wisc.edu/assess/access"
   },
   "schoolYearTypeReference": {
@@ -92,7 +88,7 @@
     "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
   {% endif %}
 
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
+  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
 
   "scoreResults": [
   {% set scores = [] %}
@@ -191,11 +187,7 @@
         {% for obj_assess in all_obj_assess %}
         {
           "objectiveAssessmentReference": {
-            {% if alternate_assessment == 'N' %}
-              "assessmentIdentifier": "WIDA-ACCESS",
-            {% else %}
-              "assessmentIdentifier": "WIDA-Alternate-ACCESS",
-            {% endif %}
+            "assessmentIdentifier": "{{assessment_identifier}}",
             "identificationCode": "{{ obj_assess[0] }}",
             "namespace": "uri://wida.wisc.edu/assess/access"
           },
