@@ -1,0 +1,131 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: ''
+    STUDENT_ID_FROM: ''
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+
+
+sources:
+  sc_alt_input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  
+
+  {% if "${STUDENT_ID_QUERY}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
+
+
+transformations:
+  sc_alt_student_assessment:
+    source: $sources.sc_alt_input
+    operations:
+      - operation: join 
+        sources: 
+          - $sources.student_id_mapping
+        left_key: ${STUDENT_ID_FROM}
+        right_key: student_id_from
+        join_type: left  
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: rename_columns
+        columns:
+          Test Group: test_group
+          Test Subject: subject
+          Test Grade: test_grade
+          Test Name: test_name
+          Student Name: student_name
+          Student ID: student_id
+          Home Schooled: home_schooled
+          Hispanic or Latino: hispanic_or_latino
+          Medically Homebound: medically_homebound
+          Student DOB: student_dob
+          Race: race
+          Enrolled Grade: enrolled_grade
+          Migrant Status: migrant_status
+          Gender: gender
+          EFA Code: efa_code
+          LEP Code: lep_code
+          Enrolled School: enrolled_school
+          Enrolled District: enrolled_district
+          Test Reason: test_reason
+          Test OppNumber: test_opp_number
+          Date Taken: administration_date
+          Test Completion Date: administration_end_date
+          Scale Score: scale_score
+          Scale Score Standard Error: standard_error_of_measurement
+          Performance: performance_level
+      - operation: add_columns
+        columns:
+          assessment_identifier: "{%raw%}SC-Alt{{-subject}}{%endraw%}"
+          school_year: ${API_YEAR}
+          student_assessment_id: "{%raw%}{{student_id}}_{{subject}}{%endraw%}"
+      - operation: date_format
+        columns:
+          - administration_date
+          - administration_end_date
+          - student_dob
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: map_values
+        columns:
+          - test_grade
+          - enrolled_grade
+        map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.sc_alt_student_assessment
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True

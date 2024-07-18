@@ -1,0 +1,79 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "SC Alt",
+  "namespace": "uri://cambiumassessment.com/Assessment",
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [
+    "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+  ],
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#First grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Second grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Third grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Fourth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Fifth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Sixth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Seventh grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eighth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Ninth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Tenth grade"
+    },
+        {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eleventh grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Twelfth grade"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 1",
+      "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 2",
+      "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 3",
+      "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 4",
+      "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
