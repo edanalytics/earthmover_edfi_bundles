@@ -51,8 +51,8 @@
   "administrationEndDate": "{{administration_end_date}}",
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performance_level}}",
+      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
+      "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{performance_level}}",
       "performanceLevelMet": true
     }
   ],
@@ -60,13 +60,12 @@
   "scoreResults": [
   {%- for score in score_results -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[1] | int}}"{%- else -%}"{{score[1]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
   ],
   {%- endif -%}
-  ],
-    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{enrolled_grade}}"
+    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{enrolled_grade | int}}"
 }

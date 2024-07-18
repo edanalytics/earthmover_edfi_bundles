@@ -1,5 +1,5 @@
 {
-  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentIdentifier": "{{assessment_identifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "assessmentFamily": "SC Alt",
   "namespace": "uri://cambiumassessment.com/Assessment",
@@ -9,43 +9,7 @@
   ],
   "assessedGradeLevels": [
     {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Kindergarten"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#First grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Second grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Third grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Fourth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Fifth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Sixth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Seventh grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eighth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Ninth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Tenth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eleventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Twelfth grade"
+      "gradeLevelDescriptor": [{{grade_json}}]
     }
   ],
   "scores": [

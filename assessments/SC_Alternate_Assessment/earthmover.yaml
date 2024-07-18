@@ -15,7 +15,6 @@ config:
     STUDENT_ID_QUERY: ''
     DATABASE_CONNECTION: ''
 
-
 sources:
   sc_alt_input:
     file: ${INPUT_FILE}
@@ -92,7 +91,7 @@ transformations:
           Performance: performance_level
       - operation: add_columns
         columns:
-          assessment_identifier: "{%raw%}SC-Alt{{-subject}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC-Alt {{subject}}{%endraw%}"
           school_year: ${API_YEAR}
           student_assessment_id: "{%raw%}{{student_id}}_{{subject}}{%endraw%}"
       - operation: date_format
@@ -105,13 +104,47 @@ transformations:
       - operation: map_values
         columns:
           - test_grade
-          - enrolled_grade
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+        
 
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+        
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessment_identifier
+        right_key: assessment_identifier
 
 destinations:
   assessments:
-    source: $sources.assessments
+    source:  $transformations.assessments
     template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
