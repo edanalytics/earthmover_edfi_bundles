@@ -3,10 +3,10 @@
 state_dir: ./.lightbeam/
 data_dir: ${DATA_DIR}
 edfi_api:
-  base_url: ${BASE_URL}
+  base_url: ${EDFI_API_BASE_URL}
   version: 3
-  mode: ${API_MODE}
-  year: ${API_YEAR}
+  mode: ${EDFI_API_MODE}
+  year: ${EDFI_API_YEAR}
   client_id: ${EDFI_API_CLIENT_ID}
   client_secret: ${EDFI_API_CLIENT_SECRET}
 connection:
