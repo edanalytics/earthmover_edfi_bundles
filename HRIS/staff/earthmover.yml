@@ -1,0 +1,59 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  show_graph: False
+  show_stacktrace: True
+  
+sources:
+  hris_staff_input:
+    file: ${INPUT_FILE_STAFF}
+  hris_staff_responsibilities_input:
+    file: ${INPUT_FILE_RESP}
+  hris_staff_edu_org_employment_association_input:
+    file: ${INPUT_FILE_EMP}
+  hris_payroll_input:
+    file: ${INPUT_FILE_PAY}
+
+transformations:
+  hris_staff:
+    source: $sources.hris_staff_input
+    operations:
+    - operation: snake_case_columns
+  hris_staff_responsibilities:
+    source: $sources.hris_staff_responsibilities_input
+    operations:
+    - operation: snake_case_columns
+  hris_staff_edu_org_employment_association:
+    source: $sources.hris_staff_edu_org_employment_association_input
+    operations:
+    - operation: snake_case_columns
+  hris_payroll:
+    source: $sources.hris_payroll_input
+    operations:
+    - operation: snake_case_columns
+
+
+destinations:
+  staffs:
+    source: $transformations.hris_staff
+    template: ${BUNDLE_DIR}/templates/staffs.jsont
+    extension: jsonl
+    linearize: True
+  staffEducationOrganizationAssignmentAssociations:
+    source: $transformations.hris_staff_responsibilities
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationAssignmentAssociations.jsont
+    extension: jsonl
+    linearize: True
+  staffEducationOrganizationEmploymentAssociations:
+    source: $transformations.hris_staff_edu_org_employment_association
+    template: ${BUNDLE_DIR}/templates/staffEducationOrganizationEmploymentAssociations.jsont
+    extension: jsonl
+    linearize: True
+  payrollExts:
+    source: $transformations.hris_payroll
+    template: ${BUNDLE_DIR}/templates/payrollExts.jsont
+    extension: jsonl
+    linearize: True

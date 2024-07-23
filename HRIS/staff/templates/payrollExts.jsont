@@ -1,0 +1,18 @@
+{
+    "id": "{{ md5(tx_staff_reference.StaffIdentity.StaffUniqueStateId) }}",
+    "beginDate": "01/01/1970",
+    "endDate": "01/01/1970",
+    "fiscalYear": "{{ tx_fiscal_year }}",
+    "organization": "{{ tx_organization_code }}",
+
+    "staffReference": {
+      "staffUniqueId": "{{ tx_staff_reference.StaffIdentity.StaffUniqueStateId }}"
+    },
+
+    "payrollActivityDescriptor": "uri://tea.texas.gov/PayrollActivityDescriptor#{{ tx_payroll_activity_code }}",
+    "payrollFunctionDescriptor": "uri://tea.texas.gov/PayrollFunctionDescriptor#{{ tx_function_code }}",
+    "payrollFundDescriptor": "uri://tea.texas.gov/PayrollFundDescriptor#{{ tx_fund_code }}",
+    "payrollObjectDescriptor": "uri://tea.texas.gov/PayrollObjectDescriptor#{{ tx_object_code }}",
+    "payrollProgramIntentDescriptor": "uri://tea.texas.gov/PayrollProgramIntentDescriptor#{{ tx_program_intent_code }}",
+    "payrollAmount": "{{ tx_amount }}"
+}

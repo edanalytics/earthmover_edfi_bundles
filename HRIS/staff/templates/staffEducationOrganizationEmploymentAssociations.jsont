@@ -1,0 +1,21 @@
+{
+    "id": "{{ md5(staff_reference.StaffIdentity.StaffUniqueStateId) }}",
+    "employmentStatusDescriptor": "Not specified",
+    "hireDate": "01/01/1970",
+    
+    "educationOrganizationReference": {
+      "educationOrganizationId": "{{ education_organization_reference.EducationalOrgIdentity.StateOrganizationId }}"
+    },
+
+    "staffReference": {
+      "staffUniqueId": "{{ staff_reference.StaffIdentity.StaffUniqueStateId }}"
+    },
+
+    "_ext": {
+      "tx": {
+        "percentDayEmployed": "{{ tx_percent_day_employed }}",
+        "numberDaysEmployed": "{{ tx_number_days_employed }}",
+        "auxiliaryRoleIdSets": "{{ tx_auxiliary_role_id }}"
+      }
+    }
+}
