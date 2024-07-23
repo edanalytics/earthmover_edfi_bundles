@@ -1,0 +1,106 @@
+{
+  "studentAssessmentIdentifier": "{{ID_ACT}}",
+  "assessmentReference": {
+    {% if Composite != "" %}
+    "assessmentIdentifier": "ACT-Composite", 
+    {% endif %}
+    {% if Eng != "" %}
+    "assessmentIdentifier": "ACT-English", 
+    {% endif %}
+    {% if Mth != "" %}
+    "assessmentIdentifier": "ACT-Mathematics", 
+    {% endif %}
+    {% if Rdg != "" %}
+    "assessmentIdentifier": "ACT-Reading", 
+    {% endif %}
+    {% if Sci != "" %}
+    "assessmentIdentifier": "ACT-Science", 
+    {% endif %}
+    {% if Writing != "" %}
+    "assessmentIdentifier": "ACT-Writing", 
+    {% endif %}
+    {% if ELA != "" %}
+    "assessmentIdentifier": "ACT-English/Language Arts", 
+    {% endif %}
+    {% if STEM != "" %}
+    "assessmentIdentifier": "ACT-STEM", 
+    {% endif %}
+
+    "namespace": "uri://act.org/assessment/act"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{ID_StateAssign}}"
+  },
+  "administrationDate": "{{Test_Dte}}",
+
+{% if R_CmplxTxt != "" %}
+"performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Reading Complex Text",
+      "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{ R_CmplxTxt }}",
+      "performanceLevelMet": true
+    }
+  ],
+{% endif %}
+  
+"scoreResults": [
+    {%- set all_scores = [
+        [HS_GradeLev, "Assessment Grade Level", "Level"],
+        [Test_Loc, "Test Location", "Level"],
+        [Composite, "Composite Score", "Integer"],
+        [Sum_Scale, "Sum of Scale Scores", "Integer"],
+        [StRnk_Comp, "Composite State Rank", "Integer"],
+        [USRnk_Comp, "Composite US Rank", "Integer"],
+        [Sup_Composite, "Composite Superscore", "Integer"],
+        [Sup_Sum_Scale, "Sum of Superscore Scale Scores", "Integer"],
+        [Eng, "English Score", "Integer"],
+        [StRnk_Eng, "English State Rank", "Integer"],
+        [USRnk_Eng, "English US Rank", "Integer"],
+        [Sup_Eng_Sc, "English Superscore", "Integer"],
+        [Mth, "Math Score", "Integer"],
+        [StRnk_Math, "Math State Rank", "Integer"],
+        [USRnk_Math, "Math US Rank", "Integer"],
+        [Sup_Mth_Sc, "Math Superscore", "Integer"],
+        [Rdg, "Reading Score", "Integer"],
+        [StRnk_Read, "Reading State Rank", "Integer"],
+        [USRnk_Read, "Reading US Rank", "Integer"],
+        [Sup_Rdg_Sc, "Reading Superscore", "Integer"],
+        [Sci, "Science Score", "Integer"],
+        [StRnk_Sci, "Science State Rank", "Integer"],
+        [USRnk_Sci, "Science US Rank", "Integer"],
+        [Sup_Sci_Sc, "Science Superscore", "Integer"],
+        [Writing, "Writing Score", "Integer"],
+        [StRnk_W, "Writing State Rank", "Integer"],
+        [W_USRnk, "Writing US Rank", "Integer"],
+        [W_Dom_Ideas, "Writing Domain Ideas and Analysis Score", "Integer"],
+        [W_Dom_Supt, "Writing Domain Development and Support Score", "Integer"],
+        [W_Dom_Org, "Writing Domain Organization Score", "Integer"],
+        [W_Dom_LangUse, "Writing Domain Language Use and Conventions Score", "Integer"],
+        [Sup_Writ_Sc, "Writing Superscore", "Integer"],
+        [ELA, "ELA Score", "Integer"],
+        [Strnk_ELA, "ELA State Rank", "Integer"],
+        [USRnk_ELA, "ELA US Rank", "Integer"],
+        [Sup_ELA, "ELA Superscore", "Integer"],
+        [STEM, "STEM Score", "Integer"],
+        [Strnk_STEM, "STEM State Rank", "Integer"],
+        [USRnk_STEM, "STEM US Rank", "Integer"],
+        [Sup_STEM, "STEM Superscore", "Integer"]
+    ] -%}
+  
+{% set skip_values = ["nan", "--", "---", ""] %}
+{% set filtered_scores = [] %}
+{% for score in all_scores -%}
+  {% if score[0] not in skip_values -%}
+    {% set _ = filtered_scores.append(score)%}
+  {%- endif %}
+{%- endfor %}
+{% for score in filtered_scores -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    }
+  {%if not loop.last %},{% endif %}
+{% endfor %}
+  ]
+}
