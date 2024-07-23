@@ -1,0 +1,499 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+
+sources:
+  results:
+    file: ${ACCESS_RESULTS_FILE}
+    header_rows: 1
+    columns:
+      {% if "${ALTERNATE}" == "N" %}
+      # Summative
+      - StateNameAbbreviation
+      - DistrictName
+      - DistrictNumber
+      - SchoolName
+      - SchoolNumber
+      - UniqueDRCStudentID
+      - ReportedRecord
+      - StudentLastName
+      - StudentFirstName
+      - StudentMiddleName
+      - BirthDate
+      - Gender
+      - StateStudentID
+      - DistrictStudentID
+      - Grade
+      - EthnicityHispanicLatino
+      - RaceAmericanIndianAlaskanNative
+      - RaceAsian
+      - RaceBlackAfricanAmerican
+      - RacePacificIslanderHawaiian
+      - RaceWhite
+      - NativeLanguage
+      - DateFirstEnrolledUSSchool
+      - LengthofTimeinLEPELLProgram
+      - TitleIIIStatus
+      - Migrant
+      - IEPStatus
+      - 504Plan
+      - PrimaryDisability
+      - SecondaryDisability
+      - LIEPClassification
+      - LIEPParentalRefusal
+      - LIEPOptionalData
+      - AccommodationMC
+      - AccommodationRA
+      - AccommodationES
+      - AccommodationLP
+      - AccommodationBR
+      - AccommodationSD
+      - AccommodationIR
+      - AccommodationRP
+      - AccommodationSR
+      - AccommodationWD
+      - AccommodationRD
+      - AccommodationNS
+      - AccommodationEM
+      - StudentType
+      - StateDefinedOptionalData
+      - DistrictDefinedOptionalData
+      - Additionalfieldtobeusedbyastateifneeded
+      - ProficiencyLevelListening
+      - ProficiencyLevelReading
+      - ProficiencyLevelSpeaking
+      - ProficiencyLevelWriting
+      - ProficiencyLevelComprehension
+      - ProficiencyLevelLiteracy
+      - ProficiencyLevelOral
+      - ProficiencyLevelOverall
+      - ScaleScoreListening
+      - ScaleScoreReading
+      - ScaleScoreSpeaking
+      - ScaleScoreWriting
+      - ScaleScoreComprehension
+      - ScaleScoreLiteracy
+      - ScaleScoreOral
+      - ScaleScoreOverall
+      - CSEMListening
+      - CSEMReading
+      - CSEMSpeaking
+      - CSEMWriting
+      - CSEMComprehension
+      - CSEMLiteracy
+      - CSEMOral
+      - CSEMOverall
+      - ConfidenceLowScoreListening
+      - ConfidenceHighScoreListening
+      - ConfidenceLowScoreReading
+      - ConfidenceHighScoreReading
+      - ConfidenceLowScoreSpeaking
+      - ConfidenceHighScoreSpeaking
+      - ConfidenceLowScoreWriting
+      - ConfidenceHighScoreWriting
+      - ConfidenceLowScoreComprehension
+      - ConfidenceHighScoreComprehension
+      - ConfidenceLowScoreLiteracy
+      - ConfidenceHighScoreLiteracy
+      - ConfidenceLowScoreOral
+      - ConfidenceHighScoreOral
+      - ConfidenceLowScoreOverall
+      - ConfidenceHighScoreOverall
+      - DoNotScoreCodeListening
+      - DoNotScoreCodeReading
+      - DoNotScoreCodeSpeaking
+      - DoNotScoreCodeWriting
+      - FormNumber
+      - TestCompletionDate
+      - ModeofAdministrationListening
+      - ModeofAdministrationReading
+      - ModeofAdministrationSpeaking
+      - ModeofAdministrationWriting
+      - ModeofResponseWriting
+      - ReportedMode
+      - ClusterListening
+      - ClusterReading
+      - ClusterSpeaking
+      - ClusterWriting
+      - TierListening
+      - TierReading
+      - TierSpeaking
+      - TierWriting
+      - Tier
+      - TierSelectionOverrideSpeaking
+      - TierSelectionOverrideWriting
+      - DomainTerminationListening
+      - DomainTerminationReading
+      - DomainTerminationSpeaking
+      - DomainTerminationWriting
+      - StatusListening
+      - StatusReading
+      - StatusSpeaking
+      - StatusWriting
+      - RawResponsesListening
+      - RawResponsesReading
+      - RawResponsesSpeaking
+      - RawTask1Writing
+      - RawTask2Writing
+      - RawTask3Writing
+      - RawTask4Writing
+      - RawResponsesKWriting
+      - ScoredResponsesListening
+      - ScoredResponsesReading
+      - ScoredResponsesSpeaking
+      - ScoredTask1Writing
+      - ScoredTask2Writing
+      - ScoredTask3Writing
+      - ScoredTask4Writing
+      - ScoredResponsesKWriting
+      - ItemIDsListening
+      - ItemIDsReading
+      - FormNameListening
+      - FormNameReading
+      - FormNameSpeaking
+      - FormNameWriting
+      - SecurityBarcodeListening
+      - SecurityBarcodeReading
+      - SecurityBarcodeSpeaking
+      - SecurityBarcodeWriting
+      - LithocodeListening
+      - LithocodeReading
+      - LithocodeSpeaking
+      - LithocodeWriting
+      - TestEventIDListening
+      - TestEventIDReading
+      - TestEventIDSpeaking
+      - TestEventIDWriting
+      - DocumentLabelCodeListening
+      - DocumentLabelCodeReading
+      - DocumentLabelCodeSpeaking
+      - DocumentLabelCodeWriting
+      - FutureUse1
+      - FutureUse2
+      - FutureUse3
+      - FutureUse4
+      - DateTimeStamp
+      - UniqueRecordID
+      - DSRUpdated
+      {% endif %}
+      {% if "${ALTERNATE}" == "Y" %}
+      - StateNameAbbreviation
+      - DistrictName
+      - DistrictNumber
+      - SchoolName
+      - SchoolNumber
+      - UniqueDRCStudentID
+      - ReportedRecord
+      - StudentLastName
+      - StudentFirstName
+      - StudentMiddleName
+      - BirthDate
+      - Gender
+      - StateStudentID
+      - DistrictStudentID
+      - Grade
+      - EthnicityHispanicLatino
+      - RaceAmericanIndianAlaskanNative
+      - RaceAsian
+      - RaceBlackAfricanAmerican
+      - RacePacificIslanderHawaiian
+      - RaceWhite
+      - NativeLanguage
+      - DateFirstEnrolledUSSchool
+      - LengthofTimeinLEPELLProgram
+      - TitleIIIStatus
+      - Migrant
+      - IEPStatus
+      - 504Plan
+      - PrimaryDisability
+      - SecondaryDisability
+      - LIEPClassification
+      - LIEPParentalRefusal
+      - LIEPOptionalData
+      - AccommodationMC
+      - AccommodationRA
+      - AccommodationES
+      - AccommodationLP
+      - AccommodationBR
+      - AccommodationSD
+      - AccommodationIR
+      - AccommodationRP
+      - AccommodationSR
+      - AccommodationWD
+      - AccommodationRD
+      - AccommodationNS
+      - AccommodationEM
+      - ScribedStudentResponseSSR
+      - StateAlternateAssessmentparticipation
+      - NumberofYearsstudenthasbeenexposedtoacademicEnglish
+      - TestEnvironmentFamiliarenvironmenttostudent
+      - TestEnvironmentQuietEnvironment
+      - TestEnvironmentMinimaldistractions
+      - TestEnvironmentOnetooneinteractionwithtestadministrator
+      - AccommodationsTestdirections
+      - AccommodationsPresentationFormat
+      - AccommodationsResponseFormat
+      - AccommodationsSettingformatenvironment
+      - AccommodationsTimingscheduling
+      - AccommodationsOther
+      - TASpecialeducationteacher
+      - TAESLBilingualteacher
+      - TAGeneraleducationteacher
+      - TASpeechlanguagepathologist
+      - TASchoolpsychologist
+      - TASchoolcounselor
+      - TALEAtestadministrator
+      - TAOther
+      - KnowledgeofstudentscurrentIEP
+      - Knowledgeofthestudentsacademicprogramming
+      - Haspreviouslyimplementedaccommodationsforthestudent
+      - Hasanestablishedrelationshipwiththestudent
+      - Limitedknowledgeofthestudentsabilities
+      - Unfamiliarwiththestudentsabilities
+      - StudentType
+      - StateDefinedOptionalData
+      - DistrictDefinedOptionalData
+      - Additionalfieldtobeusedbyastateifneeded
+      - ProficiencyLevelListening
+      - ProficiencyLevelReading
+      - ProficiencyLevelSpeaking
+      - ProficiencyLevelWriting
+      - ProficiencyLevelComprehension
+      - ProficiencyLevelLiteracy
+      - ProficiencyLevelOral
+      - ProficiencyLevelOverall
+      - ScaleScoreListening
+      - ScaleScoreReading
+      - ScaleScoreSpeaking
+      - ScaleScoreWriting
+      - ScaleScoreComprehension
+      - ScaleScoreLiteracy
+      - ScaleScoreOral
+      - ScaleScoreOverall
+      - CSEMListening
+      - CSEMReading
+      - CSEMSpeaking
+      - CSEMWriting
+      - CSEMComprehension
+      - CSEMLiteracy
+      - CSEMOral
+      - CSEMOverall
+      - ConfidenceLowScoreListening
+      - ConfidenceHighScoreListening
+      - ConfidenceLowScoreReading
+      - ConfidenceHighScoreReading
+      - ConfidenceLowScoreSpeaking
+      - ConfidenceHighScoreSpeaking
+      - ConfidenceLowScoreWriting
+      - ConfidenceHighScoreWriting
+      - ConfidenceLowScoreComprehension
+      - ConfidenceHighScoreComprehension
+      - ConfidenceLowScoreLiteracy
+      - ConfidenceHighScoreLiteracy
+      - ConfidenceLowScoreOral
+      - ConfidenceHighScoreOral
+      - ConfidenceLowScoreOverall
+      - ConfidenceHighScoreOverall
+      - DoNotScoreCodeListening
+      - DoNotScoreCodeReading
+      - DoNotScoreCodeSpeaking
+      - DoNotScoreCodeWriting
+      - FormNumber
+      - TestCompletionDate
+      - ClusterListening
+      - ClusterReading
+      - ClusterSpeaking
+      - ClusterWriting
+      - Tier
+      - StatusListening
+      - StatusReading
+      - StatusSpeaking
+      - StatusWriting
+      - RawItemResponsesListening
+      - RawItemResponsesReading
+      - RawItemResponsesSpeaking
+      - RawItemResponsesWriting
+      - ScoredResponsesListening
+      - ScoredResponsesReading
+      - ScoredResponsesSpeaking
+      - ScoredResponsesWriting
+      - NumberofCorrectResponsesListening
+      - CueANumberCorrectListening
+      - CueAPercentCorrectListening
+      - CueBNumberCorrectListening
+      - CueBPercentCorrectListening
+      - CueCNumberCorrectListening
+      - CueCPercentCorrectListening
+      - NumberofCorrectResponsesReading
+      - CueANumberCorrectReading
+      - CueAPercentCorrectReading
+      - CueBNumberCorrectReading
+      - CueBPercentCorrectReading
+      - CueCNumberCorrectReading
+      - CueCPercentCorrectReading
+      - FormNameListening
+      - FormNameReading
+      - FormNameSpeaking
+      - FormNameWriting
+      - SecurityBarcodeListening
+      - SecurityBarcodeReading
+      - SecurityBarcodeSpeaking
+      - SecurityBarcodeWriting
+      - LithocodeListening
+      - LithocodeReading
+      - LithocodeSpeaking
+      - LithocodeWriting
+      - TestEventIDListening
+      - TestEventIDReading
+      - TestEventIDSpeaking
+      - TestEventIDWriting
+      - DocumentLabelCodeListening
+      - DocumentLabelCodeReading
+      - DocumentLabelCodeSpeaking
+      - DocumentLabelCodeWriting
+      - FutureUse1
+      - FutureUse2
+      - FutureUse3
+      - FutureUse4
+      - DateTimeStamp
+      - UniqueRecordID
+      - DSRUpdated
+      {% endif %}
+  accommodationDescriptors:
+    file: ${BUNDLE_DIR}/seeds/accommodationDescriptors.csv
+    header_rows: 1
+  administrationEnvironmentDescriptors:
+    file: ${BUNDLE_DIR}/seeds/administrationEnvironmentDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  reasonNotTestedDescriptors:
+    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  results:
+    source: $sources.results
+    operations:
+      # Use April 1st of the assessment year for assessments with no date (invalid scores)
+      - operation: add_columns
+        columns:
+          defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
+          school_year: ${SCHOOL_YEAR}
+          alternate_assessment: ${ALTERNATE}
+          assessment_identifier:
+            {% if "${ALTERNATE}" == "N" %}
+              "ACCESS"
+            {% else %}
+              "Alternate-ACCESS"
+            {% endif %}
+      - operation: date_format
+        column: TestCompletionDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+          ProficiencyLevelListening: PerformanceLevelListening
+          ProficiencyLevelReading: PerformanceLevelReading
+          ProficiencyLevelSpeaking: PerformanceLevelSpeaking
+          ProficiencyLevelWriting: PerformanceLevelWriting
+          ProficiencyLevelComprehension: PerformanceLevelComprehension
+          ProficiencyLevelLiteracy: PerformanceLevelLiteracy
+          ProficiencyLevelOral: PerformanceLevelOral
+          ProficiencyLevelOverall: PerformanceLevelOverall
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [Grade, assessment_identifier]
+        right_keys: [access_grade, assessment_identifier]
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{grade_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessment_identifier
+
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.results
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    extension: jsonl
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ${BUNDLE_DIR}/templates/accommodationDescriptors.jsont
+    extension: jsonl
+  administrationEnvironmentDescriptors:
+    source: $sources.administrationEnvironmentDescriptors
+    template: ${BUNDLE_DIR}/templates/administrationEnvironmentDescriptors.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  reasonNotTestedDescriptors:
+    source: $sources.reasonNotTestedDescriptors
+    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    extension: jsonl
