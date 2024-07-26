@@ -121,11 +121,11 @@ transformations:
     operations:
       # filter to rows where `to` is null:
       - operation: filter_rows
-        query:  '__to.isnull()'
+        query:  '__edfi_studentUniqueId.isnull()'
         behavior: include
       - operation: drop_columns
         columns:
-          - __to
+          - __edfi_studentUniqueId
 
   input_xwalked:
     # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
@@ -133,7 +133,7 @@ transformations:
     operations:
       # filter to rows where `to` is NOT null:
       - operation: filter_rows
-        query:  '__to.isnull()'
+        query:  '__edfi_studentUniqueId.isnull()'
         behavior: exclude
       - operation: rename_columns
         columns:
