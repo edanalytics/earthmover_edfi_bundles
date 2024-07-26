@@ -5,6 +5,7 @@ This folder contains several packages for aligning student IDs from source data 
 Assuming you have an earthmover project which uses an assessment bundle, such as
 ```yaml
 packages:
+  NWEA_Map:
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     subdirectory: assessments/NWEA_Map
 ```
@@ -63,18 +64,19 @@ The first time you see an assessment file, compute the `best_id_match_rates` by
 1. specifying the list of column names from your INPUT_FILE which *may contain* student IDs via an environment variable called `POSSIBLE_STUDENT_ID_COLUMNS` (for example `POSSIBLE_STUDENT_ID_COLUMNS=School_StateID,StudentID,Student_StateID`)
 1. specifying the possible values of `studentIdentificationCodes.assigningOrganizationIdentificationCode` in EdFi via an environment variable called `EDFI_STUDENT_ID_TYPES` (for example `EDFI_STUDENT_ID_TYPES=Local,District,State`)
 1. specifying the assessment file source node with student IDs via an environment variable called `EARTHMOVER_NODE_TO_XWALK` (for example `EARTHMOVER_NODE_TO_XWALK=\$sources.nwea_map_input`)
-1. executing `earthmover run` to produce `best_id_match_rates.csv` (save this file)
+1. executing `earthmover run -s student_id_match_rates` to produce `student_id_match_rates.csv` (save this file)
 
 Example:
 ```bash
-earthmover run -p '{\
-"POSSIBLE_STUDENT_ID_COLUMNS":"School_StateID,StudentID,Student_StateID",\
-"EDFI_STUDENT_ID_TYPES":"Local,District,State",\
-"EARTHMOVER_NODE_TO_XWALK":"\$sources.nwea_map_input",\
+earthmover run -s student_id_match_rates -p '{
+"POSSIBLE_STUDENT_ID_COLUMNS":"School_StateID,StudentID,Student_StateID",
+"EDFI_STUDENT_ID_TYPES":"Local,District,State",
+"EARTHMOVER_NODE_TO_XWALK":"$sources.nwea_map_input",
+"BUNDLE_DIR":"./",
 "INPUT_FILE":"path/to/file.csv"}'
 ```
 
-Once you have computed the `best_id_match_rates.csv`, you can use (and re-use) that information to cross-walk student IDs in subsequent assessment files by
+Once you have computed the `student_id_match_rates.csv`, you can use (and re-use) that information to cross-walk student IDs in subsequent assessment files by
 1. adding the `apply_xwalk` package to your earthmover project:
 ```yaml
 packages:
@@ -94,8 +96,8 @@ transformations:
 
 Example:
 ```bash
-earthmover run -p '{\
-"EARTHMOVER_NODE_TO_XWALK":"\$sources.nwea_map_input",\
+earthmover run -p '{
+"EARTHMOVER_NODE_TO_XWALK":"$sources.nwea_map_input",
 "REQUIRED_MATCH_RATE":0.5, "INPUT_FILE":"path/to/file2.csv"}'
 ```
 
