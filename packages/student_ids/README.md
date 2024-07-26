@@ -73,7 +73,8 @@ earthmover run -s student_id_match_rates -p '{
 "EDFI_STUDENT_ID_TYPES":"Local,District,State",
 "EARTHMOVER_NODE_TO_XWALK":"$sources.nwea_map_input",
 "BUNDLE_DIR":"./",
-"INPUT_FILE":"path/to/file.csv"}'
+"INPUT_FILE":"path/to/file.csv",
+"OUTPUT_DIR": "./"}'
 ```
 
 Once you have computed the `student_id_match_rates.csv`, you can use (and re-use) that information to cross-walk student IDs in subsequent assessment files by
@@ -101,7 +102,8 @@ earthmover run -p '{
 "REQUIRED_MATCH_RATE":0.5,
 "EDFI_STUDENT_ID_TYPES":"Local,District,State",
 "BUNDLE_DIR":"./",
-"INPUT_FILE":"path/to/file2.csv"}'
+"INPUT_FILE":"path/to/file2.csv",
+"OUTPUT_DIR": "./output/"}'
 ```
 
 
@@ -113,7 +115,11 @@ The `compute_match_rates` package works by
 * producing `best_id_match_rates.csv` which can be used by the `apply_xwalk` package
 * also producing `input_no_student_id_match.csv`, which is the `INPUT_FILE`'s row that *did not match* any Ed-Fi student ID
 
-Below is a picture of the sort of graph this bundle produces and runs:
+Below is a picture of the sort of graph `compute_match_rates` produces and runs:
 
-![Graph](./earthmover_student_id_bundle.svg)
+![Graph](./packages/student_ids/compute_match_rates/graph.svg)
+
+Below is a picture of the sort of graph `apply_xwalk` produces and runs (on the `NWEA_Map` assessment bundle):
+
+![Graph](./packages/student_ids/apply_xwalk/graph.svg)
 
