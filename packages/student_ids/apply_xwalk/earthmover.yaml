@@ -117,7 +117,7 @@ transformations:
           - __match_rate
 
   input_no_student_id_match:
-    source: $transformations.input_file_base
+    source: $transformations.input_base
     operations:
       # filter to rows where `to` is null:
       - operation: filter_rows
@@ -126,7 +126,7 @@ transformations:
       - operation: drop_columns
         columns:
           - __to
-          
+
   input_xwalked:
     # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
     source: $transformations.input_base
