@@ -100,6 +100,7 @@ earthmover run -p '{
 "EARTHMOVER_NODE_TO_XWALK":"$sources.nwea_map_input",
 "REQUIRED_MATCH_RATE":0.5,
 "EDFI_STUDENT_ID_TYPES":"Local,District,State",
+"BUNDLE_DIR":"./",
 "INPUT_FILE":"path/to/file2.csv"}'
 ```
 

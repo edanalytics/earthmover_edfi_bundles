@@ -48,7 +48,7 @@ transformations:
           __join_id: "1"
           transformations:
     expect:
-    - match_rate | float >= ${REQUIRED_MATCH_RATE}
+    - __match_rate | float >= ${REQUIRED_MATCH_RATE}
 
   edfi_roster:
     source: $sources.edfi_roster
