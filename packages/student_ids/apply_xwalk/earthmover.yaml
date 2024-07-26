@@ -51,7 +51,7 @@ transformations:
     - __match_rate | float >= ${REQUIRED_MATCH_RATE}
 
   edfi_roster:
-    source: $sources.edfi_roster
+    source: $transformations.unpacked_edfi_roster
     operations:
       - operation: rename_columns
         columns:
