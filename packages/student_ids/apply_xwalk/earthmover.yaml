@@ -1,0 +1,149 @@
+version: 2
+
+packages:
+  # this provides `$sources.edfi_roster`, which this package requires
+  edfi_roster:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    subdirectory: packages/student_ids/edfi_roster
+    branch: student_id_alignment
+
+config:
+  parameter_defaults:
+    EARTHMOVER_NODE_TO_XWALK: $sources.input
+    REQUIRED_MATCH_RATE: 0.5
+
+sources:
+  student_id_match_rates:
+    file: "" # user must supply this when using this package!
+
+transformations:
+  student_id_match_rates:
+    source: $sources.student_id_match_rates
+    operations: []
+
+  best_id_match:
+    source: $transformations.student_id_match_rates
+    operations:
+      - operation: add_columns
+        columns:
+          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - meets_filter_criteria
+      # this should (hopefully) result in zero or one rows
+      - operation: rename_columns
+        columns:
+          # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
+          # (since we will materialize those rows from INPUT_FILE where no student ID matches the xwalk we created)
+          source_column_name: __source_column_name
+          edfi_column_name: __edfi_column_name
+          num_matches: __num_matches
+          num_rows: __num_rows
+          match_rate: __match_rate
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+          transformations:
+    expect:
+    - match_rate | float >= ${REQUIRED_MATCH_RATE}
+
+  edfi_roster:
+    source: $sources.edfi_roster
+    operations:
+      - operation: rename_columns
+        columns:
+          # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
+          # (since we will materialize those rows from INPUT_FILE where no student ID matches the xwalk we created)
+          edOrgId: __edfi_edOrgId
+          edOrgType: __edfi_edOrgType
+          studentUniqueId: __edfi_studentUniqueId
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: join
+        sources:
+          - $transformations.best_id_match
+        join_type: inner
+        left_key: __join_id
+        right_key: __join_id
+      - operation: drop_columns
+        columns:
+          - __join_id
+      - operation: add_columns
+        columns:
+          __xwalk_id_to: '{%raw%}{{__row_data__[__edfi_column_name]|string}}{%endraw%}'
+      - operation: keep_columns
+        columns:
+          - __edfi_edOrgId
+          - __edfi_edOrgType
+          - __edfi_studentUniqueId
+          - __xwalk_id_to
+
+  input_base:
+    source: ${EARTHMOVER_NODE_TO_XWALK}
+    operations:
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: join
+        sources:
+          - $transformations.best_id_match
+        join_type: inner
+        left_key: __join_id
+        right_key: __join_id
+      - operation: drop_columns
+        columns:
+          - __join_id
+      - operation: add_columns
+        columns:
+          __xwalk_id_from: '{%raw%}{{__row_data__[__source_column_name]|string}}{%endraw%}'
+      - operation: join
+        sources:
+          - $transformations.edfi_roster
+        join_type: left
+        left_key: __xwalk_id_from
+        right_key: __xwalk_id_to
+      - operation: drop_columns
+        columns:
+          - __xwalk_id_from
+          - __xwalk_id_to
+          - __source_column_name
+          - __edfi_column_name
+          - __num_matches
+          - __num_rows
+          - __match_rate
+
+  input_no_student_id_match:
+    source: $transformations.input_file_base
+    operations:
+      # filter to rows where `to` is null:
+      - operation: filter_rows
+        query:  '__to.isnull()'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - __to
+          
+  input_xwalked:
+    # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
+    source: $transformations.input_base
+    operations:
+      # filter to rows where `to` is NOT null:
+      - operation: filter_rows
+        query:  '__to.isnull()'
+        behavior: exclude
+      - operation: rename_columns
+        columns:
+          __edfi_studentUniqueId: edFi_studentUniqueID
+
+destinations:
+  input_no_student_id_match:
+    source: $transformations.input_no_student_id_match
+    # here we are assuming that INPUT_FILE is a CSV, but that might not be true... maybe
+    # need to switch destination template and extension based on INPUT_FILE type?
+    template: ./verbatim.csvt
+    extension: csv
+    linearize: True
