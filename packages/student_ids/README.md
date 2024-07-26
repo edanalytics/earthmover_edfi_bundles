@@ -117,9 +117,9 @@ The `compute_match_rates` package works by
 
 Below is a picture of the sort of graph `compute_match_rates` produces and runs:
 
-![Graph](./packages/student_ids/compute_match_rates/graph.svg)
+![Graph](./student_ids/compute_match_rates/graph.svg)
 
 Below is a picture of the sort of graph `apply_xwalk` produces and runs (on the `NWEA_Map` assessment bundle):
 
-![Graph](./packages/student_ids/apply_xwalk/graph.svg)
+![Graph](./student_ids/apply_xwalk/graph.svg)
 
