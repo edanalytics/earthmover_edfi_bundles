@@ -103,6 +103,7 @@ earthmover run -p '{
 "EDFI_STUDENT_ID_TYPES":"Local,District,State",
 "BUNDLE_DIR":"./",
 "INPUT_FILE":"path/to/file2.csv",
+"STUDENT_ID_NAME": "edFi_studentUniqueID",
 "OUTPUT_DIR": "./output/"}'
 ```
 
