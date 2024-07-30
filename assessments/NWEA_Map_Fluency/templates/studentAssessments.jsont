@@ -118,7 +118,7 @@
 
       {% set filtered_obj_assess = [] %}
       {% for obj_assess in all_obj_assess %}
-        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length and obj_assess["scores"][0][0][i] != 'No Score' %}
+        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length %}
         {{ filtered_obj_assess.append(obj_assess) or "" }}
         {% endif %}
       {% endfor %}
@@ -133,7 +133,7 @@
 
         "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
-          {% if perf_level[0][i] is not none and perf_level[0][i] | length and perf_level[0][i] != 'No Score' %}
+          {% if perf_level[0][i] is not none and perf_level[0][i] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ perf_level[1] }}",
             "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0][i] }}",
@@ -146,7 +146,7 @@
             ,
             "scoreResults": [
             {% for item in obj_assess["scores"] %}
-            {% if item[0][i] is not none and item[0][i] | length and item[0][i] != 'No Score' %}
+            {% if item[0][i] is not none and item[0][i] | length %}
                 {
                     "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
                     "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
