@@ -112,6 +112,7 @@ transformations:
       #This group_by operation creates one row per objective assessment, as needed by obejctiveAssessment.jsont
       - operation: group_by
         group_by_columns:
+          - assessment_identifier
           - identification_code
         create_columns:
           reporting_methods: agg(reporting_method,,)
