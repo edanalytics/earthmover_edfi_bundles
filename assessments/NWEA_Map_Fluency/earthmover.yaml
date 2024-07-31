@@ -78,6 +78,8 @@ transformations:
           - AssignedTestType
           - generated_test_id
           - assessment_identifier
+          - DyslexiaScreenerOutcome
+          - UniversalScreenerOutcome
         create_columns:
           PrintConceptCorrect: agg(PrintConceptCorrect,,)
           PrintConceptAttempted: agg(PrintConceptAttempted,,)
