@@ -110,13 +110,35 @@ transformations:
           - $transformations.scores_{{month}}
           {% endfor %}
 
+  # The export data is already stacked
+  renamed_export:
+    source: $sources.istation_input
+    operations:
+      - operation: add_columns
+        columns:
+          perf_lvl_type: "{%raw%}tier{%endraw%}"
+      - operation: rename_columns
+        columns:
+          STUDENT_ID: student_id
+          DOMAIN: domain
+          GRADE: grade_level
+          UDATE: admin_date
+          SCORE: score
+          PTILE: percentile
+          TIER: perf_lvl_value
+
   {% if "${SUBJECT}" == "reading" %}
     {% set test = "Istation Reading" %}
   {% elif "${SUBJECT}" == "spanish" %}
     {% set test = "Istation Spanish" %}
   {% endif %}
   studentAssessments:
-    source: $transformations.stacked_months
+    source: 
+      {% if "${ISTATION_ENDPOINT}" == "export" %}
+      $transformations.renamed_export
+      {% else %}
+      $transformations.stacked_months
+      {% endif %}
     operations:
       - operation: join
         sources:
