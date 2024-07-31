@@ -58,11 +58,13 @@
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ AssignedTestType | truncate(35, True, '', 0) }}"
       },
+      {% if DyslexiaScreenerOutcome != "N/A" and DyslexiaScreenerOutcome | length %}
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Dyslexia Screener Outcome",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ DyslexiaScreenerOutcome }}"
       },
+      {% endif %}
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Universal Screener Outcome",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
