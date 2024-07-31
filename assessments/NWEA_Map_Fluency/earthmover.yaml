@@ -39,6 +39,7 @@ transformations:
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
+          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' ,'-') }}{%endraw%}"
       - operation: date_format
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
@@ -76,6 +77,7 @@ transformations:
           - ResultType
           - AssignedTestType
           - generated_test_id
+          - assessment_identifier
         create_columns:
           PrintConceptCorrect: agg(PrintConceptCorrect,,)
           PrintConceptAttempted: agg(PrintConceptAttempted,,)
