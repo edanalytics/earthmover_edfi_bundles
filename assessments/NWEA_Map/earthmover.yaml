@@ -69,6 +69,7 @@ sources:
     optional: True 
   {% endif %}
 
+  {% if "${COMPUTE_MATCH_RATES}" == 'True' or "${STUDENT_ID_MATCH_RATES}" | length %}
   edfi_roster:
     connection: ${DATABASE_CONNECTION}
     query: >
@@ -95,10 +96,13 @@ sources:
           join analytics.prod_stage.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
       where aggd_ids.tenant_code='creede_sd'
           and aggd_ids.api_year=2024
+  {% endif %}
 
+  {% if "${STUDENT_ID_MATCH_RATES}" | length %}
   student_id_match_rates: 
     file: ${STUDENT_ID_MATCH_RATES}
-    
+  {% endif %}
+
 # notes:
 # - left out all seasontoseasonGrowthQuintile
 
