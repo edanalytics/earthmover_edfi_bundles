@@ -14,20 +14,39 @@ config:
     STUDENT_ID_XWALK: ''
     STUDENT_ID_QUERY: ''
     DATABASE_CONNECTION: ''
-    
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentID,Student_StateID
+    EDFI_STUDENT_ID_TYPES: Local,School,District,State
+    EARTHMOVER_NODE_TO_XWALK: $sources.input
+    STUDENT_ID_MATCH_RATES: ''
+
+
+packages: 
+{% if "${COMPUTE_MATCH_RATES}" == 'True' %}
+  compute_match_rates:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: student_id_alignment
+    subdirectory: packages/student_ids/compute_match_rates
+{% endif %}
+{% if "${STUDENT_ID_MATCH_RATES}" | length %}
+  apply_xwalk:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: student_id_alignment
+    subdirectory: packages/student_ids/apply_xwalk
+{% endif %}
+
 
 sources:
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
-  nwea_map_input:
+  input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
@@ -49,14 +68,44 @@ sources:
       - student_id_to
     optional: True 
   {% endif %}
-  
+
+  edfi_roster:
+    connection: ${DATABASE_CONNECTION}
+    query: >
+      with ids as (
+          select
+              tenant_code, api_year, k_student, ed_org_id,
+              object_construct_keep_null('assigningOrganizationIdentificationCode', id_system,
+                  'identificationCode', id_code) as stu_id_code,
+          from analytics.prod_stage.stg_ef3__stu_ed_org__identification_codes
+      ),
+      aggd_ids as (
+          select
+              tenant_code, api_year, k_student, ed_org_id,
+              array_agg(stu_id_code) as stu_id_codes
+          from ids group by 1,2,3,4
+      )
+      select
+          object_construct('educationOrganizationId', ed_org_id,
+          'link', object_construct(
+              'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
+          object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
+          stu_id_codes as "studentIdentificationCodes"
+      from aggd_ids
+          join analytics.prod_stage.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
+      where aggd_ids.tenant_code='creede_sd'
+          and aggd_ids.api_year=2024
+
+  student_id_match_rates: 
+    file: ${STUDENT_ID_MATCH_RATES}
+    
 # notes:
 # - left out all seasontoseasonGrowthQuintile
 
 
 transformations:
   nwea_map_student_assessment:
-    source: $sources.nwea_map_input
+    source: $sources.input
     operations:
       - operation: modify_columns
         columns:
@@ -71,6 +120,9 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
@@ -92,7 +144,7 @@ transformations:
 
   {% for i in range(1, 9) %} 
   goal_{{i}}: 
-    source: $sources.nwea_map_input
+    source: $sources.input
     operations:
       - operation: keep_columns
         columns: 
@@ -119,7 +171,7 @@ transformations:
 
   {% for i in range(1, 10) %}
   proj_prof_{{i}}:
-    source: $sources.nwea_map_input
+    source: $sources.input
     operations:
       - operation: keep_columns
         columns: 
@@ -165,26 +217,26 @@ transformations:
 destinations:
   assessmentReportingMethodDescriptors:
     source: $transformations.reporting_methods
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $transformations.objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.nwea_map_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    template: ./templates/studentAssessment.jsont
     extension: jsonl
     linearize: True
