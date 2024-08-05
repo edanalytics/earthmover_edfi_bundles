@@ -406,7 +406,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
-      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0][:35]}}"{%- endif %}
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0][:35] | trim}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ],
