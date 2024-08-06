@@ -4,12 +4,8 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [{{subject_json}}],
+  "academicSubjects": [{{academicSubjectDescriptor}}],
   "scores": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
