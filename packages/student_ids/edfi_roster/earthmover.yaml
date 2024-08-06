@@ -44,12 +44,12 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          edOrgId: '{%raw%}{{educationOrganizationReference.educationOrganizationId}}{%endraw%}'
-          edOrgType: '{%raw%}{{educationOrganizationReference.link.rel}}{%endraw%}'
-          studentUniqueId: '{%raw%}{{studentReference.studentUniqueId}}{%endraw%}'
+          edOrgId: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).educationOrganizationId}}{% else %}{{educationOrganizationReference.educationOrganizationId}}{% endif %}{%endraw%}'
+          edOrgType: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).link.rel}}{% else %}{{educationOrganizationReference.link.rel}}{% endif %}{%endraw%}'
+          studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
           # TODO: could maybe use a flatten operation for this?
           {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
-          {{id_code}}: '{%raw%}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{%endraw%}'
+          {{id_code}}: '{%raw%}{% if studentIdentificationCodes is string %}{{(fromjson(studentIdentificationCodes)|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% else %}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% endif %}{%endraw%}'
           {% endfor %}
       - operation: keep_columns
         columns:
