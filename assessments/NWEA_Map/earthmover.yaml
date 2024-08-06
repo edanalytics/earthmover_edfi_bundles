@@ -57,11 +57,13 @@ sources:
   {% elif "${COMPUTE_MATCH_RATES}" == 'True' or "${STUDENT_ID_MATCH_RATES}" | length %} # if either of the student ID xwalking packages are used and a query was not provided, must provide a file
   edfi_roster:
     file: ${EDFI_ROSTER_FILE}
+    header_rows: 1
   {% endif %}
 
   {% if "${STUDENT_ID_MATCH_RATES}" | length %}
   student_id_match_rates: 
     file: ${STUDENT_ID_MATCH_RATES}
+    header_rows: 1
   {% endif %}
 
 # notes:
@@ -70,7 +72,12 @@ sources:
 
 transformations:
   nwea_map_student_assessment:
+    {% if "${STUDENT_ID_MATCH_RATES}" | length %}
+    source: $transformations.input_xwalked
+    {% else %}
     source: $sources.input
+    {% endif %}
+
     operations:
       - operation: duplicate_columns
         columns: 
