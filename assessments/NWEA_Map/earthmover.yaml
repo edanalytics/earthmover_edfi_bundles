@@ -9,16 +9,13 @@ config:
   state_file: ./runs.csv
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_NAME: Student_StateID
-    STUDENT_ID_FROM: Student_StateID
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    STUDENT_ID_COLUMN: edFi_studentUniqueID # default to the column added by the apply_xwalk 
+    EDFI_ROSTER_QUERY: ''
+    STUDENT_ID_MATCH_RATES: ''
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID,Student_StateID
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
-    EARTHMOVER_NODE_TO_XWALK: $sources.input
-    STUDENT_ID_MATCH_RATES: ''
-
+    EARTHMOVER_NODE_TO_XWALK: $sources.input # might not need this if we make the $sources.input name a standard for bundles
+    
 
 packages: 
 {% if "${COMPUTE_MATCH_RATES}" == 'True' %}
@@ -52,50 +49,14 @@ sources:
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
 
-    # This file or query only needs to be supplied if the source assessment file does not
-    # contain the studentUniqueId used by Ed-Fi
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
 
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
-  {% if "${COMPUTE_MATCH_RATES}" == 'True' or "${STUDENT_ID_MATCH_RATES}" | length %}
+  {% if "${EDFI_ROSTER_QUERY}" | length %}
   edfi_roster:
     connection: ${DATABASE_CONNECTION}
-    query: >
-      with ids as (
-          select
-              tenant_code, api_year, k_student, ed_org_id,
-              object_construct_keep_null('assigningOrganizationIdentificationCode', id_system,
-                  'identificationCode', id_code) as stu_id_code,
-          from analytics.prod_stage.stg_ef3__stu_ed_org__identification_codes
-      ),
-      aggd_ids as (
-          select
-              tenant_code, api_year, k_student, ed_org_id,
-              array_agg(stu_id_code) as stu_id_codes
-          from ids group by 1,2,3,4
-      )
-      select
-          object_construct('educationOrganizationId', ed_org_id,
-          'link', object_construct(
-              'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
-          object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
-          stu_id_codes as "studentIdentificationCodes"
-      from aggd_ids
-          join analytics.prod_stage.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
-      where aggd_ids.tenant_code='creede_sd'
-          and aggd_ids.api_year=2024
+    query: ${EDFI_ROSTER_QUERY}
+  {% elif "${COMPUTE_MATCH_RATES}" == 'True' or "${STUDENT_ID_MATCH_RATES}" | length %} # if either of the student ID xwalking packages are used and a query was not provided, must provide a file
+  edfi_roster:
+    file: ${EDFI_ROSTER_FILE}
   {% endif %}
 
   {% if "${STUDENT_ID_MATCH_RATES}" | length %}
@@ -111,19 +72,9 @@ transformations:
   nwea_map_student_assessment:
     source: $sources.input
     operations:
-      - operation: modify_columns
-        columns:
-          StudentID: "{%raw%}{{StudentID|int}}{%endraw%}"
-          Student_StateID: "{%raw%}{{Student_StateID|int}}{%endraw%}"
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: ${STUDENT_ID_FROM}
-        right_key: student_id_from
-        join_type: left
       - operation: duplicate_columns
         columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
+          ${STUDENT_ID_COLUMN}: studentUniqueId
       - operation: modify_columns
         columns: 
           studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
