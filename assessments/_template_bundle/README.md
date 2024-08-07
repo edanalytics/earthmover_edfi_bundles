@@ -119,6 +119,9 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "API_YEAR": "yourAPIYear" }'
 ```
 
+## Additional Resources
+To read more in-depth documentation on Ed-Fi Assessment Data Integration, see this [link](https://edanalytics.slite.page/p/CxcM2foMcOuk1m/Ed-Fi-Assessment-Integrations-using-earthmover-and-lightbeam-Documentation).
+
 ![DAG view of transformations](graph.png)
 
 (**Above**: a graphical depiction of the dataflow.)
