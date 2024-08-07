@@ -16,6 +16,7 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: studentId
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
     EARTHMOVER_NODE_TO_XWALK: $sources.input # might not need this if we make the $sources.input name a standard for bundles
+    REQUIRED_MATCH_RATE: 0.3
 
 packages:
   {% if "${COMPUTE_MATCH_RATES}" == 'True' %}
@@ -152,11 +153,11 @@ destinations:
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ../../packages/descriptors/templates/descriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ../../packages/descriptors/templates/descriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
