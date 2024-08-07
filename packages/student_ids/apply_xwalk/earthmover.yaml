@@ -46,7 +46,6 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
-          transformations:
     expect:
     - __match_rate | float >= ${REQUIRED_MATCH_RATE}
 
@@ -125,6 +124,8 @@ transformations:
         behavior: include
       - operation: drop_columns
         columns:
+          - __edfi_edOrgId
+          - __edfi_edOrgType
           - __edfi_studentUniqueId
 
   input_xwalked:
