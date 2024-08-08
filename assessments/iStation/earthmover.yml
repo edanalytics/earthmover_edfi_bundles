@@ -12,6 +12,7 @@ config:
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
     PERCENTILE_MAPPING: ''
+    ISTATION_ENDPOINT: 'report'
 
 sources:
   istation_input:
@@ -26,33 +27,42 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  map_grade_level:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  map_percentile_to_level:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  map_percentile_to_tier:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
 
   {% if "${DATABASE_CONNECTION}" | length %}
   student_id_mapping:
     connection: ${DATABASE_CONNECTION}
     query: ${STUDENT_ID_QUERY}
-  
+
   {% else %}
   student_id_mapping:
     file: ${STUDENT_ID_XWALK}
     header_rows: 1
-    columns: 
-      - student_id_from 
+    columns:
+      - student_id_from
       - student_id_to
-    optional: True 
+    optional: True
   {% endif %}
 
 transformations:
   # This step is done before iterating through the months because the run-time Jinja requres an actual column name. Something like {{month ~ 'LEVEL'}} won't work
+  {% if "${ISTATION_ENDPOINT}" == "export" %}
+  # The export data is already stacked
+  stacked_results:
+    source: $sources.istation_input
+    operations:
+      - operation: add_columns
+        columns:
+          perf_lvl_type: "{%raw%}tier{%endraw%}"
+      - operation: rename_columns
+        columns:
+          STUDENT_ID: student_id
+          DOMAIN: domain
+          GRADE: grade_level
+          UDATE: admin_date
+          SCORE: score
+          PTILE: percentile
+          TIER: perf_lvl_value
+  {% else %}
   define_perf_levels:
     source: $sources.istation_input
     operations:
@@ -99,9 +109,9 @@ transformations:
       - operation: filter_rows
         query: admin_date != ''
         behavior: include
-  {% endfor %}  
+  {% endfor %}
 
-  stacked_months:
+  stacked_results:
     source: $transformations.scores_{{months[0]}}
     operations:
       - operation: union
@@ -109,6 +119,8 @@ transformations:
           {% for month in months[1:] %}
           - $transformations.scores_{{month}}
           {% endfor %}
+  {% endif %}
+
 
   {% if "${SUBJECT}" == "reading" %}
     {% set test = "Istation Reading" %}
@@ -116,7 +128,8 @@ transformations:
     {% set test = "Istation Spanish" %}
   {% endif %}
   studentAssessments:
-    source: $transformations.stacked_months
+    source:
+      $transformations.stacked_results
     operations:
       - operation: join
         sources:
@@ -152,7 +165,7 @@ transformations:
         map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
       {% if "${PERCENTILE_MAPPING}" != '' %}
       - operation: drop_columns
-        columns: 
+        columns:
           - perf_lvl_value
           - perf_lvl_type
       - operation: duplicate_columns
@@ -162,7 +175,7 @@ transformations:
         column: perf_lvl_value
         map_file: ${BUNDLE_DIR}/seeds/map_percentile_to_${PERCENTILE_MAPPING}.csv
       - operation: add_columns
-        columns: 
+        columns:
           perf_lvl_type: ${PERCENTILE_MAPPING}
       {% endif %}
 
@@ -170,7 +183,7 @@ destinations:
   studentAssessments:
     source: $transformations.studentAssessments
     template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
-    extension: jsonl 
+    extension: jsonl
   assessments:
     source: $sources.assessments
     template: ${BUNDLE_DIR}/templates/assessments.jsont
