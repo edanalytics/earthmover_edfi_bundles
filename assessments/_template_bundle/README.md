@@ -19,6 +19,7 @@ This bundle follows our current best-practices, which include:
     + Not including the vendor of the assessment into the assessment identifier.
     + Not including the vendor of the assessment in the folder name of this bundle.
     + Ending the earthmover and lightbeam config files with `.yaml` instead of `.yml`.
+    + Using relative paths.
 - In the `studentAssessments.jsont` file, listing out all score results/performance levels in one object and iterating in a for-loop:
 ```Jinja
 "scoreResults": [
@@ -122,6 +123,7 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 ## Additional Resources
 To read more in-depth documentation on Ed-Fi Assessment Data Integration, see this [link](https://edanalytics.slite.page/p/CxcM2foMcOuk1m/Ed-Fi-Assessment-Integrations-using-earthmover-and-lightbeam-Documentation).
 
+## DAG Graph
 ![DAG view of transformations](graph.png)
 
 (**Above**: a graphical depiction of the dataflow.)
