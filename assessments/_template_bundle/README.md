@@ -7,6 +7,9 @@ This bundle has _two_ use-cases:
 1. As a template/starting point for writing a new bundle. This bundle includes logic that should be included in every other assessment bundle.
 2. As a sample project to learn the components of an assessment bundle.
 
+## Important Note
+<mark style="background-color: #FDFD96">Some aspects of this bundle are still under discussion - anything here is subject to change, but not significantly.</mark>
+
 ## General Bundle Best-Practices
 This bundle follows our current best-practices, which include:
 - Implementing our Student ID Xwalking logic. To learn more about our student ID xwalk feature, see this [README](https://github.com/edanalytics/earthmover_edfi_bundles/tree/student_id_alignment/packages/student_ids). The student ID xwalking section below includes more information about imeplementing this feature in production. 
@@ -14,6 +17,7 @@ This bundle follows our current best-practices, which include:
 - Including an **ANONYMIZED** sample file in the `data` folder. **DO NOT push real student data (PII) to GitHub**.
 - Mapping the assessment following [Ed-Fi Assessment Data Governance best practices](https://edanalytics.slite.page/p/FwwhB84DoYVjY1/NEW-Assessment-Data-Governance-in-Ed-Fi).
 - Adding a `bundle_metadata.json` file with information about Ed-Fi data model version & assessment file years compatability, required and optional fields, and bundle parameters.
+  - Note: the structure of this file will likely change.
 - Writing an in-depth README.
 - Following minor consistency rules:
     + Not including the vendor of the assessment into the assessment identifier.
