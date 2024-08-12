@@ -14,6 +14,8 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: School_StateID,StudentID,Student_StateID # probably should remove this and leave it to each assessment bundle to define a default?
     EARTHMOVER_NODE_TO_XWALK: $sources.input
 
+{% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
+{% set possible_student_id_columns = "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") %}
 
 transformations:
   
@@ -28,8 +30,8 @@ transformations:
           - __join_id
         create_columns:
           num_rows: count()
-  {% for source_student_id_column in "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") -%}
-  {% for edfi_student_id_column in "${EDFI_STUDENT_ID_TYPES}".split(",").append("studentUniqueId") -%}
+  {% for source_student_id_column in possible_student_id_columns -%}
+  {% for edfi_student_id_column in edfi_student_id_types -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
     source: ${EARTHMOVER_NODE_TO_XWALK}
     operations:
@@ -54,14 +56,14 @@ transformations:
   {% endfor %}
 
   stacked_joins:
-    source: $transformations.{{"${POSSIBLE_STUDENT_ID_COLUMNS}".split(",")[0]}}_{{"${EDFI_STUDENT_ID_TYPES}".split(",").append("studentUniqueId")[0]}}_join
+    source: $transformations.{{possible_student_id_columns[0]}}_{{edfi_student_id_types[0]}}_join
     operations:
       - operation: union
         sources:
-          {% for source_student_id_column in "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") -%}
-          {% for edfi_student_id_column in "${EDFI_STUDENT_ID_TYPES}".split(",").append("studentUniqueId") -%}
+          {% for source_student_id_column in possible_student_id_columns -%}
+          {% for edfi_student_id_column in edfi_student_id_types -%}
           {# Avoid adding two copies of the first combination: #}
-          {% if source_student_id_column!="${POSSIBLE_STUDENT_ID_COLUMNS}".split(",")[0] or edfi_student_id_column!="${EDFI_STUDENT_ID_TYPES}".split(",").append("studentUniqueId")[0] %}
+          {% if source_student_id_column!=possible_student_id_columns[0] or edfi_student_id_column!=edfi_student_id_types[0] %}
           - $transformations.{{source_student_id_column}}_{{edfi_student_id_column}}_join
           {% endif %}
           {% endfor %}
