@@ -73,7 +73,7 @@ transformations:
           - __join_id
       - operation: add_columns
         columns:
-          __xwalk_id_to: '{%raw%}{{__row_data__[__edfi_column_name]|string}}{%endraw%}'
+          __xwalk_id_to: '{%raw%}{% if __edfi_column_name=="studentUniqueId" %}{{__edfi_studentUniqueId|string}}{% else %}{{__row_data__[__edfi_column_name]|string}}{% endif %}{%endraw%}'
       - operation: keep_columns
         columns:
           - __edfi_edOrgId
