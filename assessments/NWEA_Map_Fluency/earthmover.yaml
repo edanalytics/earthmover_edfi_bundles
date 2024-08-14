@@ -80,6 +80,7 @@ transformations:
           - assessment_identifier
           - DyslexiaScreenerOutcome
           - UniversalScreenerOutcome
+          - TermName
         create_columns:
           PrintConceptCorrect: agg(PrintConceptCorrect,,)
           PrintConceptAttempted: agg(PrintConceptAttempted,,)
