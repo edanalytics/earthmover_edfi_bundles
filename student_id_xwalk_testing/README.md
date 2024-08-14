@@ -1,6 +1,6 @@
 This is an earthmover project showing how to combine the NWEA Map assessment bundle with the student ID xwalk bundles using project composition.
 
-On the first run, generate `student_id_match_rates.csv` by running:
+On the first run, generate `output/student_id_match_rates.csv` by running:
 ```bash
 export EM_CONFIGS='{
 "INPUT_FILE": "./FakeAssessmentFile.csv",
