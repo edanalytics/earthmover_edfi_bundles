@@ -24,9 +24,10 @@ transformations:
   best_id_match:
     source: $transformations.student_id_match_rates
     operations:
+      - operation: snake_case_columns
       - operation: add_columns
         columns:
-          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+          meets_filter_criteria: '{%raw%}{%if match_rate|float > "${REQUIRED_MATCH_RATE}"|float%}Yes{%else%}No{%endif%}{%endraw%}'
       - operation: filter_rows
         query:  'meets_filter_criteria=="Yes"'
         behavior: include
@@ -47,7 +48,7 @@ transformations:
         columns:
           __join_id: "1"
     expect:
-    - __match_rate | float >= ${REQUIRED_MATCH_RATE}
+    - __match_rate | float >= "${REQUIRED_MATCH_RATE}" | float
 
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
