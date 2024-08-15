@@ -1,0 +1,93 @@
+version: 2
+
+config:
+  output_dir: ${OUTPUT_DIR}
+  log_level: INFO
+  show_stacktrace: True
+  show_graph: False
+  parameter_defaults:
+    ASSESSMENT_BUNDLE: ""
+    MATCH_RATES_SOURCE: ""
+    STUDENT_ID_NAME: edFi_studentUniqueID # after doing the student ID xwalk, we'll always want to use this column for the bundle
+
+
+packages:
+  {% if "${MATCH_RATES_SOURCE}"=="" %}
+  # first run:
+  compute_match_rates:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: student_id_alignment
+    subdirectory: packages/student_ids/compute_match_rates
+  {% else %}
+  # subsequent run:
+  ${ASSESSMENT_BUNDLE}:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    subdirectory: assessments/${ASSESSMENT_BUNDLE}
+    # might need configs to allow installing/using a different branch, etc.
+  apply_xwalk:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: student_id_alignment
+    subdirectory: packages/student_ids/apply_xwalk
+  {% endif %}
+
+
+sources:
+  input_file:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+  edfi_roster:
+  {% if "${EDFI_ROSTER_SOURCE}"!="" %}
+  {% if "${EDFI_ROSTER_SOURCE}".startswith('SNOWFLAKE:') %}
+    connection: ${DATABASE_CONNECTION}
+    query: >
+      with ids as (
+          select
+              tenant_code, api_year, k_student, ed_org_id,
+              object_construct_keep_null('assigningOrganizationIdentificationCode', id_system,
+                  'identificationCode', id_code) as stu_id_code,
+          from {{ "${EDFI_ROSTER_SOURCE}".replace('SNOWFLAKE:', '') }}.stg_ef3__stu_ed_org__identification_codes
+      ),
+      aggd_ids as (
+          select
+              tenant_code, api_year, k_student, ed_org_id,
+              array_agg(stu_id_code) as stu_id_codes
+          from ids group by 1,2,3,4
+      )
+      select
+          object_construct('educationOrganizationId', ed_org_id,
+          'link', object_construct(
+              'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
+          object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
+          stu_id_codes as "studentIdentificationCodes"
+      from aggd_ids
+          join {{ "${EDFI_ROSTER_SOURCE}".replace('SNOWFLAKE:', '') }}.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
+      where aggd_ids.tenant_code='${SNOWFLAKE_TENANT_CODE}'
+          and aggd_ids.api_year=${SNOWFLAKE_SCHOOL_YEAR}
+  {% else %}
+    file: ${EDFI_ROSTER_SOURCE}
+  {% endif %}
+  {% endif %}
+
+  {% if "${MATCH_RATES_SOURCE}"!="" %}
+  {% if "${MATCH_RATES_SOURCE}".startswith('SNOWFLAKE:') %}
+  # for subsequent run only
+  student_id_match_rates:
+    connection: ${DATABASE_CONNECTION}
+    query: >
+      select source_column_name,edfi_column_name,num_matches,num_rows,match_rate
+      from {{ "${MATCH_RATES_SOURCE}".replace('SNOWFLAKE:', '') }}
+      where tenant_code='${SNOWFLAKE_TENANT_CODE}' and school_year=${SNOWFLAKE_SCHOOL_YEAR}
+  {% else %}
+  # for subsequent run only
+  student_id_match_rates:
+    file: ${MATCH_RATES_SOURCE}
+  {% endif %}
+  {% endif %}
+
+{% if "${MATCH_RATES_SOURCE}"!="" %}
+# for subsequent run only
+transformations:
+  input:
+    source: $transformations.input_xwalked
+{% endif %}
