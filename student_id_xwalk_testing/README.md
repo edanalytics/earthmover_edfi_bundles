@@ -1,6 +1,6 @@
 This is an earthmover project showing how to combine the NWEA Map assessment bundle with the student ID xwalk bundle using project composition.
 
-On the first run, calculate and output the best student ID match rates (they will materilize at `output/student_id_match_rates.csv`) by running:
+On the first run, calculate and output the best student ID match rates (they will materialize at `output/student_id_match_rates.csv`) by running:
 ```bash
 earthmover run -p '{
 "BUNDLE_DIR": ".",
