@@ -1,34 +1,44 @@
 This is an earthmover project showing how to combine the NWEA Map assessment bundle with the student ID xwalk bundle using project composition.
 
-On the first run, generate `output/student_id_match_rates.csv` by running:
+On the first run, calculate and out put the best student ID match rates (they will materilize at `output/student_id_match_rates.csv`) by running:
 ```bash
 earthmover run -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "./FakeAssessmentFile.csv",
-"MATCH_RATES_SOURCE_TYPE": "none",
+"REQUIRED_MATCH_RATE":0.5,
 "POSSIBLE_STUDENT_ID_COLUMNS": "School_StateID,StudentID,Student_StateID",
 "EDFI_STUDENT_ID_TYPES": "Local,District,State",
 "EDFI_ROSTER_SOURCE_TYPE": "file",
 "EDFI_ROSTER_FILE": "./studentEducationOrganizationAssociations.jsonl",
+"MATCH_RATES_SOURCE_TYPE": "none",
 "EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
 "OUTPUT_DIR": "./output/"
 }'
 ```
-On subsequent runs, xwalk student IDs using the best match rate and produce Ed-Fi JSONL files by running:
+
+This executes a transformation graph like:
+![first run graph](./first-run-graph.png)
+Note the lower section of blue, which joins every pair of ID types to determine which pair has the best match rate. `student_id_match_rates.csv` is also output.
+
+On subsequent runs, xwalk student IDs using the (prevously-computed) match rate and produce Ed-Fi JSONL files by running:
 ```bash
 earthmover run -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "./FakeAssessmentFile.csv",
+"POSSIBLE_STUDENT_ID_COLUMNS": "School_StateID,StudentID,Student_StateID",
+"EDFI_STUDENT_ID_TYPES": "Local,District,State",
 "EDFI_ROSTER_SOURCE_TYPE": "file",
 "EDFI_ROSTER_FILE": "./studentEducationOrganizationAssociations.jsonl",
-"EDFI_STUDENT_ID_TYPES": "Local,District,State",
-"EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
 "MATCH_RATES_SOURCE_TYPE": "file",
 "MATCH_RATES_FILE": "./output/student_id_match_rates.csv",
-"REQUIRED_MATCH_RATE":0.5,
+"EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
 "OUTPUT_DIR": "./output/"
 }'
 ```
+
+This executes a transformation graph like:
+![first run graph](./subsequent-run-graph.png)
+Note that this time we don't have to recompute the ID match rates, since they're supplied via the `MATCH_RATES_FILE`.
 
 The possible configuration options are:
 * `INPUT_FILE` the (main) input file to process
