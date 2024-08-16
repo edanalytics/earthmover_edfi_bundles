@@ -149,7 +149,7 @@ transformations:
         columns:
           # special handling for student ID values that come through as a string that ends in ".0"
           # (we can't cast student IDs to int because sometimes they contain letters)
-          - {{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
+          {{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
       - operation: join
         sources:
           - $transformations.unpacked_edfi_roster # from the `edfi_roster` package
