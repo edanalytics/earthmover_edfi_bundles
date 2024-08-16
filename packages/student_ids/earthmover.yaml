@@ -19,7 +19,7 @@ config:
     SNOWFLAKE_API_YEAR: "" # such as "2024"
 
     # require match rate >= this, or else earthmover will exit
-    REQUIRED_MATCH_RATE: 0.5
+    REQUIRED_ID_MATCH_RATE: 0.5
 
     # which assessment bundle to install/run:
     ASSESSMENT_BUNDLE: ""
@@ -239,7 +239,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
       - operation: filter_rows
         query:  'meets_filter_criteria=="Yes"'
         behavior: include
@@ -260,7 +260,7 @@ transformations:
         columns:
           __join_id: "1"
     expect:
-    - __match_rate | float >= ${REQUIRED_MATCH_RATE}
+    - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
 
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
