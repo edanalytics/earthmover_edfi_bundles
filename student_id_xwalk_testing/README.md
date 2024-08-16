@@ -1,31 +1,32 @@
-This is an earthmover project showing how to combine the NWEA Map assessment bundle with the student ID xwalk bundles using project composition.
+This is an earthmover project showing how to combine the NWEA Map assessment bundle with the student ID xwalk bundle using project composition.
 
 On the first run, generate `output/student_id_match_rates.csv` by running:
 ```bash
-export EM_CONFIGS='{
+earthmover run -p '{
+"BUNDLE_DIR": ".",
 "INPUT_FILE": "./FakeAssessmentFile.csv",
+"MATCH_RATES_SOURCE_TYPE": "none",
 "POSSIBLE_STUDENT_ID_COLUMNS": "School_StateID,StudentID,Student_StateID",
 "EDFI_STUDENT_ID_TYPES": "Local,District,State",
 "EDFI_ROSTER_SOURCE": "./studentEducationOrganizationAssociations.jsonl",
 "EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
 "OUTPUT_DIR": "./output/"
 }'
-earthmover deps -p "$EM_CONFIGS" && earthmover run -p "$EM_CONFIGS"
 ```
 On subsequent runs, xwalk student IDs using the best match rate and produce Ed-Fi JSONL files by running:
 ```bash
-export EM_CONFIGS='{
-"ASSESSMENT_BUNDLE": "NWEA_Map",
+earthmover run -p '{
 "BUNDLE_DIR": ".",
 "INPUT_FILE": "./FakeAssessmentFile.csv",
-"EDFI_ROSTER_SOURCE": "./studentEducationOrganizationAssociations.jsonl",
+"EDFI_ROSTER_SOURCE_TYPE": "file",
+"EDFI_ROSTER_FILE": "./studentEducationOrganizationAssociations.jsonl",
 "EDFI_STUDENT_ID_TYPES": "Local,District,State",
 "EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
-"MATCH_RATES_SOURCE": "./output/student_id_match_rates.csv",
+"MATCH_RATES_SOURCE_TYPE": "file",
+"MATCH_RATES_FILE": "./output/student_id_match_rates.csv",
 "REQUIRED_MATCH_RATE":0.5,
 "OUTPUT_DIR": "./output/"
 }'
-earthmover deps -p "$EM_CONFIGS" && earthmover run -p "$EM_CONFIGS"
 ```
 
 The possible configuration options are:
