@@ -10,7 +10,7 @@ config:
     EDFI_STUDENT_ID_TYPES: "Local,District,State"
 
 packages:
-  assessment_bundle:
+  NWEA_Map:
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     subdirectory: assessments/NWEA_Map
     # might need configs to allow installing/using a different branch, etc.

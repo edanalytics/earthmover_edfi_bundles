@@ -8,7 +8,8 @@ earthmover run -p '{
 "MATCH_RATES_SOURCE_TYPE": "none",
 "POSSIBLE_STUDENT_ID_COLUMNS": "School_StateID,StudentID,Student_StateID",
 "EDFI_STUDENT_ID_TYPES": "Local,District,State",
-"EDFI_ROSTER_SOURCE": "./studentEducationOrganizationAssociations.jsonl",
+"EDFI_ROSTER_SOURCE_TYPE": "file",
+"EDFI_ROSTER_FILE": "./studentEducationOrganizationAssociations.jsonl",
 "EARTHMOVER_NODE_TO_XWALK": "$sources.nwea_map_input",
 "OUTPUT_DIR": "./output/"
 }'
