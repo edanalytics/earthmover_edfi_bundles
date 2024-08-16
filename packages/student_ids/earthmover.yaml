@@ -50,8 +50,7 @@ config:
     STUDENT_ID_NAME: edFi_studentUniqueID # after doing the student ID xwalk, we'll always want to use this column for the assessment bundle
     # ----------------------------------------------------
 
-{% set compute_match_rates = ("${MATCH_RATES_SOURCE_TYPE}"!="" and "${MATCH_RATES_SOURCE_TYPE}"!="none") %}
-
+{% set compute_match_rates = ("${MATCH_RATES_SOURCE_TYPE}"=="" or "${MATCH_RATES_SOURCE_TYPE}"=="none") %}
 
 
 sources:
