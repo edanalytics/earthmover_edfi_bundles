@@ -112,8 +112,9 @@ transformations:
         columns:
           edOrgId: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).educationOrganizationId}}{% else %}{{educationOrganizationReference.educationOrganizationId}}{% endif %}{%endraw%}'
           edOrgType: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).link.rel}}{% else %}{{educationOrganizationReference.link.rel}}{% endif %}{%endraw%}'
+          studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
           # TODO: could maybe use a flatten operation for this?
-          {% for id_code in edfi_student_id_types %}
+          {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
           "{{id_code}}": '{%raw%}{% if studentIdentificationCodes is string %}{{(fromjson(studentIdentificationCodes)|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% else %}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% endif %}{%endraw%}'
           {% endfor %}
       - operation: keep_columns
@@ -319,6 +320,11 @@ transformations:
       - operation: add_columns
         columns:
           __xwalk_id_from: '{%raw%}{{__row_data__[__source_column_name]|string}}{%endraw%}'
+      - operation: modify_columns
+        columns:
+          # special handling for student ID values that come through as a string that ends in ".0"
+          # (we can't cast student IDs to int because sometimes they contain letters)
+          __xwalk_id_from: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
       - operation: join
         sources:
           - $transformations.edfi_roster
