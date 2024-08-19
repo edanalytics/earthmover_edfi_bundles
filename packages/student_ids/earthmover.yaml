@@ -102,6 +102,8 @@ sources:
   {% endif %}
     
 
+{% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
+
 transformations:
   unpacked_edfi_roster:
     source: $sources.edfi_roster
@@ -110,23 +112,20 @@ transformations:
         columns:
           edOrgId: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).educationOrganizationId}}{% else %}{{educationOrganizationReference.educationOrganizationId}}{% endif %}{%endraw%}'
           edOrgType: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).link.rel}}{% else %}{{educationOrganizationReference.link.rel}}{% endif %}{%endraw%}'
-          studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
           # TODO: could maybe use a flatten operation for this?
-          {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
-          {{id_code}}: '{%raw%}{% if studentIdentificationCodes is string %}{{(fromjson(studentIdentificationCodes)|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% else %}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% endif %}{%endraw%}'
+          {% for id_code in edfi_student_id_types %}
+          "{{id_code}}": '{%raw%}{% if studentIdentificationCodes is string %}{{(fromjson(studentIdentificationCodes)|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% else %}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% endif %}{%endraw%}'
           {% endfor %}
       - operation: keep_columns
         columns:
           - edOrgId
           - edOrgType
-          - studentUniqueId
-          {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
-          - {{id_code}}
+          {% for id_code in edfi_student_id_types %}
+          - "{{id_code}}"
           {% endfor %}
 
 {% if compute_match_rates %}
 
-{% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
 {% set possible_student_id_columns = "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") %}
   
   num_input_rows:
@@ -140,10 +139,20 @@ transformations:
           - __join_id
         create_columns:
           num_rows: count()
+  # this makes a smaller (narrower) dataframe for all the joins that follow, which significantly improves performance:
+  joins_base:
+    source: ${EARTHMOVER_NODE_TO_XWALK}
+    operations:
+      - operation: keep_columns
+        columns:
+          {% for source_student_id_column in possible_student_id_columns -%}
+          - {{source_student_id_column}}
+          {% endfor %}
+
   {% for source_student_id_column in possible_student_id_columns -%}
   {% for edfi_student_id_column in edfi_student_id_types -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
-    source: ${EARTHMOVER_NODE_TO_XWALK}
+    source: $transformations.joins_base
     operations:
       - operation: modify_columns
         columns:
@@ -155,7 +164,7 @@ transformations:
           - $transformations.unpacked_edfi_roster # from the `edfi_roster` package
         join_type: inner
         left_key: {{source_student_id_column}}
-        right_key: {{edfi_student_id_column}}
+        right_key: "{{edfi_student_id_column}}"
       - operation: rename_columns
         columns:
           {{source_student_id_column}}: value
@@ -166,10 +175,9 @@ transformations:
       - operation: add_columns
         columns:
           source_column_name: {{source_student_id_column}}
-          edfi_column_name: {{edfi_student_id_column}}
+          edfi_column_name: "{{edfi_student_id_column}}"
   {% endfor %}
   {% endfor %}
-
 
   stacked_joins:
     source: $transformations.{{possible_student_id_columns[0]}}_{{edfi_student_id_types[0]}}_join
