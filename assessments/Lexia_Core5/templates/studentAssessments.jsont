@@ -1,0 +1,85 @@
+{
+  "studentAssessmentIdentifier": "{{ref_id}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "Core5",
+    "namespace": "uri://www.lexialearning.com"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{school_year}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id }}"
+  },
+  "administrationDate": "{{first_use}}",
+  "administrationEndDate": "{{last_use}}",
+
+  {% set pls = [] %}
+  {% set all_perf_levels = [['Meeting Target Usage', meeting_target_usage],
+                            ['Met Benchmark', met_benchmark]] %}
+  {% for perf_level in all_perf_levels %}
+    {% if perf_level[1] is not none and perf_level[1] | length %}
+      {% set _ = pls.append(perf_level) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if pls|length > 0 %}
+  "performanceLevels": [
+    {% for pl in pls %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+      "performanceLevelDescriptor": "uri://www.lexialearning.com/PerformanceLevelDescriptor#{{pl[1]}}",
+      "performanceLevelMet": true
+    } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ],
+  {% endif %}
+
+  "scoreResults": [
+  {% set srs = [] %}
+  {% set all_score_results = [['Start Grade Level of Material', 'Level', start_glm],
+                              ['Start Lexia Level', 'Integer', start_lexia_level],
+                              ['Start Status', 'Integer', start_status],
+                              ['Start Status Label', 'Level', start_status_label],
+                              ['Current Grade Level of Material', 'Level', current_glm],
+                              ['Current Lexia Level', 'Integer', current_lexia_level],
+                              ['Current Lexia Level Percent', 'Integer', current_lexia_level_percent],
+                              ['Current Status', 'Integer', current_status],
+                              ['Current Status Label', 'Level', current_status_label],
+                              ['Grade Levels of Material Gained YTD', 'Integer', glm_gained],
+                              ['Levels Completed YTD', 'Integer', levels_completed],
+                              ['Activities Completed YTD', 'Integer', activities_completed],
+                              ['Units Completed YTD', 'Integer', units_completed],
+                              ['Weeks of Use YTD', 'Integer', weeks_of_use],
+                              ['Weekly Average', 'Integer', weekly_average],
+                              ['Target Average', 'Integer', target_average],
+                              ['Weeks Met Usage', 'Integer', weeks_met_usage],
+                              ['Percent Weeks Met Usage', 'Decimal', percent_weeks_met_usage],
+                              ['Target Missed Average', 'Integer', target_missed_average],
+                              ['Total Minutes YTD', 'Integer', total_minutes],
+                              ['Avg Units Per Week', 'Integer', avg_units_per_week],
+                              ['Units To Benchmark', 'Integer', units_to_benchmark],
+                              ['Weekly Usage Target', 'Integer', weekly_usage_target],
+                              ['Weekly Units Target', 'Integer', weekly_units_target],
+                              ['Months of Growth', 'Decimal', months_of_growth_approx]] %}
+
+  {% for score_result in all_score_results %}
+    {% if score_result[2] is not none and score_result[2] | length %}
+      {% set _ = srs.append(score_result) %}
+    {% endif %}
+  {% endfor %}
+
+  {% for sr in srs %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.lexialearning.com/AssessmentReportingMethodDescriptor#{{sr[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{sr[1]}}",
+      "result": "{{sr[2]}}"
+    } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+
+  {% if student_objective_assessment_json is not none and student_objective_assessment_json | length %}
+  ,
+  "studentObjectiveAssessments": [{{student_objective_assessment_json}}]
+  {% endif %}
+
+}
