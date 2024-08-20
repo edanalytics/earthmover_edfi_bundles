@@ -18,6 +18,7 @@ This bundle follows our current best-practices, which include:
 - Mapping the assessment following [Ed-Fi Assessment Data Governance best practices](https://edanalytics.slite.page/p/FwwhB84DoYVjY1/NEW-Assessment-Data-Governance-in-Ed-Fi).
 - Adding a `bundle_metadata.json` file with information about Ed-Fi data model version & assessment file years compatability, required and optional fields, and bundle parameters.
   - Note: the structure of this file will likely change.
+- Including a single `earthmover.yaml` file. If multiple are created to simplify code, one `earthmover.yaml` file should unify them, parameterized as necessary.
 - Writing an in-depth README.
 - Following minor consistency rules:
     + Not including the vendor of the assessment into the assessment identifier.
@@ -52,9 +53,8 @@ This bundle follows our current best-practices, which include:
 ## Using this bundle as a template
 Some of the logic/code in this bundle can/should stay exactly as written here. This is _especially_ true of the student ID xwalking logic:
 - All default params (though some of the _values_ may need to change assessment by assessment)
-- Lines 21-33, which conditionally install the packages
-- Lines 59-73, which conditionally add necessary sources
-- Lines 78-86, which conditionally reference different input files and create a standard `studentUniqueId` column. 
+- The initial 'input' transformation with an empty list of operations
+- Lines 48-51, which creates a standard `studentUniqueId` column. 
 
 Other aspects of this bundle offer examples of helpful code logic & best-practices, but will need to be entirely customized for each new assessment.
 
@@ -72,41 +72,11 @@ The goal for writing these packages was to dynamically determine the 'types' of 
 - Know ahead of time which ID column from the assessment file to set as the studentUniqueId or
 - Know ahead of time which ID column from the assessment file to map to the studentUniqueId _and_ provide a crosswalk
 
-For this bundle, we defaulted to _not_ use this feature, so we set the `COMPUTE_MATCH_RATES` parameter to False and did not specify a file path for the `STUDENT_ID_MATCH_RATES` parameter. By doing so, the bundle will set the studentId column in the fake sample assessment file as the student unique ID because that is the default value for the `STUDENT_ID_COLUMN` parameter. 
+This bundle is set up to _not_ use this feature as-is, so the bundle will set the studentId column in the fake sample assessment file as the student unique ID because that is the default value for the `STUDENT_ID_NAME` parameter. This should be the behavior of all assessment bundles.
 
-However, we also included a sample studentEducationOrganizationAssociation file (would be equivalent structurally to output of `lightbeam fetch -s studentEducationOrganizationAssociations -k studentIdentificationCodes,educationOrganizationReference,studentReference`) in order to test the student ID Xwalking feature. To do so, you would start by installing the required packages:
+However, we also included a sample studentEducationOrganizationAssociation file (would be equivalent structurally to output of `lightbeam fetch -s studentEducationOrganizationAssociations -k studentIdentificationCodes,educationOrganizationReference,studentReference`) in order to test the student ID Xwalking feature. To do so, please see the [student_id_wrapper]() for detailed instructions.
 
-```bash
-earthmover deps -c ./earthmover.yaml -p '{
-"COMPUTE_MATCH_RATES":"True",
-"STUDENT_ID_MATCH_RATES": "."
-}'
-```
-
-Now, you will be able to actually compute the match rates between the student ID column in the fake sample assessment file against the Ed-Fi student IDs found in `data/sample_stu_ed_org_file.jsonl` by running the following command:
-```bash
-earthmover run -s student_id_match_rates -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/sample_anonymized_file.csv",
-"OUTPUT_DIR": "output/",
-"COMPUTE_MATCH_RATES":"True",
-"EDFI_ROSTER_FILE": "data/sample_stu_ed_org_file.jsonl"
-}'
-```
-In practice, you would either have to pass a file with the student ed org jsonl file _or_ a database connection and a query that formats data to mimick the Ed-Fi student ed org structure.
-
-This will output a file: `output/student_id_match_rates.csv` which contains the match rates between source ID columns and Ed-Fi columns. We can then pass that file in the next command to use the highest match rate to align the student IDs from the source file to the studentUniqueId of Ed-Fi:
-```bash
-earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "./data/sample_anonymized_file.csv",
-"OUTPUT_DIR": "./output/",
-"STUDENT_ID_MATCH_RATES":"./output/student_id_match_rates.csv",
-"EDFI_ROSTER_FILE": "./data/sample_stu_ed_org_file.jsonl",
-"STUDENT_ID_COLUMN": "edFi_studentUniqueID"
-}'
-```
-When using this feature, `STUDENT_ID_COLUMN` parameter must _always_ be set as `"edFi_studentUniqueID"` because that is the column dynamically created by the apply student ID xwalk package. 
-
-By using this feature, you can be sure that every student _will_ match a student in Ed-Fi and you will not hit unintended 'missing student' errors at the `lightbeam send` stage. Any student record from the original source file that cannot be matched to the Ed-Fi roster source will be dropped and written to a separate file: `output/input_no_student_id_match.csv`.
+The student ID xwalking feature will ensure that every student _will_ match a student in Ed-Fi and you will not hit unintended 'missing student' errors at the `lightbeam send` stage. Any student record from the original source file that cannot be matched to the Ed-Fi roster source will be dropped and written to a separate file: `output/input_no_student_id_match.csv`.
 
 ## CLI Parameters
 See the `bundle_metadata.jsonl` file for more information about the CLI parameters in this bundle.
