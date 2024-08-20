@@ -4,30 +4,31 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
   parameter_defaults: 
     CMAS_GROWTH_FILE: ''
+    STUDENT_ID_NAME: 'StateStudentIdentifier'
 
 sources:
-  cmas_results:
+  input:
     file: ${CMAS_RESULTS_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   reasonNotTestedDescriptors:
-    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    file: ./seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
   growth_results:
@@ -114,8 +115,12 @@ sources:
       - SGP_BASELINE
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+
   cmas_results:
-    source: $sources.cmas_results
+    source: $transformations.input
     operations:
       # Use April 1st of the assessment year for assessments with no date (invalid scores)
       - operation: add_columns
@@ -123,6 +128,7 @@ transformations:
           defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
           school_year: ${SCHOOL_YEAR}
           alternate_assessment: ${ALTERNATE_ASSESSMENT}
+          is_science: ${SCIENCE}
       - operation: duplicate_columns
         columns:
           Subject: assessmentSubject
@@ -136,23 +142,23 @@ transformations:
           Science: SCI
       - operation: map_values
         column: GradeLevelWhenAssessed
-        map_file: ${BUNDLE_DIR}/seeds/mapping_GradeLevels.csv
+        map_file: ./seeds/mapping_GradeLevels.csv
       - operation: map_values
         column: NotTestedReason
-        map_file: ${BUNDLE_DIR}/seeds/mapping_NotTestedReason.csv
+        map_file: ./seeds/mapping_NotTestedReason.csv
       - operation: map_values
         column: VoidScoreReason
-        map_file: ${BUNDLE_DIR}/seeds/mapping_VoidScoreReason.csv
+        map_file: ./seeds/mapping_VoidScoreReason.csv
       - operation: map_values
         column: ReportSuppressionCode
-        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionCode.csv
+        map_file: ./seeds/mapping_ReportSuppressionCode.csv
       - operation: map_values
         column: ReportSuppressionAction
-        map_file: ${BUNDLE_DIR}/seeds/mapping_ReportSuppressionAction.csv
+        map_file: ./seeds/mapping_ReportSuppressionAction.csv
       {% if "${SCIENCE}" == "N" %}
       - operation: map_values
         column: PerfLVL
-        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL.csv
+        map_file: ./seeds/mapping_PerfLVL.csv
       - operation: modify_columns
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
@@ -186,14 +192,14 @@ transformations:
       {% if "${SCIENCE}" == "Y" and (${SCHOOL_YEAR} | int) > 2022 and "${ALTERNATE_ASSESSMENT}" == "N" %}
       - operation: map_values
         column: PerfLVL
-        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_sci.csv
+        map_file: ./seeds/mapping_PerfLVL_sci.csv
       - operation: map_values
         columns: 
           - Std1PerfLvl
           - Std2PerfLvl
           - Std3PerfLvl
           - SEPPerfLvl
-        map_file: ${BUNDLE_DIR}/seeds/mapping_sci_standards.csv
+        map_file: ./seeds/mapping_sci_standards.csv
       - operation: modify_columns
         columns: 
           SSCSEM: "{%raw%}{{SSCSEM | int}}{%endraw%}"
@@ -215,7 +221,7 @@ transformations:
       {% if "${ALTERNATE_ASSESSMENT}" == "Y" %}
       - operation: map_values
         column: PerfLVL
-        map_file: ${BUNDLE_DIR}/seeds/mapping_PerfLVL_coalt.csv
+        map_file: ./seeds/mapping_PerfLVL_coalt.csv
       - operation: modify_columns
         columns: 
           CSEM: "{%raw%}{{CSEM | int}}{%endraw%}"
@@ -228,6 +234,10 @@ transformations:
           SEPPtsPoss: "{%raw%}{{SEPPtsPoss | int}}{%endraw%}"
           SEPPctEarned: "{%raw%}{{SEPPctEarned | int}}{%endraw%}"          
       {% endif %}
+    expect: 
+      - school_year|int != 0
+      - alternate_assessment == 'Y' or alternate_assessment == 'N'
+      - is_science == 'Y' or is_science == 'N'
 
   cmas_growth_school_data_set:
     source: $sources.growth_results
@@ -299,25 +309,25 @@ transformations:
 destinations:
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.cmas_growth
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   reasonNotTestedDescriptors:
     source: $sources.reasonNotTestedDescriptors
-    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    template: ./templates/reasonNotTestedDescriptors.jsont
     extension: jsonl

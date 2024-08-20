@@ -1,16 +1,15 @@
-state_dir: ~/.lightbeam/
+state_dir: ${STATE_DIR}
 data_dir: ${DATA_DIR}
-namespace: ed-fi
 edfi_api:
-  base_url: ${BASE_URL}
+  base_url: ${EDFI_API_BASE_URL}
   version: 3
   mode: district_specific
   year: ${API_YEAR}
   client_id: ${EDFI_API_CLIENT_ID}
   client_secret: ${EDFI_API_CLIENT_SECRET}
 connection:
-  pool_size: 8
-  timeout: 60
+  pool_size: 2
+  timeout: 6000
   num_retries: 10
   backoff_factor: 1.5
   retry_statuses: [429, 500, 502, 503, 504]
