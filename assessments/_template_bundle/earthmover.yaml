@@ -10,7 +10,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: studentId # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: StudentId
+    POSSIBLE_STUDENT_ID_COLUMNS: studentId
 
 sources:
   assessments:
