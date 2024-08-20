@@ -6,31 +6,11 @@ config:
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
-  show_graph: False
+  show_graph: True
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_COLUMN: studentId # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
-    EDFI_ROSTER_QUERY: ''
-    STUDENT_ID_MATCH_RATES: ''
-    COMPUTE_MATCH_RATES: False
-    POSSIBLE_STUDENT_ID_COLUMNS: studentId
-    EDFI_STUDENT_ID_TYPES: Local,School,District,State
-    EARTHMOVER_NODE_TO_XWALK: $sources.input # might not need this if we make the $sources.input name a standard for bundles
-    REQUIRED_MATCH_RATE: 0.3
-
-packages:
-  {% if "${COMPUTE_MATCH_RATES}" == 'True' %}
-    compute_match_rates:
-      git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-      branch: student_id_alignment
-      subdirectory: packages/student_ids/compute_match_rates
-  {% endif %}
-  {% if "${STUDENT_ID_MATCH_RATES}" | length %}
-    apply_xwalk:
-      git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-      branch: student_id_alignment
-      subdirectory: packages/student_ids/apply_xwalk
-  {% endif %}
+    STUDENT_ID_NAME: studentId # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentId
 
 sources:
   assessments:
@@ -56,34 +36,19 @@ sources:
     # See the accompanying bundle_metadata.json for a list of required columns for this file
     # Or see data/sample_anonymized_file.csv
 
-  {% if "${EDFI_ROSTER_QUERY}" | length %}
-  edfi_roster:
-    connection: ${DATABASE_CONNECTION}
-    query: ${EDFI_ROSTER_QUERY}
-  {% elif "${COMPUTE_MATCH_RATES}" == 'True' or "${STUDENT_ID_MATCH_RATES}" | length %} # if either of the student ID xwalking packages are used and a query was not provided, must provide a file
-  edfi_roster:
-    file: ${EDFI_ROSTER_FILE}
-    header_rows: 1
-  {% endif %}
-
-  {% if "${STUDENT_ID_MATCH_RATES}" | length %}
-  student_id_match_rates: 
-    file: ${STUDENT_ID_MATCH_RATES}
-    header_rows: 1
-  {% endif %}
 
 
 transformations:
-  clean_results:
-    {% if "${STUDENT_ID_MATCH_RATES}" | length %}
-    source: $transformations.input_xwalked
-    {% else %}
+  input:
     source: $sources.input
-    {% endif %}
+    operations: []
+
+  clean_results:
+    source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns: 
-          ${STUDENT_ID_COLUMN}: studentUniqueId
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
           assessmentIdentifier: "fake_math_assessment"
@@ -120,21 +85,14 @@ transformations:
             {%raw-%}  
             {
               "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
-            },
+            }
             {%-endraw%}
-      - operation: modify_columns
-        columns:
-          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
       # group and aggregate:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
         create_columns: 
-          grade_json: agg(grade_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+          grade_json_array: json_array_agg(grade_json)
 
   assessments:
     source: $sources.assessments

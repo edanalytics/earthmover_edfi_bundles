@@ -2,9 +2,9 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [{{grade_json}}],
+  "assessedGradeLevels": {{grade_json_array}},
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [{{academicSubjectDescriptor}}],
+  "academicSubjects": ["{{academicSubjectDescriptor}}"],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
