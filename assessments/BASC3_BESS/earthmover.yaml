@@ -96,7 +96,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{subject_descriptor}}"
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -121,7 +121,7 @@ transformations:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{grade_descriptor}}"
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
