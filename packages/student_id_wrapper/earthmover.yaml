@@ -1,0 +1,24 @@
+version: 2
+
+config:
+  output_dir: ${OUTPUT_DIR}
+  log_level: INFO
+  show_stacktrace: True
+  show_graph: False
+  parameter_defaults:
+    ASSESSMENT_BUNDLE_BRANCH: feature/bundle_refactor # This will be changed to main before merging
+    STUDENT_ID_NAME: edFi_studentUniqueID
+
+packages:
+  ${ASSESSMENT_BUNDLE}:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: ${ASSESSMENT_BUNDLE_BRANCH}
+    subdirectory: assessments/${ASSESSMENT_BUNDLE}
+  student_ids:
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: student_id_alignment_unified
+    subdirectory: packages/student_ids
+
+transformations:
+  input:
+    source: $transformations.input_xwalked
