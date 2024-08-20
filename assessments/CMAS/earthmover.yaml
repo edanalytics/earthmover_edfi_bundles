@@ -9,7 +9,8 @@ config:
   show_stacktrace: true
   parameter_defaults: 
     CMAS_GROWTH_FILE: ''
-    STUDENT_ID_NAME: 'StateStudentIdentifier'
+    STUDENT_ID_NAME: edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StateStudentIdentifier,LocalStudentIdentifier'
 
 sources:
   input:

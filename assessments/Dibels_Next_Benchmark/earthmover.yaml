@@ -7,7 +7,8 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_NAME: Student Primary ID
+    STUDENT_ID_NAME: edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: Student Primary ID,Primary ID - Student ID (State ID),Student ID (District ID),Student ID (State ID)
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"

@@ -10,6 +10,7 @@ config:
   show_graph: False
   parameter_defaults:
     STUDENT_ID_NAME: edFi_studentUniqueID # default to the column added by the apply_xwalk 
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentID,Student_StateID
     
 
 sources:
