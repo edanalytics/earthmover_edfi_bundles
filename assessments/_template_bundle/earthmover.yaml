@@ -85,14 +85,21 @@ transformations:
             {%raw-%}  
             {
               "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
-            }
+            },
             {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
       # group and aggregate:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
         create_columns: 
-          grade_json_array: json_array_agg(grade_json)
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessments:
     source: $sources.assessments
