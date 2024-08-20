@@ -217,12 +217,12 @@ transformations:
 destinations:
   assessmentReportingMethodDescriptors:
     source: $transformations.reporting_methods
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ./templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
