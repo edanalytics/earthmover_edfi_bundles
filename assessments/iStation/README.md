@@ -1,6 +1,6 @@
 This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
 * **Title**: Istation ISIP Assessment Results - API 3.X
-* **Description**: This template is for the Istation Indicators of Student Progress Reading Difficulties Assessment and the Lectura Spanish Assessment. 
+* **Description**: This template is for the Istation Indicators of Student Progress Reading Difficulties Assessment and the Lectura Spanish Assessment.
 * **API version**: 5.3
 * **Submitter name**: Sam LeBlanc
 * **Submitter organization**: Education Analytics
@@ -14,7 +14,7 @@ This is the CSV download of Istation student result data. Files include an entir
 <details>
 <summary><code>seeds/map_student_id.csv</code></summary>
 
-This is a [crosswalk file](https://en.wikipedia.org/wiki/Schema_crosswalk) for translating the student IDs in the assessment results CSV to student IDs in Ed-Fi (one may be a state ID and the other a local ID, for example). 
+This is a [crosswalk file](https://en.wikipedia.org/wiki/Schema_crosswalk) for translating the student IDs in the assessment results CSV to student IDs in Ed-Fi (one may be a state ID and the other a local ID, for example).
 
 This file is **optional**. If the existing student IDs within the assessment file map to Ed-Fi's `studentUniqueId` or using a database connection, you can omit the crosswalk file.
 
@@ -43,6 +43,7 @@ To query a student ID xwalk from a database, provide the following additional pa
 - DATABASE_CONNECTION: [SQLAlchemy database URL](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls)
 - STUDENT_ID_QUERY: Crosswalk query with columns `student_id_from` and `student_id_to`. You may need to use `$$` in the place of single quotes to avoid issues with constructing the query string.
 - STUDENT_ID_NAME: `student_id_to`
+- ISTATION_ENDPOINT: `report` or `export` Istation provides all scores with its export endpoint, but in a significantly different format. Only specify `export` if your csv data is from the export endpoint or errors will occur. The default for Istation, and this bundle, is to assume the report format.  See documentation [HERE](https://help.istation.com/en_US/how-do-i-automate-data-exports) for details.
 
 Istation performance levels can be reported on two different scales: tiers (1: >40th percentile, 2: 21-40th percentile, 3: <=20th percentile) or levels (5: >80th percentile, 4: 61-80th percentile, 3: 41-60th percentile, 2: 21-40th percentile, 1: <=20th percentile). Sometimes, it can be helpful to enforce a standard performance level if they vary across schools or districts. The included pre-populated seed tables `map_percentile_to_level` and `map_percentile_to_tier` can be used for this. They can also be edited to use a custom performance level.
 - PERCENTILE_MAPPING: `level` or `tier`
