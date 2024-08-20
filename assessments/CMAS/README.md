@@ -29,7 +29,6 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
-"STATE_FILE": "./runs.csv",
 "CMAS_RESULTS_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "StateStudentIdentifier",

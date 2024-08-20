@@ -8,6 +8,7 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults: 
+    STATE_FILE: ./runs.csv
     CMAS_GROWTH_FILE: ''
     STUDENT_ID_NAME: edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'StateStudentIdentifier,LocalStudentIdentifier'
