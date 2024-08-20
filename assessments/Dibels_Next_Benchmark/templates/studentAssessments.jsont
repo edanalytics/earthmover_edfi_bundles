@@ -12,18 +12,21 @@
   },
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
-    {% set all_pls = [] %}
-    {% if pathway_achieved_composite_score != '' %}
-      {% set _= all_pls.append(["Pathway Achieved", pathway_achieved_composite_score]) %}
-    {% endif %}
-    {% if pathway_set_composite_score != '' %}
-      {% set _= all_pls.append(["Pathway Set", pathway_set_composite_score]) %}
-    {% endif %}
-    {% if assessment_measure_composite_score_levels != '' %}
-      {% set _= all_pls.append(["Assessment Measure Level", assessment_measure_composite_score_levels]) %}
-    {% endif %}
+
+    {% set possible_pls = [
+      ["Pathway Achieved", pathway_achieved_composite_score],
+      ["Pathway Set", pathway_set_composite_score],
+      ["Assessment Measure Level", assessment_measure_composite_score_levels],
+    ] %}
+
+    {%- set pls = [] -%}
+    {%- for pl in possible_pls -%}
+      {%- if pl[1] is not none and pl[1] | length -%}
+        {%- set _ = pls.append(pl) -%}
+      {%- endif -%}
+    {%- endfor -%}
   
-    {%- for pl in all_pls -%}
+    {%- for pl in pls -%}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{pl[0]}}",
       "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#{{pl[1]}}",
