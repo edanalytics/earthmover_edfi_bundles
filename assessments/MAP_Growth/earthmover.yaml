@@ -6,7 +6,7 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
     STUDENT_ID_NAME: edFi_studentUniqueID # default to the column added by the apply_xwalk 
@@ -217,12 +217,12 @@ transformations:
 destinations:
   assessmentReportingMethodDescriptors:
     source: $transformations.reporting_methods
-    template: ./templates/descriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ./templates/descriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
