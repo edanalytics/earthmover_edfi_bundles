@@ -1,5 +1,5 @@
-* **Title**: Dibels 8th Edition - API 3.X
-* **Description**: This template maps Dibels 8th Edition Benchmark files. 
+* **Title**: DIBELS 8th Edition - API 3.X
+* **Description**: This template maps DIBELS 8th Edition Benchmark files. 
 * **API version**: 5.2
 * **Submitter name**: Sam LeBlanc
 * **Submitter organization**: Education Analytics
@@ -7,21 +7,24 @@
 To run this bundle, please add your own source file(s) and column(s):
 <details>
 <summary><code>data/StudentSummary - benchmark.csv</code></summary>
-This template will only work with the Dibels 8th Edition Benchmark results at this time.
+This template will only work with the DIBELS 8th Edition Benchmark results at this time.
 </details>
 
+Or use the sample file (`data/sample_anonymized_file.csv`).
 
 ## CLI Parameters
 
 ### Required
 - OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The student assessment file to be mapped
-- STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file, or a value mapped from a crosswalk (must be supplied)
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'Student Primary ID' from the DIBELS 8th Edition Benchmark file.
 
 ### Examples
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
+"STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "Student Primary ID"}'

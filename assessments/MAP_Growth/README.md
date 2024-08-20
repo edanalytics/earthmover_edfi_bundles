@@ -14,14 +14,15 @@ ComboStudentAssessment.csv.
 It tries to retain compatibility across various versions of these file specifications
 by looking for both the old and new names of changed columns.
 
-
 </details>
 
+Or use the sample file (`data/sample_anonymized_file.csv`).
 
 ## CLI Parameters
 
 ### Required
 - OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The assessment file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (`StudentID` or `Student_StateID`).
 
@@ -29,6 +30,7 @@ by looking for both the old and new names of changed columns.
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
+"STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "Student_StateID"}'

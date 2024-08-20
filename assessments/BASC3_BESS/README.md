@@ -10,13 +10,13 @@ To run this bundle, please add your own source file(s) and column(s):
 This template will only work with the Pearson BASC-3 BESS File.
 </details>
 
+Or use the sample file (`data/sample_anonymized_file.csv`).
 
 ## CLI Parameters
 
 ### Required
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - INPUT_FILE: The student assessment file to be mapped
 - API_YEAR: The API year of the ODS for which we would send these records
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'Student Number' from the BESS file.
@@ -25,10 +25,9 @@ This template will only work with the Pearson BASC-3 BESS File.
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"STATE_FILE": "./state",
-"INPUT_FILE": "path/to/BESS.csv",
-"OUTPUT_DIR": "./output",
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
+"OUTPUT_DIR": "output/",
 "API_YEAR": "2023"'
 ```
 

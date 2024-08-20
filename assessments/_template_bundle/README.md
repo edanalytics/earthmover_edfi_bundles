@@ -62,6 +62,7 @@ Other aspects of this bundle offer examples of helpful code logic & best-practic
 To run this bundle without implementing the student ID xwalking packages:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
+"STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/" 
 }'
