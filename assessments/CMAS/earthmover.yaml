@@ -27,6 +27,9 @@ sources:
   reasonNotTestedDescriptors:
     file: ./seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
@@ -119,6 +122,20 @@ transformations:
     source: $sources.input
     operations: []
 
+  distinct_grade_levels__no_assess_id:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - cmas_grade
+          - gradeLevelDescriptor
+  distinct_grade_levels__no_cmas_grade:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - assessmentIdentifier
+          - gradeLevelDescriptor
   cmas_results:
     source: $transformations.input
     operations:
@@ -129,6 +146,7 @@ transformations:
           school_year: ${SCHOOL_YEAR}
           alternate_assessment: ${ALTERNATE_ASSESSMENT}
           is_science: ${SCIENCE}
+          namespace: "uri://www.cde.state.co.us/assessment/cmas"
       - operation: duplicate_columns
         columns:
           Subject: assessmentSubject
@@ -140,9 +158,12 @@ transformations:
           Mathematics: MAT
           Spanish Language Arts/Literacy: SLA
           Science: SCI
-      - operation: map_values
-        column: GradeLevelWhenAssessed
-        map_file: ./seeds/mapping_GradeLevels.csv
+      - operation: join
+        sources:
+          - $transformations.distinct_grade_levels__no_assess_id
+        join_type: inner
+        left_key: GradeLevelWhenAssessed
+        right_key: cmas_grade
       - operation: map_values
         column: NotTestedReason
         map_file: ./seeds/mapping_NotTestedReason.csv
@@ -305,10 +326,44 @@ transformations:
           0: N
           1: Y
 
+  grade_level_descriptors:
+    source: $transformations.distinct_grade_levels__no_cmas_grade
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 destinations:
   assessments:
-    source: $sources.assessments
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
