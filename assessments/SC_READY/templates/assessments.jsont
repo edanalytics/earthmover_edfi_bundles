@@ -1,0 +1,73 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Mathematics"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#English/Language Arts"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Science"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed.sc.gov/AcademicSubjectDescriptor#Social Studies"
+    }
+  ],
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#3"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#4"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#5"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#6"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#7"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#8"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Vertical Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}
