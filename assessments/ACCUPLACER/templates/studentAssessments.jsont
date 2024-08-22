@@ -1,0 +1,21 @@
+{
+    "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessment_identifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{school_year}}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{student_unique_id}}"
+    },
+    "administrationDate": "{{test_end}}",
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{scale_score}}"
+      }
+    ]
+  }

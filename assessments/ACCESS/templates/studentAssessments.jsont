@@ -1,0 +1,296 @@
+{
+  "studentAssessmentIdentifier": "{{UniqueRecordID}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "uri://wida.wisc.edu/assess/access"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+
+
+  {% set accommodations = [] %}
+
+  "accommodations": [
+    {% if AccommodationMC == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#MC")%}{% endif %}
+    {% if AccommodationRA == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RA")%}{% endif %}
+    {% if AccommodationES == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#ES")%}{% endif %}
+    {% if AccommodationLP == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#LP")%}{% endif %}
+    {% if AccommodationBR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#BR")%}{% endif %}
+    {% if AccommodationSD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SD")%}{% endif %}
+    {% if AccommodationIR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#IR")%}{% endif %}
+    {% if AccommodationRP == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RP")%}{% endif %}
+    {% if AccommodationHR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#HR")%}{% endif %}
+    {% if AccommodationRR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RR")%}{% endif %}
+    {% if AccommodationHI == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#HI")%}{% endif %}
+    {% if AccommodationRI == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RI")%}{% endif %}
+    {% if AccommodationSR == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#SR")%}{% endif %}
+    {% if AccommodationWD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#WD")%}{% endif %}
+    {% if AccommodationRD == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#RD")%}{% endif %}
+    {% if AccommodationNS == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#NS")%}{% endif %}
+    {% if AccommodationET == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#ET")%}{% endif %}
+    {% if AccommodationEM == 'Y' %}{% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#EM")%}{% endif %}
+    {% if alternate_assessment == 'Y' %}
+      {# These accommodation fields are specific to the alternate assessment#}
+      {% if TestEnvironmentFamiliarenvironmenttostudent is not none and TestEnvironmentFamiliarenvironmenttostudent | length %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Familiar environment to student")%}{% endif %}
+      {% if TestEnvironmentQuietEnvironment is not none and TestEnvironmentQuietEnvironment | length %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Quiet Environment")%}{% endif %}
+      {% if TestEnvironmentMinimaldistractions is not none and TestEnvironmentMinimaldistractions | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Minimal distractions")%}{% endif %}
+      {% if TestEnvironmentOnetooneinteractionwithtestadministrator is not none and TestEnvironmentOnetooneinteractionwithtestadministrator | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#One-to-one interaction with test administrator")%}{% endif %}
+      {% if AccommodationsTestdirections is not none and AccommodationsTestdirections | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Test directions")%}{% endif %}
+      {% if AccommodationsPresentationFormat is not none and zAccommodationsPresentationFormatzz | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Presentation Format")%}{% endif %}
+      {% if AccommodationsResponseFormat is not none and AccommodationsResponseFormat | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Response Format")%}{% endif %}
+      {% if AccommodationsSettingformatenvironment is not none and AccommodationsSettingformatenvironment | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Setting format/environment")%}{% endif %}
+      {% if AccommodationsTimingscheduling is not none and AccommodationsTimingscheduling | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Timing/scheduling")%}{% endif %}
+      {% if AccommodationsOther is not none and AccommodationsOther | length  %}
+        {% set _ = accommodations.append("uri://wida.wisc.edu/assess/access/AccommodationDescriptor#Other")%}{% endif %}
+    {% endif %}
+    {% if accommodations | length %}
+      {% for accommodation in accommodations %}
+      {
+        "accommodationDescriptor": "{{accommodation}}"
+      } {% if not loop.last %},{% endif %}
+      {% endfor %}
+    {% endif %}
+
+  ],
+  
+  {% if TestCompletionDate is not none and TestCompletionDate | length %}
+    "administrationDate": "{{TestCompletionDate}}",
+  {% else %}
+    "administrationDate": "{{defaultTestStartDateTime}}",
+  {% endif %}
+
+  {% if alternate_assessment == 'N' %}
+    {% if ReportedMode is not none and ReportedMode | length %}
+      "administrationEnvironmentDescriptor": "uri://wida.wisc.edu/assess/access/AdministrationEnvironmentDescriptor#{{ReportedMode}}",
+    {% endif %}
+  {% endif %}
+
+  {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length %}
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeListening}}",
+  {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length %}
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeReading}}",
+  {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length %}
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeSpeaking}}",
+  {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length %}
+    "reasonNotTestedDescriptor": "uri://wida.wisc.edu/assess/access/ReasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
+  {% endif %}
+
+  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
+
+  "scoreResults": [
+  {% set scores = [] %}
+
+    {% if ProficiencyLevelOverall|float(none) is not none and ProficiencyLevelOverall | length %}
+      {% set _ = scores.append(['Proficiency Level', 'Decimal', ProficiencyLevelOverall]) %}
+    {% endif %}
+
+    {% if ScaleScoreOverall|int(none) is not none and ScaleScoreOverall | length %}
+      {% set _ = scores.append(['Scale Score', 'Integer', ScaleScoreOverall]) %}
+    {% endif %}
+
+    {% if ConfidenceLowScoreOverall|int(none) is not none and ConfidenceLowScoreOverall | length %}
+      {% set _ = scores.append(['Confidence Low Score', 'Integer', ConfidenceLowScoreOverall]) %}
+    {% endif %}
+
+    {% if ConfidenceHighScoreOverall|int(none) is not none and ConfidenceHighScoreOverall | length %}
+      {% set _ = scores.append(['Confidence High Score', 'Integer', ConfidenceHighScoreOverall]) %}
+    {% endif %}
+
+    {% if Tier is not none and Tier | length %}
+      {% set _ = scores.append(['Tier', 'Level', Tier]) %}
+    {% endif %}
+
+    {% for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "result": "{{score[2]}}"
+    } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  "performanceLevels": [
+    {% if alternate_assessment == 'N' %}
+    {# Standard assessment has a numeric performance level #}
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#{{ PerformanceLevelOverall|float()|round(1, 'floor')|int }}",
+        "performanceLevelMet": true
+      }
+    {% else %}
+    {# Alternate assessment has an alphanumeric performance (proficiency) level #}
+      {
+        "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://wida.wisc.edu/assess/access/PerformanceLevelDescriptor#{{ProficiencyLevelOverall}}",
+        "performanceLevelMet": true
+      }
+    {% endif %}
+    ],
+
+    "studentObjectiveAssessments": [
+      {% set all_obj_assess = [] %}
+      {% if alternate_assessment == 'N' %}
+        {# Scores specific to standard assessment #}
+          {% if ProficiencyLevelListening|float(none) is not none and ProficiencyLevelListening | length %}
+            {% set _ = all_obj_assess.append(['Listening', ProficiencyLevelListening, ScaleScoreListening, ConfidenceLowScoreListening, ConfidenceHighScoreListening, ClusterListening, TierListening, DomainTerminationListening, StatusListening, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if ProficiencyLevelReading|float(none) is not none and ProficiencyLevelReading | length %}
+            {% set _ = all_obj_assess.append(['Reading', ProficiencyLevelReading, ScaleScoreReading, ConfidenceLowScoreReading, ConfidenceHighScoreReading, ClusterReading, TierReading, DomainTerminationReading, StatusReading, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if ProficiencyLevelSpeaking|float(none) is not none and ProficiencyLevelSpeaking | length %}
+            {% set _ = all_obj_assess.append(['Speaking', ProficiencyLevelSpeaking, ScaleScoreSpeaking, ConfidenceLowScoreSpeaking, ConfidenceHighScoreSpeaking, ClusterSpeaking, TierSpeaking, DomainTerminationSpeaking, StatusSpeaking, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if ProficiencyLevelWriting|float(none) is not none and ProficiencyLevelWriting | length %}
+            {% set _ = all_obj_assess.append(['Writing', ProficiencyLevelWriting, ScaleScoreWriting, ConfidenceLowScoreWriting, ConfidenceHighScoreWriting, ClusterWriting, TierWriting, DomainTerminationWriting, StatusWriting, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+
+        {% else %}
+        {# Scores specific to alternate assessment #}
+          {% if ProficiencyLevelListening != 'NA' and ProficiencyLevelListening | length %}
+            {% set _ = all_obj_assess.append(['Listening', ProficiencyLevelListening, ScaleScoreListening, ConfidenceLowScoreListening, ConfidenceHighScoreListening, ClusterListening, 'N/A', 'N/A', StatusListening, NumberofCorrectResponsesListening, CueANumberCorrectListening, CueAPercentCorrectListening, CueBNumberCorrectListening, CueBPercentCorrectListening, CueCNumberCorrectListening, CueCPercentCorrectListening]) %}
+          {% endif %}
+          {% if ProficiencyLevelReading != 'NA' and ProficiencyLevelReading | length %}
+            {% set _ = all_obj_assess.append(['Reading', ProficiencyLevelReading, ScaleScoreReading, ConfidenceLowScoreReading, ConfidenceHighScoreReading, ClusterReading, 'N/A', 'N/A', StatusReading, NumberofCorrectResponsesReading, CueANumberCorrectReading, CueAPercentCorrectReading, CueBNumberCorrectReading, CueBPercentCorrectReading, CueCNumberCorrectReading, CueCPercentCorrectReading]) %}
+          {% endif %}
+          {% if ProficiencyLevelSpeaking != 'NA' and ProficiencyLevelSpeaking | length %}
+            {% set _ = all_obj_assess.append(['Speaking', ProficiencyLevelSpeaking, ScaleScoreSpeaking, ConfidenceLowScoreSpeaking, ConfidenceHighScoreSpeaking, ClusterSpeaking, 'N/A', 'N/A', StatusSpeaking, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+          {% if ProficiencyLevelWriting != 'NA' and ProficiencyLevelWriting | length %}
+            {% set _ = all_obj_assess.append(['Writing', ProficiencyLevelWriting, ScaleScoreWriting, ConfidenceLowScoreWriting, ConfidenceHighScoreWriting, ClusterWriting, 'N/A', 'N/A', StatusWriting, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+          {% endif %}
+        {% endif %}
+
+        {# Scores that are the same fields for both standard and alternate assessments #}
+        {% if ProficiencyLevelComprehension != 'NA' and ProficiencyLevelComprehension | length %}
+          {% set _ = all_obj_assess.append(['Comprehension', ProficiencyLevelComprehension, ScaleScoreComprehension, ConfidenceLowScoreComprehension, ConfidenceHighScoreComprehension, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+        {% endif %}
+        {% if ProficiencyLevelLiteracy != 'NA' and ProficiencyLevelLiteracy | length %}
+          {% set _ = all_obj_assess.append(['Literacy', ProficiencyLevelLiteracy, ScaleScoreLiteracy, ConfidenceLowScoreLiteracy, ConfidenceHighScoreLiteracy, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+        {% endif %}
+        {% if ProficiencyLevelOral != 'NA' and ProficiencyLevelOral | length %}
+          {% set _ = all_obj_assess.append(['Oral', ProficiencyLevelOral, ScaleScoreOral, ConfidenceLowScoreOral, ConfidenceHighScoreOral, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+        {% endif %}
+
+        {% for obj_assess in all_obj_assess %}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessment_identifier}}",
+            "identificationCode": "{{ obj_assess[0] }}",
+            "namespace": "uri://wida.wisc.edu/assess/access"
+          },
+          "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Proficiency Level",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{ obj_assess[1] }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Scale Score",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ obj_assess[2] }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Confidence Low Score",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ obj_assess[3] }}"
+            },
+            {
+              "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Confidence High Score",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+              "result": "{{ obj_assess[4] }}"
+            }
+            {% if obj_assess[5] != 'N/A' and obj_assess[5] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cluster",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+                "result": "{{ obj_assess[5] }}"
+              }
+            {% endif %}
+            {% if obj_assess[6] != 'N/A' and obj_assess[6] | length %}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Tier",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[6] }}"
+              }
+            {% endif %}
+            {% if obj_assess[7] != 'N/A'  and obj_assess[7] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Domain Termination",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[7] }}"
+              }
+            {% endif %}
+            {% if obj_assess[8] != 'N/A'  and obj_assess[8] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Status",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[8] }}"
+              }
+            {% endif %}
+            {% if obj_assess[9] != 'N/A'  and obj_assess[9] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Number of Correct Responses",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[9] }}"
+              }
+            {% endif %}
+            {% if obj_assess[10] != 'N/A'  and obj_assess[10] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue A Number Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[10] }}"
+              }
+            {% endif %}
+            {% if obj_assess[11] != 'N/A'  and obj_assess[11] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue A Percent Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[11] }}"
+              }
+            {% endif %}
+            {% if obj_assess[12] != 'N/A'  and obj_assess[12] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue B Number Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[12] }}"
+              }
+            {% endif %}
+            {% if obj_assess[13] != 'N/A'  and obj_assess[13] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue B Percent Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[13] }}"
+              }
+            {% endif %}
+            {% if obj_assess[14] != 'N/A'  and obj_assess[14] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue C Number Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[14] }}"
+              }
+            {% endif %}
+            {% if obj_assess[15] != 'N/A'  and obj_assess[15] | length%}
+              ,{
+                "assessmentReportingMethodDescriptor": "uri://wida.wisc.edu/assess/access/AssessmentReportingMethodDescriptor#Cue C Percent Correct",
+                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+                "result": "{{ obj_assess[15] }}"
+              }
+            {% endif %}
+          ]
+        } {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
