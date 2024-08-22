@@ -12,7 +12,7 @@ The IB results file does not include student IDs besides internal IB candidate I
 
 ### Required
 - OUTPUT_DIR: Where output files will be written.
-- BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives.
+- STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the IB .csv file you want to transform.
 - API_YEAR: The API year that the output of this template will be sent to.
 
@@ -20,10 +20,10 @@ The IB results file does not include student IDs besides internal IB candidate I
 Running earthmover for an IB file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"INPUT_FILE": "path/to/IB.csv",
 "OUTPUT_DIR": "./output",
-"API_YEAR": "20xx"}'
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
+"API_YEAR": "2024" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
