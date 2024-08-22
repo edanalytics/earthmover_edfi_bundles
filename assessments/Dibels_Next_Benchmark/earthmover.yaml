@@ -7,6 +7,7 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
+    STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: Student Primary ID,Primary ID - Student ID (State ID),Student ID (District ID),Student ID (State ID)
   
