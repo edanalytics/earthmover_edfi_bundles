@@ -67,10 +67,16 @@ sources:
     query: >
       with ids as (
           select
-              tenant_code, api_year, k_student, ed_org_id,
-              object_construct_keep_null('assigningOrganizationIdentificationCode', id_system,
-                  'identificationCode', id_code) as stu_id_code,
-          from ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes
+              seoa.tenant_code,
+              seoa.api_year,
+              seoa.k_student,
+              seoa.ed_org_id,
+              object_construct_keep_null('assigningOrganizationIdentificationCode', seo_ids.id_system,
+                  'identificationCode', seo_ids.id_code) as stu_id_code,
+          from ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__student_education_organization_associations seoa
+              left join  ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes seo_ids on seoa.k_student=seo_ids.k_student
+          where seoa.tenant_code='${SNOWFLAKE_TENANT_CODE}'
+              and seoa.api_year=${SNOWFLAKE_API_YEAR}
       ),
       aggd_ids as (
           select
