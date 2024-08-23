@@ -5,62 +5,57 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_JOIN_COLUMN: secondary_school_student_id
-    STUDENT_ID_NAME: secondary_school_student_id
-    STUDENT_ID_XWALK: ''
+    STUDENT_ID_NAME: state_student_id
 
 
 sources:
-  psat_sat_input:
-    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
-    type: csv
-    # See the accompanying README.md for a list of required columns for this file
 
-  student_id_xwalk:
-    # This file only needs to be supplied if the source assessment file does not
-    # contain the studentUniqueId used by Ed-Fi
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - from 
-      - to
-    optional: True
-    type: csv
 
   assessments:
-    file: seeds/assessments.csv
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+
   {% if "${TEST_TYPE}" == "SAT" %}
     {% set test = "SAT" %}
   {% else %}
     {% set test = "PSAT" %}
   {% endif %}
   psat_sat_student_assessment:
-    source: $sources.psat_sat_input
+    source: $transformations.input
     operations:
       - operation: rename_columns
         columns:
           DISTRICT_STUDENT_ID: district_student_id
           STATE_STUDENT_ID: state_student_id
-          SECONDARY_ID: secondary_school_student_id
-          LATEST_{{test}}_DATE: assessment_date
+          SECONDARY_ID: secondary_id
+          LATEST_{{test}}_DATE: administrationDate
           LATEST_{{test}}_GRADE: grade_when_assessed
           LATEST_{{test}}_TOTAL: total_score
           LATEST_{{test}}_EBRW: reading_writing_section_score
@@ -130,24 +125,23 @@ transformations:
           LATEST_SAT_ESSAY_ANALYSIS: essay_analysis_subscore
           LATEST_SAT_ESSAY_WRITING: essay_writing_subscore          
           {% endif %}
-      - operation: join 
-        sources: 
-          - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_JOIN_COLUMN}
-        right_key: from
-        join_type: left
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
-          school_year: ${SCHOOL_YEAR}
-          test_type: ${TEST_TYPE}
-      - operation: map_values
-        column: grade_when_assessed
-        map_file: ./seeds/grade_mapping.csv
+          schoolYear: ${API_YEAR}
+          assessmentIdentifier: ${TEST_TYPE}
+          namespace: "uri://collegeboard.org"
+          assessmentCategoryDescriptor: "uri://ed-fi.org/AssessmentCategoryDescriptor#College entrance exam"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [grade_when_assessed, assessmentIdentifier]
+        right_keys: [psat_sat_grade, assessmentIdentifier]
       - operation: date_format
-        column: assessment_date
+        column: administrationDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
 
@@ -188,7 +182,7 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'English Language Arts'
-          student_assessment_id: "{%raw%}{{studentUniqueId}}_{{assessment_date}}_ela{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_ela{%endraw%}"
 
   psat_sat_student_assessment_math:
     source: $transformations.psat_sat_student_assessment
@@ -234,7 +228,7 @@ transformations:
       - operation: add_columns
         columns:
           subject: 'Mathematics'
-          student_assessment_id: "{%raw%}{{studentUniqueId}}_{{assessment_date}}_mathematics{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_mathematics{%endraw%}"
 
   psat_sat_student_assessment_stacked:
     source: $transformations.psat_sat_student_assessment_reading_writing
@@ -243,26 +237,92 @@ transformations:
         sources:
           - $transformations.psat_sat_student_assessment_math
 
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - assessmentIdentifier
+          - gradeLevelDescriptor
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
 
 destinations:
   studentAssessments:
     source: $transformations.psat_sat_student_assessment_stacked
-    template: templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
-    source: $sources.assessments
-    template: templates/assessments.jsont
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl

@@ -2,114 +2,114 @@
     "identificationCode": "{{identificationCode}}",
     "assessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "namespace": "uri://collegeboard.org"
+      "namespace": "{{namespace}}"
     },
     "description": "{{description}}",
     "scores": [
     {% if identificationCode in ('Reading Test', 'Writing and Language Test', 'Math Test') %}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
     {% endif %}
     {% if identificationCode == 'Reading Test' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Reading Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Reading Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Correct Answers to Reading Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Correct Answers to Reading Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Incorrect Answers to Reading Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Incorrect Answers to Reading Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Omitted Reading Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Omitted Reading Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }
     {% endif %}
     {% if identificationCode == 'Writing and Language Test' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Writing Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Writing Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Correct Answers to Writing Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Correct Answers to Writing Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Incorrect Answers to Writing Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Incorrect Answers to Writing Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Omitted Writing Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Omitted Writing Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }
     {% endif %}
     {% if identificationCode == 'Math Test' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Math No Calc Test MC Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Math No Calc Test MC Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Math No Calc Test PR Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Math No Calc Test PR Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Correct Answers to Math No Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Correct Answers to Math No Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Incorrect Answers to Math No Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Incorrect Answers to Math No Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Omitted Math No Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Omitted Math No Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Math Calc Test MC Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Math Calc Test MC Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Number of Math Calc Test PR Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Math Calc Test PR Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Correct Answers to Math Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Correct Answers to Math Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Incorrect Answers to Math Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Incorrect Answers to Math Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Omitted Math Calc Test Questions",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Omitted Math Calc Test Questions",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }
     {% endif %}
     
     {% if identificationCode in ('Relevant Words in Context', 'Command of Evidence', 'Expression of Ideas', 'Standard English Conventions', 'Essay', 'Heart of Algebra', 'Passport to Advanced Mathematics', 'Problem Solving and Data Analysis') %}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Subscore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subscore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Subscore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Subscore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Subscore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Subscore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }   
     {% endif %}
