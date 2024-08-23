@@ -2,7 +2,7 @@
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessment_id}}",
-    "namespace": "uri://amplify.com/programs/mclass-lectura"
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -13,33 +13,33 @@
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{composite_level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{composite_level}}",
       "performanceLevelMet": true
     }
     {% if risk_indicator_espanol_level != '' %},
     {
-      "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
-      "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{risk_indicator_espanol_level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{risk_indicator_espanol_level}}",
       "performanceLevelMet": true
     }
     {% endif %}
   ],
   "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{composite_score}}"
       },
       {% if composite_local_percentile != '' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Local Percentile",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{composite_local_percentile}}"
       },
       {% endif %}
       {
-        "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Benchmark Period",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
         "result": "{{benchmark_period}}"
       }
@@ -70,30 +70,30 @@
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{assessment_id}}",
         "identificationCode": "{{obj_id}}",
-        "namespace": "uri://amplify.com/programs/mclass-lectura"
+        "namespace": "{{namespace}}"
       },
       "scoreResults": [
         {% if (obj_names[0] != '') %}
         {
-          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Score",
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{obj_names[0]}}"
         }
           {% if (obj_names[1] != '') %},
           {
-            "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Local Percentile",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Local Percentile",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{obj_names[1]}}"
           }
           {% endif %}
           {% if obj_id == 'CP' %},
           {
-            "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Correct Responses",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Correct Responses",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{correct_responses_cp_score}}"          
           },
           {
-            "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Incorrect Responses",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Incorrect Responses",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{incorrect_responses_cp_score}}"          
           }
@@ -101,7 +101,7 @@
         {% endif %}
         {% if obj_id in ('FEP',  'FLO', 'FLO-Prec') and  obj_names[0] == '' %} 
         {
-          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Discontinued",
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Discontinued",
           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
           "result": "True"      
         }
@@ -109,8 +109,8 @@
       ],
       "performanceLevels": [
         {
-          "assessmentReportingMethodDescriptor": "uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Level",
-          "performanceLevelDescriptor": "uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#{{obj_names[2]}}",
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj_names[2]}}",
           "performanceLevelMet": true
         }
       ]
