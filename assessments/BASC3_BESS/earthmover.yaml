@@ -9,6 +9,7 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
+    STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student Number'
   macros: > 

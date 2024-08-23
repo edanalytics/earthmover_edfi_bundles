@@ -13,14 +13,10 @@ This template will only work with the ACCUPLACER placement test results file.
 Or use the sample file (data/sample_anonymized_file.csv).
 
 ## CLI Parameters
-
-### Required
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The student assessment file to be mapped
 - API_YEAR: The API year of the ODS for which we would send these records
-
-### Optional
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is 'Student ID' from the ACCUPLACER file.
 
 ### Examples
