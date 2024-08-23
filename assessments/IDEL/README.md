@@ -16,7 +16,6 @@ This template will only work with IDEL files.
 ### Required
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - INPUT_FILE: The student assessment file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is 'Student Primary ID'.
 
