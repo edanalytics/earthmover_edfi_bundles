@@ -36,6 +36,5 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_BASE_URL": "yourURL",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret",
-"API_YEAR": "yourAPIYear"
-}'
+"API_YEAR": "yourAPIYear" }'
 ```
