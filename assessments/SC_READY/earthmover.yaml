@@ -368,7 +368,7 @@ transformations:
       - operation: add_columns
         columns:
           school_year:  ${API_YEAR}
-          administration_date: {{ ${API_YEAR} ~ "-05-15" }}
+          administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
           namespace: "uri://datarecognitioncorp.com/Assessment"
     expect: 
