@@ -50,6 +50,7 @@ transformations:
       - operation: keep_columns
         columns:
           # Generic fields
+          - ${STUDENT_ID_NAME}
           - StateID
           - SchoolID
           - TestAdmin
