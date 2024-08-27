@@ -157,8 +157,14 @@ transformations:
           - {{source_student_id_column}}
           {% endfor %}
 
-  {% for source_student_id_column in possible_student_id_columns -%}
   {% for edfi_student_id_column in edfi_student_id_types -%}
+  {{edfi_student_id_column}}_filtered:
+    source: $transformations.unpacked_edfi_roster
+    operations:  
+      - operation: filter_rows
+        query:  "{{edfi_student_id_column}} != ''"
+        behavior: include
+  {% for source_student_id_column in possible_student_id_columns -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
     source: $transformations.joins_base
     operations:
@@ -169,7 +175,7 @@ transformations:
           {{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
       - operation: join
         sources:
-          - $transformations.unpacked_edfi_roster # from the `edfi_roster` package
+          - $transformations.{{edfi_student_id_column}}_filtered
         join_type: inner
         left_key: {{source_student_id_column}}
         right_key: "{{edfi_student_id_column}}"
