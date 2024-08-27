@@ -317,6 +317,10 @@ transformations:
           - __edfi_edOrgType
           - __edfi_studentUniqueId
           - __xwalk_id_to
+      - operation: distinct_rows
+        columns:
+          - __edfi_studentUniqueId
+          - __xwalk_id_to
 
   input_base:
     source: ${EARTHMOVER_NODE_TO_XWALK}
