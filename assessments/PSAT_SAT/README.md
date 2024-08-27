@@ -18,7 +18,7 @@ This bundle currently works with SAT, PSAT/NMSQT, PSAT 10, and PSAT 8/9 files in
 - INPUT_FILE: The student assessment file to be mapped
 - API_YEAR: The API year of the ODS for which we would send these records
 - TEST_TYPE: Identifies which assessment is being loaded from the current input file. Must be `SAT`, `PSAT/NMSQT`, `PSAT 10`, or `PSAT 8/9`.
-- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is `state_student_id` from the results file.
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is `STATE_STUDENT_ID` from the results file.
 
 ### Examples
 Using an ID column from the assessment file:
@@ -29,7 +29,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "./data/sample_anonymized_file_sat.csv",
 "API_YEAR": "2023",
 "TEST_TYPE": "SAT",
-"STUDENT_ID_NAME": "state_student_id" }'
+"STUDENT_ID_NAME": "STATE_STUDENT_ID" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

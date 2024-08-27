@@ -8,8 +8,8 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_NAME: state_student_id
-    POSSIBLE_STUDENT_ID_COLUMNS: district_student_id,state_student_id,secondary_id
+    STUDENT_ID_NAME: STATE_STUDENT_ID
+    POSSIBLE_STUDENT_ID_COLUMNS: DISTRICT_STUDENT_ID,STATE_STUDENT_ID,SECONDARY_ID
 
 
 sources:
@@ -53,9 +53,6 @@ transformations:
     operations:
       - operation: rename_columns
         columns:
-          DISTRICT_STUDENT_ID: district_student_id
-          STATE_STUDENT_ID: state_student_id
-          SECONDARY_ID: secondary_id
           LATEST_{{test}}_DATE: administrationDate
           LATEST_{{test}}_GRADE: grade_when_assessed
           LATEST_{{test}}_TOTAL: total_score
