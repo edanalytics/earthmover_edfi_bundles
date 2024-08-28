@@ -418,6 +418,11 @@ transformations:
           - $transformations.scready_student_assessment_math
           - $transformations.scready_student_assessment_science
           - $transformations.scready_student_assessment_social_studies
+
+      # Only populated assessments have `{Subject}Grade` column populated
+      - operation: filter_rows
+        query: assessment_grade != ''
+        behavior: include
       
       - operation: add_columns
         columns:
