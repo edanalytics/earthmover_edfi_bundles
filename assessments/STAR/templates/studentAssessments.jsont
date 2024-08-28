@@ -1,11 +1,11 @@
 {
   "studentAssessmentIdentifier":"{{StudentAssessmentID}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{-assessment_id-}}",
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "uri://renaissance.com/Assessment"
   },
   "schoolYearTypeReference": {
-    "schoolYear":{{-SchoolYear}}
+    "schoolYear":{{SchoolYear}}
   },
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"

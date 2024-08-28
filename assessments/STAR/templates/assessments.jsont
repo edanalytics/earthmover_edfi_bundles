@@ -1,64 +1,9 @@
 {
-  "assessmentIdentifier": "{{assessment_id}}",
-  "assessmentTitle": "{{test_name}}",
-  "namespace": "uri://renaissance.com/Assessment",
-  "assessedGradeLevels": [
-    {% if assessment_id == 'STAR-EARLY-LIT' %}
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
-    },
-    {% endif %}
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#No grade level"
-    }
-  ],
-  "academicSubjects": [
-    {% if assessment_id == 'STAR-MA' %}
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
-    }
-    {% else %}
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
-    }
-    {% endif %}
-  ],
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": ["{{academicSubjectDescriptor}}"],
   "scores": [
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Test Name",
@@ -136,7 +81,7 @@
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Current SGP",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
-    {% if assessment_id == 'STAR-EARLY-LIT' %}
+    {% if assessmentIdentifier == 'STAR-EARLY-LIT' %}
     ,
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Estimated Oral Reading Fluency",
@@ -350,7 +295,7 @@
       "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Yes",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
-    {% if assessment_id == 'STAR-EARLY-LIT' %}
+    {% if assessmentIdentifier == 'STAR-EARLY-LIT' %}
     ,
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
@@ -378,7 +323,7 @@
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
     {% endif %}
-    {% if assessment_id != 'STAR-EARLY-LIT' %}
+    {% if assessmentIdentifier != 'STAR-EARLY-LIT' %}
     ,
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#SAT Benchmark Category",

@@ -1,17 +1,17 @@
 {
   "assessmentItems": [],
   "assessmentReference": {
-    "assessmentIdentifier": "{{assessment_id}}",
-    "namespace": "uri://renaissance.com/Assessment"
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
   },
-  {% if domain_group_name_int != obj_id_code %}
+  {% if (is_standards == '1') and (description != domain_group_name) %}
   "parentObjectiveAssessmentReference": {
-    "assessmentIdentifier": "{{assessment_id}}",
-    "identificationCode": "{{domain_group_name_int}}",
-    "namespace": "uri://renaissance.com/Assessment"
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "identificationCode": "{{md5(domain_group_name)}}",
+    "namespace": "{{namespace}}"
   },
   {% endif %}
-  "description": "{{obj_id_code}}",
+  "description": "{{description}}",
   "identificationCode": "{{obj_id_code}}",
   "learningObjectives": [],
   "learningStandards": [],
