@@ -159,6 +159,10 @@ transformations:
   prepare_student_assessments:
     source: $sources.results_file
     operations:
+      - operation: rename_columns
+        columns:
+          SchoolCode: schoolId
+
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
@@ -179,10 +183,7 @@ transformations:
           - $transformations.performance_level_descriptors
         join_type: inner
         left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-
-    
-        behavior: include  
+        right_key: assessmentIdentifier  
       - operation: add_columns
         columns:
           PerformanceLevel_SFScore: "{%raw%}{% if SFScore >= minimumScore and SFScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
@@ -207,6 +208,7 @@ transformations:
           - LLScore
           - MAScore
           - PDScore
+          - schoolId
         create_columns: 
           PerformanceLevel_SFScore: agg(PerformanceLevel_SFScore,)
           PerformanceLevel_LLScore: agg(PerformanceLevel_LLScore,)
