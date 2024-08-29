@@ -17,6 +17,9 @@ definitions:
   id_hashing: &id_hashing "{%raw%}{{ md5(value) }}{%endraw%}"
 
 sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -25,6 +28,9 @@ sources:
     header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
   input:
@@ -39,30 +45,60 @@ transformations:
   dibels_benchmark_student_assessment:
     source: $transformations.input
     operations:
-      - operation: map_values
-        column: Assessment Grade
-        map_file: ./seeds/grade_mapping.csv
       - operation: rename_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: Assessment Grade
+        right_key: original_grade
       - operation: snake_case_columns
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
-          assessment_id: "Dibels-8"
+          assessmentIdentifier: "Dibels-8"
+          namespace: "uri://dibels.uoregon.edu/assessment/dibels"
       - operation: modify_columns
         columns:
           school_year: *year_mapping
           student_assessment_id: *id_hashing
-    debug: true
   
-  assessments:
-    source: $transformations.dibels_benchmark_student_assessment
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
     operations:
-      - operation: keep_columns
-        columns: 
-          - assessment_id
-      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 destinations:
   objectiveAssessments:

@@ -1,8 +1,8 @@
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
-    "assessmentIdentifier": "Dibels-8",
-    "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -141,5 +141,5 @@
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
   ],
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
 }
