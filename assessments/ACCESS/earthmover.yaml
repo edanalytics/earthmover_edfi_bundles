@@ -10,6 +10,7 @@ config:
   parameter_defaults: 
     STUDENT_ID_NAME: edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'UniqueDRCStudentID,StateStudentID,DistrictStudentID'
+    ALTERNATE: ''
 
 sources:
   input:
@@ -403,6 +404,7 @@ transformations:
       # Use April 1st of the assessment year for assessments with no date (invalid scores)
       - operation: add_columns
         columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
           namespace: "uri://wida.wisc.edu/assess/access"
           defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
           school_year: ${SCHOOL_YEAR}
@@ -419,7 +421,6 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: duplicate_columns
         columns:
-          ${STUDENT_ID_NAME}: studentUniqueId
           ProficiencyLevelListening: PerformanceLevelListening
           ProficiencyLevelReading: PerformanceLevelReading
           ProficiencyLevelSpeaking: PerformanceLevelSpeaking
