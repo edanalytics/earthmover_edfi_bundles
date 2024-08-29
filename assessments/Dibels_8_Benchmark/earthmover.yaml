@@ -48,13 +48,13 @@ transformations:
       - operation: rename_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: inner
-        left_key: Assessment Grade
+        left_key: assessment_grade
         right_key: original_grade
-      - operation: snake_case_columns
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
