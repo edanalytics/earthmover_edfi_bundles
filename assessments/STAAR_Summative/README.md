@@ -27,7 +27,7 @@ Note, there is a separate earthmover.yaml file for each of the 4 reporting data 
 Running a STAAR Summative 3-8 file:
 ```bash
 earthmover run -c ./earthmover_staar_summative.yaml -p '{
-"INPUT_FILE": "path/to/staar_summative_3-8_2023.csv",
+"INPUT_FILE": "./data/SF_0523_3-8_SAMPLE_ANONYMIZED_ISD_V01.csv",
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
 "API_YEAR": "2023"}'
