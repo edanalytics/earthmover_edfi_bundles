@@ -1,0 +1,37 @@
+﻿Field,Definition,Possible Values (or info about values),Further explanation of value(s)
+SchoolYear,This year identifies the school year during which the testing occurred. ,Will most likely be a year from 2015 up through 2023,"For school year 2022-2023, 2023 will be the value displayed."
+DistrictCode,"This is the district's four-digit code. Depending on how the data are formatted, leading zeros may or may not be present.",Values only go up to four digits and never include alpha characters.,
+SchoolCode,School number that is unique for schools within a district,Typically a number that is up to three digits (alpha characters are never present).,"Note that in Ed-Fi, when school numbers/codes in South Carolina are places with district codes, leading zeros on the school numbers are included. So for example, if a school's code is 22 for district 3333, then if these two codes are ever combined, the new code would be 3333022."
+Assessment,"Name of the assessment (in this case ""KRA"")",KRA,The full name of the KRA is the Kindergarten Readiness Assessment. Context on this assessment is available on this SC Department of Education web page: https://ed.sc.gov/tests/elementary/kindergarten-readiness-assessment-kra/
+PS_StudentID,This is a district-specific ID for the student. It is unique for the student within a district but is not unique within the state.,Alpha characters will never be included,This identifier can be used to identify a unique student within a district.
+StudentSUNS,This is a state-specific ID for the student. It is unique for ths student within the state.,Alpha characters will never be included,This is the best identifier for matching students across the state.
+FirstName,Student's First Name,Some names may include special characters,
+LastName,Student's Last Name,Some names may include special characters,
+MiddleName,Student's Middle Name,"Some names may include special characters. Also, note that there may be quite a few NULL values.",
+DOB,Student's Date of Birth,,
+ManuallyEntered,This is presumably indicating information about how scores were notated. This field may not be needed but is being included for now.,,
+DateTaken,This is the date the assessment was taken.,,
+TestAdministration,This is the calendar year during which the test was administered.,Will most likely be a year from 2014 up through 2023.,"For school year 2022-2023, the Test Administration year could be either 2022 or 2023 but will most likely be 2022 for KRA."
+OverallScore,This is the overall scale score that determines a student's performance level.,any value from 202 to 298 with the minimum score being 202 and the maximum score being 298,"The θ scale is centered at 0 and extends in both positive and negative directions. Applying a linear transformation to the θ scale is desirable because it allows for a scale that is more easily understood by stakeholders and that does not include negative values. The θ scores determined by IRT scaling are converted using a linear transformation such that the scale score = 12* θ + 250. The KRA scale is truncated at θ scores of ±4, which results in minimum and maximum scale scores of 202 and 298, respectively. "
+,,270-298,corresponds to the Performance Level of Demonstrating Readiness
+,,258-269,corresponds to the Performance Level of Approaching Readiness
+,,202-257,corresponds to the Performance Level of Emerging Readiness
+PerformanceLevelDescriptor,A value determined by the KRA overall scale score.,,
+,,Demonstrating Readiness,"A student demonstrates foundational skills and
+behaviors that prepare him/her for a curriculum
+based on kindergarten standards."
+,,Approaching Readiness,"A student demonstrates some foundational
+skills and behaviors that prepare him/her for a
+curriculum based on kindergarten standards."
+,,Emerging Readiness,"A student demonstrates minimal foundational
+skills and behaviors that prepare him/her for a
+curriculum based on kindergarten standards."
+Status,Completion status,,
+,,Complete,All assessment items were completed
+,,Some items were not complete,Some assessment items were not completed
+,,Complete with NS,All assessment items were completed although there was a no show
+,,All items are not complete,Not all assessment items were completed
+SFScore,Social Foundations Score,Scale Score range of 202-298,"The domain scale scores are reported using the same scale as the overall score. Caution must be taken when interpreting domain scores, as these scores are determined by a subset of the items that compose the entire KRA, meaning that they provide a less-precise measure of ability."
+LLScore,Language and Literacy Score,Scale Score range of 202-298,"The domain scale scores are reported using the same scale as the overall score. Caution must be taken when interpreting domain scores, as these scores are determined by a subset of the items that compose the entire KRA, meaning that they provide a less-precise measure of ability."
+MAScore,Mathematics Score,Scale Score range of 202-298,"The domain scale scores are reported using the same scale as the overall score. Caution must be taken when interpreting domain scores, as these scores are determined by a subset of the items that compose the entire KRA, meaning that they provide a less-precise measure of ability."
+PDScore,Physical Well-Being and Motor Development Score,Scale Score range of 202-298,"The domain scale scores are reported using the same scale as the overall score. Caution must be taken when interpreting domain scores, as these scores are determined by a subset of the items that compose the entire KRA, meaning that they provide a less-precise measure of ability."

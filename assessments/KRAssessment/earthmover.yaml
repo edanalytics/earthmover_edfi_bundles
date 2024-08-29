@@ -1,0 +1,241 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  input_file: ${INPUT_FILE}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: ''
+    STUDENT_ID_FROM: ''
+    STUDENT_ID_XWALK: ''
+    STUDENT_ID_QUERY: ''
+    DATABASE_CONNECTION: ''
+  
+
+sources:
+  results_file:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/assessments.csv
+    header_rows: 1
+    debug: True
+  objectiveAssessments:
+    file: ${BUNDLE_DIR}/objectiveAssessments.csv
+    header_rows: 1
+  studentAssessments:
+    file: ./data/KRA_sample_file_deidentified.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ${BUNDLE_DIR}/academicSubjectDescriptors.csv
+    header_rows: 1
+
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/performanceLevelDescriptors.csv
+    header_rows: 1
+  {% if "${STUDENT_ID_QUERY}" | length %}
+  student_id_mapping:
+    connection: ${DATABASE_CONNECTION}
+    query: ${STUDENT_ID_QUERY}
+  {% else %}
+  student_id_mapping:
+    file: ${STUDENT_ID_XWALK}
+    header_rows: 1
+    columns: 
+      - student_id_from 
+      - student_id_to
+    optional: True 
+  {% endif %}
+
+transformations:
+
+  performance_level_descriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - codeValue
+          - minimumScore
+          - maximumScore
+      
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+      - operation: add_columns
+        columns:
+          grade_json: >
+              {%raw-%}  
+              {
+                "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}",
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{namespace}}#{{codeValue}}",
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  
+  prepare_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+          namespace: "https://ed.sc.gov"
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      
+
+  
+  prepare_objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+    debug: True
+      
+
+  prepare_student_assessments:
+    source: $sources.results_file
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+          namespace: "https://ed.sc.gov"
+          studentUniqueId: "{%raw%}{{ PS_StudentID }}{%endraw%}"
+          administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ assessmentIdentifier }}-{{ studentUniqueId }}-{{ SchoolYear }}{%endraw%}"
+        sources:
+          - $sources.student_id_mapping
+        left_key: PS_StudentID
+        right_key: student_id_from
+        join_type: left
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+    
+        behavior: include  
+      - operation: add_columns
+        columns:
+          PerformanceLevel_SFScore: "{%raw%}{% if SFScore >= minimumScore and SFScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
+          PerformanceLevel_LLScore: "{%raw%}{% if LLScore >= minimumScore and LLScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
+          PerformanceLevel_MAScore: "{%raw%}{% if MAScore >= minimumScore and MAScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
+          PerformanceLevel_PDScore: "{%raw%}{% if PDScore >= minimumScore and PDScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "PerformanceLevel_SFScore != 'Unknown' or PerformanceLevel_LLScore != 'Unknown' or PerformanceLevel_MAScore != 'Unknown' or PerformanceLevel_PDScore != 'Unknown'"
+        behavior: include
+      - operation: group_by
+        group_by_columns:
+          - studentAssessmentIdentifier
+          - assessmentIdentifier
+          - studentUniqueId
+          - administrationDate
+          - SchoolYear
+          - namespace
+          - whenAssessedGradeLevelDescriptor
+          - OverallScore
+          - PerformanceLevelDescriptor
+          - SFScore
+          - LLScore
+          - MAScore
+          - PDScore
+        create_columns: 
+          PerformanceLevel_SFScore: agg(PerformanceLevel_SFScore,)
+          PerformanceLevel_LLScore: agg(PerformanceLevel_LLScore,)
+          PerformanceLevel_MAScore: agg(PerformanceLevel_MAScore,)
+          PerformanceLevel_PDScore: agg(PerformanceLevel_PDScore,)
+               
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.prepare_objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
