@@ -10,7 +10,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STATE_FILE: ./runs.csv
-    STUDENT_ID_NAME: edFi_studentUniqueID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student Number'
   macros: > 
       {% macro map_form_to_assess_id(value) -%}
