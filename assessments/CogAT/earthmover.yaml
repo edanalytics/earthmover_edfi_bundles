@@ -3,12 +3,13 @@ version: 2
 
 config:
   log_level: INFO
-  output_dir: output/
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
 
 {% set assessmentIdentifier = "CogAT" %}
@@ -49,8 +50,12 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
+          - ${STUDENT_ID_NAME}
+          {% if '${STUDENT_ID_NAME}' != 'Student_ID' %}
           - Student_ID
+          {% elif '${STUDENT_ID_NAME}' != 'Secondary_Student_ID' %}
           - Secondary_Student_ID
+          {% endif %}
           - Date_Tested
           - Class_Grade
           - Battery

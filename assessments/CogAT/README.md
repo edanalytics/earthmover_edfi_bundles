@@ -35,7 +35,9 @@ python3 util/preprocessing.py data/cogat_export.txt util/cogat_format.csv
 This will output `cogat_export.csv`, which can be used as input to Earthmover. Run the following command:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "cogat_export.csv",
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
+"OUTPUT_DIR": "output/",
 "SCHOOL_YEAR" : "2023",
 "STUDENT_ID_NAME" : "Student_ID"}'
 ```
