@@ -10,8 +10,8 @@ config:
   show_graph: False
   parameter_defaults:
     STATE_FILE: ./runs.csv
-    STUDENT_ID_NAME: edFi_studentUniqueID # default to the column added by the apply_xwalk 
-    POSSIBLE_STUDENT_ID_COLUMNS: StudentID,Student_StateID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
     
 
 sources:

@@ -32,6 +32,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "./data/sample_anonymized_file.csv",
+"STUDENT_ID_NAME": "STUDENT_ID",
 "API_YEAR": "2023",
 "SUBJECT": "reading",
 "ISTATION_ENDPOINT": "report",

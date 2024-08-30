@@ -21,8 +21,8 @@ config:
       {%- endif -%}
       {%- endmacro %}
   parameter_defaults:
-    STUDENT_ID_NAME: StudentStateID
-    POSSIBLE_STUDENT_ID_COLUMNS: StudentStateID,StudentSourcedID,StudentIdentifier,StudentUserID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StudentStateID,StudentSourcedID,StudentIdentifier,StudentUserID'
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
 
