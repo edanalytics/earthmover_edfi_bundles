@@ -31,7 +31,7 @@
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
-      "result": "{{score[0]}}"
+      "result": "{{score[0][:35]}}"
     },
     {%- endfor -%}
     {
