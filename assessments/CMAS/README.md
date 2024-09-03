@@ -16,20 +16,20 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 ### Required
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- CMAS_RESULTS_FILE: The CMAS assessment results file to be mapped
+- INPUT_FILE_CMAS_RESULTS: The CMAS assessment results file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'Student Primary ID' from the DIBELS 8th Edition Benchmark file.
 - SCHOOL_YEAR: The school year of the assessment file (structure of '2023' or '2024', etc).
 - SCIENCE: Whether or not this is a science file (Options: "Y" or "N").
 - ALTERNATE_ASSESSMENT: Whether or not this is an alternate file (Options: "Y" or "N").
 
 ### Optional
-- CMAS_GROWTH_FILE: The CMAS assessment growth results file to be mapped
+- INPUT_FILE_CMAS_GROWTH: The CMAS assessment growth results file to be mapped
 
 ### Examples
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
-"CMAS_RESULTS_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE_CMAS_RESULTS": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",

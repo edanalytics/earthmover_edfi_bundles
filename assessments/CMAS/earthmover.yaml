@@ -9,7 +9,7 @@ config:
   show_stacktrace: true
   parameter_defaults: 
     STATE_FILE: ./runs.csv
-    CMAS_GROWTH_FILE: ''
+    INPUT_FILE_CMAS_GROWTH: ''
     SCIENCE: ''
     SCHOOL_YEAR: 0
     ALTERNATE_ASSESSMENT: ''
@@ -18,7 +18,7 @@ config:
 
 sources:
   input:
-    file: ${CMAS_RESULTS_FILE}
+    file: ${INPUT_FILE_CMAS_RESULTS}
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
@@ -40,7 +40,7 @@ sources:
     header_rows: 1
 
   growth_results:
-    file: ${CMAS_GROWTH_FILE}
+    file: ${INPUT_FILE_CMAS_GROWTH}
     header_rows: 1
     optional: True
     columns:
