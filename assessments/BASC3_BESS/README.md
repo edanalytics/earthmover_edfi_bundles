@@ -29,7 +29,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "Student Number",
-"API_YEAR": "2023"'
+"API_YEAR": "2023"}'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

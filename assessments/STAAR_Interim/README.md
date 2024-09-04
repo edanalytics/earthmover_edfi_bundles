@@ -20,9 +20,10 @@
 Running a STAAR Interim file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "./data/ANONYMIZED_SAMPLE_ISD_Page1_ANT-WIL_StudentData.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
+"STUDENT_ID_NAME": "TSDS UID",
 "API_YEAR": "2023"}'
 ```
 

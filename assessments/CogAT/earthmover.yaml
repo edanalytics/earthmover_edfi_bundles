@@ -254,7 +254,7 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.coded_results
+    source: $transformations.coded_results_with_identifiers
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   accommodationDescriptors:

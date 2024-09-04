@@ -30,6 +30,7 @@ Using an ID column from the assessment file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
 "INPUT_FILE_CMAS_RESULTS": "data/sample_anonymized_file.csv",
+"STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",
