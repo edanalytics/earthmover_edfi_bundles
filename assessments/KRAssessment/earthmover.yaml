@@ -25,9 +25,6 @@ sources:
   objectiveAssessments:
     file: ${BUNDLE_DIR}/objectiveAssessments.csv
     header_rows: 1
-  studentAssessments:
-    file: ./data/KRA_sample_file_deidentified.csv
-    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -81,7 +78,7 @@ transformations:
           grade_json: >
               {%raw-%}  
               {
-                "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}",
+                "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -92,9 +89,11 @@ transformations:
           - assessmentIdentifier
         create_columns: 
           grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+    
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
@@ -107,7 +106,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{namespace}}#{{codeValue}}",
+                "academicSubjectDescriptor": "{{namespace}}#{{codeValue}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -123,6 +122,7 @@ transformations:
       - operation: modify_columns
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+    debug: True
 
   
   prepare_assessments:
@@ -131,7 +131,6 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-          namespace: "https://ed.sc.gov"
       - operation: join
         sources:
           - $transformations.academic_subject_descriptors
@@ -166,7 +165,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-          namespace: "https://ed.sc.gov"
+          namespace: "uri://ed.sc.gov"
           studentUniqueId: "{%raw%}{{ PS_StudentID }}{%endraw%}"
           administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
