@@ -7,9 +7,12 @@ config:
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: student_state_id
 
 sources:
-  cli_tx_kea_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
     optional_fields:
@@ -341,19 +344,19 @@ sources:
 
 
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
 # PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
@@ -697,8 +700,12 @@ sources:
 # For uniformity, we convert all columns to snake case before we begin working on the data. 
 
 transformations:
+  transformations:
+  input:
+    source: $sources.input
+    operations: []
   cli_tx_kea_student_assessment:
-    source: $sources.cli_tx_kea_input
+    source: $transformations.input
     operations:
       - operation: snake_case_columns 
       - operation: modify_columns
@@ -963,25 +970,25 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.stacked_subject_scores
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
 
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
 
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
