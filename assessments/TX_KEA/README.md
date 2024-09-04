@@ -16,11 +16,18 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 - INPUT_FILE: The path to the CLI TX-KEA .csv file you want to transform.
 
 ### Examples
+
+Fixing the file headers BEFORE running earthmover: 
+```bash
+python -c'import python_pre_exec.tx_kea_pre_exec; tx_kea_pre_exec(input_file_path="./data/sample_anonymized_file.csv", output_file_path="./data/sample_anonymized_file_fixed_headers.csv")'
+```
+
+
 Running a CLI TX-KEA file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"INPUT_FILE": "path/to/CLI_TX_KEA.csv",
+"INPUT_FILE": "./data/sample_anonymized_file_fixed_headers.csv",
+"STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "./output"}'
 ```
 

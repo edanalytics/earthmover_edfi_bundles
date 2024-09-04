@@ -19,8 +19,8 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 Running a CLI Circle file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"INPUT_FILE": "path/to/CLI_CIRCLE.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
+"STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "./output"}'
 ```
 
