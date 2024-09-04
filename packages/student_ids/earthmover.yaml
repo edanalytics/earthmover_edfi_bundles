@@ -283,10 +283,12 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+      # ensure there's not more than 1 row:
       - operation: limit_rows
         count: 1
     expect:
       - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
+    # ensure there's not 0 rows:
     require_rows: True
 
   edfi_roster:
@@ -395,6 +397,7 @@ destinations:
     # here we are assuming that INPUT_FILE is a CSV, but that might not be true... maybe
     # need to switch destination template and extension based on INPUT_FILE type?
     template: ./verbatim.csvt
+    # add a CSV header with the columns:
     header: |
       {%raw%}{% for k in __row_data__.pop('__row_data__').keys() %}{{k}}{% if not loop.last %},{% endif %}{% endfor %}{%endraw%}
 
