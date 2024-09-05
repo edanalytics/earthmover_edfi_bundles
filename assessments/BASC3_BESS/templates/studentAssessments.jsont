@@ -11,23 +11,27 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{submitted}}",
-  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{grade_level_descriptor}}",
   "scoreResults": [
-    {% set scores_present = [] %}
-    {% if teacher is not none and teacher | length %}
-      {% set _= scores_present.append(['Teacher', teacher]) %}
-    {% endif %}
-    {% if respondent is not none and respondent | length %}
-      {% set _= scores_present.append(['Respondent', respondent]) %}
-    {% endif %}
-    {% if relationship is not none and relationship | length %}
-      {% set _= scores_present.append(['Relationship', relationship]) %}
-    {% endif %}
-    {%- for score in scores_present -%}
+
+    {%- set possible_scores = [
+        [teacher, "Teacher", "Level"],
+        [respondent, "Respondent", "Level"],
+        [relationship, "Relationship", "Level"]
+    ] -%}
+
+    {%- set scores = [] -%}
+    {%- for score in possible_scores -%}
+      {%- if score[0] is not none and score[0] | length -%}
+        {%- set _ = scores.append(score) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- for score in scores -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{score[1]}}"
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0][:35]}}"
     },
     {%- endfor -%}
     {

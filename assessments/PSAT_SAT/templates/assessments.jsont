@@ -1,81 +1,49 @@
 {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "assessmentTitle": "{{assessmentTitle}}",
-    "namespace": "uri://collegeboard.org",
-    "assessedGradeLevels": [
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Postsecondary"
-      },
-      {
-        "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#No grade level"
-      }
-    ],
-    "assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#College entrance exam",
-    "academicSubjects": [
-      {
-        "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#English Language Arts"
-      },
-      {
-        "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
-      }
-    ],
+    "namespace": "{{namespace}}",
+    "assessedGradeLevels": [{{grade_json}}],
+    "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "academicSubjects": [{{subject_json}}],
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Total Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Total Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Total Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Total Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Total Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Total Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#User Percentile Section Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#Subject",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
-        "performanceLevelDescriptor": "uri://collegeboard.org/PerformanceLevelDescriptor#Y",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Y",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
-        "performanceLevelDescriptor": "uri://collegeboard.org/PerformanceLevelDescriptor#N",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
       }
     ]

@@ -1,0 +1,221 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    SUBJECT: reading
+    ISTATION_ENDPOINT: 'report'
+    PERCENTILE_MAPPING: ''
+    POSSIBLE_STUDENT_ID_COLUMNS: STUDENT_ID
+
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []    
+
+  # This step is done before iterating through the months because the run-time Jinja requres an actual column name. Something like {{month ~ 'LEVEL'}} won't work
+  {% if "${ISTATION_ENDPOINT}" == "export" %}
+  # The export endpoint data is already stacked
+  stacked_results:
+    source: $transformations.input
+    operations:
+      - operation: add_columns
+        columns:
+          perf_lvl_type: "{%raw%}tier{%endraw%}"
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+          DOMAIN: domain
+          GRADE: grade_level
+          UDATE: admin_date
+          SCORE: score
+          PTILE: percentile
+          TIER: perf_lvl_value
+  {% else %}
+  define_perf_levels:
+    source: $transformations.input
+    operations:
+      - operation: add_columns
+        columns:
+          August_perf_lvl: "{%raw%}{% if August_LEVEL is defined %}{{August_LEVEL}}{% else %}{{August_TIER}}{% endif %}{%endraw%}"
+          September_perf_lvl: "{%raw%}{% if September_LEVEL is defined %}{{September_LEVEL}}{% else %}{{September_TIER}}{% endif %}{%endraw%}"
+          October_perf_lvl: "{%raw%}{% if October_LEVEL is defined %}{{October_LEVEL}}{% else %}{{October_TIER}}{% endif %}{%endraw%}"
+          November_perf_lvl: "{%raw%}{% if November_LEVEL is defined %}{{November_LEVEL}}{% else %}{{November_TIER}}{% endif %}{%endraw%}"
+          December_perf_lvl: "{%raw%}{% if December_LEVEL is defined %}{{December_LEVEL}}{% else %}{{December_TIER}}{% endif %}{%endraw%}"
+          January_perf_lvl: "{%raw%}{% if January_LEVEL is defined %}{{January_LEVEL}}{% else %}{{January_TIER}}{% endif %}{%endraw%}"
+          February_perf_lvl: "{%raw%}{% if February_LEVEL is defined %}{{February_LEVEL}}{% else %}{{February_TIER}}{% endif %}{%endraw%}"
+          March_perf_lvl: "{%raw%}{% if March_LEVEL is defined %}{{March_LEVEL}}{% else %}{{March_TIER}}{% endif %}{%endraw%}"
+          April_perf_lvl: "{%raw%}{% if April_LEVEL is defined %}{{April_LEVEL}}{% else %}{{April_TIER}}{% endif %}{%endraw%}"
+          May_perf_lvl: "{%raw%}{% if May_LEVEL is defined %}{{May_LEVEL}}{% else %}{{May_TIER}}{% endif %}{%endraw%}"
+          June_perf_lvl: "{%raw%}{% if June_LEVEL is defined %}{{June_LEVEL}}{% else %}{{June_TIER}}{% endif %}{%endraw%}"
+          July_perf_lvl: "{%raw%}{% if July_LEVEL is defined %}{{July_LEVEL}}{% else %}{{July_TIER}}{% endif %}{%endraw%}"
+          perf_lvl_type: "{%raw%}{% if August_LEVEL is defined %}level{% else %}tier{% endif %}{%endraw%}"
+
+  {% set months = ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May', 'June'] %}
+  {% for month in months %}
+  scores_{{month}}:
+    source: $$transformations.define_perf_levels
+    operations:
+      - operation: keep_columns
+        columns:
+          - ${STUDENT_ID_NAME}
+          - DOMAIN
+          - GRADE
+          - {{month}}_ADMIN_DATE
+          - {{month}}_SCORE
+          - {{month}}_PTILE
+          - {{month}}_perf_lvl
+          - perf_lvl_type
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+          DOMAIN: domain
+          GRADE: grade_level
+          {{month}}_ADMIN_DATE: admin_date
+          {{month}}_SCORE: score
+          {{month}}_PTILE: percentile
+          {{month}}_perf_lvl: perf_lvl_value
+      - operation: filter_rows
+        query: admin_date != ''
+        behavior: include
+  {% endfor %}
+
+  stacked_results:
+    source: $transformations.scores_{{months[0]}}
+    operations:
+      - operation: union
+        sources:
+          {% for month in months[1:] %}
+          - $transformations.scores_{{month}}
+          {% endfor %}
+  {% endif %}
+
+
+  {% if "${SUBJECT}" == "reading" %}
+    {% set test = "Istation Reading" %}
+  {% elif "${SUBJECT}" == "spanish" %}
+    {% set test = "Istation Spanish" %}
+  {% endif %}
+  studentAssessments:
+    source:
+      $transformations.stacked_results
+    operations:
+      - operation: add_columns
+        columns:
+          assessment_year: ${API_YEAR}
+          assessment_identifier: {{test}}
+          namespace: "uri://istation.com"
+      - operation: modify_columns
+        columns:
+          student_unique_id: "{%raw%}{{ student_unique_id | string }}{%endraw%}"
+      - operation: date_format
+        column: admin_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: combine_columns
+        columns:
+          - student_unique_id
+          - admin_date
+        new_column: assessment_unique_id
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          assessment_unique_id: "{%raw%}{{ md5(assessment_unique_id) }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [grade_level, assessment_identifier]
+        right_keys: [istation_grade, assessmentIdentifier]
+      {% if "${PERCENTILE_MAPPING}" != '' %}
+      - operation: drop_columns
+        columns:
+          - perf_lvl_value
+          - perf_lvl_type
+      - operation: duplicate_columns
+        columns:
+          percentile: perf_lvl_value
+      - operation: map_values
+        column: perf_lvl_value
+        map_file: ./seeds/map_percentile_to_${PERCENTILE_MAPPING}.csv
+      - operation: add_columns
+        columns:
+          perf_lvl_type: ${PERCENTILE_MAPPING}
+      {% endif %}
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl

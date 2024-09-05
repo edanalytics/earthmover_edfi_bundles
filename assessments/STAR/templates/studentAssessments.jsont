@@ -1,0 +1,87 @@
+{
+  "studentAssessmentIdentifier":"{{StudentAssessmentID}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "uri://renaissance.com/Assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear":{{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{LaunchDate}}",
+  "administrationEndDate": "{{CompletedDate}}",
+  "performanceLevels": [
+    {% set pls_present = [] %}
+    {% set all_pls = {'Renaissance Benchmark Cat. Name':RenaissanceBenchmarkCategoryName,
+                      'Renaissance Benchmark Level':RenaissanceBenchmarkCategoryLevel,
+                      'District Benchmark Cat. Name':DistrictBenchmarkCategoryName,
+                      'District Benchmark Level':DistrictBenchmarkCategoryLevel,
+                      'District Benchmark Proficient':DistrictBenchmarkProficient,
+                      'State Benchmark Cat. Name':StateBenchmarkCategoryName,
+                      'State Benchmark Level':StateBenchmarkCategoryLevel,
+                      'State Benchmark Proficient':StateBenchmarkProficient,
+                      'School Benchmark Cat. Name':SchoolBenchmarkCategoryName,
+                      'School Benchmark Proficient':SchoolBenchmarkProficient,
+                      'School Benchmark Level':SchoolBenchmarkCategoryLevel,
+                      'Literacy Classification':LiteracyClassification,
+                      'SAT Benchmark Category':SATBenchmarkCategory,
+                      'ACT Benchmark Category':ACTBenchmarkCategory} %}
+    {% for pl_name, pl_result in all_pls.items() %}
+      {% if pl_result is not none and pl_result | length %}
+        {% set _= pls_present.append([pl_name, pl_result]) %}
+      {% endif %}
+    {% endfor %}
+
+    {%- for pl in pls_present -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}",
+      "performanceLevelMet": true
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scoreResults": [
+    {% set scores_present = [] %}
+    {% set all_scores = {'Test Name':['Level',test_name],
+                         'Scale Score':['Integer',ScaledScore],
+                         'Standard Error Measurement':['Decimal',StandardErrorOfMeasurement],
+                         'Rasch Score':['Decimal',RaschScore],
+                         'Unified Score':['Integer',UnifiedScore],
+                         'Open Growth Score':['Integer',OpenGrowthScore],
+                         'Grade Equivalent':['Level',GradeEquivalent],
+                         'Normal Curve Equivalent':['Decimal',NormalCurveEquivalent],
+                         'Percentile Rank':['Integer',PercentileRank],
+                         'Student Growth Percentile Fall-to-Fall':['Integer',StudentGrowthPercentileFallFall],
+                         'Student Growth Percentile Fall-to-Spring':['Integer',StudentGrowthPercentileFallSpring],
+                         'Student Growth Percentile Fall-to-Winter':['Integer',StudentGrowthPercentileFallWinter],
+                         'Student Growth Percentile Spring-to-Fall':['Integer',StudentGrowthPercentileSpringFall],
+                         'Student Growth Percentile Spring-to-Spring':['Integer',StudentGrowthPercentileSpringSpring],
+                         'Student Growth Percentile Winter-to-Spring':['Integer',StudentGrowthPercentileWinterSpring],
+                         'Total Time In Seconds':['Integer',TotalTimeInSeconds],
+                         'Total Correct':['Integer',TotalCorrect],
+                         'Total Possible':['Integer',TotalPossible],
+                         'Estimated Oral Reading Fluency':['Integer',EstimatedOralReadingFluency],
+                         'Current SGP':['Integer',CurrentSGP]} %}
+    {% for score_name, score_result in all_scores.items() %}
+      {% if score_result[1] is not none and score_result[1] | length %}
+        {% set _= scores_present.append([score_name, score_result[0], score_result[1]]) %}
+      {% endif %}
+    {% endfor %}
+
+    {%- for score in scores_present %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "result": "{{score[2]-}}"
+    }
+    {%- if not loop.last %},
+    {% else %}{% endif %}{% endfor %}
+  ]
+  {% if student_objective_assessment_json is defined %}
+  ,
+  "studentObjectiveAssessments": [{{student_objective_assessment_json}}]
+  {% endif %}
+}

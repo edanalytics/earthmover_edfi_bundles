@@ -7,102 +7,84 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_NAME: Student Primary ID
-    STUDENT_ID_FROM: Student Primary ID
-    STUDENT_ID_XWALK: ''
-    DATABASE_CONNECTION: ''
-  
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID)'
+
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
 
 sources:
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
-  lectura_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
 
-  {% if "${DATABASE_CONNECTION}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-  
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
 transformations:
+  input:
+    source: $sources.input
+    operations: []
   
- lectura_student_assessment:
-  source: $sources.lectura_input
-  operations:
-    - operation: join
-      sources:
-        - $sources.student_id_mapping
-      join_type: left
-      left_key: ${STUDENT_ID_FROM}
-      right_key: student_id_from
-    - operation: map_values
-      column: Assessment Grade
-      map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
-    - operation: rename_columns
-      columns: 
-        ${STUDENT_ID_NAME}: primary_id_student_id
-    - operation: snake_case_columns
-    - operation: add_columns
-      columns:
-        student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
-        assessment_id: "Lectura"
-    - operation: modify_columns
-      columns:
-        school_year: *year_mapping
-        student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}"
-  
- assessments:
-  source: $transformations.lectura_student_assessment
-  operations:
-    - operation: keep_columns
-      columns: 
-        - assessment_id
-    - operation: distinct_rows
+  lectura_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: map_values
+        column: Assessment Grade
+        map_file: ./seeds/grade_mapping.csv
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: primary_id_student_id
+      - operation: snake_case_columns
+      - operation: add_columns
+        columns:
+          student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
+          assessment_id: "Lectura"
+          namespace: uri://amplify.com/programs/mclass-lectura
+      - operation: modify_columns
+        columns:
+          school_year: *year_mapping
+          student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}"
+    
+  assessments:
+    source: $transformations.lectura_student_assessment
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessment_id
+          - namespace
+      - operation: distinct_rows
 
 destinations:
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.lectura_student_assessment
-    template:  ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template:  ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

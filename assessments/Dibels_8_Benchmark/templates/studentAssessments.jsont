@@ -1,32 +1,35 @@
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
-    "assessmentIdentifier": "Dibels-8",
-    "namespace": "uri://dibels.uoregon.edu/assessment/dibels"
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
   },
   "studentReference": {
-    "studentUniqueId": "{{primary_id_student_id}}"
+    "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
-    {% set all_pls = [] %}
-    {% if composite_level != '' %}
-      {% set _= all_pls.append(["Composite Level", composite_level]) %}
-    {% endif %}
-    {% if composite_semester_growth != '' %}
-      {% set _= all_pls.append(["Composite Semester Growth", composite_semester_growth]) %}
-    {% endif %}
-    {% if composite_year_growth != '' %}
-      {% set _= all_pls.append(["Composite Year Growth", composite_year_growth]) %}
-    {% endif %}
-    {% if risk_indicator_level != '' %}
-      {% set _= all_pls.append(["Risk Indicator", risk_indicator_level]) %}
-    {% endif %}
+
+    {% set possible_pls = [
+
+      ["Composite Level", composite_level],
+      ["Composite Semester Growth", composite_semester_growth],
+      ["Composite Year Growth", composite_year_growth],
+      ["Risk Indicator", risk_indicator_level]
+
+    ] %}
+
+    {%- set pls = [] -%}
+    {%- for pl in possible_pls -%}
+      {%- if pl[1] is not none and pl[1] | length -%}
+        {%- set _ = pls.append(pl) -%}
+      {%- endif -%}
+    {%- endfor -%}
   
-    {%- for pl in all_pls -%}
+    {%- for pl in pls -%}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{pl[0]}}",
       "performanceLevelDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#{{pl[1]}}",
@@ -138,5 +141,5 @@
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
   ],
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{assessment_grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
 }

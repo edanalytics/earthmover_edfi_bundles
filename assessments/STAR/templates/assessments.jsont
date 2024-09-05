@@ -1,0 +1,350 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Test Name",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Scale Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard Error Measurement",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Rasch Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Unified Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Open Growth Score",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Grade Equivalent",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Normal Curve Equivalent",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Percentile Rank",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Fall-to-Fall",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Fall-to-Spring",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Fall-to-Winter",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Spring-to-Fall",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Spring-to-Spring",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Student Growth Percentile Winter-to-Spring",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Total Time In Seconds",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Total Correct",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Total Possible",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Current SGP",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {% if assessmentIdentifier == 'STAR-EARLY-LIT' %}
+    ,
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Estimated Oral Reading Fluency",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {% endif %}
+  ],
+  "performanceLevels":[
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#On Watch",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Urgent Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Renaissance Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#On Watch",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Urgent Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Level 1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Level 2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Level 3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Level 4",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Level 5",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#No",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#State Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Yes",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#On Watch",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Urgent Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#5",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#No",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#District Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Yes",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#On Watch",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Cat. Name",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Urgent Intervention",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Level",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#5",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#No",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#School Benchmark Proficient",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Yes",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% if assessmentIdentifier == 'STAR-EARLY-LIT' %}
+    ,
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Early Emergent Reader",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Early Transitional Reader",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Late Emergent Reader",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Late Transitional Reader",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Literacy Classification",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Probable Reader",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% endif %}
+    {% if assessmentIdentifier != 'STAR-EARLY-LIT' %}
+    ,
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#SAT Benchmark Category",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#SAT Benchmark Category",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Below Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#ACT Benchmark Category",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#At/Above",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#ACT Benchmark Category",
+      "performanceLevelDescriptor":"uri://renaissance.com/PerformanceLevelDescriptor#Below Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% endif %}
+  ]
+}

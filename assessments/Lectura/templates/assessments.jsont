@@ -1,7 +1,7 @@
 {
   "assessmentIdentifier": "{{assessment_id}}",
   "assessmentTitle": "mCLASS Lectura",
-  "namespace": "uri://amplify.com/programs/mclass-lectura",
+  "namespace": "{{namespace}}",
   "languages" : [
     {
       "languageDescriptor": "uri://ed-fi.org/LanguageDescriptor#spa"
@@ -37,47 +37,47 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Score",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Local Percentile",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Local Percentile",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Benchmark Period",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   "performanceLevels":[
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Above Benchmark",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Above Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Benchmark",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#At Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Below Benchmark",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Below Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Composite Level",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Well Below Benchmark",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Composite Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Well Below Benchmark",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#At Risk",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#At Risk",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://amplify.com/programs/mclass-lectura/AssessmentReportingMethodDescriptor#Risk Indicator",
-      "performanceLevelDescriptor":"uri://amplify.com/programs/mclass-lectura/PerformanceLevelDescriptor#Low Risk",
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Risk Indicator",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Low Risk",
       "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]

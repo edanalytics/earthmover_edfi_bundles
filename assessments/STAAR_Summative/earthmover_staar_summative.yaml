@@ -5,52 +5,39 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    # the following should be included in every template
-    STUDENT_ID_FROM: tx_unique_student_id
-    STUDENT_ID_NAME: tx_unique_student_id
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
 
 sources:
 
   # SEEDS
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   obj_assess_codes_xwalk:
-    file: ${BUNDLE_DIR}/seeds/obj_assess_codes_xwalk.csv
+    file: ./seeds/obj_assess_codes_xwalk.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
   # INPUT STU ASSESSMENT FILES
-  staar_summative_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
 
   # OTHER XWALKS
-  student_id_xwalk:
-    # This file only needs to be supplied if the source assessment file does not
-    # contain the studentUniqueId used by Ed-Fi
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns:
-      - from
-      - to
-    optional: True
   administration_window_xwalk:
-    file: ${BUNDLE_DIR}/seeds/administration_window_xwalk.csv
+    file: ./seeds/administration_window_xwalk.csv
     header_rows: 1
 
 {% set conformed_columns = 
@@ -82,11 +69,13 @@ sources:
 %}
 
 transformations:
-  # Conform each input type to a standard shape
+  input:
+    source: $sources.input
+    operations: []
 
   # CONFORMED 3-8
   conformed_staar_summative:
-    source: $sources.staar_summative_input
+    source: $transformations.input
     operations:
       # RENAME columns to easily convert from wide to long
       - operation: rename_columns
@@ -292,12 +281,6 @@ transformations:
   studentAssessments:
     source: $transformations.stacked_scores
     operations:
-      - operation: join
-        sources:
-          - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_FROM}
-        right_key: from
-        join_type: left
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
@@ -310,26 +293,26 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
-    template: ${BUNDLE_DIR}/templates/studentAssessment.jsont
+    template: ./templates/studentAssessment.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True

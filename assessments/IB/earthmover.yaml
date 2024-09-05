@@ -19,23 +19,23 @@ config:
 
 
 sources:
-  ib_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   subject_group_mappings:
-    file: ${BUNDLE_DIR}/seeds/subject_group_mappings.csv
+    file: ./seeds/subject_group_mappings.csv
     header_rows: 1
 
 
 transformations:
   ib_student_results:
-    source: $sources.ib_input
+    source: $sources.input
     operations:
       - operation: snake_case_columns
       - operation: combine_columns
@@ -87,21 +87,21 @@ transformations:
 destinations:
   assessments:
     source: $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.student_assessments
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

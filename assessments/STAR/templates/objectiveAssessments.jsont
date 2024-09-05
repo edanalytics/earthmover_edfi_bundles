@@ -1,0 +1,70 @@
+{
+  "assessmentItems": [],
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  {% if (is_standards == '1') and (description != domain_group_name) %}
+  "parentObjectiveAssessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "identificationCode": "{{md5(domain_group_name)}}",
+    "namespace": "{{namespace}}"
+  },
+  {% endif %}
+  "description": "{{description}}",
+  "identificationCode": "{{obj_id_code}}",
+  "learningObjectives": [],
+  "learningStandards": [],
+  "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Domain mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Domain mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#2",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Domain mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#3",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#Beginning",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#Developing",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard mastery level",
+        "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#Secure",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Skill area mastery score",
+      "maximumScore": "0",
+      "minimumScore": "100",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Domain percent mastery",
+      "maximumScore": "0",
+      "minimumScore": "100",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#Standard percent mastery",
+      "maximumScore": "0",
+      "minimumScore": "100",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}

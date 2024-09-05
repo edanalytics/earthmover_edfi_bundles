@@ -5,25 +5,31 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 * **Submitter name**: Samantha LeBlanc
 * **Submitter organization**: Education Analytics
 
+To run this bundle, please add your own source file(s) and column(s):
+<details>
+<summary><code>data/ib.csv</code></summary>
+This template will only work with the standard IB results file.
+</details>
+
+Or use the sample file (data/sample_anonymized_file.csv).
+
 ## Note on Student IDs
 The IB results file does not include student IDs besides internal IB candidate IDs. This bundle expects a column called `student_unique_id` to be present in the results file, which will need to be added and populated as a pre-preprocessing step before this bundle can be used.
 
 ## CLI Parameters
-
-### Required
-- OUTPUT_DIR: Where output files will be written.
-- BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives.
-- INPUT_FILE: The path to the IB .csv file you want to transform.
-- API_YEAR: The API year that the output of this template will be sent to.
+- OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
+- INPUT_FILE: The path to the IB .csv file you want to transform
+- API_YEAR: The API year that the output of this template will be sent to
 
 ### Examples
 Running earthmover for an IB file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"INPUT_FILE": "path/to/IB.csv",
 "OUTPUT_DIR": "./output",
-"API_YEAR": "20xx"}'
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
+"API_YEAR": "2024" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

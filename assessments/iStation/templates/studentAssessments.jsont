@@ -2,7 +2,7 @@
   "studentAssessmentIdentifier": "{{assessment_unique_id}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessment_identifier}}",
-    "namespace": "uri://istation.com"
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{assessment_year}}
@@ -11,17 +11,16 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{admin_date}}",
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level}}",
-
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
   "scoreResults": [
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{score}}"
     }
     {% if percentile is not none and percentile | length %},
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Percentile",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentile",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{percentile}}"
     }
@@ -31,14 +30,14 @@
   "performanceLevels": [
     {% if perf_lvl_type == 'level' %}
       {
-        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-        "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level {{perf_lvl_value}}",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level {{perf_lvl_value}}",
         "performanceLevelMet": true
       }
     {% else %}
       {
-        "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Tier",
-        "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Tier {{perf_lvl_value}}",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Tier",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Tier {{perf_lvl_value}}",
         "performanceLevelMet": true
       }
     {% endif %}

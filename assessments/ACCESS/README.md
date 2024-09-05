@@ -11,8 +11,8 @@ To run this bundle, please add your own source file(s):
 then run the following command:
 ```bash
 earthmover run -c earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"ACCESS_RESULTS_FILE": "data/ACCESS_Results_File.csv",
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_file_ACCESS.csv",
 "OUTPUT_DIR": "output",
 "STUDENT_ID_NAME": "StateStudentID",
 "SCHOOL_YEAR" : "2024",
@@ -22,7 +22,6 @@ earthmover run -c earthmover.yaml -p '{
 Runtime notes:
 - If you are processing an ACCESS file from 2021 or earlier, use `-c earthmover_2021.yaml`.
 - The <code>ALTERNATE</code> parameter must be set to "Y" for Alternate results files and "N" for Summative/Standard files.
-- <code>STUDENT_ID_NAME</code> will be "StateStudentID" or "District Student ID" depending on which field is used for <code>student_unique_id</code> in your ODS.
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash

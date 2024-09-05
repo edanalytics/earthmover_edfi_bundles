@@ -6,7 +6,7 @@
     {% else %}
       "assessmentIdentifier": "CoAlt-SCI",
     {% endif %}
-    "namespace": "uri://www.cde.state.co.us/assessment/cmas"
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -28,7 +28,7 @@
   {% if NotTestedReason is not none and NotTestedReason | length %}
   "reasonNotTestedDescriptor": "uri://www.cde.state.co.us/assessment/cmas/reasonNotTestedDescriptor#{{NotTestedReason}}",
   {% endif %}
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{GradeLevelWhenAssessed}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
 
   "scoreResults": [
   {% set scores = [] %}

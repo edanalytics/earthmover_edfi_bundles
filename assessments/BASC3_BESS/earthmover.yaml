@@ -9,11 +9,9 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'Student Number'
-    STUDENT_ID_FROM: 'Student Number'
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: Student Number
   macros: > 
       {% macro map_form_to_assess_id(value) -%}
       {%- if 'Student' in value -%}bess_3_student
@@ -24,55 +22,37 @@ config:
       {%- endif -%}
       {%- endmacro %}
 
-
 sources:
-  bess_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   academicSubjectDescriptors:
-    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+
   bess_student_results:
-    source: $sources.bess_input
+    source: $transformations.input
     operations:
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: ${STUDENT_ID_FROM}
-        right_key: student_id_from
-        join_type: left  
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
@@ -106,6 +86,8 @@ transformations:
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
       - operation: snake_case_columns
+    expect: 
+      - school_year|int != 0
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
@@ -115,7 +97,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{subject_descriptor}}"
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -140,7 +122,7 @@ transformations:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{grade_descriptor}}"
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -176,26 +158,26 @@ transformations:
 destinations:
   assessments:
     source: $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.bess_student_results
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
