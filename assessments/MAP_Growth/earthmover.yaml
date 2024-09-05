@@ -143,7 +143,7 @@ transformations:
   
   {% for i in range(1, 9) %} 
   goal_{{i}}: 
-    source: $sources.input_file
+    source: $transformations.input
     operations:
       - operation: keep_columns
         columns: 
@@ -173,7 +173,7 @@ transformations:
 
   {% for i in range(1, 10) %}
   proj_prof_{{i}}:
-    source: $sources.input_file
+    source: $transformations.input
     operations:
       - operation: keep_columns
         columns: 
