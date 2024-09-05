@@ -1,0 +1,246 @@
+# See accompanying README.md for details about this file.
+
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STATE_FILE: ./runs.csv
+    INPUT_FILETYPE: csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
+    
+
+sources:
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    # See the accompanying README.md for a list of required columns for this file
+
+# notes:
+# - left out all seasontoseasonGrowthQuintile
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  nwea_map_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%}{{TermName[-4:]}}{%endraw%}"
+          assessmentIdentifier: 'NWEA-Map'
+          namespace: 'uri://www.nwea.org/map/Assessment'
+      - operation: date_format
+        column: TestStartDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      # special handling for ComboStudentAssessment, which has no TestID
+      - operation: combine_columns
+        columns:
+          - studentUniqueId
+          - TestName
+          - TermName
+          - TestStartDate
+          - TestStartTime
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+        
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+  
+  {% for i in range(1, 9) %} 
+  goal_{{i}}: 
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns: 
+          - Goal{{i}}Name
+      - operation: distinct_rows
+      - operation: rename_columns
+        columns: 
+          Goal{{i}}Name: identificationCode
+    {%  endfor %}
+  
+  objective_assessments:
+    source: $transformations.goal_1
+    operations: 
+      - operation: union
+        sources:
+          {% for i in range(2, 9) %} 
+          - $transformations.goal_{{i}}
+          {%  endfor %}
+      - operation: filter_rows
+        query: identificationCode != ''
+        behavior: include
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: 'NWEA-Map'
+          namespace: 'uri://www.nwea.org/map/Assessment'
+
+  {% for i in range(1, 10) %}
+  proj_prof_{{i}}:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns: 
+          - ProjectedProficiencyStudy{{i}}
+      - operation: distinct_rows
+      - operation: rename_columns
+        columns: 
+          ProjectedProficiencyStudy{{i}}: codeValue
+  {% endfor %}
+
+  proj_prof:
+    source: $transformations.proj_prof_1
+    operations: 
+      - operation: union
+        sources:
+        {% for i in range(2, 10) %}
+          - $transformations.proj_prof_{{i}}
+        {% endfor %}
+      - operation: filter_rows
+        query: codeValue != ''
+        behavior: include
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          description: Projected Proficiency in linked assessment
+          namespace: uri://www.nwea.org/map/AssessmentReportingMethodDescriptor
+          shortDescription: Projected Proficiency
+          column_name: ProjectedProficiencyStudy
+          data_type: Level
+          is_deprecated: False
+          score_or_performance: score
+
+  reporting_methods:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations: 
+      - operation: filter_rows
+        query: is_deprecated == 'False'
+        behavior: include
+      - operation: union
+        sources:
+          - $transformations.proj_prof
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $transformations.reporting_methods
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.nwea_map_student_assessment
+    template: ./templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True

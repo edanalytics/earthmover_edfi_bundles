@@ -32,22 +32,16 @@ Once your input files are in place, you need to transform the fixed-width CogAT 
 python3 util/preprocessing.py data/cogat_export.txt util/cogat_format.csv
 ```
 
-This will output `cogat_export.csv`, which can be used as input to Earthmover. If using a student ID crosswalk file, this looks like:
+This will output `cogat_export.csv`, which can be used as input to Earthmover. Run the following command:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "cogat_export.csv",
-"SCHOOL_YEAR" : "2023",
-"STUDENT_ID_XWALK" : "seeds/student_ids.csv"}'
-```
-
-If instead your source data has the student ID column you need, the command could look like:
-```bash
-earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "cogat_export.csv",
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
+"OUTPUT_DIR": "output/",
 "SCHOOL_YEAR" : "2023",
 "STUDENT_ID_NAME" : "Student_ID"}'
 ```
-But the value for `STUDENT_ID_NAME` may vary
+The value for `STUDENT_ID_NAME` may vary
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash

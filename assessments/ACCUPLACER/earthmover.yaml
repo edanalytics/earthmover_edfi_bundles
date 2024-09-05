@@ -9,48 +9,30 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'Student ID'
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student ID'
 
 
 sources:
-  accuplacer_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
 
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+
   accuplacer_snake_case:
-    source: $sources.accuplacer_input
+    source: $transformations.input
     operations:
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: Student ID
-        right_key: student_id_from
-        join_type: left  
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
@@ -112,16 +94,16 @@ transformations:
 destinations:
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.accuplacer_results
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

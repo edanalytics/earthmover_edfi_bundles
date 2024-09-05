@@ -10,26 +10,20 @@
 
 ### Required
 - OUTPUT_DIR: Where output files will be written
-- BUNDLE_DIR: Parent folder of the bundle, where `earthmover.yaml` lives
 - API_YEAR: The Ed-Fi API year that the output of this template will send to. e.g. for school year 2022-2023, enter `2023`
 - INPUT_FILE: The path to the STAAR Summative .csv file you want to transform
+- STATE_FILE: Where to store the earthmover runs.csv file
 
 
-### Optional
-
-If student IDs must be mapped, provide the following additional parameters:
-- STUDENT_ID_XWALK: Path to a two-column CSV mapping `from` and ID included in the assessment file and `to` the `studentUniqueId` value in Ed-Fi
-- STUDENT_ID_FROM: Declare which column in the assessment file should be used for the crosswalk join
-
-When using an ID xwalk, set `STUDENT_ID_NAME` as `to`.
 
 ### Examples
 Running a STAAR Interim file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"BUNDLE_DIR": ".",
-"INPUT_FILE": "path/to/staar_interim.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "./output",
+"STATE_FILE": "./runs.csv",
+"STUDENT_ID_NAME": "TSDS UID",
 "API_YEAR": "2023"}'
 ```
 

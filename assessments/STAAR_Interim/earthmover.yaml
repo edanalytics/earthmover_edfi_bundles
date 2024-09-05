@@ -5,64 +5,49 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    # the following should be included in every template
-    STUDENT_ID_FROM: TSDS UID
-    STUDENT_ID_NAME: TSDS UID
-    STUDENT_ID_XWALK: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: TSDS UID
 
 
 
 
 sources:
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   obj_assess_codes_xwalk:
-    file: ${BUNDLE_DIR}/seeds/obj_assess_codes_xwalk.csv
+    file: ./seeds/obj_assess_codes_xwalk.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
-  staar_interim_input:
+  input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE} # leave this as-is, unless multiple input files are required
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
 
-  student_id_xwalk:
-    # This file only needs to be supplied if the source assessment file does not
-    # contain the studentUniqueId used by Ed-Fi
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns:
-      - from
-      - to
-    optional: True
-
   test_code_xwalk:
-    file: ${BUNDLE_DIR}/seeds/test_code_xwalk.csv
+    file: ./seeds/test_code_xwalk.csv
     header_rows: 1
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
   staar_interim_student_assessment:
-    source: $sources.staar_interim_input
+    source: $transformations.input
     operations:
-      - operation: join
-        sources:
-          - $sources.student_id_xwalk
-        left_key: ${STUDENT_ID_FROM}
-        right_key: from
-        join_type: left
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
@@ -86,7 +71,6 @@ transformations:
           "TEXT-TO-SPEECH ACCOMMODATIONS": TEXT-TO-SPEECH_ACCOMMODATIONS
           "AUTO-TTS ACCOMMODATIONS": AUTO-TTS_ACCOMMODATIONS
           "CONTENT-LANGUAGE ACCOMMODATIONS": CONTENT-LANGUAGE_ACCOMMODATIONS
-          "BRAILLE/REFRESHABLE BRAILLE DEVICE_SCREEN READER SUPPORT": BRAILLE/REFRESHABLE_BRAILLE_DEVICE_SCREEN_READER_SUPPORT
           "BASIC CALCULATOR ACCOMMODATIONS": BASIC_CALCULATOR_ACCOMMODATIONS
           "TEST CODE": TEST_CODE
           "GRADE LEVEL TESTED": GRADE_LEVEL_TESTED
@@ -165,26 +149,26 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.staar_interim_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True

@@ -7,16 +7,31 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 
 To run this bundle, please add your own source file(s):
 * <code>data/cmas_Student_Data_File.csv</code>
-* (optional) <code>data/cmas_Growth_File.xlsx</code> 
+* (optional) <code>data/cmas_Growth_File.csv</code> 
 
+Or use the sample file (`data/sample_anonymized_file.csv`).
 
-then run the following command, noting that the <code>SCIENCE</code> parameter must be set to Y for science results files and N for ELA/Math files. <code>STUDENT_ID_NAME</code> will be "StateStudentIdentifier" or "LocalStudentIdentifier" depending on which field is used for <code>student_unique_id</code> in Ed-Fi:
+## CLI Parameters
+
+### Required
+- OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
+- INPUT_FILE_CMAS_RESULTS: The CMAS assessment results file to be mapped
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'Student Primary ID' from the DIBELS 8th Edition Benchmark file.
+- SCHOOL_YEAR: The school year of the assessment file (structure of '2023' or '2024', etc).
+- SCIENCE: Whether or not this is a science file (Options: "Y" or "N").
+- ALTERNATE_ASSESSMENT: Whether or not this is an alternate file (Options: "Y" or "N").
+
+### Optional
+- INPUT_FILE_CMAS_GROWTH: The CMAS assessment growth results file to be mapped
+
+### Examples
+Using an ID column from the assessment file:
 ```bash
-earthmover run -c ./CMAS/earthmover.yaml -p '{
-"BUNDLE_DIR": "./CMAS/",
-"CMAS_RESULTS_FILE": "./CMAS/data/cmas_Student_Data_File.csv",
-"CMAS_GROWTH_FILE": "./CMAS/data/cmas_Growth_file.xlsx",
-"OUTPUT_DIR": "./CMAS/output",
+earthmover run -c earthmover.yaml -p '{
+"INPUT_FILE_CMAS_RESULTS": "data/sample_anonymized_file.csv",
+"STATE_FILE": "./runs.csv",
+"OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "StateStudentIdentifier",
 "SCHOOL_YEAR" : "2023",
 "SCIENCE": "N",
@@ -31,3 +46,7 @@ lightbeam validate+send -c CMAS/lightbeam.yaml -p '{
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
 ```
+
+![DAG view of transformations](graph.png)
+
+(**Above**: a graphical depiction of the dataflow.)

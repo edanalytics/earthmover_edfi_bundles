@@ -1,16 +1,17 @@
 {
-    "studentAssessmentIdentifier": "{{student_assessment_id}}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
     "assessmentReference": {
-      "assessmentIdentifier": "{{test_type}}",
-      "namespace": "uri://collegeboard.org"
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
     },
     "schoolYearTypeReference": {
-      "schoolYear": "{{school_year}}"
+      "schoolYear": {{schoolYear}}
     },
     "studentReference": {
       "studentUniqueId": "{{studentUniqueId}}"
     },
-    "administrationDate": "{{assessment_date}}",
+    "administrationDate": "{{administrationDate}}",
+    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
     "performanceLevels": [
       {% set all_pls = [] %}
       {% if reading_writing_ccr_benchmark_indicator != '' %}
@@ -22,8 +23,8 @@
     
       {%- for pl in all_pls -%}
       {
-        "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-        "performanceLevelDescriptor": "uri://collegeboard.org/PerformanceLevelDescriptor#{{pl[1]}}",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{pl[1]}}",
         "performanceLevelMet": true
       }
       {%- if not loop.last -%},
@@ -70,7 +71,7 @@
       
       {%- for score in all_scores -%}
       {
-            "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{score[1]}}"
       }
@@ -112,7 +113,7 @@
                                    'User Percentile Subscore':user_percentile_standard_english_conventions_subscore}]
                                ] %}
 
-      {% if test_type == "SAT" and essay_reading_subscore != '' %}
+      {% if assessmentIdentifier == "SAT" and essay_reading_subscore != '' %}
       {% set _= obj_assess_ela.append(['Essay', 
                                         {'Essay Reading Subscore':essay_reading_subscore, 
                                         'Essay Analysis Subscore':essay_analysis_subscore, 
@@ -144,7 +145,7 @@
                                     'User Percentile Subscore':user_percentile_problem_solving_and_data_analysis_subscore}]
                                 ] %}
 
-      {% if test_type in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
+      {% if assessmentIdentifier in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
       {% set _= obj_assess_math.append(['Passport to Advanced Mathematics', 
                                         {'Subscore':passport_to_advanced_math_subscore,
                                         'Nationally Rep Sample Pctl Subscore':nationally_representative_passport_to_advanced_math_subscore,
@@ -168,15 +169,15 @@
       {% if all_score_obj|length > 0 %}
       {
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "{{test_type}}",
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{obj[0]}}",
-          "namespace": "uri://collegeboard.org"
+          "namespace": "{{namespace}}"
         }
         ,
         "scoreResults": [
          {%- for score in all_score_obj -%}
           {
-            "assessmentReportingMethodDescriptor": "uri://collegeboard.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
             "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{score[1]}}"
           }
@@ -187,8 +188,4 @@
       {%- else %}{% endif %} 
       {% endif %}{%- endfor -%}
     ]
-    {% if grade_when_assessed != '' %}
-    ,
-    "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_when_assessed}}"
-    {% endif %}
   }

@@ -7,103 +7,121 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    STUDENT_ID_NAME: Student Primary ID
-    STUDENT_ID_FROM: Student Primary ID
-    STUDENT_ID_XWALK: ''
-    DATABASE_CONNECTION: ''
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID),Student ID (District ID),Student ID (State ID)'
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
   id_hashing: &id_hashing "{%raw%}{{ md5(value) }}{%endraw%}"
 
 sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
-  dibels_benchmark_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
 
-  {% if "${DATABASE_CONNECTION}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-  
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
 transformations:
+  input:
+    source: $sources.input
+    operations: []
   
- dibels_benchmark_student_assessment:
-  source: $sources.dibels_benchmark_input
-  operations:
-    - operation: join
-      sources:
-        - $sources.student_id_mapping
-      join_type: left
-      left_key: ${STUDENT_ID_FROM}
-      right_key: student_id_from
-    - operation: map_values
-      column: Assessment Grade
-      map_file: ${BUNDLE_DIR}/seeds/grade_mapping.csv
-    - operation: rename_columns
-      columns: 
-        ${STUDENT_ID_NAME}: primary_id_student_id
-    - operation: snake_case_columns
-    - operation: add_columns
-      columns:
-        student_assessment_id: "{%raw%}{{primary_id_student_id}}_{{client_date}}{%endraw%}"
-        assessment_id: "Dibels-Next"
-    - operation: modify_columns
-      columns:
-        school_year: *year_mapping
-        student_assessment_id: *id_hashing
+  dibels_benchmark_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessment_grade
+        right_key: original_grade
+      - operation: add_columns
+        columns:
+          student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}{%endraw%}"
+          assessmentIdentifier: "Dibels-Next"
+          namespace: "uri://dibels.uoregon.edu/assessment/dibels"
+      - operation: modify_columns
+        columns:
+          school_year: *year_mapping
+          student_assessment_id: *id_hashing
   
- assessments:
-  source: $transformations.dibels_benchmark_student_assessment
-  operations:
-    - operation: keep_columns
-      columns: 
-        - assessment_id
-    - operation: distinct_rows
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 destinations:
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.dibels_benchmark_student_assessment
-    template:  ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template:  ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

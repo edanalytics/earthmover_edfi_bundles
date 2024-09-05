@@ -4,13 +4,17 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./runs.csv
+  state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
+  parameter_defaults: 
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'UniqueDRCStudentID,StateStudentID,DistrictStudentID'
+    ALTERNATE: ''
 
 sources:
-  results:
-    file: ${ACCESS_RESULTS_FILE}
+  input:
+    file: ${INPUT_FILE}
     header_rows: 1
     columns:
       {% if "${ALTERNATE}" == "N" %}
@@ -366,37 +370,41 @@ sources:
       - DSRUpdated
       {% endif %}
   accommodationDescriptors:
-    file: ${BUNDLE_DIR}/seeds/accommodationDescriptors.csv
+    file: ./seeds/accommodationDescriptors.csv
     header_rows: 1
   administrationEnvironmentDescriptors:
-    file: ${BUNDLE_DIR}/seeds/administrationEnvironmentDescriptors.csv
+    file: ./seeds/administrationEnvironmentDescriptors.csv
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   reasonNotTestedDescriptors:
-    file: ${BUNDLE_DIR}/seeds/reasonNotTestedDescriptors.csv
+    file: ./seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
   results:
-    source: $sources.results
+    source: $transformations.input
     operations:
       # Use April 1st of the assessment year for assessments with no date (invalid scores)
       - operation: add_columns
         columns:
+          namespace: "uri://wida.wisc.edu/assess/access"
           defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
           school_year: ${SCHOOL_YEAR}
           alternate_assessment: ${ALTERNATE}
@@ -467,33 +475,33 @@ transformations:
 destinations:
   assessments:
     source: $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.results
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
-    template: ${BUNDLE_DIR}/templates/accommodationDescriptors.jsont
+    template: ./templates/accommodationDescriptors.jsont
     extension: jsonl
   administrationEnvironmentDescriptors:
     source: $sources.administrationEnvironmentDescriptors
-    template: ${BUNDLE_DIR}/templates/administrationEnvironmentDescriptors.jsont
+    template: ./templates/administrationEnvironmentDescriptors.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
   reasonNotTestedDescriptors:
     source: $sources.reasonNotTestedDescriptors
-    template: ${BUNDLE_DIR}/templates/reasonNotTestedDescriptors.jsont
+    template: ./templates/reasonNotTestedDescriptors.jsont
     extension: jsonl
