@@ -228,6 +228,10 @@ destinations:
     source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont

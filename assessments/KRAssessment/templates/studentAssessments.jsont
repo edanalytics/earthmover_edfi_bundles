@@ -36,7 +36,7 @@
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/KRA/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelDescriptor": "{{namespace}}/KRA/PerformanceLevelDescriptor#{{perf_level[0]}}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
