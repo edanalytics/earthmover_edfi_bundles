@@ -25,6 +25,7 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentStateID,StudentSourcedID,StudentIdentifier,StudentUserID'
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
+    INPUT_FILETYPE: csv
 
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
@@ -48,6 +49,7 @@ sources:
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE_OVERALL}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
 
   star_dashboard_standards_input:
@@ -55,7 +57,7 @@ sources:
     file: ${INPUT_FILE_DS}
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - RenaissanceClientID
       - SchoolYear
@@ -84,7 +86,7 @@ sources:
     file: ${INPUT_FILE_SA}
     header_rows: 1
     optional: True
-    type: csv
+    type: ${INPUT_FILETYPE}
     columns:
       - RenaissanceClientID
       - SchoolYear
