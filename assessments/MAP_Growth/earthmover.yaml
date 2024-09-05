@@ -10,6 +10,7 @@ config:
   show_graph: False
   parameter_defaults:
     STATE_FILE: ./runs.csv
+    INPUT_FILETYPE: csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
     
@@ -34,6 +35,7 @@ sources:
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
 
