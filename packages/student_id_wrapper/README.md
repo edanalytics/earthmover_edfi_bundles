@@ -31,7 +31,7 @@ To provide stored match rates:
 * `POSSIBLE_STUDENT_ID_COLUMNS`: a comma-separated list of columns from the `INPUT_FILE` that might contain student IDs. A default value is provided in each assessment bundle, but you may need to overwrite this if your file has a custom ID column.
 * `REQUIRED_MATCH_RATE`: the minimum match rate required to proceed. If no pair of ID types with at least this match rate is found, earthmover will exit. Default value is 0.5.
 * `EARTHMOVER_NODE_TO_XWALK`: the assessment bundle's node to which to apply the xwalked input file. Default is the standardized node name `$sources.input`.
-* `ASSESSMENT_BUNDLE_BRANCH`: the name of the branch from which to install the bundle. **Note that this must be included when running `earthmover deps`, not `earthmover run`**. Defaults to `feature/bundle_refactor`, soon to be switched to `main`.
+* `ASSESSMENT_BUNDLE_BRANCH`: the name of the branch from which to install the bundle. **Note that this must be included when running `earthmover deps`, not `earthmover run`**. Defaults to `main`.
 
 ### Example of a first run (without stored match rates)
 On the first run, calculate and output the best student ID match rates (they will materialize at {OUTPUT_DIR}/student_id_match_rates.csv). The rest of the run will be completed with the cross-walked IDs.
@@ -71,8 +71,8 @@ earthmover run -p '{
 The [project composition](https://github.com/edanalytics/earthmover?tab=readme-ov-file#project-composition) feature of earthmover requires packages to be installed before the `earthmover run`. The `ASSESSMENT_BUNDLE` parameter must be included when running `earthmover deps`. The `ASSESSMENT_BUNDLE_BRANCH` parameter is optional. Example:
 
 ```
-earthmover run -p '{
+earthmover deps -p '{
 "ASSESSMENT_BUNDLE": "Bundle_Folder_Name",
-"ASSESSMENT_BUNDLE_BRANCH": "feature/bundle_refactor",
+"ASSESSMENT_BUNDLE_BRANCH": "feature/my_new_branch",
 }'
 ```

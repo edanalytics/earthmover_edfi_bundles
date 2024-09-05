@@ -6,7 +6,7 @@ config:
   show_stacktrace: True
   show_graph: False
   parameter_defaults:
-    ASSESSMENT_BUNDLE_BRANCH: feature/final_bundle_refactor_pt1 # This will be changed to main before merging
+    ASSESSMENT_BUNDLE_BRANCH: main
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
 
 packages:
@@ -16,7 +16,7 @@ packages:
     subdirectory: assessments/${ASSESSMENT_BUNDLE}
   student_ids:
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    branch: student_id_alignment_unified
+    branch: main
     subdirectory: packages/student_ids
 
 transformations:
