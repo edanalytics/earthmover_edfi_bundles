@@ -31,7 +31,7 @@ sources:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
-  input_file:
+  input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
@@ -43,7 +43,7 @@ sources:
 
 transformations:
   input:
-    source: $sources.input_file
+    source: $sources.input
     operations: []
 
   nwea_map_student_assessment:
