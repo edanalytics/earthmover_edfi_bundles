@@ -13,6 +13,13 @@ config:
     INPUT_FILETYPE: csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
+  macros: > 
+      {% macro map_subject_to_assess_id(value) -%}
+      {%- if 'Mathematics' in value -%}MAP_Growth_Mathematics
+      {%- elif 'Language Arts' in value -%}MAP_Growth_Reading
+      {%- elif 'Science' in value -%}MAP_Growth_Science
+      {%- endif -%}
+      {%- endmacro %}
     
 
 sources:
@@ -24,9 +31,6 @@ sources:
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
-    header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
@@ -60,7 +64,7 @@ transformations:
       - operation: add_columns
         columns:
           schoolYear: "{%raw%}{{TermName[-4:]}}{%endraw%}"
-          assessmentIdentifier: 'NWEA-Map'
+          assessmentIdentifier: "{%raw%}{{ map_subject_to_assess_id(Subject) }}{%endraw%}"
           namespace: 'uri://www.nwea.org/map/Assessment'
       - operation: date_format
         column: TestStartDate
@@ -76,31 +80,6 @@ transformations:
           - TestStartTime
         new_column: studentAssessmentIdentifier
         separator: '-'
-
-  academic_subject_descriptors:
-    source: $sources.academicSubjectDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          subject_json: >
-              {%raw-%}  
-              {
-                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
-              },
-              {%-endraw%}
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
-        # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns: 
-          subject_json: agg(subject_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -133,12 +112,6 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
