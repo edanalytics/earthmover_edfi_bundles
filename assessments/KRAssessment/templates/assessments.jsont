@@ -3,29 +3,17 @@
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{namespace}/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "assessmentCategoryDescriptor": "{{namespace}}/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
   "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+      "minimumScore":{{ minimumScore }},
+      "maximumScore":{{ maximumScore }}
     }
   ],
   "performanceLevels": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Demonstrating Readiness",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Approaching Readiness",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Emerging Readiness",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    }
+   {{ performance_json }}
   ]
 }

@@ -1,3 +1,4 @@
+ {% if OverallScore is not none and OverallScore | length %}
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -128,3 +129,4 @@
     ] 
   }  ]
 }
+{% endif %}

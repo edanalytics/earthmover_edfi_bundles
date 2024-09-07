@@ -21,7 +21,6 @@ sources:
   assessments:
     file: ${BUNDLE_DIR}/assessments.csv
     header_rows: 1
-    debug: True
   objectiveAssessments:
     file: ${BUNDLE_DIR}/objectiveAssessments.csv
     header_rows: 1
@@ -66,7 +65,60 @@ transformations:
           - codeValue
           - minimumScore
           - maximumScore
-      
+  performance_levels:
+    debug: True
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - codeValue
+          - namespace
+          - minimumScore
+          - maximumScore
+      - operation: add_columns
+        columns:
+          performance_json: >
+              {%raw-%}  
+              {
+                "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
+                "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}",
+                "minimumScore": {{ minimumScore }},
+                "maximumScore": {{ maximumScore }}
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"    
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          performance_json: agg(performance_json,,)
+        
+
+  performance_level_max_min_score:
+    debug: True
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "KRA"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - minimumScore
+          - maximumScore
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          maximumScore: max(maximumScore)
+          minimumScore: min(minimumScore)
+   
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -79,7 +131,7 @@ transformations:
               {%raw-%}  
               {
                 "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}"
-              },
+              }
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -88,11 +140,7 @@ transformations:
         group_by_columns:
           - assessmentIdentifier
         create_columns: 
-          grade_json: agg(grade_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+          grade_json: agg(grade_json,,)
     
 
   academic_subject_descriptors:
@@ -107,7 +155,7 @@ transformations:
               {%raw-%}  
               {
                 "academicSubjectDescriptor": "{{namespace}}#{{codeValue}}"
-              },
+              }
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -117,11 +165,8 @@ transformations:
         group_by_columns:
           - assessmentIdentifier
         create_columns: 
-          subject_json: agg(subject_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+          subject_json: agg(subject_json,,)
+      
     debug: True
 
   
@@ -143,9 +188,20 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      
+      - operation: join
+        sources:
+          - $transformations.performance_levels
 
-  
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_max_min_score
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
   prepare_objective_assessments:
     source: $sources.objectiveAssessments
     operations:
@@ -171,7 +227,7 @@ transformations:
           whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{%raw%}{{ assessmentIdentifier }}-{{ studentUniqueId }}-{{ SchoolYear }}{%endraw%}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
         sources:
           - $sources.student_id_mapping
         left_key: PS_StudentID
@@ -190,7 +246,8 @@ transformations:
           PerformanceLevel_MAScore: "{%raw%}{% if MAScore >= minimumScore and MAScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
           PerformanceLevel_PDScore: "{%raw%}{% if PDScore >= minimumScore and PDScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
       - operation: filter_rows
-        query: "PerformanceLevel_SFScore != 'Unknown' or PerformanceLevel_LLScore != 'Unknown' or PerformanceLevel_MAScore != 'Unknown' or PerformanceLevel_PDScore != 'Unknown'"
+        query: "(PerformanceLevel_SFScore != 'Unknown' ) or (PerformanceLevel_LLScore != 'Unknown') or (PerformanceLevel_MAScore != 'Unknown') or (PerformanceLevel_PDScore != 'Unknown' )"
+
         behavior: include
       - operation: group_by
         group_by_columns:
