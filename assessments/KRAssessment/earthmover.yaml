@@ -229,7 +229,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-          namespace: "uri://ed.sc.gov"
+          namespace: "uri://ed.sc.gov/KRA"
           studentUniqueId: "{%raw%}{{ PS_StudentID }}{%endraw%}"
           administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
