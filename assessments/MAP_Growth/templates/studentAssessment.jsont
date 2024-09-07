@@ -128,9 +128,9 @@
       {% for objective_assessment in objective_assessments %}
       {
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "NWEA-Map",
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{ objective_assessment[0][:60] }}",
-          "namespace": "uri://www.nwea.org/map/Assessment"
+          "namespace": "{{namespace}}"
         },
         "performanceLevels": [
           {% if objective_assessment[1] is not none and objective_assessment[1] | length %}
