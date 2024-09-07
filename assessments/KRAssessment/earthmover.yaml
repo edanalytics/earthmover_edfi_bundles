@@ -19,23 +19,23 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/assessments.csv
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/objectiveAssessments.csv
+    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/assessmentReportingMethodDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   academicSubjectDescriptors:
-    file: ${BUNDLE_DIR}/academicSubjectDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
 
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/gradeLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/performanceLevelDescriptors.csv
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
   {% if "${STUDENT_ID_QUERY}" | length %}
   student_id_mapping:
@@ -66,7 +66,7 @@ transformations:
           - minimumScore
           - maximumScore
   performance_levels:
-    debug: True
+    
     source: $sources.performanceLevelDescriptors
     operations:
       - operation: add_columns
@@ -101,7 +101,7 @@ transformations:
         
 
   performance_level_max_min_score:
-    debug: True
+    
     source: $sources.performanceLevelDescriptors
     operations:
       - operation: add_columns
@@ -167,7 +167,7 @@ transformations:
         create_columns: 
           subject_json: agg(subject_json,,)
       
-    debug: True
+    
 
   
   prepare_assessments:
@@ -176,12 +176,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-      - operation: join
-        sources:
-          - $transformations.academic_subject_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
@@ -208,7 +203,20 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-    debug: True
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_max_min_score
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+    
       
 
   prepare_student_assessments:
@@ -275,29 +283,29 @@ transformations:
 destinations:
   assessments:
     source: $transformations.prepare_assessments
-    template: ./templates/assessments.jsont
+    template: ${BUNDLE_DIR}/templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $transformations.prepare_objective_assessments
-    template: ./templates/objectiveAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.prepare_student_assessments
-    template: ./templates/studentAssessments.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
     source: $transformations.prepare_student_assessments
-    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    template: ${BUNDLE_DIR}/templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/descriptors.jsont
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ./templates/descriptors.jsont
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
-    template: ./templates/descriptors.jsont
+    template: ${BUNDLE_DIR}/templates/descriptors.jsont
     extension: jsonl

@@ -3,8 +3,8 @@
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{namespace}}/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [{{subject_json}}],
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [  {"academicSubjectDescriptor":"uri://ed.sc.gov/AcademicSubjectDescriptor#Overall"}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
