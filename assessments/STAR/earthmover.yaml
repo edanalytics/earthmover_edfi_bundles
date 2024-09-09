@@ -128,9 +128,6 @@ transformations:
       - operation: add_columns
         columns:
           file_path: *overall_file_name
-      - operation: modify_columns
-        columns:
-          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
       - operation: add_columns
         columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
@@ -242,9 +239,6 @@ transformations:
       - operation: add_columns
         columns:
           file_path_subj: *overall_file_name
-      - operation: modify_columns
-        columns:
-          file_path_subj: "{%raw%}{{value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
       - operation: modify_columns
         columns:
           file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
