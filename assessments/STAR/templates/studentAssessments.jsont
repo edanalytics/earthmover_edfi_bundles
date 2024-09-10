@@ -64,7 +64,7 @@
                          'Total Correct':['Integer',TotalCorrect],
                          'Total Possible':['Integer',TotalPossible],
                          'Estimated Oral Reading Fluency':['Integer',EstimatedOralReadingFluency],
-                         'Current SGP':['Integer',CurrentSGP] %}
+                         'Current SGP':['Integer',CurrentSGP] } %}
     {% for score_name, score_result in all_scores.items() %}
       {% if score_result[1] is not none and score_result[1] | length %}
         {% set _= scores_present.append([score_name, score_result[0], score_result[1]]) %}
