@@ -1,0 +1,91 @@
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "scoreResults": [
+    {%- set possible_scores = [
+        [scaleScore, "Scale Score", "Integer"],
+        [sem, "SEM", "Integer"]
+    ] -%}
+
+    {%- set scores = [] -%}
+    {%- for score in possible_scores -%}
+      {%- if score[0] is not none and score[0] | length -%}
+        {%- set _ = scores.append(score) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "performanceLevels": [
+    {%- set possible_perf_levels = [
+        [performanceLevel, "Performance Level", "Level"],
+        [goalMet, "Goat Met", "Level"]
+    ] -%}
+
+    {%- set perf_levels = [] -%}
+    {%- for perf_level in possible_perf_levels -%}
+      {%- if perf_level[0] is not none and perf_level[0] | length -%}
+        {%- set _ = perf_levels.append(perf_level) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "studentObjectiveAssessments": [
+  {% set possible_obj_assess = [['Math1', math1Percentage, math1Level],
+                                ['Math2', math2Percentage, math2Level],
+                                ['SubMath1', subMath1Percentage, subMath1Level]] %}
+  {% set all_obj_assessment = [] %}
+  {%- for obj in possible_obj_assess -%}
+    {% if obj[1] is not none and obj[1] | length %}
+      {% set _= all_obj_assessment.append(obj) %}
+    {% endif %}
+  {% endfor %}
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
+        "result": "{{obj[1]}}"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelMet": true
+      }
+    ] 
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+}

@@ -1,0 +1,263 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
+
+{% set assessmentIdentifier = "CogAT" %}
+{% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
+  {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - ${STUDENT_ID_NAME}
+          {% if '${STUDENT_ID_NAME}' != 'Student_ID' %}
+          - Student_ID
+          {% elif '${STUDENT_ID_NAME}' != 'Secondary_Student_ID' %}
+          - Secondary_Student_ID
+          {% endif %}
+          - Date_Tested
+          - Class_Grade
+          - Battery
+          - Level
+          - Form
+          - Norm_Year
+          - Number_Attempted_NA
+          - Raw_Score_RS
+          - Raw_Score_Personal_Standard_Error
+          - Raw_Score_Upper_Bound
+          - Raw_Score_Lower_Bound
+          - Completion_Criteria_CC
+          - SAS_Valid_Flags
+          - TMO_Flags
+          - Extremely_Variable_Flags
+          - Chance_Flags
+          - Grade_Stanine_GS
+          - Age_Stanine_AS
+          - Local_Stanines
+          - Grade_Percentile_Rank_GPR
+          - Age_Percentile_Rank_APR
+          - Local_Percentile_Rank
+          - Universal_Scale_Score_USS
+          - Standard_Age_Score_SAS
+          - SAS_Upper_Bound
+          - SAS_Lower_Bound
+          - Ability_Profile
+          - TestInstance_GUID
+          - Mode_of_Administration_String
+      - operation: modify_columns
+        columns:
+          Class_Grade: "{%raw%}{{ value.strip() }}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueID
+      - operation: rename_columns
+        columns:
+          Mode_of_Administration_String: accommodations
+      - operation: map_values
+        column: Ability_Profile
+        mapping:
+          "": "N/A"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [Class_Grade]
+        right_keys: [cogatGrade]
+      - operation: modify_columns
+        columns:
+          Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+      - operation: date_format
+        column: Date_Tested
+        from_format: "%m%d%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          school_year: ${SCHOOL_YEAR}
+
+  scored_results:
+    source: $transformations.clean_results
+    operations:
+      - operation: add_columns
+        columns:
+        {% for test in raw_tests %}
+          # unpack fixed-width sections of individual columns
+          # 2 chars each
+          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
+          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
+
+          # 7 chars each
+          raw_pse_{{test}}: "{% raw %}{{Raw_Score_Personal_Standard_Error[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
+          raw_upper_{{test}}: "{% raw %}{{Raw_Score_Upper_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
+          raw_lower_{{test}}: "{% raw %}{{Raw_Score_Lower_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
+        {% endfor %}
+
+        {% for test in all_tests %}
+          # unpack fixed-width sections of individual columns
+          # flag variables - 1 char each
+          completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          sas_valid_{{test}}: "{% raw %}{{SAS_Valid_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          tmo_{{test}}: "{% raw %}{{TMO_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          ev_{{test}}: "{% raw %}{{Extremely_Variable_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+
+          # stanines - 1 char each
+          gs_{{test}}: "{% raw %}{{Grade_Stanine_GS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          as_{{test}}: "{% raw %}{{Age_Stanine_AS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+          ls_{{test}}: "{% raw %}{{Local_Stanines[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
+
+          # percentile ranks - 2 chars each
+          gpr_{{test}}: "{% raw %}{{Grade_Percentile_Rank_GPR[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
+          apr_{{test}}: "{% raw %}{{Age_Percentile_Rank_APR[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
+          lpr_{{test}}: "{% raw %}{{Local_Percentile_Rank[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
+
+          # normalized scores - 3 chars each
+          uss_{{test}}: "{% raw %}{{Universal_Scale_Score_USS[{% endraw %}(3 * {{loop.index - 1}}):(3 * {{loop.index - 1}}) + 3{% raw %}] | int(default=-1)}}{% endraw %}"
+          sas_{{test}}: "{% raw %}{{Standard_Age_Score_SAS[{% endraw %}(3 * {{loop.index - 1}}):(3 * {{loop.index - 1}}) + 3{% raw %}] | int(default=-1)}}{% endraw %}"
+          
+          # 6 chars each
+          sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
+          sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
+        {% endfor %}
+
+  coded_results:
+    source: $transformations.scored_results
+    operations:
+      - operation: add_columns
+        columns:
+          braile: "{% raw %}{% if accommodations[4] == '1'%}Y{% endif %}{% endraw %}"
+          large_print: "{% raw %}{% if accommodations[5] == '1'%}Y{% endif %}{% endraw %}"
+          proctor_led: "{% raw %}{% if accommodations[6] == '1'%}Y{% endif %}{% endraw %}"
+          self_paced: "{% raw %}{% if accommodations[7] == '1'%}Y{% endif %}{% endraw %}"
+          audio_type: "{% raw %}{% if accommodations[8] == '1'%}Y{% endif %}{% endraw %}"
+          extended_time: "{% raw %}{% if accommodations[11] == '1'%}Y{% endif %}{% endraw %}"
+          alt_v: "{% raw %}{% if accommodations[12] == '1'%}Y{% endif %}{% endraw %}"
+      - operation: map_values
+        columns:
+        {% for test in all_tests %}
+          - completed_{{test}}
+          - sas_valid_{{test}}
+          - tmo_{{test}}
+          - ev_{{test}}
+          - chance_{{test}}
+        {% endfor %}
+        mapping:
+          "0": "N"
+          "1": "Y"
+          "": "N"
+          " ": "N"
+          "  ": "N"
+          "   ": "N"
+          "    ": "N"
+          "     ": "N"
+          "      ": "N"
+          "       ": "N"
+
+  coded_results_with_identifiers:
+    source: $transformations.coded_results
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{{assessmentIdentifier}}"
+          namespace: "{{namespace}}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.coded_results_with_identifiers
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ./templates/accommodationDescriptors.jsont
+    extension: jsonl

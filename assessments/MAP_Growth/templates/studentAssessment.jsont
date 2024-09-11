@@ -1,0 +1,170 @@
+{
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(studentAssessmentIdentifier) }}{%endif%}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ schoolYear }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ studentUniqueId }}"
+    },
+    "administrationDate": "{{ TestStartDate }}",
+
+    "performanceLevels": [
+      {%- set possible_pls = [
+          [AchievementQuintile, 'Achievement Quintile'],
+          [FallToFallMetProjectedGrowth, 'Fall-To-Fall Met Projected Growth'],
+          [FallToWinterMetProjectedGrowth, 'Fall-To-Winter Met Projected Growth'],
+          [FallToSpringMetProjectedGrowth, 'Fall-To-Spring Met Projected Growth'],
+          [WinterToWinterMetProjectedGrowth, 'Winter-To-Winter Met Projected Growth'],
+          [WinterToSpringMetProjectedGrowth, 'Winter-To-Spring Met Projected Growth'],
+          [SpringToSpringMetProjectedGrowth, 'Spring-To-Spring Met Projected Growth'],
+          [GoalAdjective, 'Goal Adjective']
+      ] -%}
+
+      {%- set pls = [] -%}
+      {%- for pl in possible_pls -%}
+        {%- if pl[0] is not none and pl[0] | length -%}
+          {%- set _ = pls.append(pl) -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {% for pl in pls %}
+        {
+          "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{pl[1]}}",
+          "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ pl[0] }}",
+          "performanceLevelMet": true
+        } {% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+
+    "scoreResults": [
+      {%- set possible_scores = [
+          [TermName, 'Term Name', 'Level'],
+          [MeasurementScale, 'Measurement Scale', 'Level'],
+          [Course, 'Course', 'Level'],
+          [GrowthMeasureYN, 'Growth Measure YN', 'Level'],
+          [TestName, 'Test Name', 'Level'],
+          [Subject, 'Subject', 'Level'],
+          [TestDurationMinutes, 'Test Duration Minutes', 'Integer'],
+          [PercentCorrect, 'Percent Correct', 'Integer'],
+          [TestRITScore, 'RIT Scale Score', 'Integer'],
+          [TestStandardError, 'SEM', 'Decimal'],
+          [TestPercentile, 'Test Percentile', 'Integer'],
+          [FallToFallProjectedGrowth, 'Fall-To-Fall Projected Growth', 'Integer'],
+          [FallToFallObservedGrowth, 'Fall-To-Fall Observed Growth', 'Integer'],
+          [FallToFallObservedGrowthSE, 'Fall-To-Fall Observed Growth SE', 'Decimal'],
+          [FallToFallConditionalGrowthIndex, 'Fall-To-Fall Conditional Growth Index', 'Decimal'],
+          [FallToWinterConditionalGrowthPercentile, 'Fall-To-Winter Conditional Growth Percentile', 'Decimal'],
+          [FallToSpringProjectedGrowth, 'Fall-To-Spring Projected Growth', 'Integer'],
+          [FallToSpringObservedGrowth, 'Fall-To-Spring Observed Growth', 'Integer'],
+          [FallToSpringObservedGrowthSE, 'Fall-To-Spring Observed Growth SE', 'Decimal'],
+          [FallToSpringConditionalGrowthIndex, 'Fall-To-Spring Conditional Growth Index', 'Decimal'],
+          [FallToSpringConditionalGrowthPercentile, 'Fall-To-Spring Conditional Growth Percentile', 'Decimal'],
+          [WinterToWinterProjectedGrowth, 'Winter-To-Winter Projected Growth', 'Integer'],
+          [WinterToWinterObservedGrowth, 'Winter-To-Winter Observed Growth', 'Integer'],
+          [WinterToWinterObservedGrowthSE, 'Winter-To-Winter Observed Growth SE', 'Decimal'],
+          [WinterToWinterConditionalGrowthIndex, 'Winter-To-Winter Conditional Growth Index', 'Decimal'],
+          [WinterToWinterConditionalGrowthPercentile, 'Winter-To-Winter Conditional Growth Percentile', 'Decimal'],
+          [WinterToSpringProjectedGrowth, 'Winter-To-Spring Projected Growth', 'Integer'],
+          [WinterToSpringObservedGrowth, 'Winter-To-Spring Observed Growth', 'Integer'],
+          [WinterToSpringObservedGrowthSE, 'Winter-To-Spring Observed Growth SE', 'Decimal'],
+          [WinterToSpringConditionalGrowthIndex, 'Winter-To-Spring Conditional Growth Index', 'Decimal'],
+          [WinterToSpringConditionalGrowthPercentile, 'Winter-To-Spring Conditional Growth Percentile', 'Decimal'],
+          [SpringToSpringProjectedGrowth, 'Spring-To-Spring Projected Growth', 'Integer'],
+          [SpringToSpringObservedGrowth, 'Spring-To-Spring Observed Growth', 'Integer'],
+          [SpringToSpringObservedGrowthSE, 'Spring-To-Spring Observed Growth SE', 'Decimal'],
+          [SpringToSpringConditionalGrowthIndex, 'Spring-To-Spring Conditional Growth Index', 'Decimal'],
+          [SpringToSpringConditionalGrowthPercentile, 'Spring-To-Spring Conditional Growth Percentile', 'Decimal'],
+          [LexileScore, 'Lexile Score', 'Level'],
+          [LexileMin, 'Lexile Min', 'Level'],
+          [LexileMax, 'Lexile Max', 'Level'],
+          [RitToReading, 'RIT to Reading Score', 'Level'],
+          [RitToReadingMin, 'RIT to Reading Min', 'Level'],
+          [RitToReadingMax, 'RIT to Reading Max', 'Level'],
+          [QuantileScore, 'Quantile Score', 'Level'],
+          [QuantileMin, 'Quantile Min', 'Level'],
+          [QuantileMax, 'Quantile Max', 'Level'],
+          [GoalRange, 'Goal Range', 'Range']
+      ] -%}
+
+      {%- set scores = [] -%}
+      {%- for score in possible_scores -%}
+        {%- if score[0] is not none and score[0] | length -%}
+          {%- set _ = scores.append(score) -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+
+      {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{ score[0] | truncate(35, True, '', 0) }}"
+      } {% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+    "studentObjectiveAssessments": [
+      {%- set possible_objective_assessments = [
+          [Goal1Name, Goal1Adjective, Goal1RitScore, Goal1StdErr, Goal1Range],
+          [Goal2Name, Goal2Adjective, Goal2RitScore, Goal2StdErr, Goal2Range],
+          [Goal3Name, Goal3Adjective, Goal3RitScore, Goal3StdErr, Goal3Range],
+          [Goal4Name, Goal4Adjective, Goal4RitScore, Goal4StdErr, Goal4Range],
+          [Goal5Name, Goal5Adjective, Goal5RitScore, Goal5StdErr, Goal5Range],
+          [Goal6Name, Goal6Adjective, Goal6RitScore, Goal6StdErr, Goal6Range],
+          [Goal7Name, Goal7Adjective, Goal7RitScore, Goal7StdErr, Goal7Range],
+          [Goal8Name, Goal8Adjective, Goal8RitScore, Goal8StdErr, Goal8Range]
+      ] -%}
+
+      {%- set objective_assessments = [] -%}
+      {%- for objective_assessment in possible_objective_assessments -%}
+        {%- if objective_assessment[0] is not none and objective_assessment[0] | length -%}
+          {%- set _ = objective_assessments.append(objective_assessment) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      
+      {% for objective_assessment in objective_assessments %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "NWEA-Map",
+          "identificationCode": "{{ objective_assessment[0][:60] }}",
+          "namespace": "uri://www.nwea.org/map/Assessment"
+        },
+        "performanceLevels": [
+          {% if objective_assessment[1] is not none and objective_assessment[1] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Goal Adjective",
+            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ objective_assessment[1] }}",
+            "performanceLevelMet": true
+          }
+          {% endif %}
+        ],
+        "scoreResults": [
+        {% if objective_assessment[2] is not none and objective_assessment[2] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#RIT Scale Score",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+            "result": "{{ objective_assessment[2] }}"
+          },
+        {% endif %}
+        {% if objective_assessment[3] is not none and objective_assessment[3] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#SEM",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal",
+            "result": "{{ objective_assessment[3] }}"
+          },
+        {% endif %}
+        {% if objective_assessment[4] is not none and objective_assessment[4] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Goal Range",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Range",
+            "result": "{{ objective_assessment[4] }}"
+          }
+        {% endif %}
+        ]
+      } {% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+}
