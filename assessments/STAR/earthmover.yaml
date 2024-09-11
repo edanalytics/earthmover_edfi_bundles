@@ -1,0 +1,446 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  macros: > 
+      {% macro map_subject_values(value) -%}
+      {%- if 'SM' in value -%}Math
+      {%- elif 'SR' in value -%}Reading
+      {%- else -%}Early Literacy
+      {%- endif -%}
+      {%- endmacro %}
+
+      {%- macro map_subject_abbrev_values(value) -%}
+      {%- if 'SM' in value -%}MA
+      {%- elif 'SR' in value -%}RD
+      {%- else -%}EARLY-LIT
+      {%- endif -%}
+      {%- endmacro %}
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StudentStateID,StudentSourcedID,StudentIdentifier,StudentUserID'
+    INPUT_FILE_DS: ''
+    INPUT_FILE_SA: ''
+    INPUT_FILETYPE: csv
+
+definitions:
+  year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
+  overall_file_name: &overall_file_name ${INPUT_FILE_OVERALL}
+  separator: &separator '/'
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_OVERALL}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+
+  star_dashboard_standards_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_DS}
+    header_rows: 1
+    optional: True
+    type: ${INPUT_FILETYPE}
+    columns:
+      - RenaissanceClientID
+      - SchoolYear
+      - StudentRenaissanceID
+      - StudentSourcedID
+      - StudentIdentifier
+      - StudentUserID
+      - StudentStateID
+      - AssessmentID
+      - LaunchDate
+      - CompletedDate
+      - CompletedDateLocal
+      - DomainGroup
+      - DomainName
+      - DomainPercentMastery
+      - DomainConfidenceLevel
+      - DomainMasteryLevel
+      - StandardName
+      - StandardDescription
+      - StandardPercentMastery
+      - StandardConfidenceLevel
+      - StandardMasteryLevel
+
+  star_skill_area_input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE_SA}
+    header_rows: 1
+    optional: True
+    type: ${INPUT_FILETYPE}
+    columns:
+      - RenaissanceClientID
+      - SchoolYear
+      - StudentRenaissanceID
+      - StudentSourcedID
+      - StudentIdentifier
+      - StudentUserID
+      - StudentStateID
+      - AssessmentID
+      - LaunchDate
+      - CompletedDate
+      - CompletedDateLocal
+      - FamilyName
+      - DomainName
+      - DomainScore
+      - SkillAreaName
+      - SkillAreaMasteryScore
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  star_student_assessment_overall:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: filter_rows
+        query: studentUniqueId == ''
+        behavior: exclude  
+      - operation: modify_columns
+        columns:
+          SchoolYear: *year_mapping
+      - operation: filter_rows
+        query: SchoolYear == '${API_YEAR}' # SUPPLIED BY USER
+        behavior: include
+      - operation: add_columns
+        columns:
+          file_path: *overall_file_name
+      - operation: modify_columns
+        columns:
+          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
+      - operation: add_columns
+        columns: 
+          subject_full: "{%raw%}{{map_subject_values(file_path)}}{%endraw%}"
+          assessmentIdentifier: "{%raw%}STAR-{{-assess_id_subject}}{%endraw%}"
+      - operation: add_columns
+        columns: 
+          assessmentTitle: "{%raw%}STAR {{subject_full-}}{%endraw%}"
+          namespace: "uri://renaissance.com"
+      - operation: rename_columns
+        columns:
+          AssessmentID: StudentAssessmentID
+
+  star_skill_area:
+    source: $sources.star_skill_area_input
+    operations:
+      - operation: keep_columns
+        columns:
+          - AssessmentID
+          - FamilyName
+          - DomainName
+          - SkillAreaName
+          - SkillAreaMasteryScore
+      - operation: add_columns
+        columns:
+          domain_group_name: "{%raw%}{{FamilyName}}: {{DomainName}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          description: "{%raw%}{{domain_group_name ~ ': ' ~ SkillAreaName}}{%endraw%}"
+          obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
+          DomainPercentMastery: ''
+          DomainMasteryLevel: ''
+          StandardPercentMastery: ''
+          StandardConfidenceLevel: ''
+          StandardMasteryLevel: ''
+          namespace: "uri://renaissance.com"
+          is_standards: 0
+      - operation: rename_columns
+        columns:
+          FamilyName: DomainGroup
+      - operation: drop_columns
+        columns:
+          - SkillAreaName
+
+  star_standards:
+    source: $sources.star_dashboard_standards_input
+    operations:
+      - operation: keep_columns
+        columns:
+          - AssessmentID
+          - DomainGroup
+          - DomainName
+          - StandardName
+          - StandardPercentMastery
+          - StandardConfidenceLevel
+          - StandardMasteryLevel
+      - operation: add_columns
+        columns:
+          domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          SkillAreaMasteryScore: ''
+          DomainPercentMastery: ''
+          DomainMasteryLevel: ''
+          description: "{%raw%}{{domain_group_name}}: {{StandardName}}{%endraw%}"
+          obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
+          namespace: "uri://renaissance.com"
+          is_standards: 1
+      - operation: drop_columns
+        columns:
+          - StandardName
+
+  star_domains:
+    source: $sources.star_dashboard_standards_input
+    operations:
+      # discard all columns except those we actually need for dedupe:
+      - operation: keep_columns
+        columns:
+          - AssessmentID
+          - DomainGroup
+          - DomainName
+          - DomainPercentMastery
+          - DomainMasteryLevel
+      - operation: add_columns
+        columns:
+          domain_group_name: "{%raw%}{{DomainGroup}}: {{DomainName}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          SkillAreaMasteryScore: ''
+          StandardPercentMastery: ''
+          StandardConfidenceLevel: ''
+          StandardMasteryLevel: ''
+          description: "{%raw%}{{domain_group_name}}{%endraw%}"
+          obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
+          namespace: "uri://renaissance.com"
+          is_standards: 1
+      # dedupe from standard level to domain (obj assessment) level
+      - operation: distinct_rows
+
+  stacked_obj_assessment:
+    source: $transformations.star_domains
+    operations:
+      - operation: union
+        sources:
+          - $transformations.star_skill_area
+          - $transformations.star_standards
+      - operation: add_columns
+        columns:
+          file_path_subj: *overall_file_name
+      - operation: modify_columns
+        columns:
+          file_path_subj: "{%raw%}{{value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
+      # for each assessment record, construct a new column which will be the JSON for the item
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          AssessmentID: StudentAssessmentID
+
+  star_with_obj_assessment:
+    source: $transformations.stacked_obj_assessment
+    operations:
+      # for each assessment record, construct a new column which will be the JSON for the item
+      - operation: add_columns
+        columns:
+          student_objective_assessment_json: >
+            {%raw-%}  
+            {% if (DomainPercentMastery is not none and DomainPercentMastery | length) 
+               or (SkillAreaMasteryScore is not none and SkillAreaMasteryScore | length) 
+               or (StandardPercentMastery is not none and StandardPercentMastery | length) %}
+            { 
+              "objectiveAssessmentReference": 
+                { 
+                  "assessmentIdentifier": "{{assessmentIdentifier}}", 
+                  "identificationCode": "{{obj_id_code}}", 
+                  "namespace":"uri://renaissance.com/Assessment" 
+                }, 
+              {% set pls_present = [] %}
+              {% set all_pls = {"Domain Mastery Level":DomainMasteryLevel, 
+                                "Standard Mastery Level":StandardMasteryLevel} %} 
+              {% for pl_name, pl_result in all_pls.items() %}
+                {% if pl_result is not none and pl_result | length %} 
+                  {% set _= pls_present.append([pl_name, pl_result]) %} 
+                {% endif %} 
+              {% endfor %} 
+              "performanceLevels": 
+                [ 
+                  {%- for pl in pls_present -%} 
+                    { 
+                      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}",
+                      "performanceLevelMet": true 
+                    } 
+                  {%- if not loop.last -%}, {%- else %}{% endif %}
+                  {%- endfor -%} 
+                ], 
+              {% set scores_present = [] %} 
+              {% set all_scores = {"Domain Percent Mastery":DomainPercentMastery, 
+                                   "Skill Area Mastery Score":SkillAreaMasteryScore, 
+                                   "Standard Percent Mastery":StandardPercentMastery} %} 
+              {% for score_name, score_result in all_scores.items() %} 
+                {% if score_result is not none and score_result | length %} 
+                  {% set _= scores_present.append([score_name, score_result]) %} 
+                {% endif %} 
+              {% endfor %} 
+              "scoreResults": 
+                [ 
+                  {%- for score in scores_present -%} 
+                    { 
+                      "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}", 
+                      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+                      "result": "{{score[1]}}" 
+                    } 
+                    {%- if not loop.last -%}, {%- else %}{% endif %}
+                  {%- endfor -%} 
+                ] 
+            },{%endif%}
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          student_objective_assessment_json: "{%raw%}{{student_objective_assessment_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - StudentAssessmentID
+        create_columns: 
+          student_objective_assessment_json: agg(student_objective_assessment_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          student_objective_assessment_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.star_student_assessment_overall
+        join_type: right
+        left_key: StudentAssessmentID
+        right_key: StudentAssessmentID
+
+  standards_exist:
+    source: $transformations.stacked_obj_assessment
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: '1'
+      - operation: keep_columns
+        columns:
+          - join_key
+          - is_standards
+      - operation: distinct_rows
+        columns:
+          - is_standards
+      - operation: filter_rows
+        query: is_standards == 1
+        behavior: include
+
+  objective_assessments:
+    source: $transformations.stacked_obj_assessment
+    operations:
+      - operation: keep_columns
+        columns: 
+          - description
+          - assessmentIdentifier
+          - obj_id_code
+          - namespace
+          - domain_group_name
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          join_key: '1'
+      - operation: join
+        sources:
+          - $transformations.standards_exist
+        join_type: left
+        left_key: join_key
+        right_key: join_key
+  
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+  
+  assessments:
+    source: $transformations.star_student_assessment_overall
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+      - operation: distinct_rows
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.star_with_obj_assessment
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True

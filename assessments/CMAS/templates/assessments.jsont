@@ -2,47 +2,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [
-    {% if assessmentIdentifier in ('CMAS-ELA', 'CMAS-MAT') %}
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
-    }
-    {% endif %}
-    {% if assessmentIdentifier in ('CMAS-SLA') %}
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    }
-    {% endif %}
-    {% if assessmentIdentifier in ('CMAS-SCI') %}
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
-    }
-    {% endif %}
-  ],
+  "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
@@ -98,6 +58,18 @@
     },
     {
       "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Total Test Items Attempted",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Student Growth Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Adequate Student Growth Percentile",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Student Growth Percentile Baseline",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ],
@@ -385,6 +357,86 @@
     {
       "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Report Suppression Action",
       "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Excluded from Roster and Aggregated",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Included in District Calculations",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Included in District Calculations",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Included in School Calculations",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#Included in School Calculations",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L1 to L2",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L1 to L2",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L2 to L3",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L2 to L3",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L3 to L4",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L3 to L4",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L4 to L4",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L4 to L4",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L5 to L5",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track L5 to L5",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cde.state.co.us/assessment/cmas/AssessmentReportingMethodDescriptor#On Track",
+      "performanceLevelDescriptor": "uri://www.cde.state.co.us/assessment/cmas/PerformanceLevelDescriptor#N",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]

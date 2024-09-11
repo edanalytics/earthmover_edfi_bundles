@@ -1,0 +1,38 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Lower than Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Higher than Average",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ]
+  }

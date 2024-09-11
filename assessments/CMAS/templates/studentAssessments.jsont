@@ -6,7 +6,7 @@
     {% else %}
       "assessmentIdentifier": "CoAlt-SCI",
     {% endif %}
-    "namespace": "uri://www.cde.state.co.us/assessment/cmas"
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -28,7 +28,7 @@
   {% if NotTestedReason is not none and NotTestedReason | length %}
   "reasonNotTestedDescriptor": "uri://www.cde.state.co.us/assessment/cmas/reasonNotTestedDescriptor#{{NotTestedReason}}",
   {% endif %}
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{GradeLevelWhenAssessed}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
 
   "scoreResults": [
   {% set scores = [] %}
@@ -51,6 +51,18 @@
 
     {% if TotalTestItemsAttempted is not none and TotalTestItemsAttempted.strip() | length %}
       {% set _ = scores.append([TotalTestItemsAttempted, 'Total Test Items Attempted', 'Integer']) %}
+    {% endif %} 
+
+    {% if SGP != '' and SGP  %}
+      {% set _ = scores.append([SGP, 'Student Growth Percentile', 'Integer']) %}
+    {% endif %} 
+
+    {% if AGP != '' %}
+      {% set _ = scores.append([AGP, 'Adequate Student Growth Percentile', 'Integer']) %}
+    {% endif %} 
+
+    {% if SGP_BASELINE != '' %}
+      {% set _ = scores.append([SGP_BASELINE, 'Student Growth Percentile Baseline', 'Integer']) %}
     {% endif %} 
     
     {% if CalculatedInvalidation == 'Valid Score' %}
@@ -92,7 +104,7 @@
         {% endif %}
       {% endif %}
 
-      {% if assessmentSubject == 'SCI' and school_year <= 2022 %}
+      {% if assessmentSubject == 'SCI' and (school_year | int) <= 2022 %}
         {% if PercentileRankofStudentStandard1 is not none and PercentileRankofStudentStandard1 | length %}
           {% set _ = scores.append([PercentileRankofStudentStandard1, 'Standard 1 Percentile Rank', 'Integer']) %}
         {% endif %}
@@ -106,7 +118,7 @@
         {% endif %}
       {% endif %}
 
-      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and school_year > 2022 %}
+      {% if assessmentSubject == 'SCI' and alternate_assessment == 'N' and (school_year | int) > 2022 %}
         {% if SS is not none and SS | length %}
           {% set _ = scores.append([SS, 'Scale Score', 'Integer']) %}
         {% endif %}
@@ -161,10 +173,42 @@
         {% set _ = perf_levels.append([ReportSuppressionAction, 'Report Suppression Action']) %}
       {% endif %}
 
-      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and (school_year > 2022 or alternate_assessment == 'Y'))) %}
+      {% if CalculatedInvalidation == 'Valid Score' and (assessmentSubject in ('ELA', 'MAT', 'SLA') or (assessmentSubject == 'SCI' and ((school_year | int) > 2022 or alternate_assessment == 'Y'))) %}
         {% if PerfLVL is not none and PerfLVL | length %}
           {% set _ = perf_levels.append([PerfLVL, 'Performance Level']) %}
         {% endif %}
+      {% endif %}
+
+      {% if INCLUDED_PFWK_CALCS_DIST is not none and INCLUDED_PFWK_CALCS_DIST | length %}
+        {% set _ = perf_levels.append([INCLUDED_PFWK_CALCS_DIST, 'Included in District Calculations']) %}
+      {% endif %}
+
+      {% if INCLUDED_PFWK_CALCS_SCH is not none and INCLUDED_PFWK_CALCS_SCH | length %}
+        {% set _ = perf_levels.append([INCLUDED_PFWK_CALCS_SCH, 'Included in School Calculations']) %}
+      {% endif %}
+
+      {% if ON_TRACK is not none and ON_TRACK | length %}
+        {% set _ = perf_levels.append([ON_TRACK, 'On Track']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L1_TO_L2 is not none and ON_TRACK_L1_TO_L2 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L1_TO_L2, 'On Track L1 to L2']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L2_TO_L3 is not none and ON_TRACK_L2_TO_L3 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L2_TO_L3, 'On Track L2 to L3']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L3_TO_L4 is not none and ON_TRACK_L3_TO_L4 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L3_TO_L4, 'On Track L3 to L4']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L4_TO_L4 is not none and ON_TRACK_L4_TO_L4 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L4_TO_L4, 'On Track L4 to L4']) %}
+      {% endif %}
+
+      {% if ON_TRACK_L5_TO_L5 is not none and ON_TRACK_L5_TO_L5 | length %}
+        {% set _ = perf_levels.append([ON_TRACK_L5_TO_L5, 'On Track L5 to L5']) %}
       {% endif %}
 
     {% for perf_level in perf_levels %}
@@ -376,7 +420,7 @@
           {% endif %}       
         {% endif %}
 
-        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and school_year > 2022 and alternate_assessment == 'N' %}
+        {% if assessmentSubject == 'SCI' and CalculatedInvalidation == 'Valid Score' and (school_year | int) > 2022 and alternate_assessment == 'N' %}
           {% if Std1SSCO is not none and Std1SSCO | length %}
             {% set _ = all_obj_assess.append(['Physical Science', 'N/A', Std1PtsPoss, 'N/A', Std1SSCO, Std1CSEM, Std1PerfLvl]) %}
           {% endif %}

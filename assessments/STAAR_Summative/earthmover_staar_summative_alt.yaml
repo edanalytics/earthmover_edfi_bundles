@@ -1,0 +1,319 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
+
+sources:
+
+  # SEEDS
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  obj_assess_codes_xwalk:
+    file: ./seeds/obj_assess_codes_xwalk.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+
+  # INPUT STU ASSESSMENT FILES
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+  # OTHER XWALKS
+  administration_window_xwalk:
+    file: ./seeds/administration_window_xwalk.csv
+    header_rows: 1
+
+{% set conformed_columns = 
+  ['tx_unique_student_id',
+   'assessment_identifier',
+   'grade_level_code',
+   'administration_window',
+   'administration_window_label',
+   'administration_window_start_date',
+   'administration_window_end_date',
+   'county_district_campus_number',
+   'subject',
+   'reporting_category_1_raw_score',
+   'reporting_category_2_raw_score',
+   'reporting_category_3_raw_score',
+   'reporting_category_4_raw_score',
+   'reporting_category_1_name',
+   'reporting_category_2_name',
+   'reporting_category_3_name',
+   'reporting_category_4_name',
+   'raw_score',
+   'scale_score',
+   'test_version',
+   'score_code',
+   'overall_performance_level',
+   'stu_assess_id'
+  ] 
+%}
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  # CONFORMED 3-8 ALT
+  conformed_staar_summative_alt:
+    source: $transformations.input
+    operations:
+      # RENAME columns to easily convert from wide to long
+      - operation: rename_columns
+        columns:
+          "administration_date": administration_window
+          {% if ${API_YEAR} >= 2023 %}
+          # standardize score names so we can easily convert from wide to long
+          "reading_language_arts_reportingcategory_1_scores": reading_reporting_category_1_raw_score
+          "reading_language_arts_reportingcategory_2_scores": reading_reporting_category_2_raw_score
+          "reading_language_arts_raw_score": reading_raw_score
+          "reading_language_arts_scale_score": reading_scale_score
+          "reading_language_arts_test_version": reading_test_version
+          "level_ii__satisfactory_academic_performance_in_reading_languagearts": level_ii__satisfactory_academic_performance_in_reading
+          "level_iii__accomplished_academic_performance_in_reading_languagearts": level_iii__accomplished_academic_performance_in_reading
+          "score_code_reading_language_arts": score_code_reading
+          "opportunity_key_readinglanguage_arts": opportunity_key_reading
+          "mathematics_reporting_category_1scores": mathematics_reporting_category_1_raw_score
+          "mathematics_reporting_category_2scores": mathematics_reporting_category_2_raw_score
+          "mathematics_reporting_category_3scores": mathematics_reporting_category_3_raw_score
+          "mathematics_reporting_category_4scores": mathematics_reporting_category_4_raw_score
+          "social_studies_reporting_category_1scores": social_studies_reporting_category_1_raw_score
+          "social_studies_reporting_category_2scores": social_studies_reporting_category_2_raw_score
+          "social_studies_reporting_category_3scores": social_studies_reporting_category_3_raw_score
+          "social_studies_reporting_category_4scores": social_studies_reporting_category_4_raw_score
+          "science_reporting_category_1scores": science_reporting_category_1_raw_score
+          "science_reporting_category_2scores": science_reporting_category_2_raw_score
+          "science_reporting_category_3scores": science_reporting_category_3_raw_score
+          "science_reporting_category_4scores": science_reporting_category_4_raw_score
+          # This column doesn't exist after 2022 -- TODO better way to handle this case?
+          {% elif ${API_YEAR} == 2022 %}
+          # standardize score names so we can easily convert from wide to long
+          "reading_reporting_category_1scores": reading_reporting_category_1_raw_score
+          "reading_reporting_category_2scores": reading_reporting_category_2_raw_score
+          "reading_reporting_category_3scores": reading_reporting_category_3_raw_score
+          "mathematics_reporting_categoryscores_1": mathematics_reporting_category_1_raw_score
+          "mathematics_reading_reportingcategory_2_scores": mathematics_reporting_category_2_raw_score
+          "mathematics_reading_reportingcategory_3_scores": mathematics_reporting_category_3_raw_score
+          "mathematics_reading_reportingcategory_4_scores": mathematics_reporting_category_4_raw_score
+          "social_studies_reporting_categoryscores_1": social_studies_reporting_category_1_raw_score
+          "social_studies_reporting_categoryscores_2": social_studies_reporting_category_2_raw_score
+          "social_studies_reporting_categoryscores_3": social_studies_reporting_category_3_raw_score
+          "social_studies_reporting_categoryscores_4": social_studies_reporting_category_4_raw_score
+          "science_reporting_category_1scores": science_reporting_category_1_raw_score
+          "science_reporting_category_2scores": science_reporting_category_2_raw_score
+          "science_reporting_category_3scores": science_reporting_category_3_raw_score
+          "science_reporting_category_4scores": science_reporting_category_4_raw_score
+          {% endif %}
+      # ADD assess_id and missing cols
+      - operation: add_columns
+        columns:
+          assessment_identifier: staar_summative_alt
+          school_year: "${API_YEAR}"
+          # TODO confirm whether this placeholder is necessary
+          course_abbrev: "no_course"
+          # reading does not have a score 4. create one, so we can easily convert from wide to long
+          reading_reporting_category_4_raw_score: ""
+            # This column doesn't exist after 2022 -- TODO better way to handle this case?
+          {% if ${API_YEAR} >= 2023 %}
+          reading_reporting_category_3_raw_score: ""
+          {% endif %}
+          # in 2021 and earlier, reporting category scores were store in one column, e.g. '423' represented ['4','2','3']
+          {% if ${API_YEAR} <= 2021 %}
+          reading_reporting_category_1_raw_score: "{%raw%}{{reading_reporting_category_scores[0:2]}}{%endraw%}"
+          reading_reporting_category_2_raw_score: "{%raw%}{{reading_reporting_category_scores[2:4]}}{%endraw%}"
+          reading_reporting_category_3_raw_score: "{%raw%}{{reading_reporting_category_scores[4:6]}}{%endraw%}"
+          mathematics_reporting_category_1_raw_score: "{%raw%}{{mathematics_reporting_category_scores[0:2]}}{%endraw%}"
+          mathematics_reporting_category_2_raw_score: "{%raw%}{{mathematics_reporting_category_scores[2:4]}}{%endraw%}"
+          mathematics_reporting_category_3_raw_score: "{%raw%}{{mathematics_reporting_category_scores[4:6]}}{%endraw%}"
+          mathematics_reporting_category_4_raw_score: "{%raw%}{{mathematics_reporting_category_scores[6:8]}}{%endraw%}"
+          social_studies_reporting_category_1_raw_score: "{%raw%}{{social_studies_reporting_category_scores[0:2]}}{%endraw%}"
+          social_studies_reporting_category_2_raw_score: "{%raw%}{{social_studies_reporting_category_scores[2:4]}}{%endraw%}"
+          social_studies_reporting_category_3_raw_score: "{%raw%}{{social_studies_reporting_category_scores[4:6]}}{%endraw%}"
+          social_studies_reporting_category_4_raw_score: "{%raw%}{{social_studies_reporting_category_scores[6:8]}}{%endraw%}"
+          science_reporting_category_1_raw_score: "{%raw%}{{science_reporting_category_scores[0:2]}}{%endraw%}"
+          science_reporting_category_2_raw_score: "{%raw%}{{science_reporting_category_scores[2:4]}}{%endraw%}"
+          science_reporting_category_3_raw_score: "{%raw%}{{science_reporting_category_scores[4:6]}}{%endraw%}"
+          science_reporting_category_4_raw_score: "{%raw%}{{science_reporting_category_scores[6:8]}}{%endraw%}"
+          writing_reporting_category_1_raw_score: "{%raw%}{{writing_reporting_category_scores[0:2]}}{%endraw%}"
+          writing_reporting_category_2_raw_score: "{%raw%}{{writing_reporting_category_scores[2:4]}}{%endraw%}"
+          writing_reporting_category_3_raw_score: "{%raw%}{{writing_reporting_category_scores[4:6]}}{%endraw%}"
+          writing_reporting_category_4_raw_score: ""
+          {% endif %}
+
+
+  # 3-8 ALT -- CONVERT FROM WIDE TO LONG
+  {% set subjects = {
+    'reading': 'Reading',
+    'mathematics': 'Mathematics',
+    'social_studies': 'Social Studies',
+    'science': 'Science'
+    }
+  %}
+  {% if ${API_YEAR} <= 2021 %}
+    {% set _ = subjects.update({'writing': 'Writing'}) %}
+  {% endif %}
+  {% for subject in subjects %}
+  {% set descriptor_subject = subjects[subject] %}
+  staar_summative_alt_scores_{{subject}}:
+    source: $transformations.conformed_staar_summative_alt
+    operations:
+      # RENAME subject-specific columns to generic colnames so we can stack the data long
+      - operation: rename_columns
+        columns:
+          {{subject}}_reporting_category_1_raw_score: reporting_category_1_raw_score
+          {{subject}}_reporting_category_2_raw_score: reporting_category_2_raw_score
+          {{subject}}_reporting_category_3_raw_score: reporting_category_3_raw_score
+          {{subject}}_reporting_category_4_raw_score: reporting_category_4_raw_score
+          {{subject}}_raw_score: raw_score
+          {{subject}}_scale_score: scale_score
+          {{subject}}_test_version: test_version
+          level_ii__satisfactory_academic_performance_in_{{subject}}: level_2_satisfactory_academic_performance
+          level_iii__accomplished_academic_performance_in_{{subject}}: level_3_accomplished_academic_performance
+          score_code_{{subject}}: score_code
+          {% if ${API_YEAR} >= 2022 %}
+          opportunity_key_{{subject}}: stu_assess_id
+          {% endif %}
+      # ADD subject, missing cols, overall_pl
+      - operation: add_columns
+        columns:
+          subject: {{descriptor_subject}}
+          # in 2021 and earlier, opportunity key didn't exist, so create own unique key
+          {% if ${API_YEAR} <= 2021 %}
+          stu_assess_id: "{%raw%}{{tx_unique_student_id}}_{{subject}}{%endraw%}"
+          {% endif %}
+          # use component PL columns to create overall PL
+          overall_performance_level: >
+            {%raw%}
+              {%- if level_3_accomplished_academic_performance == "1" -%}
+                Accomplished
+              {%- elif level_2_satisfactory_academic_performance == "1" -%}
+                Satisfactory
+              {%- else -%}
+                Developing
+              {%- endif -%}
+            {%endraw%}
+      # DEDUPE years 2021 and prior, before opportunity_key was available
+      {% if ${API_YEAR} <= 2021 %}
+      - operation: group_by_with_rank
+        group_by_columns:
+          - stu_assess_id
+        rank_column: stu_assess_row_number
+      - operation: modify_columns
+        columns:
+          stu_assess_id: "{%raw%}{{value}}_{{stu_assess_row_number}}{%endraw%}"
+      {% endif %}
+      # JOIN ADMIN WINDOWS
+      - operation: join
+        sources:
+          - $sources.administration_window_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - grade_level_code
+          - subject
+          - administration_window
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - grade_level_code
+          - subject
+          - administration_window
+        right_drop_columns:
+          - course_abbrev
+        join_type: inner 
+      # JOIN obj assess descriptive names
+      - operation: join
+        sources:
+          - $sources.obj_assess_codes_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
+        join_type: inner
+      # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
+      - operation: filter_rows
+        query: stu_assess_id != ''
+        behavior: include 
+      # KEEP conformed columns
+      - operation: keep_columns
+        columns: {{conformed_columns}}
+
+  
+  {% endfor %}  
+
+  # STACK ALL CONFORMED SETS TOGETHER
+  stacked_scores:
+    source: $transformations.staar_summative_alt_scores_reading
+    operations:
+      - operation: union
+        sources:
+          - $transformations.staar_summative_alt_scores_mathematics
+          - $transformations.staar_summative_alt_scores_social_studies
+          - $transformations.staar_summative_alt_scores_science
+        {% if ${API_YEAR} <= 2021 %} 
+          - $transformations.staar_summative_alt_scores_writing
+        {% endif %}
+
+  # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
+  studentAssessments:
+    source: $transformations.stacked_scores
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      # add api_year as a passed-in env var
+      - operation: add_columns
+        columns:
+          api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessment.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $sources.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True

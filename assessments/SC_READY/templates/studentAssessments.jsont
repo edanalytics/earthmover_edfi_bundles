@@ -1,0 +1,455 @@
+{%- set generic_score_results = [
+    [subject, "Subject", "Level"],
+    [SchoolID, "SchoolID", "Integer"],
+    [TestAdmin, "TestAdmin", "Level"],
+    [assessment_grade, "AssessmentGradeLevel", "Level"],
+    [DOB, "DOB", "Level"],
+    [District, "District", "Level"],
+    [English, "English", "Level"],
+    [FName, "FName", "Level"],
+    [FallCode, "FallCode", "Level"],
+    [FedReport, "FedReport", "Level"],
+    [G3RTSFlag, "G3RTSFlag", "Level"],
+    [Gender, "Gender", "Level"],
+    [Generation, "Generation", "Level"],
+    [Gifted, "Gifted", "Level"],
+    [GriddedFName, "GriddedFName", "Level"],
+    [GriddedLName, "GriddedLName", "Level"],
+    [GriddedMI, "GriddedMI", "Level"],
+    [Hispanic, "Hispanic", "Level"],
+    [HomeSch, "HomeSch", "Level"],
+    [IEP, "IEP", "Level"],
+    [IEP_AU, "IEP_AU", "Level"],
+    [IEP_DB, "IEP_DB", "Level"],
+    [IEP_DD, "IEP_DD", "Level"],
+    [IEP_EH, "IEP_EH", "Level"],
+    [IEP_EM, "IEP_EM", "Level"],
+    [IEP_HH, "IEP_HH", "Level"],
+    [IEP_LD, "IEP_LD", "Level"],
+    [IEP_MD, "IEP_MD", "Level"],
+    [IEP_OH, "IEP_OH", "Level"],
+    [IEP_OHI, "IEP_OHI", "Level"],
+    [IEP_PMD, "IEP_PMD", "Level"],
+    [IEP_SP, "IEP_SP", "Level"],
+    [IEP_TBI, "IEP_TBI", "Level"],
+    [IEP_TM, "IEP_TM", "Level"],
+    [IEP_VH, "IEP_VH", "Level"],
+    [InstrSetting, "InstrSetting", "Level"],
+    [LName, "LName", "Level"],
+    [MName, "MName", "Level"],
+    [Migrant, "Migrant", "Level"],
+    [PermID, "PermID", "Level"],
+    [Plan504, "Plan504", "Level"],
+    [Precoded, "Precoded", "Level"],
+    [RaceA, "RaceA", "Level"],
+    [RaceB, "RaceB", "Level"],
+    [RaceI, "RaceI", "Level"],
+    [RaceP, "RaceP", "Level"],
+    [RaceW, "RaceW", "Level"],
+    [School, "School", "Level"],
+    [TrueGrade, "TrueGrade", "Level"],
+    [VSchool, "VSchool", "Level"],
+] -%}
+
+{%- set ela_score_results = [
+    [Lex, "Lexile Score", "Level"],
+    [LexLow, "Lexile Min", "Level"],
+    [LexUp, "Lexile Max", "Level"],
+    [LexNPR, "Lexile National Percentile Rank", "Integer"],
+    [ELASS, "Overall Scale Score", "Integer"],
+    [ELAVSS, "Overall Vertical Scale Score", "Integer"],
+    [ELAAg, "Ag", "Level"],
+    [ELAAttempt, "Attempt", "Level"],
+    [ELABRType, "BRType", "Level"],
+    [ELADNS1, "DNS1", "Level"],
+    [ELADNS2, "DNS2", "Level"],
+    [ELAFormType, "FormType", "Level"],
+    [ELAMode, "Mode", "Level"],
+    [ELANPR, "NPR", "Integer"],
+    [ELARCWAbs, "RCWAbs", "Level"],
+    [ELARCWGro, "RCWGro", "Level"],
+    [ELARSMaxHOSS, "RSMaxHOSS", "Level"],
+    [ELASPR, "SPR", "Integer"],
+    [ELASSRead, "SSRead", "Level"],
+    [ELARS10, "RS10", "Level"],
+    [ELASameSchool, "SameSchool", "Level"],
+    [ELASectionID, "SectionID", "Level"],
+    [ELASecurityNum, "SecurityNum", "Level"],
+    [ELATDANoScore, "TDANoScore", "Level"],
+    [ELATeachFName, "TeachFName", "Level"],
+    [ELATeachLName, "TeachLName", "Level"],
+    [ELATeachMName, "TeachMName", "Level"],
+    [ELATeachNbr, "TeachNbr", "Level"],
+    [ELA1FTime, "1FTime", "Integer"],
+    [ELA1IEPInv, "1IEPInv", "Level"],
+    [ELA1STime, "1STime", "Integer"],
+    [ELA1SpecReq, "1SpecReq", "Level"],
+    [ELA1TAInitials, "1TAInitials", "Level"],
+    [ELA1TestDuration, "1TestDuration", "Integer"],
+    [ELA2FTime, "2FTime", "Integer"],
+    [ELA2IEPInv, "2IEPInv", "Level"],
+    [ELA2STime, "2STime", "Integer"],
+    [ELA2SpecReq, "2SpecReq", "Level"],
+    [ELA2TAInitials, "2TAInitials", "Level"],
+    [ELA2TestDuration, "2TestDuration", "Integer"],
+] -%}
+
+{%- set math_score_results = [
+    [Quant, "Quantile Score", "Level"],
+    [QuantLow, "Quantile Min", "Level"],
+    [QuantUp, "Quantile Max", "Level"],
+    [QuantNPR, "Quantile National Percentile Rank", "Integer"],
+    [MathSS, "Overall Scale Score", "Integer"],
+    [MathVSS, "Overall Vertical Scale Score", "Integer"],
+    [MathAg, "Ag", "Level"],
+    [MathAttempt, "Attempt", "Level"],
+    [MathBRType, "BRType", "Level"],
+    [MathDNS, "DNS", "Level"],
+    [MathFormType, "FormType", "Level"],
+    [MathMode, "Mode", "Level"],
+    [MathNPR, "NPR", "Level"],
+    [MathRCWAbs, "RCWAbs", "Level"],
+    [MathRCWGro, "RCWGro", "Level"],
+    [MathRSMaxHOSS, "RSMaxHOSS", "Level"],
+    [MathSPR, "SPR", "Integer"],
+    [MathSameSchool, "SameSchool", "Level"],
+    [MathSectionID, "SectionID", "Level"],
+    [MathSecurityNum, "SecurityNum", "Level"],
+    [MathTeachFName, "TeachFName", "Level"],
+    [MathTeachLName, "TeachLName", "Level"],
+    [MathTeachMName, "TeachMName", "Level"],
+    [MathTeachNbr, "TeachNbr", "Level"],
+    [Math1FTime, "1FTime", "Integer"],
+    [Math1STime, "1STime", "Integer"],
+    [MathIEPInv, "IEPInv", "Level"],
+    [MathSpecReq, "SpecReq", "Level"],
+    [MathTAInitials, "TAInitials", "Level"],
+    [Math1TestDuration, "1TestDuration", "Integer"],
+    [Math2FTime, "2FTime", "Integer"],
+    [Math2STime, "2STime", "Integer"],
+    [Math2TestDuration, "2TestDuration", "Integer"],
+] -%}
+
+{%- set sci_score_results = [
+    [SciSS, "Overall Scale Score", "Integer"],
+    [SciVSS, "Overall Vertical Scale Score", "Integer"],
+    [SciFTime, "FTime", "Integer"],
+    [SciSTime, "STime", "Integer"],
+    [SciIEPInv, "IEPInv", "Level"],
+    [SciSocFlag, "SocFlag", "Level"],
+    [SciSpecReq, "SpecReq", "Level"],
+    [SciTAInitials, "TAInitials", "Level"],
+    [SciTestDuration, "TestDuration", "Integer"],
+    [SciAg, "Ag", "Level"],
+    [SciAttempt, "Attempt", "Level"],
+    [SciBRType, "BRType", "Level"],
+    [SciDNS, "DNS", "Level"],
+    [SciFormType, "FormType", "Level"],
+    [SciMode, "Mode", "Level"],
+    [SciRCWAbs, "RCWAbs", "Level"],
+    [SciRCWGro, "RCWGro", "Level"],
+    [SciRSMaxHOSS, "RSMaxHOSS", "Level"],
+    [SciSameSchool, "SameSchool", "Level"],
+    [SciSectionID, "SectionID", "Level"],
+    [SciSecurityNum, "SecurityNum", "Level"],
+    [SciTeachFName, "TeachFName", "Level"],
+    [SciTeachLName, "TeachLName", "Level"],
+    [SciTeachMName, "TeachMName", "Level"],
+    [SciTeachNbr, "TeachNbr", "Level"],
+] -%}
+
+{%- set soc_score_results = [
+    [SocSS, "Overall Scale Score", "Level"],
+    [SocVSS, "Overall Vertical Scale Score", "Level"],
+    [SocFTime, "FTime", "Integer"],
+    [SocIEPInv, "IEPInv", "Level"],
+    [SocSTime, "STime", "Integer"],
+    [SocSpecReq, "SpecReq", "Level"],
+    [SocTAInitials, "TAInitials", "Level"],
+    [SocAg, "Ag", "Level"],
+    [SocAttempt, "Attempt", "Level"],
+    [SocBRType, "BRType", "Level"],
+    [SocDNS, "DNS", "Level"],
+    [SocFormType, "FormType", "Level"],
+    [SocMode, "Mode", "Level"],
+    [SocRCWAbs, "RCWAbs", "Level"],
+    [SocRCWGro, "RCWGro", "Level"],
+    [SocRSMaxHOSS, "RSMaxHOSS", "Level"],
+    [SocSameSchool, "SameSchool", "Level"],
+    [SocSectionID, "SectionID", "Level"],
+    [SocSecurityNum, "SecurityNum", "Level"],
+    [SocTeachFName, "TeachFName", "Level"],
+    [SocTeachLName, "TeachLName", "Level"],
+    [SocTeachMName, "TeachMName", "Level"],
+    [SocTeachNbr, "TeachNbr", "Level"],
+    [SocTestDuration, "TestDuration", "Integer"],
+] -%}
+
+
+{%- set ela_performance_levels = [
+    [ELALev, "Overall Performance Level"],
+    [ELALevRead, "LevRead"],
+] -%}
+
+{%- set math_performance_levels = [
+    [MathLev, "Overall Performance Level"],
+] -%}
+
+{%- set sci_performance_levels = [
+    [SciLev, "Overall Performance Level"],
+] -%}
+
+{%- set soc_performance_levels = [
+    [SocLev, "Overall Performance Level"],
+] -%}
+
+
+{%- set ela_objective_assessments = [
+    [ELALev1, ELALev1_name, 'Standards Performance Level'],
+    [ELALev2, ELALev2_name, 'Standards Performance Level'],
+    [ELALev3, ELALev3_name, 'Standards Performance Level'],
+    [ELALev4, ELALev4_name, 'Standards Performance Level'],
+    [ELALev5, ELALev5_name, 'Standards Performance Level'],
+    [ELALev6, ELALev6_name, 'Standards Performance Level'],
+    [ELALev7, ELALev7_name, 'Standards Performance Level'],
+    [ELALev8, ELALev8_name, 'Standards Performance Level'],
+    [ELALev9, ELALev9_name, 'Standards Performance Level'],
+    [ELALev11, ELALev11_name, 'Standards Performance Level'],
+] -%}
+
+{%- set math_objective_assessments = [
+    [MathLev1, MathLev1_name, 'Standards Performance Level'],
+    [MathLev2, MathLev2_name, 'Standards Performance Level'],
+    [MathLev3, MathLev3_name, 'Standards Performance Level'],
+    [MathLev4, MathLev4_name, 'Standards Performance Level'],
+    [MathLev5, MathLev5_name, 'Standards Performance Level'],
+] -%}
+
+{%- set sci_objective_assessments = [
+    [SciLev1, SciLev1_name, 'Standards Performance Level'],
+    [SciLev2, SciLev2_name, 'Standards Performance Level'],
+    [SciLev3, SciLev3_name, 'Standards Performance Level'],
+    [SciLev4, SciLev4_name, 'Standards Performance Level'],
+    [SciLev5, SciLev5_name, 'Standards Performance Level'],
+    [SciLev6, SciLev6_name, 'Standards Performance Level'],
+] -%}
+
+{%- set soc_objective_assessments = [
+    [SocLev1, SocLev1_name, 'Standards Performance Level'],
+    [SocLev2, SocLev2_name, 'Standards Performance Level'],
+    [SocLev3, SocLev3_name, 'Standards Performance Level'],
+    [SocLev4, SocLev4_name, 'Standards Performance Level'],
+    [SocLev5, SocLev5_name, 'Standards Performance Level'],
+    [SocLev6, SocLev6_name, 'Standards Performance Level'],
+    [SocLev7, SocLev7_name, 'Standards Performance Level'],
+] -%}
+
+
+{%- set ela_accommodations = [
+    [ELA1Acc1, "1Acc1"],
+    [ELA1Acc2, "1Acc2"],
+    [ELA1Acc3, "1Acc3"],
+    [ELA1Acc4, "1Acc4"],
+    [ELA1Acc5, "1Acc5"],
+    [ELA1Acc6, "1Acc6"],
+    [ELA1Acc7, "1Acc7"],
+    [ELA1Acc8, "1Acc8"],
+    [ELA1Acc9, "1Acc9"],
+    [ELA1Acc10, "1Acc10"],
+    [ELA1Acc11, "1Acc11"],
+    [ELA1ESLAcc1, "1ESLAcc1"],
+    [ELA1ESLAcc2, "1ESLAcc2"],
+    [ELA1ESLAcc3, "1ESLAcc3"],
+    [ELA1ESLAcc4, "1ESLAcc4"],
+    [ELA1ESLAcc5, "1ESLAcc5"],
+    [ELA1ESLAcc6, "1ESLAcc6"],
+    [ELA2Acc1, "2Acc1"],
+    [ELA2Acc2, "2Acc2"],
+    [ELA2Acc3, "2Acc3"],
+    [ELA2Acc4, "2Acc4"],
+    [ELA2Acc5, "2Acc5"],
+    [ELA2Acc6, "2Acc6"],
+    [ELA2Acc7, "2Acc7"],
+    [ELA2Acc8, "2Acc8"],
+    [ELA2Acc9, "2Acc9"],
+    [ELA2Acc10, "2Acc10"],
+    [ELA2ESLAcc1, "2ESLAcc1"],
+    [ELA2ESLAcc2, "2ESLAcc2"],
+    [ELA2ESLAcc3, "2ESLAcc3"],
+    [ELA2ESLAcc4, "2ESLAcc4"],
+    [ELA2ESLAcc5, "2ESLAcc5"],
+] -%}
+
+{%- set math_accommodations = [
+    [MathAcc1, "Acc1"],
+    [MathAcc2, "Acc2"],
+    [MathAcc3, "Acc3"],
+    [MathAcc4, "Acc4"],
+    [MathAcc5, "Acc5"],
+    [MathAcc6, "Acc6"],
+    [MathAcc7, "Acc7"],
+    [MathAcc8, "Acc8"],
+    [MathAcc9, "Acc9"],
+    [MathAcc10, "Acc10"],
+    [MathESLAcc1, "ESLAcc1"],
+    [MathESLAcc2, "ESLAcc2"],
+    [MathESLAcc3, "ESLAcc3"],
+    [MathESLAcc4, "ESLAcc4"],
+    [MathESLAcc5, "ESLAcc5"],
+    [MathESLAcc6, "ESLAcc6"],
+] -%}
+
+{%- set sci_accommodations = [
+    [SciAcc1, "Acc1"],
+    [SciAcc2, "Acc2"],
+    [SciAcc3, "Acc3"],
+    [SciAcc4, "Acc4"],
+    [SciAcc5, "Acc5"],
+    [SciAcc6, "Acc6"],
+    [SciAcc7, "Acc7"],
+    [SciAcc8, "Acc8"],
+    [SciAcc9, "Acc9"],
+    [SciAcc10, "Acc10"],
+    [SciESLAcc1, "ESLAcc1"],
+    [SciESLAcc2, "ESLAcc2"],
+    [SciESLAcc3, "ESLAcc3"],
+    [SciESLAcc4, "ESLAcc4"],
+    [SciESLAcc5, "ESLAcc5"],
+    [SciESLAcc6, "ESLAcc6"],
+] -%}
+
+{%- set soc_accommodations = [
+    [SocAcc1, "Acc1"],
+    [SocAcc2, "Acc2"],
+    [SocAcc3, "Acc3"],
+    [SocAcc4, "Acc4"],
+    [SocAcc5, "Acc5"],
+    [SocAcc6, "Acc6"],
+    [SocAcc7, "Acc7"],
+    [SocAcc8, "Acc8"],
+    [SocAcc9, "Acc9"],
+    [SocAcc10, "Acc10"],
+    [SocESLAcc1, "ESLAcc1"],
+    [SocESLAcc2, "ESLAcc2"],
+    [SocESLAcc3, "ESLAcc3"],
+    [SocESLAcc4, "ESLAcc4"],
+    [SocESLAcc5, "ESLAcc5"],
+    [SocESLAcc6, "ESLAcc6"],
+] -%}
+
+
+{%- set subject_variable_mapping = {
+    'English/Language Arts': ( ela_score_results,  ela_performance_levels,  ela_objective_assessments,  ela_accommodations),
+    'Mathematics'          : (math_score_results, math_performance_levels, math_objective_assessments, math_accommodations),
+    'Science'              : ( sci_score_results,  sci_performance_levels,  sci_objective_assessments,  sci_accommodations),
+    'Social Studies'       : ( soc_score_results,  soc_performance_levels,  soc_objective_assessments,  soc_accommodations),
+} -%}
+{%- set subject_variables = subject_variable_mapping.get(subject) -%}
+
+{%- set score_results = [] -%}
+{%- for score in generic_score_results + subject_variables[0] -%}
+  {%- if (score[2] == 'Integer' and score[0] | int) or (score[2] != 'Integer' and score[0] | string) -%}
+    {%- set _ = score_results.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set performance_levels = [] -%}
+{%- for perf_level in subject_variables[1] -%}
+  {%- if perf_level[0] | int -%}
+    {%- set _ = performance_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set objective_assessments = [] -%}
+{%- for obj_assess in subject_variables[2] -%}
+  {%- if obj_assess[0] | int -%}
+    {%- set _ = objective_assessments.append(obj_assess) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set accommodations = [] -%}
+{%- for acc in subject_variables[3] -%}
+  {%- if acc[0] -%}
+    {%- set _ = accommodations.append(acc) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{
+  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessment_identifier }}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}",
+
+  {%- if performance_levels -%}
+  "performanceLevels": [
+    {%- for perf_level in performance_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ perf_level[0] | int }}",
+      "performanceLevelMet": true
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+
+  {%- if score_results -%}
+  "scoreResults": [
+    {%- for score in score_results -%}
+    {
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0][:35] | trim}}"{%- endif %}
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+
+  {%- if objective_assessments -%}
+  "studentObjectiveAssessments": [
+    {%- for obj_assess in objective_assessments -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{ assessment_identifier }}",
+        "identificationCode": "{{ obj_assess[1] }}",
+        "namespace": "uri://datarecognitioncorp.com/Assessment"
+      },
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[0] | int}}",
+          "performanceLevelMet": true
+        }
+      ],
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{ obj_assess[2] }}",
+          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "result": "{{ obj_assess[0] | int}}"
+        }
+      ]
+    } {%-if not loop.last -%}, {%- endif -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+  
+  {%- if accommodations -%}
+  "accommodations": [
+    {%- for acc in accommodations -%}
+    {
+      "accommodationDescriptor": "uri://datarecognitioncorp.com/AccommodationDescriptor#{{acc[1]}}"
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+
+  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade | int}}"
+}

@@ -2,35 +2,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
-    }
-  ],
+  "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
@@ -39,49 +11,49 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Score",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ],
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level 1",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level 1",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level 2",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level 2",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level 3",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level 3",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level 4",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level 4",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Level",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Level 5",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Level 5",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Tier",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Tier 1",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Tier",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Tier 1",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Tier",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Tier 2",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Tier",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Tier 2",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "uri://istation.com/AssessmentReportingMethodDescriptor#Tier",
-      "performanceLevelDescriptor": "uri://istation.com/PerformanceLevelDescriptor#Tier 3",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Tier",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Tier 3",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ]

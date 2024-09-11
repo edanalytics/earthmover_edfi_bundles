@@ -1,0 +1,11 @@
+{
+    "earthmover_config": "earthmover.yaml",
+    "edfi_data_model_version_range": [">=0.3.0", "<0.4.0"],
+    "assessment_year_validated_range": [">=2022", "<=2024"],
+    "student_id_names": ["Student Number"],
+    "required_fields": ["School Name", "Student Number", "Grade", "Teacher", "Respondent", 
+                        "Relationship", "Submitted", "Form", "BERI", "BERI Raw Score", "BERI Percentile",
+                        "BERI Risk", "ERI", "ERI Risk", "IRI", "IRI Risk", "ARI", "ARI Risk", "PRI", 
+                        "PRI Risk", "SRI", "SRI Risk"],
+    "optional_fields": ["Student Name", "Gender", "Race/Ethnicity", "Is Special Education", "Respondent Gender"]
+}

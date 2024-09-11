@@ -1,0 +1,327 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'DISTRICT_STUDENT_ID,STATE_STUDENT_ID,SECONDARY_ID'
+    TEST_TYPE: ''
+
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  {% if "${TEST_TYPE}" == "SAT" %}
+    {% set test = "SAT" %}
+  {% else %}
+    {% set test = "PSAT" %}
+  {% endif %}
+  psat_sat_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: rename_columns
+        columns:
+          LATEST_{{test}}_DATE: administrationDate
+          LATEST_{{test}}_GRADE: grade_when_assessed
+          LATEST_{{test}}_TOTAL: total_score
+          LATEST_{{test}}_EBRW: reading_writing_section_score
+          LATEST_{{test}}_MATH_SECTION: math_section_score
+          LATEST_{{test}}_READING: reading_test_score
+          LATEST_{{test}}_WRIT_LANG: writing_lang_test_score
+          LATEST_{{test}}_MATH_TEST: math_test_score
+          LATEST_{{test}}_WORDS_CONTEXT: relevant_words_in_context_subscore
+          LATEST_{{test}}_COMM_EVIDENCE: command_of_evidence_subscore
+          LATEST_{{test}}_EXPR_IDEAS: expression_of_ideas_subscore
+          LATEST_{{test}}_ENG_CONVENT: standard_english_conventions_subscore
+          LATEST_{{test}}_HEART_ALGEBRA: heart_of_algebra_subscore
+          LATEST_{{test}}_PROBSLV_DATA: problem_solving_and_data_analysis_subscore
+          LATEST_{{test}}_SCI_CROSS: analysis_in_science_xtest_score
+          LATEST_{{test}}_HIST_SOCST_CROSS: analysis_in_history_xtest_score
+          PERCENTILE_NATREP_{{test}}_TOTAL: nationally_representative_total_score
+          PERCENTILE_NATREP_{{test}}_EBRW: nationally_representative_reading_writing_section_score
+          PERCENTILE_NATREP_{{test}}_MATH_SECTION: nationally_representative_math_section_score
+          PERCENTILE_NATREP_{{test}}_READING: nationally_representative_reading_test_score
+          PERCENTILE_NATREP_{{test}}_WRIT_LANG: nationally_representative_writing_lang_test_score
+          PERCENTILE_NATREP_{{test}}_MATH_TEST: nationally_representative_math_test_score
+          PERCENTILE_NATREP_{{test}}_WORDS_CONTEXT: nationally_representative_relevant_words_in_context_subscore
+          PERCENTILE_NATREP_{{test}}_COMM_EVIDENCE: nationally_representative_command_of_evidence_subscore
+          PERCENTILE_NATREP_{{test}}_EXPR_IDEAS: nationally_representative_expression_of_ideas_subscore
+          PERCENTILE_NATREP_{{test}}_ENG_CONVENT: nationally_representative_standard_english_conventions_subscore
+          PERCENTILE_NATREP_{{test}}_HEART_ALGEBRA: nationally_representative_heart_of_algebra_subscore
+          PERCENTILE_NATREP_{{test}}_PROBSLV_DATA: nationally_representative_problem_solving_and_data_analysis_subscore
+          PERCENTILE_NATUSER_{{test}}_TOTAL: user_percentile_total_score
+          PERCENTILE_NATUSER_{{test}}_EBRW: user_percentile_reading_writing_section_score
+          PERCENTILE_NATUSER_{{test}}_MATH_SECTION: user_percentile_math_section_score
+          PERCENTILE_NATUSER_{{test}}_READING: user_percentile_reading_test_score
+          PERCENTILE_NATUSER_{{test}}_WRIT_LANG: user_percentile_writing_lang_test_score
+          PERCENTILE_NATUSER_{{test}}_MATH_TEST: user_percentile_math_test_score
+          PERCENTILE_NATUSER_{{test}}_WORDS_CONTEXT: user_percentile_relevant_words_in_context_subscore
+          PERCENTILE_NATUSER_{{test}}_COMM_EVIDENCE: user_percentile_command_of_evidence_subscore
+          PERCENTILE_NATUSER_{{test}}_EXPR_IDEAS: user_percentile_expression_of_ideas_subscore
+          PERCENTILE_NATUSER_{{test}}_ENG_CONVENT: user_percentile_standard_english_conventions_subscore
+          PERCENTILE_NATUSER_{{test}}_HEART_ALGEBRA: user_percentile_heart_of_algebra_subscore
+          PERCENTILE_NATUSER_{{test}}_PROBSLV_DATA: user_percentile_problem_solving_and_data_analysis_subscore
+          EBRW_CCR_BENCHMARK: reading_writing_ccr_benchmark_indicator
+          MATH_CCR_BENCHMARK: math_ccr_benchmark_indicator
+          NUM_READING_QUES: number_of_reading_test_questions
+          READING_QUES_CORRECT: student_correct_answers_to_reading_test_questions
+          READING_QUES_INCORRECT: student_incorrect_answers_to_reading_test_questions
+          READING_QUES_OMIT: student_omitted_reading_test_questions
+          NUM_WRITLANG_QUES: number_of_writing_and_lang_test_questions
+          WRITLANG_QUES_CORRECT: student_correct_answers_to_writing_and_lang_test_questions
+          WRITLANG_QUES_INCORRECT: student_incorrect_answers_to_writing_and_lang_test_questions
+          WRITLANG_QUES_OMIT: student_omitted_writing_and_lang_test_questions
+          NUM_MATH_NCMC_QUES: number_of_math_no_calc_test_mult_choice_questions
+          NUM_MATH_NCPR_QUES: number_of_math_no_calc_test_produced_response_questions
+          MATH_NC_QUES_CORRECT: student_correct_answers_to_math_no_calc_test_questions
+          MATH_NC_QUES_INCORRECT: student_incorrect_answers_to_math_no_calc_test_questions
+          MATH_NC_QUES_OMIT: student_omitted_math_no_calc_test_questions
+          NUM_MATH_CMC_QUES: number_of_math_calc_test_mult_choice_questions
+          NUM_MATH_CPR_QUES: number_of_math_calc_test_produced_response_questions
+          MATH_C_QUES_CORRECT: student_correct_answers_to_math_calc_test_questions
+          MATH_C_QUES_INCORRECT: student_incorrect_answers_to_math_calc_test_questions
+          MATH_C_QUES_OMIT: student_omitted_math_calc_test_questions
+          {% if "${TEST_TYPE}" in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
+          LATEST_{{test}}_ADV_MATH: passport_to_advanced_math_subscore
+          PERCENTILE_NATREP_{{test}}_ADV_MATH: nationally_representative_passport_to_advanced_math_subscore
+          PERCENTILE_NATUSER_{{test}}_ADV_MATH: user_percentile_passport_to_advanced_math_subscore
+          {% endif %}
+          {% if "${TEST_TYPE}" == "SAT" %}
+          LATEST_SAT_ESSAY_READING: essay_reading_subscore
+          LATEST_SAT_ESSAY_ANALYSIS: essay_analysis_subscore
+          LATEST_SAT_ESSAY_WRITING: essay_writing_subscore          
+          {% endif %}
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        columns:
+          schoolYear: ${API_YEAR}
+          assessmentIdentifier: ${TEST_TYPE}
+          namespace: "uri://collegeboard.org"
+          assessmentCategoryDescriptor: "uri://ed-fi.org/AssessmentCategoryDescriptor#College entrance exam"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: [grade_when_assessed, assessmentIdentifier]
+        right_keys: [psat_sat_grade, assessmentIdentifier]
+      - operation: date_format
+        column: administrationDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+
+  psat_sat_student_assessment_reading_writing:
+    source: $transformations.psat_sat_student_assessment
+    operations:
+      # need to force math columns to be null
+      - operation: modify_columns
+        columns:
+          math_section_score: ''
+          math_test_score: ''
+          heart_of_algebra_subscore: ''
+          problem_solving_and_data_analysis_subscore: ''
+          nationally_representative_math_section_score: ''
+          nationally_representative_math_test_score: ''
+          nationally_representative_heart_of_algebra_subscore: ''
+          nationally_representative_problem_solving_and_data_analysis_subscore: ''
+          user_percentile_math_section_score: ''
+          user_percentile_math_test_score: ''
+          user_percentile_heart_of_algebra_subscore: ''
+          user_percentile_problem_solving_and_data_analysis_subscore: ''
+          math_ccr_benchmark_indicator: ''
+          number_of_math_no_calc_test_mult_choice_questions: ''
+          number_of_math_no_calc_test_produced_response_questions: ''
+          student_correct_answers_to_math_no_calc_test_questions: ''
+          student_incorrect_answers_to_math_no_calc_test_questions: ''
+          student_omitted_math_no_calc_test_questions: ''
+          number_of_math_calc_test_mult_choice_questions: ''
+          number_of_math_calc_test_produced_response_questions: ''
+          student_correct_answers_to_math_calc_test_questions: ''
+          student_incorrect_answers_to_math_calc_test_questions: ''
+          student_omitted_math_calc_test_questions: ''
+          {% if "${TEST_TYPE}" in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
+          passport_to_advanced_math_subscore: ''
+          nationally_representative_passport_to_advanced_math_subscore: ''
+          user_percentile_passport_to_advanced_math_subscore: ''
+          {% endif %}
+      - operation: add_columns
+        columns:
+          subject: 'English Language Arts'
+          studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_ela{%endraw%}"
+
+  psat_sat_student_assessment_math:
+    source: $transformations.psat_sat_student_assessment
+    operations:
+      # need to force reading columns to be null
+      - operation: modify_columns
+        columns:
+          reading_writing_section_score: ''
+          reading_test_score: ''
+          writing_lang_test_score: ''
+          relevant_words_in_context_subscore: ''
+          command_of_evidence_subscore: ''
+          expression_of_ideas_subscore: ''
+          standard_english_conventions_subscore: ''
+          nationally_representative_reading_writing_section_score: ''
+          nationally_representative_reading_test_score: ''
+          nationally_representative_writing_lang_test_score: ''
+          nationally_representative_relevant_words_in_context_subscore: ''
+          nationally_representative_command_of_evidence_subscore: ''
+          nationally_representative_expression_of_ideas_subscore: ''
+          nationally_representative_standard_english_conventions_subscore: ''
+          user_percentile_reading_writing_section_score: ''
+          user_percentile_reading_test_score: ''
+          user_percentile_writing_lang_test_score: ''
+          user_percentile_relevant_words_in_context_subscore: ''
+          user_percentile_command_of_evidence_subscore: ''
+          user_percentile_expression_of_ideas_subscore: ''
+          user_percentile_standard_english_conventions_subscore: ''
+          reading_writing_ccr_benchmark_indicator: ''
+          number_of_reading_test_questions: ''
+          student_correct_answers_to_reading_test_questions: ''
+          student_incorrect_answers_to_reading_test_questions: ''
+          student_omitted_reading_test_questions: ''
+          number_of_writing_and_lang_test_questions: ''
+          student_correct_answers_to_writing_and_lang_test_questions: ''
+          student_incorrect_answers_to_writing_and_lang_test_questions: ''
+          student_omitted_writing_and_lang_test_questions: ''
+          {% if "${TEST_TYPE}" == "SAT" %}
+          essay_reading_subscore: ''
+          essay_analysis_subscore: ''
+          essay_writing_subscore: ''
+          {% endif %}
+      - operation: add_columns
+        columns:
+          subject: 'Mathematics'
+          studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_mathematics{%endraw%}"
+
+  psat_sat_student_assessment_stacked:
+    source: $transformations.psat_sat_student_assessment_reading_writing
+    operations:
+      - operation: union
+        sources:
+          - $transformations.psat_sat_student_assessment_math
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - assessmentIdentifier
+          - gradeLevelDescriptor
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.psat_sat_student_assessment_stacked
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
