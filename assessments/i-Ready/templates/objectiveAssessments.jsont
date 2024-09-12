@@ -1,8 +1,8 @@
 {
   "identificationCode": "{{ identificationCode }}",
   "assessmentReference": {
-    "assessmentIdentifier": "Curriculum Associates i-Ready Diagnostic Math and ELA Assess",
-    "namespace": "uri://curriculumassociates.com/Assessment"
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
   },
   "performanceLevels": [
     {% set placement_levels = [
@@ -71,15 +71,15 @@
     ] %}
     {%- for level in placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Placement",
-      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {%- endfor -%}
     {%- for rel_level in rel_placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Relative Placement",
-      "performanceLevelDescriptor": "uri://curriculumassociates.com/PerformanceLevelDescriptor#{{rel_level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{rel_level}}",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
     {%- if not loop.last -%},
@@ -87,7 +87,7 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://curriculumassociates.com/AssessmentReportingMethodDescriptor#Scale score",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale score",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ]
