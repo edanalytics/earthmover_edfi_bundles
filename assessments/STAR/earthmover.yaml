@@ -269,13 +269,16 @@ transformations:
                   "namespace":"uri://renaissance.com/Assessment" 
                 }, 
               {% set pls_present = [] %}
-              {% set all_pls = {"Domain Mastery Level":DomainMasteryLevel, 
-                                "Standard Mastery Level":StandardMasteryLevel} %} 
+              {% set all_pls = {
+                "Domain Mastery Level": DomainMasteryLevel, 
+                "Standard Mastery Level": StandardMasteryLevel,
+              } %} 
               {% for pl_name, pl_result in all_pls.items() %}
                 {% if pl_result is not none and pl_result | length %} 
-                  {% set _= pls_present.append([pl_name, pl_result]) %} 
+                  {% set _ = pls_present.append([pl_name, pl_result]) %} 
                 {% endif %} 
               {% endfor %} 
+              {% if pls_present %}
               "performanceLevels": 
                 [ 
                   {%- for pl in pls_present -%} 
@@ -287,13 +290,16 @@ transformations:
                   {%- if not loop.last -%}, {%- else %}{% endif %}
                   {%- endfor -%} 
                 ], 
+              {% endif %}
               {% set scores_present = [] %} 
-              {% set all_scores = {"Domain Percent Mastery":DomainPercentMastery, 
-                                   "Skill Area Mastery Score":SkillAreaMasteryScore, 
-                                   "Standard Percent Mastery":StandardPercentMastery} %} 
+              {% set all_scores = {
+                "Domain Percent Mastery": DomainPercentMastery, 
+                "Skill Area Mastery Score": SkillAreaMasteryScore, 
+                "Standard Percent Mastery": StandardPercentMastery,
+              } %} 
               {% for score_name, score_result in all_scores.items() %} 
                 {% if score_result is not none and score_result | length %} 
-                  {% set _= scores_present.append([score_name, score_result]) %} 
+                  {% set _ = scores_present.append([score_name, score_result]) %} 
                 {% endif %} 
               {% endfor %} 
               "scoreResults": 
