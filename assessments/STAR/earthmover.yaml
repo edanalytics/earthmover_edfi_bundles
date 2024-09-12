@@ -138,7 +138,7 @@ transformations:
       - operation: add_columns
         columns: 
           assessmentTitle: "{%raw%}STAR {{subject_full-}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
@@ -165,7 +165,7 @@ transformations:
           StandardPercentMastery: ''
           StandardConfidenceLevel: ''
           StandardMasteryLevel: ''
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 0
       - operation: rename_columns
         columns:
@@ -196,7 +196,7 @@ transformations:
           DomainMasteryLevel: ''
           description: "{%raw%}{{domain_group_name}}: {{StandardName}}{%endraw%}"
           obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 1
       - operation: drop_columns
         columns:
@@ -224,7 +224,7 @@ transformations:
           StandardMasteryLevel: ''
           description: "{%raw%}{{domain_group_name}}{%endraw%}"
           obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 1
       # dedupe from standard level to domain (obj assessment) level
       - operation: distinct_rows
