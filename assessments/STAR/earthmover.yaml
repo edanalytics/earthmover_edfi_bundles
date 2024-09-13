@@ -249,9 +249,18 @@ transformations:
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
+  
+  # Remove duplicate rows before stacking as JSON
+  stacked_obj_assessment_distinct:
+    source: $transformations.stacked_obj_assessment
+    operations:
+      - operation: distinct_rows
+        columns:
+          - StudentAssessmentID
+          - obj_id_code
 
   star_with_obj_assessment:
-    source: $transformations.stacked_obj_assessment
+    source: $transformations.stacked_obj_assessment_distinct
     operations:
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
