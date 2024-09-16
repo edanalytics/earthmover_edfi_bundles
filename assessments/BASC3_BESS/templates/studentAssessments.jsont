@@ -53,8 +53,10 @@
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#BERI Risk",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{beri_risk}}",
-      "performanceLevelMet": true
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{beri_risk}}"
+      {% if edfi_ds_version|int < 4 %}
+      ,"performanceLevelMet": true
+      {% endif %}
     }
   ],
   "studentObjectiveAssessments": [
@@ -86,8 +88,10 @@
     "performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj[3]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[4]}}",
-        "performanceLevelMet": true
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[4]}}"
+        {% if edfi_ds_version|int < 4 %}
+        ,"performanceLevelMet": true
+        {% endif %}
       }
     ] 
   } {% if not loop.last %},{% endif %}
