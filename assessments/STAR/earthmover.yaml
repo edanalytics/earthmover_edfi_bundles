@@ -344,14 +344,19 @@ transformations:
         join_type: right
         left_key: StudentAssessmentID
         right_key: StudentAssessmentID
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors and GradeLevelDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Complete grade mapping in separate node to allow easier composition
+  star_with_obj_assessment_grade_mapped:
+    source: $transformations.star_with_obj_assessment
+    operations:
       - operation: map_values
         columns: 
           - Grade
           - CurrentGrade
         map_file: ./seeds/grade_level_mapping.csv
-      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors and GradeLevelDescriptors in the template
-        columns:
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
         
 
   standards_exist:
@@ -465,7 +470,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.star_with_obj_assessment
+    source: $transformations.star_with_obj_assessment_grade_mapped
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
