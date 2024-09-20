@@ -83,7 +83,7 @@
     {%- for score in scores_present %}
     {
       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
       "result": "{{score[2]-}}"
     }
     {%- if not loop.last %},{% endif %}
@@ -95,5 +95,5 @@
   "studentObjectiveAssessments": [{{student_objective_assessment_json}}],
   {% endif %}
 
-  "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{Grade}}"
 }
