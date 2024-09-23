@@ -2,7 +2,7 @@
     [subject, "Subject", "Level"],
     [SchoolID, "SchoolID", "Integer"],
     [TestAdmin, "TestAdmin", "Level"],
-    [assessment_grade, "AssessmentGradeLevel", "Level"],
+    [Grade, "Grade", "Level"],
     [DOB, "DOB", "Level"],
     [District, "District", "Level"],
     [English, "English", "Level"],
@@ -451,5 +451,5 @@
   ],
   {%- endif -%}
 
-  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade | int}}"
+  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{assessment_grade | int}}"
 }
