@@ -451,5 +451,7 @@
   ],
   {%- endif -%}
 
+  {%- if Grade and Grade != 'No grade level' -%}
   "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade | int}}"
+  {%- endif -%}
 }
