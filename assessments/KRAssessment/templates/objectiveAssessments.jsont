@@ -1,0 +1,21 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+        "minimumScore":{{ minimumScore }},
+        "maximumScore":{{ maximumScore }}
+      }
+    ],
+    "performanceLevels": [
+       {{ performance_json }}
+ 
+    ]
+  }
