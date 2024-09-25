@@ -51,11 +51,11 @@ The kindergarten readiness assessment is a composite assessment with objectives 
 -Here the performance level descriptors match the top level values :Demonstrating Readiness, Emerging Readiness and Approaching Readiness 
 ### whenAssessedGradeLevelDescriptor:
 - **studentAssessments.jsont**: `{{whenAssessedGradeLevelDescriptor}}`
--Here there is an assumption made the exam is taken by prekindergarten/preschool students : uri://ed-fi.org/GradeLevelDescriptor#Kindergarten
+-Here there is an assumption made the exam is taken by prekindergarten/preschool students : uri://ed-fi.org/GradeLevelDescriptor#Prekindergarten/Preschool
 ### educationOrganizationAssociationTypeDescriptor:
 - **educationOrganizationAssociationTypeDescriptor**: `uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration`
 
 ### Other mapping decisions  
-- using *PS_StudentID vs *StudentSUNS for the StudentId mapping 
-- using *DistrictCode vs SchoolCode for the studentAssessmentEducationOrganizationAssociation entity.
+- using **PS_StudentID** vs **StudentSUNS** for the StudentId mapping 
+- using **DistrictCode** vs **SchoolCode** for the studentAssessmentEducationOrganizationAssociation entity.
 

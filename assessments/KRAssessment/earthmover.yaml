@@ -1,21 +1,16 @@
 version: 2
 config:
   output_dir: ${OUTPUT_DIR}
-  input_file: ${INPUT_FILE}
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: ''
-    STUDENT_ID_FROM: ''
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    STUDENT_ID_NAME: 'PS_StudentID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'PS_StudentID,StudentSUNS'
   
-
 sources:
-  results_file:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
@@ -37,21 +32,11 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
 
   performance_level_descriptors:
     source: $sources.performanceLevelDescriptors
@@ -62,6 +47,7 @@ transformations:
       - operation: keep_columns
         columns:
           - assessmentIdentifier
+          - namespace
           - codeValue
           - minimumScore
           - maximumScore
@@ -220,8 +206,11 @@ transformations:
       
 
   prepare_student_assessments:
-    source: $sources.results_file
+    source: $sources.input
     operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: rename_columns
         columns:
           SchoolCode: schoolId
@@ -229,18 +218,11 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-          namespace: "uri://ed.sc.gov/KRA"
-          studentUniqueId: "{%raw%}{{ PS_StudentID }}{%endraw%}"
           administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
-        sources:
-          - $sources.student_id_mapping
-        left_key: PS_StudentID
-        right_key: student_id_from
-        join_type: left
       - operation: join
         sources:
           - $transformations.performance_level_descriptors
@@ -283,29 +265,25 @@ transformations:
 destinations:
   assessments:
     source: $transformations.prepare_assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
   objectiveAssessments:
     source: $transformations.prepare_objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.prepare_student_assessments
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
     source: $transformations.prepare_student_assessments
-    template: ${BUNDLE_DIR}/templates/studentAssessmentEducationOrganizationAssociations.jsont
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/descriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/descriptors.jsont
-    extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ${BUNDLE_DIR}/templates/descriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
