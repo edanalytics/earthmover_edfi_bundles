@@ -63,10 +63,10 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{LaunchDate}}",
-  "administrationEndDate": "{{CompletedDate}}",
+  "administrationEndDate": "{{CompletedDate}}"
 
   {% if pls_present %}
-  "performanceLevels": [
+  , "performanceLevels": [
     {%- for pl in pls_present -%}
     {
       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
@@ -75,11 +75,11 @@
     }
     {%- if not loop.last -%},{% endif %}
     {%- endfor -%}
-  ],
+  ]
   {% endif %}
 
   {% if scores_present %}
-  "scoreResults": [
+  , "scoreResults": [
     {%- for score in scores_present %}
     {
       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
@@ -88,12 +88,14 @@
     }
     {%- if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+  ]
   {% endif %}
 
   {% if student_objective_assessment_json is defined and student_objective_assessment_json | length %}
-  "studentObjectiveAssessments": [{{student_objective_assessment_json}}],
+  , "studentObjectiveAssessments": [{{student_objective_assessment_json}}]
   {% endif %}
 
-  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{Grade}}"
+  {%- if Grade and Grade != 'No grade level' -%}
+  , "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{Grade}}"
+  {%- endif -%}
 }
