@@ -18,6 +18,7 @@ config:
 # Define columns list as anchor to pass to keep-cols and optional_fields.
 columns_list: &columns_list
   # Generic fields
+  - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
   - SchoolID
   - TestAdmin
@@ -358,14 +359,11 @@ transformations:
   scready_student_assessment:
     source: $transformations.input
     operations:
-      - operation: keep_columns
-        columns: *columns_list
-          {% if '${STUDENT_ID_NAME}' != 'StateID' %}
-          - ${STUDENT_ID_NAME}
-          {% endif %}
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: keep_columns
+        columns: *columns_list
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
