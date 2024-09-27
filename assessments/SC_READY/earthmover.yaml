@@ -359,6 +359,10 @@ transformations:
   scready_student_assessment:
     source: $transformations.input
     operations:
+      # Roundabout way to circumvent being unable to append to YAML array aliases.
+      - operation: drop_columns
+        columns:
+          - student_unique_id
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
