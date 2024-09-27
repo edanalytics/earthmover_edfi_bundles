@@ -15,6 +15,321 @@ config:
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
+# Define columns list as anchor to pass to keep-cols and optional_fields.
+columns_list: &columns_list
+  # Generic fields
+  - ${STUDENT_ID_NAME}
+  {% if '${STUDENT_ID_NAME}' != 'StateID' %}
+  - StateID
+  {% endif %}
+  - SchoolID
+  - TestAdmin
+  - UID
+  - Grade
+  - DOB
+  - District
+  - English
+  - FName
+  - FallCode
+  - FedReport
+  - G3RTSFlag
+  - Gender
+  - Generation
+  - Gifted
+  - GriddedFName
+  - GriddedLName
+  - GriddedMI
+  - Hispanic
+  - HomeSch
+  - IEP
+  - IEP_AU
+  - IEP_DB
+  - IEP_DD
+  - IEP_EH
+  - IEP_EM
+  - IEP_HH
+  - IEP_LD
+  - IEP_MD
+  - IEP_OH
+  - IEP_OHI
+  - IEP_PMD
+  - IEP_SP
+  - IEP_TBI
+  - IEP_TM
+  - IEP_VH
+  - InstrSetting
+  - LName
+  - MName
+  - Migrant
+  - PermID
+  - Plan504
+  - Precoded
+  - RaceA
+  - RaceB
+  - RaceI
+  - RaceP
+  - RaceW
+  - School
+  - TrueGrade
+  - VSchool
+
+  # ELA-specific fields
+  - ELAGrade
+  - ELASS
+  - ELAVSS
+  - ELALev
+  - ELARS10
+  - ELALev1 
+  - ELALev2
+  - ELALev3
+  - ELALev4
+  - ELALev5
+  - ELALev6
+  - ELALev7
+  - ELALev8
+  - ELALev9
+  - ELALev11
+  - Lex
+  - LexLow
+  - LexUp
+  - LexNPR
+
+  - ELAAg
+  - ELAAttempt
+  - ELABRType
+  - ELADNS1
+  - ELADNS2
+  - ELAFormType
+  - ELALevRead
+  - ELAMode
+  - ELANPR
+  - ELARCWAbs
+  - ELARCWGro
+  - ELARSMaxHOSS
+  - ELASPR
+  - ELASSRead
+  - ELASameSchool
+  - ELASectionID
+  - ELASecurityNum
+  - ELATDANoScore
+  - ELATeachFName
+  - ELATeachLName
+  - ELATeachMName
+  - ELATeachNbr
+
+  - ELA1FTime
+  - ELA1IEPInv
+  - ELA1STime
+  - ELA1SpecReq
+  - ELA1TAInitials
+  - ELA1TestDuration
+  - ELA1Acc1
+  - ELA1Acc2
+  - ELA1Acc3
+  - ELA1Acc4
+  - ELA1Acc5
+  - ELA1Acc6
+  - ELA1Acc7
+  - ELA1Acc8
+  - ELA1Acc9
+  - ELA1Acc10
+  - ELA1Acc11
+  - ELA1ESLAcc1
+  - ELA1ESLAcc2
+  - ELA1ESLAcc3
+  - ELA1ESLAcc4
+  - ELA1ESLAcc5
+  - ELA1ESLAcc6
+
+  - ELA2FTime
+  - ELA2IEPInv
+  - ELA2STime
+  - ELA2SpecReq
+  - ELA2TAInitials
+  - ELA2TestDuration
+  - ELA2Acc1
+  - ELA2Acc2
+  - ELA2Acc3
+  - ELA2Acc4
+  - ELA2Acc5
+  - ELA2Acc6
+  - ELA2Acc7
+  - ELA2Acc8
+  - ELA2Acc9
+  - ELA2Acc10
+  - ELA2ESLAcc1
+  - ELA2ESLAcc2
+  - ELA2ESLAcc3
+  - ELA2ESLAcc4
+  - ELA2ESLAcc5
+
+  # Math-specific fields
+  - MathGrade
+  - MathSS
+  - MathVSS
+  - MathLev
+  - MathLev1
+  - MathLev2
+  - MathLev3
+  - MathLev4
+  - MathLev5
+  - Quant
+  - QuantLow
+  - QuantUp
+  - QuantNPR
+
+  - MathAg
+  - MathAttempt
+  - MathBRType
+  - MathDNS
+  - MathFormType
+  - MathMode
+  - MathNPR
+  - MathRCWAbs
+  - MathRCWGro
+  - MathRSMaxHOSS
+  - MathSPR
+  - MathSameSchool
+  - MathSectionID
+  - MathSecurityNum
+  - MathTeachFName
+  - MathTeachLName
+  - MathTeachMName
+  - MathTeachNbr
+
+  - Math1FTime
+  - Math1STime
+  - MathIEPInv
+  - MathSpecReq
+  - MathTAInitials
+  - Math1TestDuration
+  - MathAcc1
+  - MathAcc2
+  - MathAcc3
+  - MathAcc4
+  - MathAcc5
+  - MathAcc6
+  - MathAcc7
+  - MathAcc8
+  - MathAcc9
+  - MathAcc10
+  - MathESLAcc1
+  - MathESLAcc2
+  - MathESLAcc3
+  - MathESLAcc4
+  - MathESLAcc5
+  - MathESLAcc6
+
+  - Math2FTime
+  - Math2STime
+  - Math2TestDuration
+
+  # Science-specific fields
+  - SciGrade
+  - SciSS
+  - SciVSS
+  - SciLev
+  - SciLev1
+  - SciLev2
+  - SciLev3
+  - SciLev4
+  - SciLev5
+  - SciLev6
+
+  - SciFTime
+  - SciSTime
+  - SciIEPInv
+  - SciSocFlag
+  - SciSpecReq
+  - SciTAInitials
+  - SciTestDuration
+  - SciAcc1
+  - SciAcc2
+  - SciAcc3
+  - SciAcc4
+  - SciAcc5
+  - SciAcc6
+  - SciAcc7
+  - SciAcc8
+  - SciAcc9
+  - SciAcc10
+  - SciESLAcc1
+  - SciESLAcc2
+  - SciESLAcc3
+  - SciESLAcc4
+  - SciESLAcc5
+  - SciESLAcc6
+
+  - SciAg
+  - SciAttempt
+  - SciBRType
+  - SciDNS
+  - SciFormType
+  - SciMode
+  - SciRCWAbs
+  - SciRCWGro
+  - SciRSMaxHOSS
+  - SciSameSchool
+  - SciSectionID
+  - SciSecurityNum
+  - SciTeachFName
+  - SciTeachLName
+  - SciTeachMName
+  - SciTeachNbr
+
+  # Social Studies-specific fields
+  - SocGrade
+  - SocSS
+  - SocVSS
+  - SocLev
+  - SocLev1
+  - SocLev2
+  - SocLev3
+  - SocLev4
+  - SocLev5
+  - SocLev6
+  - SocLev7
+
+  - SocFTime
+  - SocIEPInv
+  - SocSTime
+  - SocSpecReq
+  - SocTAInitials
+  - SocAcc1
+  - SocAcc2
+  - SocAcc3
+  - SocAcc4
+  - SocAcc5
+  - SocAcc6
+  - SocAcc7
+  - SocAcc8
+  - SocAcc9
+  - SocAcc10
+  - SocESLAcc1
+  - SocESLAcc2
+  - SocESLAcc3
+  - SocESLAcc4
+  - SocESLAcc5
+  - SocESLAcc6
+
+  - SocAg
+  - SocAttempt
+  - SocBRType
+  - SocDNS
+  - SocFormType
+  - SocMode
+  - SocRCWAbs
+  - SocRCWGro
+  - SocRSMaxHOSS
+  - SocSameSchool
+  - SocSectionID
+  - SocSecurityNum
+  - SocTeachFName
+  - SocTeachLName
+  - SocTeachMName
+  - SocTeachNbr
+  - SocTestDuration
+
 sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -35,7 +350,7 @@ sources:
   input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
-#    encoding: ${source_encoding}
+    optional_fields: *columns_list
 
 
 transformations:
@@ -47,320 +362,7 @@ transformations:
     source: $transformations.input
     operations:
       - operation: keep_columns
-        columns:
-          # Generic fields
-          - ${STUDENT_ID_NAME}
-          {% if '${STUDENT_ID_NAME}' != 'StateID' %}
-          - StateID
-          {% endif %}
-          - SchoolID
-          - TestAdmin
-          - UID
-          - Grade
-          - DOB
-          - District
-          - English
-          - FName
-          - FallCode
-          - FedReport
-          - G3RTSFlag
-          - Gender
-          - Generation
-          - Gifted
-          - GriddedFName
-          - GriddedLName
-          - GriddedMI
-          - Hispanic
-          - HomeSch
-          - IEP
-          - IEP_AU
-          - IEP_DB
-          - IEP_DD
-          - IEP_EH
-          - IEP_EM
-          - IEP_HH
-          - IEP_LD
-          - IEP_MD
-          - IEP_OH
-          - IEP_OHI
-          - IEP_PMD
-          - IEP_SP
-          - IEP_TBI
-          - IEP_TM
-          - IEP_VH
-          - InstrSetting
-          - LName
-          - MName
-          - Migrant
-          - PermID
-          - Plan504
-          - Precoded
-          - RaceA
-          - RaceB
-          - RaceI
-          - RaceP
-          - RaceW
-          - School
-          - TrueGrade
-          - VSchool
-
-          # ELA-specific fields
-          - ELAGrade
-          - ELASS
-          - ELAVSS
-          - ELALev
-          - ELARS10
-          - ELALev1 
-          - ELALev2
-          - ELALev3
-          - ELALev4
-          - ELALev5
-          - ELALev6
-          - ELALev7
-          - ELALev8
-          - ELALev9
-          - ELALev11
-          - Lex
-          - LexLow
-          - LexUp
-          - LexNPR
-
-          - ELAAg
-          - ELAAttempt
-          - ELABRType
-          - ELADNS1
-          - ELADNS2
-          - ELAFormType
-          - ELALevRead
-          - ELAMode
-          - ELANPR
-          - ELARCWAbs
-          - ELARCWGro
-          - ELARSMaxHOSS
-          - ELASPR
-          - ELASSRead
-          - ELASameSchool
-          - ELASectionID
-          - ELASecurityNum
-          - ELATDANoScore
-          - ELATeachFName
-          - ELATeachLName
-          - ELATeachMName
-          - ELATeachNbr
-
-          - ELA1FTime
-          - ELA1IEPInv
-          - ELA1STime
-          - ELA1SpecReq
-          - ELA1TAInitials
-          - ELA1TestDuration
-          - ELA1Acc1
-          - ELA1Acc2
-          - ELA1Acc3
-          - ELA1Acc4
-          - ELA1Acc5
-          - ELA1Acc6
-          - ELA1Acc7
-          - ELA1Acc8
-          - ELA1Acc9
-          - ELA1Acc10
-          - ELA1Acc11
-          - ELA1ESLAcc1
-          - ELA1ESLAcc2
-          - ELA1ESLAcc3
-          - ELA1ESLAcc4
-          - ELA1ESLAcc5
-          - ELA1ESLAcc6
-
-          - ELA2FTime
-          - ELA2IEPInv
-          - ELA2STime
-          - ELA2SpecReq
-          - ELA2TAInitials
-          - ELA2TestDuration
-          - ELA2Acc1
-          - ELA2Acc2
-          - ELA2Acc3
-          - ELA2Acc4
-          - ELA2Acc5
-          - ELA2Acc6
-          - ELA2Acc7
-          - ELA2Acc8
-          - ELA2Acc9
-          - ELA2Acc10
-          - ELA2ESLAcc1
-          - ELA2ESLAcc2
-          - ELA2ESLAcc3
-          - ELA2ESLAcc4
-          - ELA2ESLAcc5
-
-          # Math-specific fields
-          - MathGrade
-          - MathSS
-          - MathVSS
-          - MathLev
-          - MathLev1
-          - MathLev2
-          - MathLev3
-          - MathLev4
-          - MathLev5
-          - Quant
-          - QuantLow
-          - QuantUp
-          - QuantNPR
-
-          - MathAg
-          - MathAttempt
-          - MathBRType
-          - MathDNS
-          - MathFormType
-          - MathMode
-          - MathNPR
-          - MathRCWAbs
-          - MathRCWGro
-          - MathRSMaxHOSS
-          - MathSPR
-          - MathSameSchool
-          - MathSectionID
-          - MathSecurityNum
-          - MathTeachFName
-          - MathTeachLName
-          - MathTeachMName
-          - MathTeachNbr
-
-          - Math1FTime
-          - Math1STime
-          - MathIEPInv
-          - MathSpecReq
-          - MathTAInitials
-          - Math1TestDuration
-          - MathAcc1
-          - MathAcc2
-          - MathAcc3
-          - MathAcc4
-          - MathAcc5
-          - MathAcc6
-          - MathAcc7
-          - MathAcc8
-          - MathAcc9
-          - MathAcc10
-          - MathESLAcc1
-          - MathESLAcc2
-          - MathESLAcc3
-          - MathESLAcc4
-          - MathESLAcc5
-          - MathESLAcc6
-
-          - Math2FTime
-          - Math2STime
-          - Math2TestDuration
-
-          # Science-specific fields
-          - SciGrade
-          - SciSS
-          - SciVSS
-          - SciLev
-          - SciLev1
-          - SciLev2
-          - SciLev3
-          - SciLev4
-          - SciLev5
-          - SciLev6
-
-          - SciFTime
-          - SciSTime
-          - SciIEPInv
-          - SciSocFlag
-          - SciSpecReq
-          - SciTAInitials
-          - SciTestDuration
-          - SciAcc1
-          - SciAcc2
-          - SciAcc3
-          - SciAcc4
-          - SciAcc5
-          - SciAcc6
-          - SciAcc7
-          - SciAcc8
-          - SciAcc9
-          - SciAcc10
-          - SciESLAcc1
-          - SciESLAcc2
-          - SciESLAcc3
-          - SciESLAcc4
-          - SciESLAcc5
-          - SciESLAcc6
-
-          - SciAg
-          - SciAttempt
-          - SciBRType
-          - SciDNS
-          - SciFormType
-          - SciMode
-          - SciRCWAbs
-          - SciRCWGro
-          - SciRSMaxHOSS
-          - SciSameSchool
-          - SciSectionID
-          - SciSecurityNum
-          - SciTeachFName
-          - SciTeachLName
-          - SciTeachMName
-          - SciTeachNbr
-
-          # Social Studies-specific fields
-          - SocGrade
-          - SocSS
-          - SocVSS
-          - SocLev
-          - SocLev1
-          - SocLev2
-          - SocLev3
-          - SocLev4
-          - SocLev5
-          - SocLev6
-          - SocLev7
-
-          - SocFTime
-          - SocIEPInv
-          - SocSTime
-          - SocSpecReq
-          - SocTAInitials
-          - SocAcc1
-          - SocAcc2
-          - SocAcc3
-          - SocAcc4
-          - SocAcc5
-          - SocAcc6
-          - SocAcc7
-          - SocAcc8
-          - SocAcc9
-          - SocAcc10
-          - SocESLAcc1
-          - SocESLAcc2
-          - SocESLAcc3
-          - SocESLAcc4
-          - SocESLAcc5
-          - SocESLAcc6
-
-          - SocAg
-          - SocAttempt
-          - SocBRType
-          - SocDNS
-          - SocFormType
-          - SocMode
-          - SocRCWAbs
-          - SocRCWGro
-          - SocRSMaxHOSS
-          - SocSameSchool
-          - SocSectionID
-          - SocSecurityNum
-          - SocTeachFName
-          - SocTeachLName
-          - SocTeachMName
-          - SocTeachNbr
-          - SocTestDuration
-
+        columns: *columns_list
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
