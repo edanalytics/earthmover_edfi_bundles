@@ -359,11 +359,10 @@ transformations:
     source: $transformations.input
     operations:
       - operation: keep_columns
-        columns:
-        {% if '${STUDENT_ID_NAME}' != 'StateID' %}
-        - ${STUDENT_ID_NAME}
-        {% endif %}
-        *columns_list
+        columns: *columns_list
+          {% if '${STUDENT_ID_NAME}' != 'StateID' %}
+          - ${STUDENT_ID_NAME}
+          {% endif %}
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
