@@ -18,10 +18,7 @@ config:
 # Define columns list as anchor to pass to keep-cols and optional_fields.
 columns_list: &columns_list
   # Generic fields
-  - ${STUDENT_ID_NAME}
-  {% if '${STUDENT_ID_NAME}' != 'StateID' %}
   - StateID
-  {% endif %}
   - SchoolID
   - TestAdmin
   - UID
@@ -362,7 +359,11 @@ transformations:
     source: $transformations.input
     operations:
       - operation: keep_columns
-        columns: *columns_list
+        columns:
+        {% if '${STUDENT_ID_NAME}' != 'StateID' %}
+        - ${STUDENT_ID_NAME}
+        {% endif %}
+        *columns_list
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
