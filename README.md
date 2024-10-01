@@ -7,7 +7,7 @@ Our earthmover bundles aim to be as complete as possible in their data coverage,
 while also being portable, reusable, and flexible.
 
 ### Assessment Integrations
-While earthmover bundles can be written for any domain of Ed-Fi, the current most common use-case is assessment data, because most assessment vendors do not maintain native integrations into Ed-Fi.  
+While earthmover bundles can be written for any domain of Ed-Fi, the current most common use-case is the assessment domain, because most assessment vendors do not maintain native integrations into Ed-Fi.  
 
 To better address student matching issues when implementing these bundles on real student data, this repository includes two packages that automatically detect the correct student ID configuration to maximize student matching given an Ed-Fi roster source.
 
