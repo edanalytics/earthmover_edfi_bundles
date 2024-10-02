@@ -13,16 +13,16 @@ config:
 
 sources:
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   nwea_map_fluency_input:
@@ -40,6 +40,7 @@ transformations:
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
           assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' ,'-') }}{%endraw%}"
+          namespace: "uri://www.nwea.org/mapFluency/Assessment"
       - operation: date_format
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
@@ -56,60 +57,24 @@ transformations:
         separator: '-'
       - operation: map_values
         column: Grade
-        map_file: ${BUNDLE_DIR}/seeds/map_grade_level.csv
+        map_file: ./seeds/map_grade_level.csv
       - operation: rename_columns
         columns:
           Grade: grade_level
       - operation: map_values
         column: TestLanguage
-        map_file: ${BUNDLE_DIR}/seeds/map_language.csv
+        map_file: ./seeds/map_language.csv
       - operation: rename_columns
         columns:
           TestLanguage: language
         #This group by is used so we can loop over duplicate records and create a sequence number
-      - operation: group_by
+      - operation: group_by_with_rank
         group_by_columns:
-          - school_year
-          - studentUniqueId
-          - TestCompletionDate
-          - grade_level
-          - language
-          - ResultType
-          - AssignedTestType
           - generated_test_id
-          - assessment_identifier
-          - DyslexiaScreenerOutcome
-          - UniversalScreenerOutcome
-          - TermName
-        create_columns:
-          PrintConceptCorrect: agg(PrintConceptCorrect,,)
-          PrintConceptAttempted: agg(PrintConceptAttempted,,)
-          PrintConceptPerformanceLevel: agg(PrintConceptPerformanceLevel,,)
-          SentenceReadingFluencyPerformanceLevel: agg(SentenceReadingFluencyPerformanceLevel,,)
-          SentenceReadingFluencyCorrect: agg(SentenceReadingFluencyCorrect,,)
-          SentenceReadingFluencyAttempted: agg(SentenceReadingFluencyAttempted,,)
-          OralReadingRatePerf: agg(OralReadingRatePerformanceLevel,,)
-          OralReadingWCPM: agg(OralReadingWCPMScaled,,)
-          OralReadingAccuracyPerf: agg(OralReadingAccuracyPerformanceLevel,,)
-          OralReadingAccuracyScore: agg(OralReadingAccuracyScore,,)
-          LiteralComprehensionPerf: agg(LiteralComprehensionPerformanceLevel,,)
-          ListeningComprehensionPerf: agg(ListeningComprehensionPerformanceLevel,,)
-          ListeningComprehensionCorrect: agg(ListeningComprehensionCorrect,,)
-          ListeningComprehensionAttempted: agg(ListeningComprehensionAttempted,,)
-          PictureVocabPerf: agg(PictureVocabPerformanceLevel,,)
-          PictureVocabCorrect: agg(PictureVocabCorrect,,)
-          PictureVocabAttempted: agg(PictureVocabAttempted,,)
-          PhonologicalAwarenessPerf: agg(PhonologicalAwarenessPerformanceLevel,,)
-          PhonologicalAwarenessZPDLevel: agg(PhonologicalAwarenessZPDLevel,,)
-          PhonologicalAwarenessZPDName: agg(PhonologicalAwarenessZPDName,,)
-          PhonologicalAwarenessDomainScore: agg(PhonologicalAwarenessDomainScore,,)
-          PhonologicalAwarenessTestPercentile: agg(PhonologicalAwarenessTestPercentile,,)
-          PhonicsWordRecognitionPerf: agg(PhonicsWordRecognitionPerformanceLevel,,)
-          PhonicsWordRecognitionZPDLevel: agg(PhonicsWordRecognitionZPDLevel,,)
-          PhonicsWordRecognitionZPDName: agg(PhonicsWordRecognitionZPDName,,)
-          PhonicsWordRecognitionDomainScore: agg(PhonicsWordRecognitionDomainScore,,)
-          PhonicsWordRecognitionTestPercentile: agg(PhonicsWordRecognitionTestPercentile,,)
-          count: count(generated_test_id)
+        rank_column: sequence_number
+      - operation: modify_columns
+        columns:
+          generated_test_id: "{%raw%}{{value}}_{{sequence_number}}{%endraw%}"
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
@@ -128,23 +93,23 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.nwea_map_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   objectiveAssessments:
     source: $transformations.objectiveAssessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
