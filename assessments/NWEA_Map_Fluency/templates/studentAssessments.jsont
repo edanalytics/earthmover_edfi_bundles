@@ -6,7 +6,7 @@
     "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "{{ assessment_identifier }}",
-      "namespace": "{{ namesapce }}"
+      "namespace": "{{ namespace }}"
     },
     "schoolYearTypeReference": {
       "schoolYear": {{ school_year }}
@@ -110,7 +110,7 @@
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{ assessment_identifier }}",
           "identificationCode": "{{ obj_assess["id_code"] }}",
-          "namespace": "uri://www.nwea.org/mapFluency/Assessment"
+          "namespace": "{{ namespace }}"
         },
 
         "performanceLevels": [
