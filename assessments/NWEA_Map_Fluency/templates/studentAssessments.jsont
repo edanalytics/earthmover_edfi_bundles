@@ -1,37 +1,12 @@
-{% set PrintConceptCorrect = PrintConceptCorrect.split(',') %}
-{% set PrintConceptAttempted = PrintConceptAttempted.split(',') %}
-{% set PrintConceptPerformanceLevel = PrintConceptPerformanceLevel.split(',') %}
-{% set SentenceReadingFluencyPerformanceLevel = SentenceReadingFluencyPerformanceLevel.split(',') %}
-{% set SentenceReadingFluencyCorrect = SentenceReadingFluencyCorrect.split(',') %}
-{% set SentenceReadingFluencyAttempted = SentenceReadingFluencyAttempted.split(',') %}
-{% set OralReadingRatePerf = OralReadingRatePerf.split(',') %}
-{% set OralReadingWCPM = OralReadingWCPM.split(',') %}
-{% set OralReadingAccuracyPerf = OralReadingAccuracyPerf.split(',') %}
-{% set OralReadingAccuracyScore = OralReadingAccuracyScore.split(',') %}
-{% set LiteralComprehensionPerf = LiteralComprehensionPerf.split(',') %}
-{% set ListeningComprehensionPerf = ListeningComprehensionPerf.split(',') %}
-{% set ListeningComprehensionCorrect = ListeningComprehensionCorrect.split(',') %}
-{% set ListeningComprehensionAttempted = ListeningComprehensionAttempted.split(',') %}
-{% set PictureVocabPerf = PictureVocabPerf.split(',') %}
-{% set PictureVocabCorrect = PictureVocabCorrect.split(',') %}
-{% set PictureVocabAttempted = PictureVocabAttempted.split(',') %}
-{% set PhonologicalAwarenessPerf = PhonologicalAwarenessPerf.split(',') %}
-{% set PhonologicalAwarenessZPDLevel = PhonologicalAwarenessZPDLevel.split(',') %}
-{% set PhonologicalAwarenessZPDName = PhonologicalAwarenessZPDName.split(',') %}
-{% set PhonologicalAwarenessDomainScore = PhonologicalAwarenessDomainScore.split(',') %}
-{% set PhonologicalAwarenessTestPercentile = PhonologicalAwarenessTestPercentile.split(',') %}
-{% set PhonicsWordRecognitionPerf = PhonicsWordRecognitionPerf.split(',') %}
-{% set PhonicsWordRecognitionZPDLevel = PhonicsWordRecognitionZPDLevel.split(',') %}
-{% set PhonicsWordRecognitionZPDName = PhonicsWordRecognitionZPDName.split(',') %}
-{% set PhonicsWordRecognitionDomainScore = PhonicsWordRecognitionDomainScore.split(',') %}
-{% set PhonicsWordRecognitionTestPercentile = PhonicsWordRecognitionTestPercentile.split(',') %}
-{% for i in range(count | int) %}
-{% set seq = i %}
+
+
+
+
 {
-    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id + (seq | string)) }}{%endif%}",
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
       "assessmentIdentifier": "{{ assessment_identifier }}",
-      "namespace": "uri://www.nwea.org/mapFluency/Assessment"
+      "namespace": "{{ namesapce }}"
     },
     "schoolYearTypeReference": {
       "schoolYear": {{ school_year }}
@@ -90,7 +65,7 @@
                                 }),
                                 ({"id_code": "Oral Reading Rate",
                                   "perf_levels": [(OralReadingRatePerf, "Performance Level")],
-                                  "scores": [(OralReadingWCPM,"WCPM","Integer")]
+                                  "scores": [(OralReadingWCPMScaled,"WCPM","Integer")]
                                 }),
                                 ({"id_code": "Oral Reading Accuracy",
                                   "perf_levels": [(OralReadingAccuracyPerf, "Performance Level")],
@@ -142,7 +117,7 @@
         {% for perf_level in obj_assess["perf_levels"] %}
           {% if perf_level[0][i] is not none and perf_level[0][i] | length %}
           {
-            "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ perf_level[1] }}",
+            "assessmentReportingMethodDescriptor": "{{ namesapce }}ReportingMethodDescriptor#{{ perf_level[1] }}",
             "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0][i] }}",
             "performanceLevelMet": true
           }
@@ -172,5 +147,3 @@
       {% endfor %}
     ]
 }
-{% if not loop.last %}{{ '\n' }}{% endif %}
-{% endfor %}
