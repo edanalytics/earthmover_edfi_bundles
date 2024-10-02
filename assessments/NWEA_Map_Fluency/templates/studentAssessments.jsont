@@ -100,7 +100,7 @@
 
       {% set filtered_obj_assess = [] %}
       {% for obj_assess in all_obj_assess %}
-        {% if obj_assess["scores"][0][0][i] is not none and obj_assess["scores"][0][0][i] | length %}
+        {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
         {{ filtered_obj_assess.append(obj_assess) or "" }}
         {% endif %}
       {% endfor %}
@@ -115,10 +115,10 @@
 
         "performanceLevels": [
         {% for perf_level in obj_assess["perf_levels"] %}
-          {% if perf_level[0][i] is not none and perf_level[0][i] | length %}
+          {% if perf_level[0] is not none and perf_level[0] | length %}
           {
             "assessmentReportingMethodDescriptor": "{{ namesapce }}ReportingMethodDescriptor#{{ perf_level[1] }}",
-            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0][i] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
             "performanceLevelMet": true
           }
           {% if not loop.last %},{% endif %}
@@ -128,14 +128,14 @@
             ,
             "scoreResults": [
             {% for item in obj_assess["scores"] %}
-            {% if item[0][i] is not none and item[0][i] | length %}
+            {% if item[0] is not none and item[0] | length %}
                 {
                     "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
                     "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
                     {% if obj_assess["id_code"] == "Literal Comprehension" %}
                     "result": "{{ item[0] }}"
                     {% else %}
-                    "result": "{{ item[0][i] }}"
+                    "result": "{{ item[0] }}"
                     {% endif %}
                 }
                 {% if not loop.last %},{% endif %}
