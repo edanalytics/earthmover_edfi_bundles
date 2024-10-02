@@ -52,7 +52,7 @@
       }
     ],
     "studentObjectiveAssessments": [
-      {% set all_obj_assess = [
+      {% set obj_assess_grp_1 = [
                                 ({"id_code": "Print Concept",
                                   "perf_levels": [(PrintConceptPerformanceLevel, "Performance Level")],
                                   "scores": [(PrintConceptCorrect,"Correct","Integer"),
@@ -80,7 +80,9 @@
                                   "perf_levels": [(PictureVocabPerformanceLevel,"Performance Level")],
                                   "scores": [(PictureVocabCorrect,"Correct","Integer"),
                                              (PictureVocabAttempted,"Attempted", "Integer")]
-                                }),
+                                })
+      ] %}
+      {% set obj_assess_grp_2 = [
                                 ({"id_code": "Phonological Awareness",
                                   "perf_levels": [(PhonologicalAwarenessPerformanceLevel, "Performance Level"), (PhonologicalAwarenessZPDLevel,"ZPD Level") , (PhonologicalAwarenessZPDName,"ZPD Name")],
                                   "scores": [(PhonologicalAwarenessDomainScore,"Domain Score", "Integer"),
@@ -99,8 +101,13 @@
         %}
 
       {% set filtered_obj_assess = [] %}
-      {% for obj_assess in all_obj_assess %}
+      {% for obj_assess in obj_assess_grp_1 %}
         {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
+        {{ filtered_obj_assess.append(obj_assess) or "" }}
+        {% endif %}
+      {% endfor %}
+      {% for obj_assess in obj_assess_grp_2 %}
+        {% if obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length %}
         {{ filtered_obj_assess.append(obj_assess) or "" }}
         {% endif %}
       {% endfor %}
@@ -117,7 +124,7 @@
         {% for perf_level in obj_assess["perf_levels"] %}
           {% if perf_level[0] is not none and perf_level[0] | length %}
           {
-            "assessmentReportingMethodDescriptor": "{{ namesapce }}ReportingMethodDescriptor#{{ perf_level[1] }}",
+            "assessmentReportingMethodDescriptor": "{{ namespace }}ReportingMethodDescriptor#{{ perf_level[1] }}",
             "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
             "performanceLevelMet": true
           }
@@ -125,6 +132,7 @@
           {% endif %}
         {% endfor %}
           ]
+        {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
             ,
             "scoreResults": [
             {% for item in obj_assess["scores"] %}
@@ -142,6 +150,7 @@
             {% endif %}
             {% endfor %}
           ]
+        {% endif %}
 
         }{% if not loop.last %},{% endif %}
       {% endfor %}
