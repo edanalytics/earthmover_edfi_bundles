@@ -6,7 +6,7 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'PS_StudentID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'PS_StudentID,StudentSUNS'
   
 sources:
@@ -22,9 +22,6 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  academicSubjectDescriptors:
-    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
-    header_rows: 1
 
   gradeLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
@@ -37,6 +34,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
+  
 
   performance_level_descriptors:
     source: $sources.performanceLevelDescriptors
@@ -71,7 +69,7 @@ transformations:
               {%raw-%}  
               {
                 "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
-                "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}",
+                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}",
                 "minimumScore": {{ minimumScore }},
                 "maximumScore": {{ maximumScore }}
               }
@@ -127,34 +125,6 @@ transformations:
           - assessmentIdentifier
         create_columns: 
           grade_json: agg(grade_json,,)
-    
-
-  academic_subject_descriptors:
-    source: $sources.academicSubjectDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          assessmentIdentifier: "KRA"
-      - operation: add_columns
-        columns:
-          subject_json: >
-              {%raw-%}  
-              {
-                "academicSubjectDescriptor": "{{namespace}}#{{codeValue}}"
-              }
-              {%-endraw%}
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
-        # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns: 
-          subject_json: agg(subject_json,,)
-      
-    
-
   
   prepare_assessments:
     source: $sources.assessments
@@ -260,6 +230,7 @@ transformations:
           PerformanceLevel_LLScore: agg(PerformanceLevel_LLScore,)
           PerformanceLevel_MAScore: agg(PerformanceLevel_MAScore,)
           PerformanceLevel_PDScore: agg(PerformanceLevel_PDScore,)
+
                
 
 destinations:
@@ -281,9 +252,9 @@ destinations:
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/descriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ./templates/descriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl

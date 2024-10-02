@@ -18,10 +18,11 @@
 
 ## Reasoning
 The kindergarten readiness assessment is a composite assessment with objectives such as:
-- Social Foundation Score
-- Language and Literacy Score
-- Mathematics Score
-- Physical Well-Being and Motor Development Score.
+- Social Foundation  mapping to Social Foundations academic subject 
+- Language and Literacy  mapping to English/Language Arts academic subject 
+- Mathematics mapping to Mathematics academic subject 
+- Physical Well-Being and Motor Development  mapping to Physical Well-Being academic subject  
+in the North Carolina Academic subject name space .
 
 ## Summary of Descriptor Fields and Mappings
 
@@ -31,8 +32,8 @@ The kindergarten readiness assessment is a composite assessment with objectives 
 
 ### academicSubjectDescriptor:
 - **assessments.jsont**: `uri://ed.sc.gov/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}`
-- **assessments.csv**: Overall
-- Here i am not certain if i should create and academic subject under the assessment namespace or the normal namespace. 
+- **assessments.csv**: Composite 
+
 ### assessmentReportingMethodDescriptor:
 - **assessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
 - **objectiveAssessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
@@ -56,6 +57,5 @@ The kindergarten readiness assessment is a composite assessment with objectives 
 - **educationOrganizationAssociationTypeDescriptor**: `uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration`
 
 ### Other mapping decisions  
-- using **PS_StudentID** vs **StudentSUNS** for the StudentId mapping 
 - using **DistrictCode** vs **SchoolCode** for the studentAssessmentEducationOrganizationAssociation entity.
 
