@@ -1,7 +1,3 @@
-
-
-
-
 {
     "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
     "assessmentReference": {
