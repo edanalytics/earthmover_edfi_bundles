@@ -87,7 +87,7 @@
     }
   ],
   "performanceLevels": [
-    {% if is_alt_assessment %}
+    {% if is_alt_assessment|string == 'True' %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Developing",
@@ -102,7 +102,7 @@
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Accomplished",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
+    }
     {% else %} 
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
