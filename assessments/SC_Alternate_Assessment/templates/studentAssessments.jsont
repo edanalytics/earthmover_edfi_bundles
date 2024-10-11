@@ -67,5 +67,5 @@
   {%- endfor -%}
   ],
   {%- endif -%}
-    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{enrolled_grade | int}}"
+    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{test_grade | int}}"
 }
