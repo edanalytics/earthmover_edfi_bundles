@@ -16,9 +16,6 @@ config:
     DATABASE_CONNECTION: ''
 
 sources:
-  sc_alt_input:
-    file: ${INPUT_FILE}
-    header_rows: 1
   assessments:
     file: ${BUNDLE_DIR}/seeds/assessments.csv
     header_rows: 1
@@ -32,26 +29,18 @@ sources:
     file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
     header_rows: 1
   
-
-  {% if "${STUDENT_ID_QUERY}" | length %}
-  student_id_mapping:
-    connection: ${DATABASE_CONNECTION}
-    query: ${STUDENT_ID_QUERY}
-
-  {% else %}
-  student_id_mapping:
-    file: ${STUDENT_ID_XWALK}
-    header_rows: 1
-    columns: 
-      - student_id_from 
-      - student_id_to
-    optional: True 
-  {% endif %}
-
+  input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+#    encoding: ${source_encoding}
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+    
   sc_alt_student_assessment:
-    source: $sources.sc_alt_input
+    source: $transformations.input
     operations:
       - operation: join 
         sources: 
