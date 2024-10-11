@@ -14,6 +14,7 @@ config:
     STUDENT_ID_XWALK: ''
     STUDENT_ID_QUERY: ''
     DATABASE_CONNECTION: ''
+    INPUT_FILETYPE: csv
 
 sources:
   assessments:
@@ -38,7 +39,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
-    
+
   sc_alt_student_assessment:
     source: $transformations.input
     operations:
