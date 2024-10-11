@@ -44,12 +44,6 @@ transformations:
   sc_alt_student_assessment:
     source: $transformations.input
     operations:
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: ${STUDENT_ID_FROM}
-        right_key: student_id_from
-        join_type: left  
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
