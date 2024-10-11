@@ -81,7 +81,7 @@ transformations:
           Performance: performance_level
       - operation: add_columns
         columns:
-          assessment_identifier: "{%raw%}SC-Alt {{subject}}{%endraw%}"
+          assessment_identifier: "{%raw%}SC_ALT_{{subject}}_{{API_YEAR}}{%endraw%}"
           school_year: ${API_YEAR}
           student_assessment_id: "{%raw%}{{student_id}}_{{subject}}{%endraw%}"
       - operation: date_format
