@@ -1,0 +1,261 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: "Student Id"
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentReportingPeriodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+transformations:
+  {% set assessment = {
+       
+     'Early Literacy+': [
+        'Alliteration',
+        'Picture Naming',
+        'Rhyming',
+        'Sound ID',
+        'WODB'
+    ],
+    'Early Numeracy': [
+        '1-to-1 Correspondence Counting',
+        'Number Naming',
+        'Oral Counting',
+        'Quantity Comparison'
+    ],
+    'Español': [
+        'Expressive Verbs/Verbos Expressivos',
+        'First Sounds/Primeros Sonidos',
+        'Letter ID/Identificación de las letras',
+        'Picture Naming/Denominacion de los Dibujos',
+        'Sound ID/Identificación de los sonidos'
+    ],
+    'ProLADR': [
+        'Approaches to Learning',
+        'Cognitive',
+        'Creativity and the Arts',
+        'Language and Literacy',
+        'Physical and Motor',
+        'Social and Emotional'
+    ]
+  } %}
+
+  {% set assessment_window = {
+    'Early Literacy+': [
+        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
+        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
+        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
+        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
+    ],
+    'Early Numeracy': [
+        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
+        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
+        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
+        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
+    ],
+    'Español': [
+        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
+        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
+        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
+        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
+    ],
+    'ProLADR': [
+        'Fall Screening', 'Winter Screening', 'Spring Screening', 'Summer Screening'
+    ]
+  } %}
+  source_assessment:
+    source: $sources.input
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+  
+
+  {% for assessment_name, objectives in assessment.items() %}
+    {% for objective in objectives %}
+      {% for window in assessment_window.get(assessment_name, []) %}
+  unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}:
+      source: $transformations.source_assessment
+      operations:
+        - operation: keep_columns
+          columns:
+            - "School Year"
+            - "State Name"
+            - "District Name"
+            - "School Name"
+            - "Classroom Name"
+            - "Init District Id"
+            - "studentUniqueId"
+            - {{assessment_name}}/{{objective}}/{{window}}/Date Of Administration
+            {% if assessment_name == 'Early Literacy+' %}
+            - {{assessment_name}}/{{objective}}/{{window}}/Scaled Score
+            {% else %}
+            - {{assessment_name}}/{{objective}}/{{window}}/Score
+            {% endif %}
+            - {{assessment_name}}/{{objective}}/{{window}}/Tier
+
+        - operation: add_columns
+          columns:
+            Assessment: {{assessment_name}}
+            objective: {{objective}}
+            timeWindow: {{window}}
+            namespace: uri://ed.sc.gov/myIGDIs
+            assessmentIdentifier: {{ assessment_name.replace(' ', '') }}_{{ objective.replace(' ', '') }}
+        - operation: rename_columns
+          columns:
+            "School Year": SchoolYear
+            "State Name": StateName
+            "District Name": DistrictName
+            "School Name": SchoolName
+            "Classroom Name": ClassroomName
+            "Init District Id": InitDistrictId
+
+            {{assessment_name}}/{{objective}}/{{window}}/Date Of Administration: administrationDate
+            {% if assessment_name == 'Early Literacy+' %}
+            {{assessment_name}}/{{objective}}/{{window}}/Scaled Score: Score
+            {% else %}
+            {{assessment_name}}/{{objective}}/{{window}}/Score: Score
+            {% endif %}
+            {{assessment_name}}/{{objective}}/{{window}}/Tier: Tier
+        - operation: filter_rows
+          query: Score != ''
+          behavior: include
+        - operation: add_columns
+          columns:
+            studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
+            assessmentFamily: {{assessment_name}}}
+        
+
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+
+  combined_results:
+      source: $transformations.unpivot_columns_{{assessment.keys() | list | first}}_{{assessment.values() | list | first | first}}_{{assessment_window.values() | list | first | first}}
+      operations:
+        - operation: union
+          sources:
+            {% for assessment_name, objectives in assessment.items() %}
+              {% for objective in objectives %}
+                {% for window in assessment_window.get(assessment_name, []) %}
+                - $transformations.unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+  performance_levels:
+    
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          cross_join_key: myIGDIs
+      - operation: keep_columns
+        columns:
+          - cross_join_key
+          - codeValue
+          - namespace
+      - operation: add_columns
+        columns:
+          performance_json: >
+              {%raw-%}  
+              {
+                "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
+                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"    
+      - operation: group_by
+        group_by_columns:
+          - cross_join_key
+        create_columns: 
+          performance_json: agg(performance_json,,)
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          cross_join_key: myIGDIs
+      - operation: add_columns
+        columns:
+          grade_json: >
+              {%raw-%}  
+              {
+                "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - cross_join_key
+        create_columns: 
+          grade_json: agg(grade_json,,)            
+  final_assessment:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          cross_join_key: myIGDIs
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+        join_type: left
+        left_key: cross_join_key
+        right_key: cross_join_key
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: left
+        left_key: cross_join_key
+        right_key: cross_join_key 
+
+destinations:
+  studentAssessments:
+    source: $transformations.combined_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  assessments:
+    source: $transformations.final_assessment
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentPeriodsDescriptors:
+    source: $sources.assessmentReportingPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.combined_results
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
