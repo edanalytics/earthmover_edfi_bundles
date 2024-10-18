@@ -1,0 +1,54 @@
+{
+	"assessmentIdentifier": "{{assessmentIdentifier}}",
+	"assessmentTitle": "{{assessmentTitle}}",
+	"namespace": "{{namespace}}",
+	"assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#State assessment",
+	"assessedGradeLevels": [{{grade_json}}],
+	"academicSubjects": [{{subject_json}}],
+	"scores": [
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Scale score",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Lexile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Quantile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		}
+	],
+	"performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Below Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Approaching Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#At Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Above Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Workplace readiness score",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Yes",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Workplace readiness score",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#No",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		}
+	]
+}

@@ -1,0 +1,48 @@
+{
+	"studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+	"assessmentReference": {
+		"assessmentIdentifier": "{{assessmentIdentifier}}",
+		"namespace": "{{namespace}}"
+	},
+	"schoolYearTypeReference": {
+		"schoolYear": "{{schoolYear}}"
+	},
+	"studentReference": {
+		"studentUniqueId": "{{studentUniqueId}}"
+	},
+	"administrationDate": "{{administrationDate}}",
+	"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+	"scoreResults": [
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Scale score",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+			"result": "{{overall_scale_score}}"
+		}
+		{% if lexile_measure is not none and lexile_measure | length %},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Lexile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+			"result": "{{lexile_measure}}"
+		}
+		{% endif %}
+		{% if quantile_measure is not none and quantile_measure | length %},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Quantile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+			"result": "{{quantile_measure}}"
+		}
+		{% endif %}
+	],
+	"performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#{{overall_proficiency_level}}",
+			"performanceLevelMet": true
+		},
+		{
+			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Workplace readiness score",
+			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#{{cc_readiness_indicator}}",
+			"performanceLevelMet": true
+		}
+	]
+}

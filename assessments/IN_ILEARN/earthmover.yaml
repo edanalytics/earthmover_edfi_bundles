@@ -1,0 +1,196 @@
+version: 2
+
+config:
+  config:
+  log_level: INFO
+  output_dir: ./output
+  memory_limit: 1GB
+  state_file: ./state.csv
+  show_graph: False
+  parameter_defaults:
+    #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
+    INPUT_FILETYPE: csv
+
+    # ILEARN export does not provide a test date/year column, so we have to make one up.  This may change with new ILEARN updates
+    TEST_DATE: '2024-04-01'
+    TEST_YEAR: '2024'
+
+sources:
+  #Does not exist by default, must be provided
+  studentAssessments:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  studentAssessments:
+    source: $sources.studentAssessments
+    operations:
+      #rename columns with spaces in the column name
+      - operation: rename_columns
+        columns:
+          Test name: test_name
+          Enrolled Grade: enrolled_grade
+          Overall scale score: overall_scale_score
+          Overall proficiency level: overall_proficiency_level
+          ILEARN Reported Lexile® Measure: lexile_measure
+          ILEARN Reported Quantile® Measure: quantile_measure
+          College and Career Readiness Indicator: cc_readiness_indicator
+          STN: studentUniqueId
+
+      # Parse the academic subject from the test_name column (format: ILEARN [long subject] Grade [grade number])
+      - operation: add_columns
+        columns:
+          DI_Test_Name: "{%raw%}{{test_name.split(' Grade ')[0]}}{%endraw%}"
+      # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
+      # (specified in academicSubjectDescriptor seed table)
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_keys:
+          - DI_Test_Name
+        right_keys: 
+          - assessmentTitle
+
+      # Pad the StudentUniqueId (STN) to 9 digits, since sometimes exporting will strip leading zeroes
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%}{{value.rjust(9,'0')}}{%endraw%}"
+      
+      # Add standard assessment columns
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}ILEARN-{{academicSubject}}{%endraw%}" #uses short academic subject, matched above
+          namespace: 'uri://idoe.gov/assessment/ILEARN'
+          schoolYear: '${TEST_YEAR}' #ILearn export doesn't include test date/year, so we have to make one up
+          administrationDate: '${TEST_DATE}'
+      
+      # Create StudentAssessmentIdentifier
+      # TODO May need to include something else for retests?
+      - operation: combine_columns
+        columns:
+          - assessmentIdentifier
+          - studentUniqueId          
+          - schoolYear      
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+
+      # Get grade level descriptor from when assessed grade level
+      # (specified in gradeLevelDescriptor seed table)
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys:
+          - enrolled_grade
+          - assessmentIdentifier
+        right_keys: 
+          - gradeLevel
+          - assessmentIdentifier
+      
+  # Generate academic subject json for assessment template based on seeds
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate grade level json for assessment template based on seeds
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Add grade level and academic subject json to assessments source, to be used by assessments template
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier      
+  
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
