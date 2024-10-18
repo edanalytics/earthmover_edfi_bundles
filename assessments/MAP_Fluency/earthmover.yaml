@@ -10,7 +10,7 @@ config:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    INPUT_FILE: ${INPUT_FILE}
+    INPUT_FILE: ''
     API_YEAR: ''
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
@@ -39,7 +39,7 @@ sources:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
-  nwea_map_fluency_input:
+  input:
     file: ${INPUT_FILE}
     header_rows: 1
 
