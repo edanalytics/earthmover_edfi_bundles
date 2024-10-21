@@ -22,5 +22,5 @@ packages:
     local: packages/eoc_alt
     {% else %}
     # don't expect anything to be here but it'll throw a better error message
-    local: packages
+    local: "no format provided"
     {% endif %}
