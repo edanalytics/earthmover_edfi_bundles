@@ -9,21 +9,12 @@ config:
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
-    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    #STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    STUDENT_ID_NAME: StudentID
     INPUT_FILE: ''
     API_YEAR: ''
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
-
-packages:
-  MAP_Fluency:
-    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    branch: main
-    sudirectory: assessments/MAP_Fluency
-  student_ids:
-    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    branch: main
-    subdirectory: packages/student_ids
 
 sources:
   assessments:
