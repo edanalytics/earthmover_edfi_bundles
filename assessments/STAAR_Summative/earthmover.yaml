@@ -11,20 +11,16 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
 
 packages:
-  {% if "${FORMAT}" == "Standard" %}
-  standard:
+  staar_summative_format:
+    {% if "${FORMAT}" == "Standard" %}
     local: formats/standard
     {% elif "${FORMAT}" == "Alternate" %}
-  alt:
     local: formats/alt
     {% elif "${FORMAT}" == "End-of-Course" %}
-  eoc:
     local: formats/eoc
     {% elif "${FORMAT}" == "End-of-Course Alternate" %}
-  eoc_alt:
     local: formats/eoc_alt
     {% else %}
-  none:
     # don't expect anything to be here but it'll throw a better error message
     local: "no format provided"
     {% endif %}
