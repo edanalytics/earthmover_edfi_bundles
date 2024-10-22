@@ -118,7 +118,7 @@ transformations:
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - assessmentFamily
         create_columns:
           grade_json: agg(grade_json)
       # get rid of trailing comma
@@ -133,9 +133,8 @@ transformations:
         sources:
           - $transformations.grade_level_descriptors
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
+        left_key: assessmentFamily
+        right_key: assessmentFamily
 
 destinations:
   studentAssessments:
@@ -144,7 +143,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessments:
-    source: $sources.assessments
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
