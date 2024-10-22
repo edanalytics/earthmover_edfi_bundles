@@ -3,32 +3,7 @@
   "assessmentTitle": "{{assessmentTitle}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#First grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Second grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ungraded"
-    }
-  ],
+  "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
