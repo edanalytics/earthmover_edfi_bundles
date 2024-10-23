@@ -9,7 +9,8 @@ config:
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
-    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    #STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    STUDENT_ID_NAME: StudentID
     INPUT_FILE: ''
     API_YEAR: ''
     INPUT_FILETYPE: csv
@@ -33,6 +34,9 @@ sources:
     header_rows: 1
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  languageDescriptors:
+    file: ./seeds/languageDescriptors.csv
     header_rows: 1 
 
   input:
@@ -69,18 +73,10 @@ transformations:
           - TestLanguage
         new_column: generated_test_id
         separator: '-'
-      - operation: map_values
-        column: Grade
-        map_file: ./seeds/map_grade_level.csv
-      - operation: rename_columns
-        columns:
-          Grade: grade_level
-      - operation: map_values
-        column: TestLanguage
-        map_file: ./seeds/map_language.csv
       - operation: rename_columns
         columns:
           TestLanguage: language
+          Grade: grade
         #This group by is used so we can loop over duplicate records and create a sequence number
       - operation: group_by_with_rank
         group_by_columns:
@@ -89,6 +85,19 @@ transformations:
       - operation: modify_columns
         columns:
           generated_test_id: "{%raw%}{{value}}_{{sequence_number}}{%endraw%}"
+          grade: "{%raw%}{{value}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: grade
+        right_key: grade
+      - operation: join
+        sources:
+          - $sources.languageDescriptors
+        join_type: inner
+        left_key: language
+        right_key: language
 
   objectiveAssessments:
     source: $sources.objectiveAssessments
