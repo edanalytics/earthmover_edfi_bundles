@@ -53,12 +53,16 @@ The assessment family is set as the `assessment_name`:
 - uri://ed.sc.gov/assessmentReportingMethodDescriptor#PerformanceLevel
 
 # Hierarchy
+
 - Early Literacy+
 ![alt text](EarlyLiteracy.png)
+
 - Early Numeracy
 ![alt text](EarlyNumeracy.png)
+
 - Espanol
 ![alt text](Espanol.png)
+
 - ProLADR
 ![alt text](ProLADR.png)
 
@@ -87,10 +91,12 @@ The myIGDIs assessment is designed to measure individual growth and development 
   - Español:
     - Early Literacy
   - ProLADR:
-    - Non-instructional OR Executive Functioning
-    - Early Literacy
-    - Physical Well-Being
-    - Social Foundations
+    - Approaches to Learning: Non-instructional OR Executive Functioning
+    - Cognitive: Non-instructional OR Executive Functioning
+    - Creativity and the Arts: Non-instructional OR Executive Functioning
+    - Language and Literacy: Early Literacy
+    - Physical and Motor: Physical Well-Being
+    - Social and Emotional: Social Foundations
 
 ### assessmentReportingMethodDescriptor:
 - **assessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
@@ -101,12 +107,13 @@ The myIGDIs assessment is designed to measure individual growth and development 
 ### resultDatatypeTypeDescriptor:
 - **assessments.jsont**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
 - **studentAssessments.jsont**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-- **studentAssessments.jsont (within studentObjectiveAssessments)**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
 
 ### performanceLevelDescriptor:
 - **studentAssessments.jsont**: `{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevelDescriptor}}`
-- Here the performance level descriptors match the **Tier** from the file. 
-
+- Here the performance level descriptors match the **Tier** from the file. The performance level descriptors include:
+  - Tier II/III: Performance level indicating Tier II or III
+  - Cut Range: Performance level indicating Cut Range
+  - Tier I: Performance level indicating Tier I
 ### whenAssessedGradeLevelDescriptor:
 - **studentAssessments.jsont**: `{{whenAssessedGradeLevelDescriptor}}`
 - Here there is an assumption made that the exam is taken by kindergarten students: uri://ed-fi.org/GradeLevelDescriptor#Kindergarten
@@ -114,5 +121,27 @@ The myIGDIs assessment is designed to measure individual growth and development 
 ### educationOrganizationAssociationTypeDescriptor:
 - **educationOrganizationAssociationTypeDescriptor**: `uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration`
 
-### Alternate mapping choices. 
-- If assessment identifier is mapped as a combination of the current assessment id and the assessment window , it is possible to capture the cut of scores that are variable across assessment time windows ( fall, spring, summer, winter ). 
+### assessmentPeriodDescriptor:
+- **studentAssessments.jsont**: `{{namespace}}/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}`
+- Here the namespace is: `uri://ed.sc.gov/myIGDIs`
+- The assessment period descriptors to be added include:
+  - Fall 1
+  - Fall 2
+  - Fall 3
+  - Fall 4
+  - Fall Screening
+  - Winter 1
+  - Winter 2
+  - Winter 3
+  - Winter 4
+  - Winter Screening
+  - Spring 1
+  - Spring 2
+  - Spring 3
+  - Spring 4
+  - Spring Screening
+  - Summer 1
+  - Summer 2
+  - Summer 3
+  - Summer 4
+  - Summer Screening
