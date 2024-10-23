@@ -5,11 +5,7 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [
-    {
-      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Reading"
-    }
-  ],
+  "academicSubjects": [{{subject_json}}],
   "scores": [
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Result Type",
