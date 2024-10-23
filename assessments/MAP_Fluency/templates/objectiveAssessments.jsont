@@ -1,0 +1,37 @@
+{
+  "assessmentItems": [],
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "uri://www.nwea.org/mapFluency/Assessment"
+  },
+  "description": "{{identification_code}}",
+  "identificationCode": "{{identification_code}}",
+  "learningObjectives": [],
+  "learningStandards": [],
+  "performanceLevels": [
+    {% set reporting_methods = reporting_methods.split(',')|select|list%}
+    {% set levels = levels.split(',')|select|list %}
+    {% for i in range(reporting_methods| length) %}
+      {% if reporting_methods[i] != '' %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ reporting_methods[i] }}",
+        "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ levels[i] }}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }{% if not loop.last %},{% endif %}
+    {% endif %}
+  {% endfor %}
+  ],
+  "scores": [
+    {% set score_reporting_methods = score_reporting_methods.split(',')|select|list %}
+    {% set result_data_types = result_data_types.split(',')|select|list%}
+    {% set existing_result_data_types = [] %}
+    {% for i in range(score_reporting_methods | length) %}
+      {% if score_reporting_methods[i] != '' %}
+        {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score_reporting_methods[i] }}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ result_data_types[i] }}"
+        } {% if not loop.last %},{% endif %}
+      {% endif %}
+    {% endfor %}
+  ]
+}
