@@ -13,6 +13,7 @@ config:
     INPUT_FILETYPE: csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   macros: > 
       {% macro map_subject_to_assess_id(value) -%}
       {%- if 'Mathematics' in value -%}MAP_Growth_Mathematics
@@ -66,6 +67,7 @@ transformations:
           schoolYear: "{%raw%}{{TermName[-4:]}}{%endraw%}"
           assessmentIdentifier: "{%raw%}{{ map_subject_to_assess_id(Subject) }}{%endraw%}"
           namespace: 'uri://www.nwea.org/map/Assessment'
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}  # Set hard-coded ResultDatatypeTypeDescriptors in the template
       - operation: date_format
         column: TestStartDate
         from_format: "%m/%d/%Y"
@@ -115,6 +117,9 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
   
   {% for i in range(1, 9) %} 
   goal_{{i}}: 
@@ -146,6 +151,7 @@ transformations:
         columns:
           assessmentIdentifier: "{%raw%}{{ map_subject_to_assess_id(Subject) }}{%endraw%}"
           namespace: 'uri://www.nwea.org/map/Assessment'
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}  # Set hard-coded ResultDatatypeTypeDescriptors in the template
 
   {% for i in range(1, 10) %}
   proj_prof_{{i}}:
