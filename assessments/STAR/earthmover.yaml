@@ -26,6 +26,7 @@ config:
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
     INPUT_FILETYPE: csv
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
@@ -316,7 +317,7 @@ transformations:
                   {%- for score in scores_present -%} 
                     { 
                       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}", 
-                      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+                      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer", 
                       "result": "{{score[1]}}" 
                     } 
                     {%- if not loop.last -%}, {%- else %}{% endif %}
@@ -343,11 +344,20 @@ transformations:
         join_type: right
         left_key: StudentAssessmentID
         right_key: StudentAssessmentID
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors and GradeLevelDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Complete grade mapping in separate node to allow easier composition
+  star_with_obj_assessment_grade_mapped:
+    source: $transformations.star_with_obj_assessment
+    operations:
       - operation: map_values
         columns: 
           - Grade
           - CurrentGrade
         map_file: ./seeds/grade_level_mapping.csv
+        
 
   standards_exist:
     source: $transformations.stacked_obj_assessment
@@ -386,6 +396,9 @@ transformations:
         join_type: left
         left_key: join_key
         right_key: join_key
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
   
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -431,6 +444,9 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessmentReportingMethodDescriptors:
@@ -454,7 +470,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.star_with_obj_assessment
+    source: $transformations.star_with_obj_assessment_grade_mapped
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
