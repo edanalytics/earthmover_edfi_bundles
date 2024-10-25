@@ -168,7 +168,6 @@ transformations:
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_scores_{{subject}}:
     source: $transformations.conformed_staar_summative
-    require_rows: true
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
       - operation: rename_columns
@@ -241,6 +240,7 @@ transformations:
         join_type: inner  
       # JOIN obj assess descriptive names
       - operation: join
+        require_rows: true
         sources:
           - $sources.obj_assess_codes_xwalk
         left_keys:
