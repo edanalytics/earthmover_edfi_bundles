@@ -260,7 +260,6 @@ transformations:
       # KEEP conformed columns
       - operation: keep_columns
         columns: {{conformed_columns}}
-    debug: True
 
   
   {% endfor %}  
@@ -268,7 +267,6 @@ transformations:
   # STACK ALL CONFORMED SETS TOGETHER
   stacked_scores:
     source: $transformations.staar_summative_scores_reading
-    debug: True
     operations:
       - operation: union
         sources:
