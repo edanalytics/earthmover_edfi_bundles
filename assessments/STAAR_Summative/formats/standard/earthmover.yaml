@@ -288,6 +288,7 @@ transformations:
       - operation: add_columns
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
+    require_rows: true
 
 
 destinations:
