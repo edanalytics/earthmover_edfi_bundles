@@ -238,9 +238,10 @@ transformations:
         right_drop_columns:
           - course_abbrev
         join_type: inner  
+        debug: True
       # JOIN obj assess descriptive names
       - operation: join
-        require_rows: true
+        debug: True
         sources:
           - $sources.obj_assess_codes_xwalk
         left_keys:
