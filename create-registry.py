@@ -15,7 +15,7 @@ all_bundles = [md]
 
 
 with open('registry.json', 'w') as fp:
-    json.dump({"bundles": all_bundles}, fp)
+    json.dump({"assessments": all_bundles}, fp)
 
 """
 Okay, what's the plan
