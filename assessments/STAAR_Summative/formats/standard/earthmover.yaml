@@ -76,7 +76,6 @@ transformations:
   # CONFORMED 3-8
   conformed_staar_summative:
     source: $transformations.input
-    require_rows: true
     operations:
       # RENAME columns to easily convert from wide to long
       - operation: rename_columns
@@ -169,6 +168,7 @@ transformations:
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_scores_{{subject}}:
     source: $transformations.conformed_staar_summative
+    require_rows: true
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
       - operation: rename_columns
