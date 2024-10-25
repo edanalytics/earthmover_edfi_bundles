@@ -72,7 +72,6 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  require_rows: true
 
   # CONFORMED 3-8
   conformed_staar_summative:
@@ -261,6 +260,7 @@ transformations:
       # KEEP conformed columns
       - operation: keep_columns
         columns: {{conformed_columns}}
+
   
   {% endfor %}  
 
