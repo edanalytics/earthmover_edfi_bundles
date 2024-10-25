@@ -252,7 +252,7 @@ transformations:
           - school_year
           - subject
           - course
-        join_type: inner
+        join_type: left
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         query: stu_assess_id != ''
