@@ -276,6 +276,7 @@ transformations:
         {% if ${API_YEAR} <= 2021 %} 
           - $transformations.staar_summative_scores_writing
         {% endif %}
+    require_rows: true
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
@@ -288,7 +289,6 @@ transformations:
       - operation: add_columns
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
-    require_rows: true
 
 
 destinations:
