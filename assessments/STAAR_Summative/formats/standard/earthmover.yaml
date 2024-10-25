@@ -261,6 +261,7 @@ transformations:
       - operation: keep_columns
         columns: {{conformed_columns}}
 
+    require_rows: true
   
   {% endfor %}  
 
@@ -276,7 +277,6 @@ transformations:
         {% if ${API_YEAR} <= 2021 %} 
           - $transformations.staar_summative_scores_writing
         {% endif %}
-    require_rows: true
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
