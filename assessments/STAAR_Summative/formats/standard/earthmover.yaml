@@ -261,7 +261,7 @@ transformations:
       - operation: keep_columns
         columns: {{conformed_columns}}
 
-    require_rows: true
+  require_rows: true
   
   {% endfor %}  
 
