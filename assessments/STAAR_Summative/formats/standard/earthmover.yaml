@@ -237,11 +237,9 @@ transformations:
           - administration_window
         right_drop_columns:
           - course_abbrev
-        join_type: inner  
-        debug: True
+        join_type: left  
       # JOIN obj assess descriptive names
       - operation: join
-        debug: True
         sources:
           - $sources.obj_assess_codes_xwalk
         left_keys:
