@@ -72,11 +72,11 @@ transformations:
   input:
     source: $sources.input
     operations: []
-    require_rows: true
 
   # CONFORMED 3-8
   conformed_staar_summative:
     source: $transformations.input
+    require_rows: true
     operations:
       # RENAME columns to easily convert from wide to long
       - operation: rename_columns
