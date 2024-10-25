@@ -268,7 +268,6 @@ transformations:
   # STACK ALL CONFORMED SETS TOGETHER
   stacked_scores:
     source: $transformations.staar_summative_scores_reading
-    require_rows: true
     debug: True
     operations:
       - operation: union
@@ -283,6 +282,8 @@ transformations:
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
     source: $transformations.stacked_scores
+    require_rows: true
+    debug: True
     operations:
       - operation: duplicate_columns
         columns:
