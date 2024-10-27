@@ -70,8 +70,8 @@ transformations:
               {
                 "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}",
-                "minimumScore": {{ minimumScore }},
-                "maximumScore": {{ maximumScore }}
+                "minimumScore": "{{ minimumScore | string }}",
+                "maximumScore": "{{ maximumScore | string }}"
               }
               {%-endraw%}  
       - operation: modify_columns

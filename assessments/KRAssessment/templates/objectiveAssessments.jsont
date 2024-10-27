@@ -11,8 +11,8 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-        "minimumScore":{{ minimumScore }},
-        "maximumScore":{{ maximumScore }}
+        "minimumScore":"{{ minimumScore | string }}",
+        "maximumScore":"{{ maximumScore | string}}"
       }
     ],
     "performanceLevels": [
