@@ -145,6 +145,7 @@ transformations:
           columns:
             studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
             assessmentFamily: {{assessment_name}}}
+            schoolYearFormatted: "{% raw %}{{ SchoolYear.split('-')[1] | int }}{% endraw %}"
         
 
       {% endfor %}
