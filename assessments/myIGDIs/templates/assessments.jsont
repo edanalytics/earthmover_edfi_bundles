@@ -1,0 +1,18 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [  {"academicSubjectDescriptor":"uri://ed.sc.gov/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+   {{ performance_json }}
+  ]
+}

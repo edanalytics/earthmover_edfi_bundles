@@ -1,0 +1,45 @@
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYearFormatted}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{ studentUniqueId }}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "scoreResults": [
+    {% if Score is not none and Score | length %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{Score}}"
+    }
+    {% endif %}
+  ],
+  "performanceLevels": [
+    {% set perf_levels = [] %}
+
+    {% if Tier is not none and Tier | length %}
+      {% set _ = perf_levels.append([Tier, 'PerformanceLevel']) %}
+    {% endif %}
+
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "periods": [
+    {
+      "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{timeWindow}}"
+    }
+  ]
+}
