@@ -90,9 +90,10 @@ transformations:
           school_year: {{school_year}}
           assessment: {{assessment}}
           assessment_id: {{assessments.get(assessment)}}
+          namespace: "uri://www.teachingstrategies.com/assessment/gold"
       - operation: modify_columns
         columns:
-          admin_date: "{%raw%}{{ admin_date | default('10-15-2022') }}{%endraw%}"
+          admin_date: "{%raw%}{% if admin_date != '' %}{{value}}{% else %}{% if school_year == 'Fall 2022/2023'%}10/1/2022{% endif %}{% endif %}{%endraw%}"
       - operation: combine_columns
         columns:
           - school_year
@@ -103,6 +104,7 @@ transformations:
       - operation: modify_columns
         columns:
           student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
+      - operation: snake_case_columns
 {% endfor %}
 {% endfor %}
 
