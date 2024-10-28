@@ -36,15 +36,86 @@ sources:
     # See the accompanying bundle_metadata.json for a list of required columns for this file
     # Or see data/sample_anonymized_file.csv
 
+{% set assessments = {
+  'Social-Emotional':'GOLD_SE',
+  'Physical': 'GOLD_PHY',
+  'Language': 'GOLD_LANG',
+  'Literacy': 'GOLD_LIT',
+  'Spanish Language': 'GOLD_LANG_Spanish',
+  'Spanish Literacy': 'GOLD_LIT_Spanish',
+  'Cognitive': 'GOLD_COG',
+  'Mathematics':'GOLD_MATH'
+}
+%}
 
+{% set school_years = [
+  'Fall 2022/2023'
+]
+%}
+
+{% set reporting_methods = [
+  'Raw Score',
+  'Scale Score',
+  'WHE',
+  'NN',
+  'K-Readiness'
+]
+%}
 
 transformations:
   input: #this initial transformation node should not be deleted in order for this bundle to be compatible with the student ID xwalking package
     source: $sources.input
     operations: []
 
-  clean_results:
+{% for school_year in school_years %}
+{% for assessment in assessments.keys() %}
+  {{assessment| replace(" ", "_") }}_{{school_year| replace(" ", "_")}}:
     source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - ChildID
+          - {{school_year ~ ' ' ~ assessment ~' Date Finalized'}}
+          {%- for reporting_method in reporting_methods %}
+          - {{ school_year ~ ' ' ~ assessment ~ ' ' ~ reporting_method }}
+          {%- endfor %}
+      - operation: rename_columns
+        columns:  
+          {{school_year ~ ' ' ~ assessment ~' Date Finalized'}}: admin_date
+          {%- for reporting_method in reporting_methods %}
+          {{school_year ~ ' ' ~ assessment ~ ' ' ~reporting_method}}: {{reporting_method}}
+          {%- endfor %}
+      - operation: add_columns
+        columns:
+          school_year: {{school_year}}
+          assessment: {{assessment}}
+          assessment_id: {{assessments.get(assessment)}}
+      - operation: modify_columns
+        columns:
+          admin_date: "{%raw%}{{ admin_date | default('10-15-2022') }}{%endraw%}"
+      - operation: combine_columns
+        columns:
+          - school_year
+          - admin_date
+          - assessment_id
+          - ChildID
+        new_column: student_assessment_id
+      - operation: modify_columns
+        columns:
+          student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
+{% endfor %}
+{% endfor %}
+
+  final_result:
+    source: $transformations.{{ assessments.keys()|list|first | replace(" ", "_") }}_{{ school_years[0] | replace(" ", "_") }}
+    operations: 
+      - operation: union
+        sources:
+        {%- for school_year in school_years: %}
+          {%- for i in range(1, (assessments.keys()|list) | length ) %} 
+            - $transformations.{{  (assessments.keys()|list)[i] | replace(" ", "_") }}_{{ school_year | replace(" ", "_") }}
+          {%- endfor %}
+        {%- endfor %}
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -101,6 +172,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.final_result
     template: ./templates/studentAssessments.jsont
     extension: jsonl
