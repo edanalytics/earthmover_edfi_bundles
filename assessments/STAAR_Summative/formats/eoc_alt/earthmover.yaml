@@ -44,7 +44,7 @@ sources:
     header_rows: 1
 
 {% set conformed_columns = 
-  ['tx_unique_student_id',
+  ['${STUDENT_ID_NAME}',
    'assessment_identifier',
    'grade_level_code',
    'administration_window',
