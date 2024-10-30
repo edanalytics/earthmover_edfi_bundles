@@ -1,0 +1,66 @@
+{
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "assessmentTitle": "{{assessmentTitle}}",
+    "namespace": "{{namespace}}",
+    "assessedGradeLevels": [{{grade_json}}],
+    "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "academicSubjects": [{{subject_json}}],
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Sum of Scale Scores",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite US Rank",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite State Rank",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Super Composite Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Super Sum of Scale Scores",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "maximumScore": "12",
+        "minimumScore": "1",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Unlikely to obtain an NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "maximumScore": "16",
+        "minimumScore": "13",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Bronze level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "maximumScore": "21",
+        "minimumScore": "17",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Silver level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "maximumScore": "26",
+        "minimumScore": "22",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Gold level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Composite Score",
+        "maximumScore": "36",
+        "minimumScore": "27",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Platinum level NCRC"
+      }
+    ]
+  }

@@ -1,0 +1,77 @@
+{
+    "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessment_identifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{school_year}}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{studentUniqueId}}"
+    },
+    "administrationDate": "{{administration_date}}",
+    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+
+    "performanceLevels": {{fromjson(v_performance_levels)}},
+
+    "scoreResults": {{fromjson(v_score_results)}},
+
+    "studentObjectiveAssessments": [
+      {% set topline_obj_assess = [['ACT_ELA', 
+                                   {
+                                    'Scale Score':ACT_ELA_scale_score,
+                                    'Standard Error of Measurement':ACT_ELA_sem,
+                                    'US Rank':ACT_ELA_us_rank,
+                                    'State Rank':ACT_ELA_state_rank,
+                                    'Super Scale Score':ACT_ELA_super_scale_score,
+                                   }],
+                                   ['ACT_STEM',
+                                   {
+                                    'Scale Score':ACT_STEM_scale_score,
+                                    'Standard Error of Measurement':ACT_STEM_sem,
+                                    'US Rank':ACT_STEM_us_rank,
+                                    'State Rank':ACT_STEM_state_rank,
+                                    'Super Scale Score':ACT_STEM_super_scale_score,
+                                   }]
+                               ] %}
+
+  
+      {%- for obj in topline_obj_assess -%}
+      {% set all_score_obj = [] %}
+        {% for score_name, score_result in obj[1].items() %}
+          {% if score_result != '' %}
+            {% set _= all_score_obj.append([score_name, score_result]) %}
+          {% endif %}
+        {% endfor %}
+  
+      {% if all_score_obj|length > 0 %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{obj[0]}}",
+          "namespace": "{{namespace}}"
+        }
+        ,
+        "scoreResults": [
+         {%- for score in all_score_obj -%}
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+            "result": "{{score[1]}}"
+          }
+          {%- if not loop.last -%},
+          {%- else %}{% endif %}{%- endfor -%}
+        ]
+      }{%- if not loop.last -%},
+      {%- else %}{% endif %}
+      {% endif %}
+      {%- endfor -%}
+      {%- if v_student_objective_assessments -%}
+      ,{% for existing_obj in fromjson(v_student_objective_assessments) %}
+      {{existing_obj}}{%- if not loop.last -%},
+      {%- else %}{% endif %}
+      {%- endfor -%}
+      {% endif %}
+    ]
+  }
