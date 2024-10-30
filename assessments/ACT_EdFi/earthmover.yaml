@@ -2,7 +2,7 @@
 version: 2
 
 config:
-  log_level: DEBUG # TODO CHANGE TO INFO AFTER TESTING
+  log_level: INFO # TODO CHANGE TO INFO AFTER TESTING
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -47,7 +47,6 @@ sources:
       from act_stu_assess
       join act_stu_ids
         on act_stu_assess.student_unique_id = act_stu_ids.student_unique_id
-      limit 4
 
   assessments:
     file: ./seeds/assessments.csv
@@ -152,6 +151,10 @@ transformations:
         join_type: left
         left_keys: [assessment_identifier, when_assessed_grade_level]
         right_keys: [assessmentIdentifier, gradeLevelShort]
+      # overwrite assess ID to match governance decision
+      - operation: modify_columns
+        columns:
+          assessment_identifier: 'ACT'
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
