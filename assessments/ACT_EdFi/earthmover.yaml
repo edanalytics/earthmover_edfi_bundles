@@ -11,8 +11,8 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'registration_state_student_id,registration_local_student_id'
     SNOWFLAKE_CONNECTION: "snowflake://[username]:[password]@[account]?warehouse=[warehouse]"
-    SNOWFLAKE_EDU_STG_SCHEMA: "analytics.prod_stage"
-    SNOWFLAKE_EDU_BLD_SCHEMA: "analytics.prod_build"
+    ACT_SNOWFLAKE_EDU_STG_SCHEMA: "analytics.prod_stage"
+    ACT_SNOWFLAKE_EDU_BLD_SCHEMA: "analytics.prod_build"
 
 
 sources:
@@ -21,7 +21,7 @@ sources:
     connection: "${SNOWFLAKE_CONNECTION}"
     query: >
       with act_stu_assess as (
-          select * from ${SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+          select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
           where tenant_code = 'ACT_everman'
           and api_year = 2024
       ),
@@ -31,8 +31,8 @@ sources:
             bld_ef3__wide_ids_student.registration_local_student_id,
             bld_ef3__wide_ids_student.registration_state_student_id,
             bld_ef3__wide_ids_student.registration_person_id
-          from ${SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
-          join ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
+          from ${ACT_SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
+          join ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
             on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
             and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
             and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
@@ -245,8 +245,3 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
-  # test:
-  #   source: $transformations.unpacked_scores
-  #   template: ./templates/test.jsont
-  #   extension: jsonl
-  #   linearize: True
