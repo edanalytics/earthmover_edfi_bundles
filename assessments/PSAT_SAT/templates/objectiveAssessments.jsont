@@ -5,8 +5,27 @@
       "namespace": "{{namespace}}"
     },
     "description": "{{description}}",
-    "scores": [
-    {% if identificationCode in ('Reading Test', 'Writing and Language Test', 'Math Test') %}
+    {% if parentObjectiveAssessment != '' %}
+    "parentObjectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{parentObjectiveAssessment}}",
+      "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    {% if identificationCode in ('Evidence Based Reading and Writing Section', 'Math Section') %}
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Y",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ],
+    "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Section Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
@@ -17,6 +36,22 @@
       },
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Section Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+    {% else %}
+    "scoreResults": [
+    {% if identificationCode in ('Reading Test', 'Writing and Language Test', 'Math Test') %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Test Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Test Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Test Score",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       },
     {% endif %}
@@ -99,7 +134,7 @@
       }
     {% endif %}
     
-    {% if identificationCode in ('Relevant Words in Context', 'Command of Evidence', 'Expression of Ideas', 'Standard English Conventions', 'Essay', 'Heart of Algebra', 'Passport to Advanced Mathematics', 'Problem Solving and Data Analysis') %}
+    {% if identificationCode in ('Relevant Words in Context', 'Command of Evidence', 'Expression of Ideas', 'Standard English Conventions', 'Heart of Algebra', 'Passport to Advanced Mathematics', 'Problem Solving and Data Analysis') %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subscore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
@@ -113,5 +148,35 @@
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
       }   
     {% endif %}
-    ]
+
+    {% if identificationCode == 'Essay' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Reading Subscore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Analysis Subscore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Writing Subscore",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }   
+    {% endif %}
+
+    {% if identificationCode in ('Science Cross Test', 'Social Studies Cross Test') %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cross Test Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Cross Test Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Cross Test Score",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }   
+    {% endif %}
+    ] {% endif %}
   }
