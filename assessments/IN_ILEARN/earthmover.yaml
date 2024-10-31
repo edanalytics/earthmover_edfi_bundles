@@ -68,10 +68,11 @@ transformations:
         right_keys: 
           - assessmentTitle
 
-      # Pad the StudentUniqueId (STN) to 9 digits, since sometimes exporting will strip leading zeroes
+      # Pad the StudentUniqueId (STN) to 9 digits and enrolled grade to 2 digits, since sometimes exporting will strip leading zeroes
       - operation: modify_columns
         columns: 
           studentUniqueId: "{%raw%}{{value.rjust(9,'0')}}{%endraw%}"
+          enrolled_grade: "{%raw%}{{value.rjust(2,'0')}}{%endraw%}"
       
       # Add standard assessment columns
       - operation: add_columns
