@@ -169,10 +169,6 @@ destinations:
     source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ./templates/objectiveAssessments.jsont
-    extension: jsonl
   studentAssessments:
     source: $transformations.final_result
     template: ./templates/studentAssessments.jsont
