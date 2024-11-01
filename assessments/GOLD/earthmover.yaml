@@ -33,6 +33,7 @@ sources:
     # See the accompanying bundle_metadata.json for a list of required columns for this file
     # Or see data/sample_anonymized_file.csv
 
+
 {% set assessments = {
   'Social-Emotional':'GOLD_SE',
   'Physical': 'GOLD_PHY',
@@ -64,7 +65,10 @@ transformations:
     source: $sources.input
     operations: []
 
-{% for school_year in school_years %}
+# The original ingested data comes in a very wide format, with each observation containing all past assessment results for each student. We need to pivot the data longer by (1) creating 
+# separate "dataframes" in which each observation represents an assessment result for all reporting methods per student, (2) union them all together.
+
+{% for school_year in school_years %} 
 {% for assessment in assessments.keys() %}
   {{assessment| replace(" ", "_") }}_{{school_year| replace(" ", "_")}}:
     source: $transformations.input
