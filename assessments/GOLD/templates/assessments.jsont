@@ -11,29 +11,49 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SEM",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Raw Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
   ],
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Did not yet meet expectations",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#WHE",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Met expectations",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#WHE",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Meet",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Goal Met",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#WHE",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Exceed",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+        {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#NN",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Goal Met",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#NN",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Meet",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#NN",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Exceed",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#K-Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Emerging",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#K-Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Accomplished",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
   ]
