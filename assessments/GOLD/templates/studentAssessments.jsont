@@ -10,20 +10,23 @@
   "studentReference": {
     "studentUniqueId": "{{child_id}}"
   },
-  "administrationDate": "{{admin_date}}",
-  "scoreResults": [
-    {%- set possible_scores = [
-        [raw_score, "Raw Score", "Integer"],
-        [scale_score, "Scale Score", "Integer"]
-    ] -%}
+  "administrationDate": "{{admin_date}}"
 
-    {%- set scores = [] -%}
-    {%- for score in possible_scores -%}
-      {%- if score[0] is not none and score[0] | length -%}
-        {%- set _ = scores.append(score) -%}
-      {%- endif -%}
-    {%- endfor -%}
+  {%- set possible_scores = [
+      [raw_score, "Raw Score", "Integer"],
+      [scale_score, "Scale Score", "Integer"]
+  ] -%}
 
+  {%- set scores = [] -%}
+  {%- for score in possible_scores -%}
+    {%- if score[0] is not none and score[0] | length -%}
+      {%- set _ = scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  
+  {% if scores %}
+  ,"scoreResults": [
+    
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
@@ -31,10 +34,10 @@
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
-  
-  "performanceLevels": [
-    {%- set possible_perf_levels = [
+  ]
+  {%endif%}
+
+   {%- set possible_perf_levels = [
         [wh, "WH"],
         [nn, "NN"],
         [k_readiness, "K-Readiness"]
@@ -46,6 +49,10 @@
         {%- set _ = perf_levels.append(perf_level) -%}
       {%- endif -%}
     {%- endfor -%}
+  
+  {% if perf_levels %}
+  ,"performanceLevels": [
+
 
     {% for perf_level in perf_levels %}
       {
@@ -55,4 +62,5 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
+  {%endif%}
 }
