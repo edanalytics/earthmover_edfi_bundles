@@ -1,0 +1,56 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "parentObjectiveAssessmentReference":{
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}",
+      "identificationCode": "{{parentIdentificationCode}}"
+    },
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#US Rank",
+        "maximumScore": "100",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#State Rank",
+        "maximumScore": "100",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Standard Error of Measurement",
+        "maximumScore": "1",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Score",
+        "maximumScore": "36",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Superscore",
+        "maximumScore": "36",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+    {% if has_pls|string == 'True' %}
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Scale Score",
+        "maximumScore": "36",
+        "minimumScore": "22",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#At or Above Readiness Benchmark"
+      }
+    ]
+    {% endif %}
+
+  }

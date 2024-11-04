@@ -1,0 +1,335 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME:  'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: ID_StateAssign,ID_Local
+
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          # Generic fields
+          - ID_ACT
+          - ID_StateAssign
+          - ID_Local
+          - HS_GradeLev
+          - Test_Dte
+          - Test_Loc
+
+          # Scores
+          - Composite
+          - Sum_Scale
+          - StRnk_Comp
+          - USRnk_Comp
+          - Sup_Composite
+          - Sup_Sum_Scale
+
+          # Overall Performance Levels
+          - C_Readiness
+
+          # STEM (Math and Science) specific scores
+          - STEM
+          - Strnk_STEM
+          - USRnk_STEM
+          - Sup_STEM
+
+          # ELA (English, Reading, and Writing) specific scores
+          - ELA
+          - Strnk_ELA
+          - USRnk_ELA
+          - Sup_ELA
+
+          # English specific scores
+          - Eng
+          - StRnk_Eng
+          - USRnk_Eng
+          - Sup_Eng_Sc
+
+          # Math specific scores
+          - Mth
+          - StRnk_Math
+          - USRnk_Math
+          - Sup_Mth_Sc
+
+          # Reading specific scores 
+          - Rdg
+          - StRnk_Read
+          - USRnk_Read
+          - R_CmplxTxt
+          - Sup_Rdg_Sc
+
+          # Science specific scores
+          - Sci
+          - StRnk_Sci
+          - USRnk_Sci
+          - Sup_Sci_Sc
+
+          # Writing specific scores
+          - Writing
+          - StRnk_W
+          - W_USRnk
+          - Sup_Writ_Sc
+          - W_Dom_Ideas
+          - W_Dom_Supt
+          - W_Dom_Org
+          - W_Dom_LangUse
+
+          # English sub-scores
+          - E_Earn_Prod
+          - E_Poss_Prod
+          - E_PctC_Prod
+          - E_RdyRng_Prod
+          - E_Earn_Knlg
+          - E_Poss_Knlg
+          - E_PctC_Knlg
+          - E_RdyRng_Knlg
+          - E_Earn_Conv
+          - E_Poss_Conv
+          - E_PctC_Conv
+          - E_RdyRng_Conv
+
+          # Math sub-scores
+          - M_Earn_Higher
+          - M_Poss_Higher
+          - M_PctC_Higher
+          - M_RdyRng_Higher
+          - M_Earn_NumQ
+          - M_Poss_NumQ
+          - M_PctC_NumQ
+          - M_RdyRng_NumQ
+          - M_Earn_Alg
+          - M_Poss_Alg
+          - M_PctC_Alg
+          - M_RdyRng_Alg
+          - M_Earn_Func
+          - M_Poss_Func
+          - M_PctC_Func
+          - M_RdyRng_Func
+          - M_Earn_Geom
+          - M_Poss_Geom
+          - M_PctC_Geom
+          - M_RdyRng_Geom
+          - M_Earn_Stat
+          - M_Poss_Stat
+          - M_PctC_Stat
+          - M_RdyRng_Stat
+          - M_Earn_Essen
+          - M_Poss_Essen
+          - M_PctC_Essen
+          - M_RdyRng_Essen
+          - M_Earn_Mod
+          - M_Poss_Mod
+          - M_PctC_Mod
+          - M_RdyRng_Mod
+
+          # Reading sub-scores
+          - R_Earn_Ideas
+          - R_Poss_Ideas
+          - R_PctC_Ideas
+          - R_RdyRng_Ideas
+          - R_Earn_Struc
+          - R_Poss_Struc
+          - R_PctC_Struc
+          - R_RdyRng_Struc
+          - R_Earn_Knlg
+          - R_Poss_Knlg
+          - R_PctC_Knlg
+          - R_RdyRng_Knlg
+
+          # Science sub-scores
+          - S_Earn_Data
+          - S_Poss_Data
+          - S_PctC_Data
+          - S_RdyRng_Data
+          - S_Earn_Inv
+          - S_Poss_Inv
+          - S_PctC_Inv
+          - S_RdyRng_Inv
+          - S_Earn_Eval
+          - S_Poss_Eval
+          - S_PctC_Eval
+          - S_RdyRng_Eval
+
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+          Test_Dte: administrationDate
+      - operation: add_columns
+        columns:
+          schoolYear: ${API_YEAR}
+          assessmentIdentifier: "ACT"
+          namespace: "uri://act.org/Assessment"
+      - operation: combine_columns
+        columns:
+          - ID_ACT
+          - Test_Dte
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
+          # we get date as '32023', and need to convert this to '01032023' to represent 'March 1st 2023'
+          administrationDate: '{%raw%}01{{ "{:06d}".format(administrationDate| int) }}{%endraw%}'
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        # change this to match the grade from the file
+        left_keys: 
+          - HS_GradeLev
+          - assessmentIdentifier
+        right_keys: 
+          - originalGrade
+          - assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.performanceLevelDescriptors
+        join_type: left
+        # change this to match the grade from the file
+        left_keys: 
+          - C_Readiness
+        right_keys: 
+          - rawValue
+        right_keep_columns:
+          - codeValue
+      - operation: rename_columns
+        columns:
+          codeValue: performanceLevelDescriptor
+      - operation: date_format
+        column: administrationDate
+        from_format: "%d%m%Y"
+        to_format: "%Y-%m-%d"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
