@@ -25,7 +25,7 @@
     {% set perf_levels = [] %}
 
     {% if Tier is not none and Tier | length %}
-      {% set _ = perf_levels.append([Tier, 'PerformanceLevel']) %}
+      {% set _ = perf_levels.append([Tier.replace(' ',''), 'PerformanceLevel']) %}
     {% endif %}
 
 

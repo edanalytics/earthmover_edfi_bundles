@@ -28,6 +28,9 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 transformations:
   {% set assessment = {
        
@@ -119,7 +122,7 @@ transformations:
           columns:
             Assessment: {{assessment_name}}
             objective: {{objective}}
-            timeWindow: {{window}}
+            timeWindow: {{window.replace(' ', '')}} 
             namespace: uri://ed.sc.gov/myIGDIs
             assessmentIdentifier: {{ assessment_name.replace(' ', '') }}_{{ objective.replace(' ', '') }}
         - operation: rename_columns
@@ -182,7 +185,7 @@ transformations:
               {%raw-%}  
               {
                 "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
-                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
+                "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
               }
               {%-endraw%}  
       - operation: modify_columns
@@ -254,6 +257,10 @@ destinations:
     extension: jsonl
   assessmentPeriodsDescriptors:
     source: $sources.assessmentReportingPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
