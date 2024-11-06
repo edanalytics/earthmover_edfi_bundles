@@ -29,6 +29,9 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ${BUNDLE_DIR}/seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -68,7 +71,7 @@ transformations:
           performance_json: >
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
+                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}",
                 "minimumScore": "{{ minimumScore | string }}",
                 "maximumScore": "{{ maximumScore | string }}"
@@ -189,7 +192,7 @@ transformations:
         columns:
           assessmentIdentifier: "KRA"
           administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+          whenAssessedGradeLevelDescriptor: "uri://ed.sc.gov/GradeLevelDescriptor#0"
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
@@ -257,4 +260,8 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/assessmentCategoryDescriptors.jsont
     extension: jsonl

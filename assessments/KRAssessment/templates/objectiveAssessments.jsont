@@ -9,7 +9,7 @@
     "academicSubjectDescriptor": "{{namespace}}/AcademicSubjectDescriptor#{{codeValue}}",
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/KRA/AssessmentReportingMethodDescriptor#ScaleScore",
         "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
         "minimumScore":"{{ minimumScore | string }}",
         "maximumScore":"{{ maximumScore | string}}"
