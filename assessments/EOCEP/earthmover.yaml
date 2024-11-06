@@ -8,11 +8,13 @@ config:
   show_graph: False
   tmp_dir: ${TEMPORARY_DIRECTORY}
   parameter_defaults:
-    STUDENT_ID_NAME: Student ID
-    STUDENT_ID_FROM: StatedID
-    STUDENT_ID_XWALK: ''
-    STUDENT_ID_QUERY: ''
-    DATABASE_CONNECTION: ''
+    source_encoding: latin-1
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    INPUT_FILE: ''
+    API_YEAR: ''
+    INPUT_FILETYPE: csv
+    POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
 sources:
 
@@ -36,7 +38,7 @@ sources:
     file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
     header_rows: 1
 
-  eocep_input:
+  input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     header_rows: 1
@@ -68,21 +70,15 @@ sources:
 
 transformations:
 
+  input: 
+    source: $sources.input
+    operations: []
+
   eocep_student_assessments:
-    source: $sources.eocep_input
-    operations:
-      - operation: join 
-        sources: 
-          - $sources.student_id_mapping
-        left_key: ${STUDENT_ID_FROM}
-        right_key: student_id_from
-        join_type: left
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_unique_id
-      - operation: filter_rows
-        query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
-        behavior: include
+    source: $transformations.input
+     - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: map_values
         column: Grade
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
