@@ -14,6 +14,7 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The student assessment file to be mapped
+- SCHOOL_YEAR: The school year of the student assessment file (Must follow format "{{season}} {{year1/year2}}" e.g. "Fall 2022/2023")
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'ChildID' from the TS GOLD file.
 
 ### Examples
@@ -23,6 +24,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
+"SCHOOL_YEAR": "Fall 2022/2023",
 "STUDENT_ID_NAME": "ChildID"}'
 ```
 
