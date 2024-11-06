@@ -19,23 +19,23 @@ config:
 sources:
 
   assessment_reporting_method_descriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   performance_level_descriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
 
   objective_assessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
 
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
 
   academic_subject_descriptors:
-    file: ${BUNDLE_DIR}/seeds/academicSubjectDescriptors.csv
+    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
 
   input:
@@ -81,7 +81,7 @@ transformations:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: map_values
         column: Grade
-        map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+        map_file: ./seeds/grade_level_xwalk.csv
       - operation: modify_columns
         columns: 
           AlgLev1: "{%raw%}{{ AlgLev1 | trim }}{%endraw%}"
@@ -131,7 +131,7 @@ transformations:
         - USHCLev3
         - USHCLev4
         - USHCLev5
-        map_file: ${BUNDLE_DIR}/seeds/perf_level_xwalk.csv
+        map_file: ./seeds/perf_level_xwalk.csv
       - operation: add_columns
         columns:
           school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
@@ -140,36 +140,36 @@ destinations:
 
   assessments:
     source: $sources.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
 
   objectiveAssessments:
     source: $sources.objective_assessments
-    template: ${BUNDLE_DIR}/templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessment_reporting_method_descriptors
-    template: ${BUNDLE_DIR}/templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
 
   performanceLevelDescriptors:
     source: $sources.performance_level_descriptors
-    template: ${BUNDLE_DIR}/templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
 
   studentAssessments:
     source: $transformations.eocep_student_assessments
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
 
   academicSubjectDescriptors:
     source: $sources.academic_subject_descriptors
-    template: ${BUNDLE_DIR}/templates/academicSubjectDescriptors.jsont
+    template: ./templates/academicSubjectDescriptors.jsont
     extension: jsonl
     linearize: True
