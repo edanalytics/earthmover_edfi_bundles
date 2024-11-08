@@ -1,0 +1,25 @@
+{ 
+ "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+      "schoolId": {{schoolId}}
+          
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
+  "periods": [{"assessmentPeriodDescriptor": "uri://ed.sc.gov/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
+  "scoreResults": [{
+    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{codeValue}}",
+    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+    "result": "{{ result }}"
+    }]
+}

@@ -1,0 +1,11 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "PALS",
+  "assessmentCategoryDescriptor": "{{namespace}}/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "namespace": "{{namespace}}",
+  "periods": [{"assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": [  {"academicSubjectDescriptor":"uri://ed.sc.gov/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "scores": [{{score_json}}]
+}
