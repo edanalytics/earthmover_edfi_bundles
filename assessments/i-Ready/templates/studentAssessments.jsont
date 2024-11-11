@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{student_assessment_id}}",
+  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
@@ -32,8 +32,7 @@
   ],
    "scoreResults": [
     {%- set all_scores = [
-        [subject, "Subject", "Level"],
-        [student_grade, "AssessmentGradeLevel", "Level"]
+        [student_grade, "Assessment Grade Level", "Level"]
     ] -%}
 
     {%- if overall_scale_score and overall_scale_score != "NA" -%}
@@ -41,7 +40,7 @@
     {%- endif -%}
 
     {%- if lexile_measure and lexile_measure != "NA" -%}
-        {%- set _ = all_scores.append([lexile_measure, "Lexile Measure", "Integer"]) -%}
+        {%- set _ = all_scores.append([lexile_measure, "Lexile Measure", "Level"]) -%}
     {%- endif -%}
 
     {%- if lexile_range and lexile_range != "NA" -%}
@@ -49,7 +48,7 @@
     {%- endif -%}
 
     {%- if quantile_measure and quantile_measure != "NA" -%}
-        {%- set _ = all_scores.append([quantile_measure, "Quantile Measure", "Integer"]) -%}
+        {%- set _ = all_scores.append([quantile_measure, "Quantile Measure", "Level"]) -%}
     {%- endif -%}
 
     {%- if quantile_range and quantile_range != "NA" -%}

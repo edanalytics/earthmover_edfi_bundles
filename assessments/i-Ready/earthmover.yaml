@@ -162,7 +162,7 @@ transformations:
           namespace: 'uri://curriculumassociates.com'
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
           student_assessment_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
-          assessmentIdentifier: 'i-Ready'
+          assessmentIdentifier: '{% raw %}{% if quantile_measure %}IREADY-DIAGNOSTIC-MATH{% endif %}{% if lexile_measure %}IREADY-DIAGNOSTIC-ELA{% endif %}{% endraw %}'
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
