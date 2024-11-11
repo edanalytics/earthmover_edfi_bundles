@@ -242,11 +242,13 @@ transformations:
       - operation: add_columns
         columns:
           file_path_subj: *overall_file_name
-          assessmentIdentifier: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: modify_columns
         columns:
           file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
