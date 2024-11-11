@@ -17,7 +17,7 @@
 
     {%- if School_StateID is not none and School_StateID | length -%}
     "reportedSchoolReference": {
-      "schoolId": "{{ School_StateID }}",
+      "schoolId": "{{ School_StateID }}"
     },
     {%- endif -%}
     {%- endif -%}
