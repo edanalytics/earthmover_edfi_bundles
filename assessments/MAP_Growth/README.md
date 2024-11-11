@@ -25,6 +25,7 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The assessment file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (`StudentID` or `Student_StateID`).
+- EDFI_DS_VERSION: The Ed-Fi data standard major version for your ODS. Integer only; supported versions are 3, 4, and 5.
 
 ### Examples
 Using an ID column from the assessment file:
@@ -33,7 +34,8 @@ earthmover run -c earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
-"STUDENT_ID_NAME": "Student_StateID"}'
+"STUDENT_ID_NAME": "Student_StateID",
+"EDFI_DS_VERSION": "4" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

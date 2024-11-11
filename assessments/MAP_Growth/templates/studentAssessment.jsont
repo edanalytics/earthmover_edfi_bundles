@@ -12,6 +12,16 @@
     },
     "administrationDate": "{{ TestStartDate }}",
 
+    {%- if edfi_ds_version|int >= 4 -%}
+    "assessedMinutes": "{{ TestDurationMinutes }}",
+
+    {%- if School_StateID is not none and School_StateID | length -%}
+    "reportedSchoolReference": {
+      "schoolId": "{{ School_StateID }}",
+    },
+    {%- endif -%}
+    {%- endif -%}
+
     "performanceLevels": [
       {%- set possible_pls = [
           [AchievementQuintile, 'Achievement Quintile'],
@@ -34,8 +44,10 @@
       {% for pl in pls %}
         {
           "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{pl[1]}}",
-          "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ pl[0] }}",
-          "performanceLevelMet": true
+          "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ pl[0] }}"
+          {%- if edfi_ds_version|int < 4 -%}
+          , "performanceLevelMet": true
+          {%- endif -%}
         } {% if not loop.last %},{% endif %}
       {% endfor %}
     ],
@@ -48,7 +60,6 @@
           [GrowthMeasureYN, 'Growth Measure YN', 'Level'],
           [TestName, 'Test Name', 'Level'],
           [Subject, 'Subject', 'Level'],
-          [TestDurationMinutes, 'Test Duration Minutes', 'Integer'],
           [PercentCorrect, 'Percent Correct', 'Integer'],
           [TestRITScore, 'RIT Scale Score', 'Integer'],
           [TestStandardError, 'SEM', 'Decimal'],
@@ -90,13 +101,16 @@
           [GoalRange, 'Goal Range', 'Range']
       ] -%}
 
+      {%- if edfi_ds_version|int < 4 -%}
+          {%- set _ = possible_scores.append([TestDurationMinutes, 'Test Duration Minutes', 'Integer']) -%}
+      {%- endif -%}
+
       {%- set scores = [] -%}
       {%- for score in possible_scores -%}
         {%- if score[0] is not none and score[0] | length -%}
           {%- set _ = scores.append(score) -%}
         {%- endif -%}
       {%- endfor -%}
-
 
       {% for score in scores %}
       {
@@ -136,8 +150,10 @@
           {% if objective_assessment[1] is not none and objective_assessment[1] | length %}
           {
             "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#Goal Adjective",
-            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ objective_assessment[1] }}",
-            "performanceLevelMet": true
+            "performanceLevelDescriptor": "uri://www.nwea.org/map/PerformanceLevelDescriptor#{{ objective_assessment[1] }}"
+            {%- if edfi_ds_version|int < 4 -%}
+              , "performanceLevelMet": true
+            {%- endif -%}
           }
           {% endif %}
         ],
