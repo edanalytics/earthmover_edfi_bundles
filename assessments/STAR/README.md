@@ -30,6 +30,8 @@ Or use our sample files (`data/*`).
 - INPUT_FILE_OVERALL: The overall student assessment file to be mapped
 - API_YEAR: The API year that the output of this template will send to
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file, or a value mapped from a crosswalk (must be supplied)
+- SCHOOL_ID_NAME: Which column to use as the Ed-Fi `schoolId` in the `reportedSchoolReference` (only supported in data standard 4+)
+- EDFI_DS_VERSION: The Ed-Fi data standard major version for your ODS. Integer only; supported versions are 3, 4, and 5
   
 ### Examples
 Using an ID column from the assessment file:
@@ -41,7 +43,9 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE_SA": "./data/SR_SkillArea_v1_sample_anonymized_file.csv",
 "API_YEAR": "2024",
 "OUTPUT_DIR": "./output",
-"STUDENT_ID_NAME": "StudentStateID"}'
+"STUDENT_ID_NAME": "StudentStateID",
+"SCHOOL_ID_NAME": "SchoolIdentifier",
+"EDFI_DS_VERSION": "4" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

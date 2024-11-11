@@ -22,6 +22,7 @@ config:
       {%- endmacro %}
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    SCHOOL_ID_NAME: 'SchoolIdentifier'
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentStateID,StudentSourcedID,StudentIdentifier,StudentUserID'
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
@@ -36,6 +37,9 @@ definitions:
 sources:
   assessments:
     file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -117,6 +121,7 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+          ${SCHOOL_ID_NAME}: schoolId
       - operation: filter_rows
         query: studentUniqueId == ''
         behavior: exclude  
@@ -129,20 +134,17 @@ transformations:
       - operation: add_columns
         columns:
           file_path: *overall_file_name
-      - operation: add_columns
-        columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
-      - operation: add_columns
-        columns: 
           subject_full: "{%raw%}{{map_subject_values(file_path)}}{%endraw%}"
           assessmentIdentifier: "{%raw%}STAR-{{-assess_id_subject}}{%endraw%}"
-      - operation: add_columns
-        columns: 
           assessmentTitle: "{%raw%}STAR {{subject_full-}}{%endraw%}"
           namespace: "uri://renaissance.com/Assessment"
+          edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
+    expect:
+      - edfi_ds_version|int != 0
 
   star_skill_area:
     source: $sources.star_skill_area_input
@@ -240,13 +242,11 @@ transformations:
       - operation: add_columns
         columns:
           file_path_subj: *overall_file_name
+          assessmentIdentifier: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
+          edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: modify_columns
         columns:
           file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
-      # for each assessment record, construct a new column which will be the JSON for the item
-      - operation: add_columns
-        columns:
-          assessmentIdentifier: "{%raw%}STAR-{{-file_path_subj}}{%endraw%}"
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
@@ -294,8 +294,10 @@ transformations:
                   {%- for pl in pls_present -%} 
                     { 
                       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-                      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}",
-                      "performanceLevelMet": true 
+                      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}"
+                      {%- if edfi_ds_version|int < 4 -%}
+                      , "performanceLevelMet": true
+                      {%- endif -%}
                     } 
                   {%- if not loop.last -%}, {%- else %}{% endif %}
                   {%- endfor -%} 
@@ -358,7 +360,6 @@ transformations:
           - CurrentGrade
         map_file: ./seeds/grade_level_mapping.csv
         
-
   standards_exist:
     source: $transformations.stacked_obj_assessment
     operations:
@@ -424,6 +425,40 @@ transformations:
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessment_period_descriptors:
+    source: $transformations.star_student_assessment_overall
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - ScreeningPeriodWindowName
+          - ScreeningWindowStartDate
+          - ScreeningWindowEndDate
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          assessment_period_json: >
+            {%raw-%}  
+            {
+              "assessmentPeriodDescriptor": "uri://renaissance.com/AssessmentPeriodDescriptor#{{ ScreeningPeriodWindowName }}",
+              "beginDate": "{{ ScreeningWindowStartDate }}",
+              "endDate": "{{ ScreeningWindowEndDate }}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          assessment_period_json: "{%raw%}{{assessment_period_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          assessment_period_json: agg(assessment_period_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          assessment_period_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
   
   assessments:
     source: $transformations.star_student_assessment_overall
@@ -444,11 +479,23 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          edfi_ds_version: ${EDFI_DS_VERSION}
 
 destinations:
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont

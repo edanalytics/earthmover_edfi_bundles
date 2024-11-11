@@ -1,5 +1,5 @@
-{% set pls_present = [] %}
-{% set all_pls = {
+{%- set pls_present = [] -%}
+{%- set all_pls = {
   'Renaissance Benchmark Cat. Name': RenaissanceBenchmarkCategoryName,
   'Renaissance Benchmark Level': RenaissanceBenchmarkCategoryLevel,
   'District Benchmark Cat. Name': DistrictBenchmarkCategoryName,
@@ -14,15 +14,15 @@
   'Literacy Classification': LiteracyClassification,
   'SAT Benchmark Category': SATBenchmarkCategory,
   'ACT Benchmark Category': ACTBenchmarkCategory,
-} %}
-{% for pl_name, pl_result in all_pls.items() %}
-  {% if pl_result is not none and pl_result | length %}
-    {% set _ = pls_present.append([pl_name, pl_result]) %}
-  {% endif %}
-{% endfor %}
+} -%}
+{%- for pl_name, pl_result in all_pls.items() -%}
+  {%- if pl_result is not none and pl_result | length -%}
+    {%- set _ = pls_present.append([pl_name, pl_result]) -%}
+  {%- endif -%}
+{%- endfor -%}
 
-{% set scores_present = [] %}
-{% set all_scores = {
+{%- set scores_present = [] -%}
+{%- set all_scores = {
   'Test Name': ['Level', test_name],
   'Scale Score': ['Integer', ScaledScore],
   'Standard Error Measurement': ['Decimal', StandardErrorOfMeasurement],
@@ -43,12 +43,12 @@
   'Total Possible': ['Integer', TotalPossible],
   'Estimated Oral Reading Fluency': ['Integer', EstimatedOralReadingFluency],
   'Current SGP': ['Integer', CurrentSGP],
-} %}
-{% for score_name, score_result in all_scores.items() %}
-  {% if score_result[1] is not none and score_result[1] | length %}
-    {% set _ = scores_present.append([score_name, score_result[0], score_result[1]]) %}
-  {% endif %}
-{% endfor %}
+} -%}
+{%- for score_name, score_result in all_scores.items() -%}
+  {%- if score_result[1] is not none and score_result[1] | length -%}
+    {%- set _ = scores_present.append([score_name, score_result[0], score_result[1]]) -%}
+  {%- endif -%}
+{%- endfor -%}
 
 {
   "studentAssessmentIdentifier":"{{StudentAssessmentID}}",
@@ -65,13 +65,33 @@
   "administrationDate": "{{LaunchDate}}",
   "administrationEndDate": "{{CompletedDate}}"
 
+  {%- if edfi_ds_version|int >= 4 -%}
+  , "assessedMinutes": "{{ (TotalTimeInSeconds|int / 60)|round|int }}"
+
+  {%- if schoolId is not none and schoolId | length -%}
+  , "reportedSchoolReference": {
+    "schoolId": "{{ schoolId }}"
+  }
+  {%- endif -%}
+
+  {%- if ScreeningPeriodWindowName is not none and ScreeningPeriodWindowName | length -%}
+  , "period": {
+    "assessmentPeriodDescriptor": "uri://renaissance.com/AssessmentPeriodDescriptor#{{ ScreeningPeriodWindowName }}",
+    "beginDate": "{{ ScreeningWindowStartDate }}",
+    "endDate": "{{ ScreeningWindowEndDate }}"
+  }
+  {%- endif -%}
+  {%- endif -%}
+
   {% if pls_present %}
   , "performanceLevels": [
     {%- for pl in pls_present -%}
     {
       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}",
-      "performanceLevelMet": true
+      "performanceLevelDescriptor": "uri://renaissance.com/PerformanceLevelDescriptor#{{pl[1]}}"
+      {%- if edfi_ds_version|int < 4 -%}
+      , "performanceLevelMet": true
+      {%- endif -%}
     }
     {%- if not loop.last -%},{% endif %}
     {%- endfor -%}
