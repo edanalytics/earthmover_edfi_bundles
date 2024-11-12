@@ -14,22 +14,22 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessmentReportingPeriodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentPeriodDescriptors.csv
+    file: ./seeds/assessmentPeriodDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   assessmentCategoryDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentCategoryDescriptors.csv
+    file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
 transformations:
   {% set assessment = {
@@ -87,8 +87,11 @@ transformations:
         'Fall Screening', 'Winter Screening', 'Spring Screening', 'Summer Screening'
     ]
   } %}
-  source_assessment:
+  input:
     source: $sources.input
+    operations: []
+  source_assessment:
+    source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns:
