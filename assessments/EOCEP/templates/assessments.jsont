@@ -2,29 +2,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Sixth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Seventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eighth grade"
-    },
-        {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Ninth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Tenth grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Eleventh grade"
-    },
-    {
-      "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#Twelfth grade"
-    }
-  ],
+  "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
