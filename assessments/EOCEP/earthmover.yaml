@@ -79,9 +79,6 @@ transformations:
      - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: map_values
-        column: Grade
-        map_file: ./seeds/grade_level_xwalk.csv
       - operation: modify_columns
         columns: 
           AlgLev1: "{%raw%}{{ AlgLev1 | trim }}{%endraw%}"
