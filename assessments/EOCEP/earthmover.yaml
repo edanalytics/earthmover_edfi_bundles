@@ -10,7 +10,8 @@ config:
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    #STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    STUDENT_ID_NAME: StateID
     INPUT_FILE: ''
     API_YEAR: ''
     INPUT_FILETYPE: csv
@@ -36,6 +37,10 @@ sources:
 
   academic_subject_descriptors:
     file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+  grade_level_descriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
   input:
@@ -76,65 +81,40 @@ transformations:
 
   eocep_student_assessments:
     source: $transformations.input
-     - operation: duplicate_columns
-        columns:
+    operations:
+    - operation: duplicate_columns
+      columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: modify_columns
-        columns: 
-          AlgLev1: "{%raw%}{{ AlgLev1 | trim }}{%endraw%}"
-          AlgLev2: "{%raw%}{{ AlgLev2 | trim }}{%endraw%}"
-          AlgLev3: "{%raw%}{{ AlgLev3 | trim }}{%endraw%}"
-          BioLev1: "{%raw%}{{ BioLev1 | trim }}{%endraw%}"
-          BioLev2: "{%raw%}{{ BioLev2 | trim }}{%endraw%}"
-          BioLev3: "{%raw%}{{ BioLev3 | trim }}{%endraw%}"
-          BioLev4: "{%raw%}{{ BioLev4 | trim }}{%endraw%}"
-          BioLev5: "{%raw%}{{ BioLev5 | trim }}{%endraw%}"
-          BioLev6: "{%raw%}{{ BioLev6 | trim }}{%endraw%}"
-          Eng2Lev1: "{%raw%}{{ Eng2Lev1 | trim }}{%endraw%}"
-          Eng2Lev2: "{%raw%}{{ Eng2Lev2 | trim }}{%endraw%}"
-          Eng2Lev3: "{%raw%}{{ Eng2Lev3 | trim }}{%endraw%}"
-          USHCLev1: "{%raw%}{{ USHCLev1 | trim }}{%endraw%}"
-          USHCLev2: "{%raw%}{{ USHCLev2 | trim }}{%endraw%}"
-          USHCLev3: "{%raw%}{{ USHCLev3 | trim }}{%endraw%}"
-          USHCLev4: "{%raw%}{{ USHCLev4 | trim }}{%endraw%}"
-          USHCLev5: "{%raw%}{{ USHCLev5 | trim }}{%endraw%}"
-          UID: "{%raw%}{{ UID | trim }}{%endraw%}"
-          Lex: "{%raw%}{{ Lex | trim }}{%endraw%}"
-          LexLow: "{%raw%}{{ LexLow | trim }}{%endraw%}"
-          LexUp: "{%raw%}{{ LexUp | trim }}{%endraw%}"
-          QuantLow: "{%raw%}{{ QuantLow | trim }}{%endraw%}"
-          QuantUp: "{%raw%}{{ QuantUp | trim }}{%endraw%}"
-          Level: "{%raw%}{{ Level | trim }}{%endraw%}"
-          TDANoScore: "{%raw%}{{ TDANoScore | trim }}{%endraw%}"
-          QuantNPR: "{%raw%}{{ QuantNPR | trim }}{%endraw%}"
-          Subject: "{%raw%}{{ Subject | trim }}{%endraw%}"
+    - operation: modify_columns
+      columns: 
+          '*': "{%raw%}{{ value | trim }}{%endraw%}"
           TestDate: "{%raw%}{{ TestDate[0:4] }}-{{ TestDate[4:6] }}-{{ TestDate[6:8] }}{%endraw%}"
-      - operation: map_values
-        columns: 
-        - AlgLev1
-        - AlgLev2
-        - AlgLev3
-        - BioLev1
-        - BioLev2
-        - BioLev3
-        - BioLev4
-        - BioLev5
-        - BioLev6
-        - Eng2Lev1
-        - Eng2Lev2
-        - Eng2Lev3
-        - USHCLev1
-        - USHCLev2
-        - USHCLev3
-        - USHCLev4
-        - USHCLev5
-        map_file: ./seeds/perf_level_xwalk.csv
-      - operation: add_columns
-        columns:
-          school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
+    - operation: map_values
+      columns: 
+      - AlgLev1
+      - AlgLev2
+      - AlgLev3
+      - BioLev1
+      - BioLev2
+      - BioLev3
+      - BioLev4
+      - BioLev5
+      - BioLev6
+      - Eng2Lev1
+      - Eng2Lev2
+      - Eng2Lev3
+      - USHCLev1
+      - USHCLev2
+      - USHCLev3
+      - USHCLev4
+      - USHCLev5
+      map_file: ./seeds/perf_level_xwalk.csv
+    - operation: add_columns
+      columns:
+        school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
 
   grade_level_descriptors:
-    source: $sources.gradeLevelDescriptors
+    source: $sources.grade_level_descriptors
     operations:
       - operation: add_columns
         columns:
