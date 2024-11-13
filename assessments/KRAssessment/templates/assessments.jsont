@@ -4,12 +4,12 @@
   "assessmentFamily": "{{assessmentIdentifier}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{namespace}}/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [  {"academicSubjectDescriptor":"uri://ed.sc.gov/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+      "resultDatatypeTypeDescriptor": "uri://{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer", 
       "minimumScore":"{{ minimumScore }}",
       "maximumScore":"{{ maximumScore }}"
     }

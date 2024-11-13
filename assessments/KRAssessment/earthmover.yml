@@ -8,29 +8,30 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'PS_StudentID,StudentSUNS'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: ./seeds/assessments.csv
     header_rows: 1
   objectiveAssessments:
-    file: ${BUNDLE_DIR}/seeds/objectiveAssessments.csv
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessmentCategoryDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentCategoryDescriptors.csv
+    file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
 
 transformations:
@@ -129,13 +130,18 @@ transformations:
         create_columns: 
           grade_json: agg(grade_json,,)
   
-  prepare_assessments:
+
+
+  stage_assessments:
     source: $sources.assessments
     operations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
 
+  prepare_assessments:
+    source: $transformations.stage_assessments
+    operations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
@@ -155,6 +161,10 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:         
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+
 
   prepare_objective_assessments:
     source: $sources.objectiveAssessments
@@ -165,7 +175,6 @@ transformations:
       - operation: join
         sources:
           - $transformations.performance_levels
-
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
@@ -175,24 +184,34 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
     
       
 
   prepare_student_assessments:
-    source: $sources.input
+    source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+
       - operation: rename_columns
         columns:
           SchoolCode: schoolId
-
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
           administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "uri://ed.sc.gov/GradeLevelDescriptor#0"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+      - operation: join
+        sources:
+          - $transformations.stage_assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
@@ -210,8 +229,10 @@ transformations:
           PerformanceLevel_PDScore: "{%raw%}{% if PDScore >= minimumScore and PDScore <= maximumScore %}{{ codeValue }}{% endif %}{%endraw%}"
       - operation: filter_rows
         query: "(PerformanceLevel_SFScore != 'Unknown' ) or (PerformanceLevel_LLScore != 'Unknown') or (PerformanceLevel_MAScore != 'Unknown') or (PerformanceLevel_PDScore != 'Unknown' )"
-
         behavior: include
+      - operation: rename_columns
+        columns:
+          namespace_x: namespace
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
@@ -228,12 +249,13 @@ transformations:
           - MAScore
           - PDScore
           - schoolId
+          - descriptorNamespace
         create_columns: 
           PerformanceLevel_SFScore: agg(PerformanceLevel_SFScore,)
           PerformanceLevel_LLScore: agg(PerformanceLevel_LLScore,)
           PerformanceLevel_MAScore: agg(PerformanceLevel_MAScore,)
           PerformanceLevel_PDScore: agg(PerformanceLevel_PDScore,)
-
+     
                
 
 destinations:
