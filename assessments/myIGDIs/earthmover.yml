@@ -8,6 +8,8 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: "Student Id"
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    
 
 sources:
   input:
@@ -170,6 +172,9 @@ transformations:
                 {% endfor %}
               {% endfor %}
             {% endfor %}
+        - operation: add_columns
+          columns:
+            descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
   performance_levels:
     
     source: $sources.performanceLevelDescriptors
