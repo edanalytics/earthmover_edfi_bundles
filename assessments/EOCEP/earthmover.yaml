@@ -87,7 +87,6 @@ transformations:
     - operation: modify_columns
       columns: 
           '*': "{%raw%}{{ value | trim }}{%endraw%}"
-          TestDate: "{%raw%}{{ TestDate[0:4] }}-{{ TestDate[4:6] }}-{{ TestDate[6:8] }}{%endraw%}"
     - operation: map_values
       columns: 
       - AlgLev1
@@ -111,6 +110,10 @@ transformations:
     - operation: add_columns
       columns:
         school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
+    - operation: date_format
+      column: TestDate
+      from_format: "%Y%m%d"
+      to_format: "%Y-%m-%d"
 
   grade_level_descriptors:
     source: $sources.grade_level_descriptors
