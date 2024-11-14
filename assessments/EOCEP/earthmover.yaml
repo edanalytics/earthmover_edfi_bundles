@@ -109,6 +109,7 @@ transformations:
       map_file: ./seeds/perf_level_xwalk.csv
     - operation: add_columns
       columns:
+        namespace: "uri://ed.sc.gov/"
         school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
     - operation: date_format
