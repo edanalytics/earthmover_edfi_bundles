@@ -150,6 +150,9 @@ transformations:
         join_type: inner
         left_key: assessmentFamily
         right_key: assessmentFamily
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
 
 
 destinations:
