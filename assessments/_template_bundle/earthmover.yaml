@@ -49,6 +49,7 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+          schoolID: educationOrganizationId
       - operation: add_columns
         columns:
           assessmentIdentifier: "fake_math_assessment"
@@ -131,4 +132,8 @@ destinations:
   studentAssessments:
     source: $transformations.clean_results
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
