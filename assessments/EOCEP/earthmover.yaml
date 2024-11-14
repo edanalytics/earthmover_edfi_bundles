@@ -110,10 +110,17 @@ transformations:
     - operation: add_columns
       columns:
         school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
+        assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
     - operation: date_format
       column: TestDate
       from_format: "%Y%m%d"
       to_format: "%Y-%m-%d"
+    - operation: join
+      sources:
+        - $sources.grade_level_descriptors
+      join_type: inner
+      left_key: Grade
+      right_key: grade
 
   grade_level_descriptors:
     source: $sources.grade_level_descriptors
