@@ -49,69 +49,50 @@
     ],
 
     "studentObjectiveAssessments": [
-        {%- set all_obj_assess = [] -%}
+
         {%- if Subject == 'E2' -%}
-          {%- if Eng2Lev1 is not none and Eng2Lev1 | length -%}
-            {%- set _ = all_obj_assess.append(['Informational Text', Eng2Lev1]) -%}
-          {%- endif -%}
-          {%- if Eng2Lev2 is not none and Eng2Lev2 | length -%}
-            {%- set _ = all_obj_assess.append(['Literary Text', Eng2Lev2]) -%}
-          {%- endif -%}
-          {%- if Eng2Lev3 is not none and Eng2Lev3 | length -%}
-            {%- set _ = all_obj_assess.append(['Writing (to include TDA and Communication)', Eng2Lev3]) -%}
-          {%- endif -%}
+        {%- set possible_obj_assess = [
+            ['Informational Text', Eng2Lev1],
+            ['Literary Text', Eng2Lev2],
+            ['Writing (to include TDA and Communication)', Eng2Lev3]
+        ] -%}
         {%- endif %}
 
         {%- if Subject == 'A' -%}
-          {%- if AlgLev1 is not none and AlgLev1 | length -%}
-            {%- set _ = all_obj_assess.append(['Algebra', AlgLev1]) -%}
-          {%- endif -%}
-          {%- if AlgLev2 is not none and AlgLev2 | length -%}
-            {%- set _ = all_obj_assess.append(['Functions', AlgLev2]) -%}
-          {%- endif -%}
-          {%- if AlgLev3 is not none and AlgLev3 | length -%}
-            {%- set _ = all_obj_assess.append(['AlgLev3	Number and Quantity; Interpreting Data', ALgLev3]) -%}
-          {%- endif -%}
+        {%- set possible_obj_assess = [
+            ['Algebra', AlgLev1],
+            ['Functions', AlgLev2],
+            ['AlgLev3	Number and Quantity; Interpreting Data', ALgLev3]
+        ] -%}
         {%- endif %}
 
         {%- if Subject == 'B' -%}
-          {%- if BioLev1 is not none and BioLev1 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.1 Science and Engineering Practices', BioLev1]) -%}
-          {%- endif -%}
-          {%- if BioLev2 is not none and BioLev2 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.2 Cells as a System', BioLev2]) -%}
-          {%- endif -%}
-          {%- if BioLev3 is not none and BioLev3 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.3 Energy Transfer', BioLev3]) -%}
-          {%- endif -%}
-          {%- if BioLev4 is not none and BioLev4 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.4 Heredity-Inheritance and Variation of Traits', BioLev4]) -%}
-          {%- endif -%}
-          {%- if BioLev5 is not none and BioLev5 | length -%}
-            {%- set _ = all_obj_assess.append(['B.5 Biological Evolution and the Diversity of Life', BioLev5]) -%}
-          {%- endif -%}
-          {%- if BioLev6 is not none and BioLev6 | length -%}
-            {%- set _ = all_obj_assess.append(['H.B.6 Ecosystem Dynamics', BioLev6]) -%}
-          {%- endif -%}
+        {%- set possible_obj_assess = [
+            ['H.B.1 Science and Engineering Practices', BioLev1],
+            ['H.B.2 Cells as a System', BioLev2],
+            ['H.B.3 Energy Transfer', BioLev3],
+            ['H.B.4 Heredity-Inheritance and Variation of Traits', BioLev4],
+            ['B.5 Biological Evolution and the Diversity of Life', BioLev5],
+            ['H.B.6 Ecosystem Dynamics', BioLev6]
+        ] -%}
         {%- endif %}
 
         {%- if Subject == 'H' -%}
-          {%- if USHCLev1 is not none and USHCLev1 | length -%}
-            {%- set _ = all_obj_assess.append(['Foundations of American Republicanism', USHCLev1]) -%}
-          {%- endif -%}
-          {%- if USHCLev2 is not none and USHCLev2 | length -%}
-            {%- set _ = all_obj_assess.append(['Expansion and Union', USHCLev2]) -%}
-          {%- endif -%}
-          {%- if USHCLev3 is not none and USHCLev3 | length -%}
-            {%- set _ = all_obj_assess.append(['Capitalism and Reform', USHCLev3]) -%}
-          {%- endif -%}
-          {%- if USHCLev4 is not none and USHCLev4 | length -%}
-            {%- set _ = all_obj_assess.append(['Modernism and Interventionism', USHCLev4]) -%}
-          {%- endif -%}
-          {%- if USHCLev5 is not none and USHCLev5 | length -%}
-            {%- set _ = all_obj_assess.append(['Legacy of the Cold War', USHCLev5]) -%}
-          {%- endif -%}
+        {%- set possible_obj_assess = [
+            ['Foundations of American Republicanism', USHCLev1],
+            ['Expansion and Union', USHCLev2],
+            ['Capitalism and Reform', USHCLev3],
+            ['Modernism and Interventionism', USHCLev4],
+            ['Legacy of the Cold War', USHCLev5]
+        ] -%}
         {%- endif %}
+
+        {%- set all_obj_assess = [] -%}
+        {%- for obj_assess in possible_obj_assess -%}
+            {%- if obj_assess[0] is not none and obj_assess[0] | length -%}
+            {%- set _ = all_obj_assess.append(obj_assess) -%}
+            {%- endif -%}
+        {%- endfor -%}
 
         {%- for obj_assess in all_obj_assess %}
         {
