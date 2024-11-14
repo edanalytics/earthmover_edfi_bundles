@@ -49,11 +49,12 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-          schoolID: educationOrganizationId
+          adminSchoolID: educationOrganizationId
       - operation: add_columns
         columns:
           assessmentIdentifier: "fake_math_assessment"
           namespace: "uri://fakeassessment.com"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor/Administration"
       - operation: combine_columns
         columns:
           - studentId
