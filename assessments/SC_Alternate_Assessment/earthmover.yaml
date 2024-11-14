@@ -70,6 +70,10 @@ transformations:
           Scale Score: scale_score
           Scale Score Standard Error: standard_error_of_measurement
           Performance: performance_level
+      # Force subject to align with hard-coded assessment identifiers in assessments seed.
+      - operation: modify_columns
+        columns:
+          subject: "{%raw%}{{ value | replace(' ', '_') }}{%endraw%}"
       - operation: add_columns
         columns:
           assessment_identifier: "{%raw%}SC_ALT_{{subject}}_{{API_YEAR}}{%endraw%}"
@@ -122,6 +126,9 @@ transformations:
         join_type: inner
         left_key: assessment_identifier
         right_key: assessment_identifier
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
 
 destinations:
   assessments:
