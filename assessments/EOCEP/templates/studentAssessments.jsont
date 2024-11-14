@@ -15,48 +15,25 @@
   "whenAssessedLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{Grade}}",
 
   "scoreResults": [
-  {%- set scores = [] -%}
+  {%- set possible_scores = [
+      [Lex, 'Lex', 'Level'],
+      [LexLow, 'LexLow', 'Level'],
+      [LexUp, 'LexUp', 'Level'],
+      [QuantLow, 'QuantLow', 'Level'],
+      [QuantUp, 'QuantUp', 'Level'],
+      [Level, 'Level', 'Level'],
+      [TDAScore, 'TDAScore', 'Level'],
+      [TDANoScore, 'TDANoScore', 'Level'],
+      [QuantNPR, 'QuantNPR', 'Level'],
+      [TestAdmin, 'TestAdmin', 'Level']
+    ] -%}
 
-    {%- if Lex is not none and Lex | length -%}
-      {%- set _ = scores.append([Lex, 'Lex', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if LexLow is not none and LexLow | length -%}
-      {%- set _ = scores.append([LexLow, 'LexLow', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if LexUp is not none and LexUp | length -%}
-      {%- set _ = scores.append([LexUp, 'LexUp', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if QuantLow is not none and QuantLow | length -%}
-      {%- set _ = scores.append([QuantLow, 'QuantLow', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if QuantUp is not none and QuantUp | length -%}
-      {%- set _ = scores.append([QuantUp, 'QuantUp', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if Level is not none and Level | length -%}
-      {%- set _ = scores.append([Level, 'Level', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if TDAScore is not none and TDAScore | length -%}
-      {%- set _ = scores.append([TDAScore, 'TDAScore', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if TDANoScore is not none and TDANoScore | length -%}
-      {%- set _ = scores.append([TDANoScore, 'TDANoScore', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if QuantNPR is not none and QuantNPR | length -%}
-      {%- set _ = scores.append([QuantNPR, 'QuantNPR', 'Level']) -%}
-    {%- endif -%}
-
-    {%- if TestAdmin is not none and TestAdmin | length -%}
-      {%- set _ = scores.append([TestAdmin, 'TestAdmin', 'Level']) -%}
-    {%- endif -%}
-
+      {%- set scores = [] -%}
+      {%- for score in possible_scores -%}
+        {%- if score[0] is not none and score[0] | length -%}
+          {%- set _ = scores.append(score) -%}
+        {%- endif -%}
+      {%- endfor -%}
 
     {%- for score in scores -%}
     {
