@@ -10,8 +10,7 @@ config:
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
-    #STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    STUDENT_ID_NAME: StateID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     INPUT_FILE: ''
     API_YEAR: ''
     INPUT_FILETYPE: csv
