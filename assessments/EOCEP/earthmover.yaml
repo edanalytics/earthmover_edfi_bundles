@@ -140,6 +140,12 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  objective_assessments:
+    source: $sources.objective_assessments
+    operations: 
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
 
   assessments:
     source: $sources.assessments
@@ -164,7 +170,7 @@ destinations:
     linearize: True
 
   objectiveAssessments:
-    source: $sources.objective_assessments
+    source: $transformations.objective_assessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
