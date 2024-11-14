@@ -1,12 +1,11 @@
 version: 2
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
-  tmp_dir: ${TEMPORARY_DIRECTORY}
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
@@ -34,9 +33,9 @@ sources:
     file: ./seeds/assessments.csv
     header_rows: 1
 
-  academic_subject_descriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
-    header_rows: 1
+  # academic_subject_descriptors:
+  #   file: ./seeds/academicSubjectDescriptors.csv
+  #   header_rows: 1
 
   grade_level_descriptors:
     file: ./seeds/gradeLevelDescriptors.csv
@@ -84,6 +83,8 @@ transformations:
     - operation: duplicate_columns
       columns:
           ${STUDENT_ID_NAME}: studentUniqueId
+          # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
+          RSchoolID: educationOrganizationId
     - operation: modify_columns
       columns: 
           '*': "{%raw%}{{ value | trim }}{%endraw%}"
@@ -112,6 +113,8 @@ transformations:
         namespace: "uri://ed.sc.gov"
         school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
+        # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
+        educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor/Administration"
     - operation: date_format
       column: TestDate
       from_format: "%Y%m%d"
@@ -201,8 +204,13 @@ destinations:
     extension: jsonl
     linearize: True
 
-  academicSubjectDescriptors:
-    source: $sources.academic_subject_descriptors
-    template: ./templates/academicSubjectDescriptors.jsont
+  # academicSubjectDescriptors:
+  #   source: $sources.academic_subject_descriptors
+  #   template: ./templates/academicSubjectDescriptors.jsont
+  #   extension: jsonl
+  #   linearize: True
+
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.eocep_student_assessments
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
-    linearize: True
