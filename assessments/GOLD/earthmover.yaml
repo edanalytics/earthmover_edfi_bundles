@@ -83,11 +83,12 @@ transformations:
       - operation: add_columns
         columns:
           assessment: {{assessment}}
-          draft: "{%raw%}{{__row_data__['school_year']}} {%endraw%} {{assessment}} {%raw%} Date Finalized {%endraw%}"
-          current_score: '{%raw%}{{__row_data__[__row_data__['school_year'] ~ " " ~ "{%endraw%}{{assessment}}{%raw%}" ~ " Date" ]}}{%endraw%}'
+          draft: "{%raw%}{{__row_data__['school_year']}} {%endraw%}{{assessment}}{%raw%} Date Finalized{%endraw%}"
+          current_score: '{%raw%}{{__row_data__[__row_data__["school_year"] + " " + {%endraw%}"{{assessment}}"{%raw%} + " Date Finalized"]}}{%endraw%}'
       - operation: keep_columns
         columns:
           - school_year
+          - draft
           - current_score
           - assessment
 
