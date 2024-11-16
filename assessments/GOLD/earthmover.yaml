@@ -56,17 +56,19 @@ sources:
 ]
 %}
 
-{% set assessment = 'Physical' %}
-
 transformations:
   input: #this initial transformation node should not be deleted in order for this bundle to be compatible with the student ID xwalking package
     source: $sources.input
     operations: []  
-  
-  
-  input_with_school_year:
+
+# The original ingested data comes in a very wide format, with each observation containing all past assessment results for each student. We need to pivot the data longer by (1) creating 
+# separate "dataframes" in which each observation represents an assessment result for all reporting methods per student, (2) union them all together.
+
+{% for assessment in assessments.keys() %}
+  {{assessment | replace(" ","_")}}:
     source: $transformations.input
     operations:
+      # Because each input file comes per school year and we don't have that information beforehand these transformations dynamically create a `school_year` column based on the data itself.
       - operation: add_columns
         columns:
           school_year: '{%raw%}
@@ -83,13 +85,64 @@ transformations:
       - operation: add_columns
         columns:
           assessment: {{assessment}}
-          draft: "{%raw%}{{__row_data__['school_year']}} {%endraw%} {{assessment}} {%raw%} Date Finalized {%endraw%}"
-          current_score: '{%raw%}{{__row_data__[__row_data__['school_year'] ~ " " ~ "{%endraw%}{{assessment}}{%raw%}" ~ " Date" ]}}{%endraw%}'
-      - operation: keep_columns
+          assessment_id: {{assessments.get(assessment)}}
+          namespace: "uri://www.teachingstrategies.com/product/gold"
+          # The inner  `__row_data__` reference creates the original date column name: "[school_year] [assesssment] Date Finalized"
+          # The outer `__row_data__` reference refers to the values under the original date column 
+          admin_date: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " Date Finalized"}}{%raw%}"]}}{%endraw%}' 
+          # Fall back values for cases where admin_date is null
+          standard_admin_date_1: '10/1/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[0]}}{%endraw%}' 
+          standard_admin_date_2: '03/01/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[1]}}{%endraw%}'
+          # Same double-referencing logic as above for each reporting method
+          {%- for reporting_method in reporting_methods %}
+          {{reporting_method}}: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " " ~ reporting_method}}{%raw%}"]}}{%endraw%}'
+          {%- endfor %}
+      - operation: modify_columns
+        columns:
+          admin_date: '{%raw%}
+            {%- if admin_date != "" %}
+              {{value}}
+            {%- else %}
+              {%-if "Fall" in __row_data__["school_year"] %}
+                {{__row_data__["standard_admin_date_1"]}}
+              {%- else %}
+                {{__row_data__["standard_admin_date_2"]}}
+              {%-endif%}
+            {%-endif%}
+          {%endraw%}'
+      - operation: combine_columns
         columns:
           - school_year
-          - current_score
+          - admin_date
+          - assessment_id
+          - ChildID
+        new_column: student_assessment_id
+      - operation: modify_columns
+        columns:
+          student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
+      - operation: keep_columns
+        columns:
+          - ChildID
+          - student_assessment_id
+          - school_year
+          - admin_date
           - assessment
+          - assessment_id
+          - namespace
+          {%- for reporting_method in reporting_methods %}
+          - {{reporting_method}}
+          {%- endfor %}
+      - operation: snake_case_columns
+{%-endfor%}
+
+  final_result:
+    source: $transformations.{{(assessments.keys())|list|first}}
+    operations:
+      - operation: union
+        sources:
+          {%- for i in range(1, (assessments.keys()|list) | length ) %} 
+          - $transformations.{{(assessments.keys()|list)[i] | replace(" ", "_") }}
+          {%- endfor %}
 
   
 
@@ -143,11 +196,11 @@ destinations:
     source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-  # studentAssessments:
-  #   source: $transformations.Mathematics
-  #   template: ./templates/draft.jsont
-  #   extension: jsonl
+  studentAssessments:
+    source: $transformations.final_result
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
   input_with_school_year:
-    source: $transformations.input_with_school_year
+    source: $transformations.final_result
     template: ./templates/draft.jsont
     extension: jsonl
