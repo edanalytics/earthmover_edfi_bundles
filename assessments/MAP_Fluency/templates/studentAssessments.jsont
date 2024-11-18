@@ -128,7 +128,7 @@
           {% endif %}
         {% endfor %}
           ]
-        {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
+            {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
             ,
             "scoreResults": [
             {% for item in obj_assess["scores"] %}
@@ -146,7 +146,19 @@
             {% endif %}
             {% endfor %}
           ]
-        {% endif %}
+            {% elif (obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length) and (obj_assess["scores"][0][0] is none or not obj_assess["scores"][0][0] | length) %}
+            ,
+            "scoreResults": [
+            {% for item in obj_assess["scores"] %}
+                {
+                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
+                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
+                    "result": "not_scored"
+                }
+                {% if not loop.last %},{% endif %}
+            {% endfor %}
+          ]
+          {% endif %}
 
         }{% if not loop.last %},{% endif %}
       {% endfor %}
