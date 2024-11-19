@@ -14,6 +14,7 @@ config:
     API_YEAR: ''
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
   assessments:
@@ -30,9 +31,6 @@ sources:
     header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
-    header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
   languageDescriptors:
     file: ./seeds/languageDescriptors.csv
