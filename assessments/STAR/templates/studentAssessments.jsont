@@ -68,12 +68,6 @@
   {%- if edfi_ds_version|int >= 4 -%}
   , "assessedMinutes": "{{ (TotalTimeInSeconds|int / 60)|round|int }}"
 
-  {%- if schoolId is not none and schoolId | length -%}
-  , "reportedSchoolReference": {
-    "schoolId": "{{ schoolId }}"
-  }
-  {%- endif -%}
-
   {%- if ScreeningPeriodWindowName is not none and ScreeningPeriodWindowName | length -%}
   , "period": {
     "assessmentPeriodDescriptor": "uri://renaissance.com/AssessmentPeriodDescriptor#{{ ScreeningPeriodWindowName }}",

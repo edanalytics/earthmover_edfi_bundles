@@ -140,6 +140,7 @@ transformations:
           assessmentTitle: "{%raw%}STAR {{subject_full-}}{%endraw%}"
           namespace: "uri://renaissance.com/Assessment"
           edfi_ds_version: ${EDFI_DS_VERSION}
+          educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor/Enrollment"
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
@@ -523,3 +524,7 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.star_with_obj_assessment_grade_mapped
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl

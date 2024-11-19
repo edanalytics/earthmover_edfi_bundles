@@ -30,7 +30,7 @@ Or use our sample files (`data/*`).
 - INPUT_FILE_OVERALL: The overall student assessment file to be mapped
 - API_YEAR: The API year that the output of this template will send to
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file, or a value mapped from a crosswalk (must be supplied)
-- SCHOOL_ID_NAME: Which column to use as the Ed-Fi `schoolId` in the `reportedSchoolReference` (only supported in data standard 4+)
+- SCHOOL_ID_NAME: Which column to use as the Ed-Fi `schoolId` in the `studentAssessmentEducationOrganizationAssociation` reference (only supported in data standard 4+)
 - EDFI_DS_VERSION: The Ed-Fi data standard major version for your ODS. Integer only; supported versions are 3, 4, and 5
   
 ### Examples
