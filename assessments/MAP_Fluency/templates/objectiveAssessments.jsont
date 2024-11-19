@@ -1,12 +1,10 @@
 {
-  "assessmentItems": [],
   "assessmentReference": {
     "assessmentIdentifier": "{{assessment_identifier}}",
     "namespace": "uri://www.nwea.org/mapFluency/Assessment"
   },
   "description": "{{identification_code}}",
   "identificationCode": "{{identification_code}}",
-  "learningObjectives": [],
   "learningStandards": [],
   "performanceLevels": [
     {% set reporting_methods = reporting_methods.split(',')|select|list%}
