@@ -5,10 +5,10 @@ config:
   output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
   memory_limit: 1GB
   state_file: ${STATE_FILE}
-  tmp_dir: ${TMP_DIR}
+  tmp_dir: /tmp #${TMP_DIR}
   show_graph: False
   parameter_defaults:
-    TMP_DIR: /tmp
+    #TMP_DIR: /tmp
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
