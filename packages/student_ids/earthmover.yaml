@@ -1,7 +1,7 @@
 version: 2
 
 config:
-  tmp_dir: ${TEMPORARY_DIRECTORY}
+  tmp_dir: /tmp # ${TEMPORARY_DIRECTORY}
   parameter_defaults:
     TEMPORARY_DIRECTORY: /tmp
     # The following values are required to use this bundle:
