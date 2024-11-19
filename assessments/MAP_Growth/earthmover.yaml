@@ -69,6 +69,7 @@ transformations:
           namespace: 'uri://www.nwea.org/map/Assessment'
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}  # Set hard-coded ResultDatatypeTypeDescriptors in the template
           edfi_ds_version: ${EDFI_DS_VERSION}
+          educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor/Administration"
       - operation: date_format
         column: TestStartDate
         from_format: "%m/%d/%Y"
@@ -227,3 +228,7 @@ destinations:
     template: ./templates/studentAssessment.jsont
     extension: jsonl
     linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.map_student_assessment
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl  
