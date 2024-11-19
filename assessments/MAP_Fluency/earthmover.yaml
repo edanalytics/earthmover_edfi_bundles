@@ -137,31 +137,6 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  academic_subject_descriptors:
-    source: $sources.academicSubjectDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          subject_json: >
-              {%raw-%}  
-              {
-                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
-              },
-              {%-endraw%}
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
-        # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentFamily
-        create_columns: 
-          subject_json: agg(subject_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-
   assessments:
     source: $sources.assessments
     operations:
