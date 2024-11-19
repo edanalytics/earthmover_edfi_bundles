@@ -149,12 +149,6 @@ transformations:
         join_type: inner
         left_key: assessmentFamily
         right_key: assessmentFamily
-      - operation: join
-        sources:
-          - $transformations.academic_subject_descriptors
-        join_type: inner
-        left_key: assessmentFamily
-        right_key: assessmentFamily
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
