@@ -56,6 +56,7 @@ transformations:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
           assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' ,'-') }}{%endraw%}"
           namespace: "uri://www.nwea.org/mapFluency/Assessment"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: date_format
         column: TestCompletionDate
         from_format: "%m/%d/%Y"
@@ -109,6 +110,10 @@ transformations:
           levels: agg(level,,)
           score_reporting_methods: agg(score_reporting_method,,)
           result_data_types: agg(result_data_type,,)
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -150,6 +155,9 @@ transformations:
         join_type: inner
         left_key: assessmentFamily
         right_key: assessmentFamily
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   studentAssessments:

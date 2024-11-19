@@ -14,7 +14,7 @@
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ reporting_methods[i] }}",
         "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ levels[i] }}",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
       }{% if not loop.last %},{% endif %}
     {% endif %}
   {% endfor %}
@@ -27,7 +27,7 @@
       {% if score_reporting_methods[i] != '' %}
         {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ score_reporting_methods[i] }}",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ result_data_types[i] }}"
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ result_data_types[i] }}"
         } {% if not loop.last %},{% endif %}
       {% endif %}
     {% endfor %}

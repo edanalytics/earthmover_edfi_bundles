@@ -19,29 +19,29 @@
     "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Result Type",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ ResultType | truncate(35, True, '', 0) }}"
       },
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Assigned Test Type",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ AssignedTestType | truncate(35, True, '', 0) }}"
       },
       {% if DyslexiaScreenerOutcome != "N/A" and DyslexiaScreenerOutcome | length %}
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Dyslexia Screener Outcome",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ DyslexiaScreenerOutcome }}"
       },
       {% endif %}
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Universal Screener Outcome",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ UniversalScreenerOutcome }}"
       },
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Term Name",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{ TermName }}"
       }
     ],
@@ -133,7 +133,7 @@
             {% if item[0] is not none and item[0] | length %}
                 {
                     "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
-                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
+                    "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ item[2] }}",
                     {% if obj_assess["id_code"] == "Literal Comprehension" %}
                     "result": "{{ item[0] }}"
                     {% else %}
@@ -150,7 +150,7 @@
             {% for item in obj_assess["scores"] %}
                 {
                     "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
-                    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ item[2] }}",
+                    "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ item[2] }}",
                     "result": "not_scored"
                 }
                 {% if not loop.last %},{% endif %}
