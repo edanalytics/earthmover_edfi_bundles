@@ -34,6 +34,572 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    type: fixedwidth # TODO: ?
+    columns:
+      - administration_date
+      - grade_level_code
+      - esc_region_number
+      - county_district_campus_number
+      - district_name
+      - campus_name
+      - last_name
+      - first_name
+      - middle_initial
+      - peims_id
+      - sex_code
+      - date_of_birth
+      - blank_14
+      - hispanic_latino_code
+      - american_indian_alaska_native_code
+      - asian_code
+      - black_african_american_code
+      - native_hawaiian_pacific_islander_code
+      - white_code
+      - ethnicity/race_reporting_category
+      - economic_disadvantage_code
+      - title_i_part_a_indicator_code
+      - migrant_indicator_code
+      - blank_27
+      - emergent_bilingual_indicator_code
+      - bilingual_indicator_code
+      - esl_indicator_code
+      - fall_2023_tsds_peims_homeless_status_code
+      - special_ed_indicator_code
+      - section_504_indicator_code
+      - blank_34
+      - gifted_talented_indicator_code
+      - at_risk_indicator_code
+      - blank_37
+      - local_student_id
+      - blank_41
+      - fall_2023_tsds_peims_county_district_campus_number
+      - blank_43
+      - fall_2023_tsds_peims_student_attribution_code
+      - family_portal_unique_accesscode
+      - migrant_student_in_texas_migrantinterstate_program_(tmip)
+      - fall_2023_tsds_peims_military_connected_student_code
+      - fall_2023_tsds_peims_foster_care_indicator_code
+      - blank_50
+      - fall_2023_tsds_peims_dyslexia_indicator_code
+      - blank_52
+      - new_to_texas
+      - tx_unique_student_id
+      - local_use_reading_language_arts
+      - local_use_mathematics
+      - blank_58
+      - local_use_social_studies
+      - local_use_science
+      - agency_use_code_a_readinglanguage_arts
+      - agency_use_code_b_readinglanguage_arts
+      - agency_use_code_c_readinglanguage_arts
+      - agency_use_code_d_readinglanguage_arts
+      - agency_use_code_e_readinglanguage_arts
+      - agency_use_code_a_mathematics
+      - agency_use_code_b_mathematics
+      - agency_use_code_c_mathematics
+      - agency_use_code_d_mathematics
+      - agency_use_code_e_mathematics
+      - blank_71
+      - agency_use_code_a_social_studies
+      - agency_use_code_b_social_studies
+      - agency_use_code_c_social_studies
+      - agency_use_code_d_social_studies
+      - agency_use_code_e_social_studies
+      - agency_use_code_a_science
+      - agency_use_code_b_science
+      - agency_use_code_c_science
+      - agency_use_code_d_science
+      - agency_use_code_e_science
+      - blank_83
+      - score_code_reading_language_arts
+      - score_code_mathematics
+      - blank_87
+      - score_code_social_studies
+      - score_code_science
+      - blank_90
+      - reading_language_arts_reportingcategory_1_scores
+      - reading_language_arts_reportingcategory_2_scores
+      - performance_level_indicator_reading_language_arts
+      - reading_language_arts_raw_score
+      - reading_language_arts_scale_score
+      - blank_98
+      - reading_language_arts_test_version
+      - blank_100
+      - reading_language_arts_translatedstudent_materials
+      - blank_102
+      - level_ii__satisfactory_academic_performance_in_reading_languagearts
+      - level_iii__accomplished_academic_performance_in_reading_languagearts
+      - staar_alternate_2_progressmeasure_reading_language_arts
+      - blank_107
+      - on_track_to_level_ii__satisfactoryacademic_performance_readinglanguage_arts
+      - previous_year_administration_date__reading_language_arts
+      - previous_year_scale_score_readinglanguage_arts
+      - blank_111
+      - previous_year_score_code_readinglanguage_arts
+      - previous_year_level_ii__satisfactoryacademic_performance_readinglanguage_arts
+      - previous_year_level_iii_accomplished_academic_performance_reading_languagearts
+      - previous_year_tested_grade__reading_language_arts
+      - blank_116
+      - color_or_highlight_119
+      - color_overlays_120
+      - blank_121
+      - photographs_or_objects_122
+      - textured_materials_123
+      - demonstrate_124
+      - raise_or_darken_outline_125
+      - enlarge_126
+      - braille_127
+      - describe_images_128
+      - provide_images_or_text_separately_129
+      - isolate_images_130
+      - picture_representations_131
+      - reread_text_132
+      - use_calculator,_manipulatives,_ormathematics_tools_133
+      - provide_structured_reminders_134
+      - blank_135
+      - mathematics_reporting_category_1scores
+      - mathematics_reporting_category_2scores
+      - mathematics_reporting_category_3scores
+      - mathematics_reporting_category_4scores
+      - performance_level_indicator_mathematics
+      - mathematics_raw_score
+      - mathematics_scale_score
+      - blank_145
+      - mathematics_test_version
+      - blank_147
+      - mathematics_translated_studentmaterials
+      - blank_149
+      - level_ii__satisfactory_academic_performance_in_mathematics
+      - level_iii__accomplished_academic_performance_in_mathematics
+      - staar_alternate_2_mathematicsprogress_measure
+      - blank_154
+      - on_track_to_level_ii__satisfactoryacademic_performance_155
+      - previous_year_administration_date__mathematics
+      - previous_year_scale_score__mathematics
+      - blank_158
+      - previous_year_score_code__mathematics
+      - previous_year_level_ii__satisfactoryacademic_performance__mathematics
+      - previous_year_level_iii_accomplished_academic_performance_mathematics
+      - previous_year_tested_grade__mathematics
+      - blank_163
+      - color_or_highlight_165
+      - color_overlays_166
+      - blank_167
+      - photographs_or_objects_168
+      - textured_materials_170
+      - demonstrate_171
+      - raise_or_darken_outline_172
+      - enlarge_173
+      - braille_174
+      - describe_images_175
+      - provide_images_or_text_separately_176
+      - isolate_images_177
+      - picture_representations_178
+      - reread_text_179
+      - use_calculator,_manipulatives,_ormathematics_tools_180
+      - provide_structured_reminders_181
+      - blank_182
+      - social_studies_reporting_category_1scores
+      - social_studies_reporting_category_2scores
+      - social_studies_reporting_category_3scores
+      - social_studies_reporting_category_4scores
+      - social_studies_raw_score
+      - social_studies_scale_score
+      - blank_190
+      - social_studies_test_version
+      - blank_192
+      - social_studies_translated_studentmaterials
+      - blank_194
+      - level_ii__satisfactory_academic_performance_in_social_studies
+      - level_iii__accomplished_academic_performance_in_social_studies
+      - blank_198
+      - color_or_highlight_200
+      - color_overlays_201
+      - blank_202
+      - photographs_or_objects_203
+      - textured_materials_204
+      - demonstrate_205
+      - raise_or_darken_outline_206
+      - enlarge_207
+      - braille_208
+      - describe_images_209
+      - provide_images_or_text_separately_210
+      - isolate_images_211
+      - picture_representations_212
+      - reread_text_213
+      - use_calculator,_manipulatives,_ormathematics_tools_214
+      - provide_structured_reminders_215
+      - blank_216
+      - science_reporting_category_1scores
+      - science_reporting_category_2scores
+      - science_reporting_category_3scores
+      - science_reporting_category_4scores
+      - science_raw_score
+      - science_scale_score
+      - blank_224
+      - science_test_version
+      - blank_226
+      - science_translated_studentmaterials
+      - blank_229
+      - level_ii__satisfactory_academic_performance_in_science
+      - level_iii__accomplished_academic_performance_in_science
+      - blank_232
+      - color_or_highlight_234
+      - color_overlays_235
+      - blank_236
+      - photographs_or_objects_237
+      - textured_materials_238
+      - demonstrate_239
+      - raise_or_darken_outline_240
+      - enlarge_241
+      - braille_242
+      - describe_images_243
+      - provide_images_or_text_separately_244
+      - isolate_images_245
+      - picture_representations_246
+      - reread_text_247
+      - use_calculator,_manipulatives,_ormathematics_tools_248
+      - provide_structured_reminders_249
+      - blank_250
+      - county_district_campus_number_252
+      - blank_254
+      - score_code_255
+      - level_ii__satisfactory_academic_performance_256
+      - level_iii__accomplished_academic_performance_257
+      - scale_score_258
+      - tested_grade_259
+      - blank_260
+      - on_track_to_level_ii__satisfactoryacademic_performance_261
+      - staar_alternate_2_progressmeasure_262
+      - blank_263
+      - county_district_campus_number_265
+      - blank_266
+      - score_code_267
+      - level_ii__satisfactory_academic_performance_268
+      - level_iii__accomplished_academic_performance_269
+      - scale_score_270
+      - tested_grade_271
+      - blank_272
+      - on_track_to_level_ii__satisfactoryacademic_performance_273
+      - staar_alternate_2_progressmeasure_274
+      - blank_275
+      - county_district_campus_number_278
+      - blank_279
+      - score_code_280
+      - level_ii__satisfactory_academic_performance_281
+      - level_iii__accomplished_academic_performance_282
+      - scale_score_283
+      - tested_grade_284
+      - blank_285
+      - county_district_campus_number_287
+      - blank_288
+      - score_code_289
+      - level_ii__satisfactory_academic_performance_290
+      - level_iii__accomplished_academic_performance_291
+      - scale_score_292
+      - tested_grade_293
+      - blank_294
+      - fall_2023_tsds_peims_crisis_code
+      - blank_297
+      - test_result_id_reading_languagearts
+      - test_result_id_mathematics
+      - test_result_id_social_studies
+      - test_result_id_science
+      - blank_303
+      - opportunity_key_readinglanguage_arts
+      - opportunity_key_mathematics
+      - opportunity_key_social_studies
+      - opportunity_key_science
+      - blank_309
+      - non_participant_reading_languagearts
+      - non_participant_mathematics
+      - non_participant_social_studies
+      - non_participant_science
+      - blank_314
+      - period
+    colspecs:
+      # TODO: uh oh going to need jinja...
+      - [0,	4]
+      - [4,	6]
+      - [6,	8]
+      - [8,	17]
+      - [17, 32]
+      - [32, 47]
+      - [47, 62]
+      - [62, 72]
+      - [72, 73]
+      - [73, 82]
+      - [82, 83]
+      - [83, 91]
+      - [91, 92]
+      - [92, 93]
+      - [93, 94]
+      - [94, 95]
+      - [95, 96]
+      - [96, 97]
+      - [97, 98]
+      - [98, 99]
+      - [99, 100]
+      - [100, 101]
+      - [101, 102]
+      - [102, 106]
+      - [106, 107]
+      - [107, 108]
+      - [108, 109]
+      - [109, 110]
+      - [110, 111]
+      - [111, 112]
+      - [112, 116]
+      - [116, 117]
+      - [117, 118]
+      - [118, 122]
+      - [122, 131]
+      - [131, 143]
+      - [143, 152]
+      - [152, 154]
+      - [154, 156]
+      - [156, 162]
+      - [162, 163]
+      - [163, 164]
+      - [164, 165]
+      - [165, 185]
+      - [185, 186]
+      - [186, 189]
+      - [189, 190]
+      - [190, 200]
+      - [200, 204]
+      - [204, 208]
+      - [208, 212]
+      - [212, 216]
+      - [216, 220]
+      - [220, 221]
+      - [221, 222]
+      - [222, 223]
+      - [223, 224]
+      - [224, 225]
+      - [225, 226]
+      - [226, 227]
+      - [227, 228]
+      - [228, 229]
+      - [229, 230]
+      - [230, 235]
+      - [235, 236]
+      - [236, 237]
+      - [237, 238]
+      - [238, 239]
+      - [239, 240]
+      - [240, 241]
+      - [241, 242]
+      - [242, 243]
+      - [243, 244]
+      - [244, 245]
+      - [245, 350]
+      - [350, 351]
+      - [351, 352]
+      - [352, 353]
+      - [353, 354]
+      - [354, 355]
+      - [355, 400]
+      - [400, 402]
+      - [402, 404]
+      - [404, 406]
+      - [406, 408]
+      - [408, 412]
+      - [412, 413]
+      - [413, 414]
+      - [414, 415]
+      - [415, 416]
+      - [416, 423]
+      - [423, 424]
+      - [424, 425]
+      - [425, 426]
+      - [426, 428]
+      - [428, 429]
+      - [429, 433]
+      - [433, 437]
+      - [437, 439]
+      - [439, 440]
+      - [440, 441]
+      - [441, 442]
+      - [442, 444]
+      - [444, 650]
+      - [650, 651]
+      - [651, 652]
+      - [652, 653]
+      - [653, 654]
+      - [654, 655]
+      - [655, 656]
+      - [656, 657]
+      - [657, 658]
+      - [658, 659]
+      - [659, 660]
+      - [660, 661]
+      - [661, 662]
+      - [662, 663]
+      - [663, 664]
+      - [664, 665]
+      - [665, 666]
+      - [666, 750]
+      - [750, 752]
+      - [752, 754]
+      - [754, 756]
+      - [756, 758]
+      - [758, 760]
+      - [760, 762]
+      - [762, 766]
+      - [766, 767]
+      - [767, 768]
+      - [768, 769]
+      - [769, 770]
+      - [770, 777]
+      - [777, 778]
+      - [778, 779]
+      - [779, 780]
+      - [780, 781]
+      - [781, 782]
+      - [782, 786]
+      - [786, 790]
+      - [790, 792]
+      - [792, 793]
+      - [793, 794]
+      - [794, 795]
+      - [795, 797]
+      - [797, 1000]
+      - [1000, 1001]
+      - [1001, 1002]
+      - [1002, 1003]
+      - [1003, 1004]
+      - [1004, 1005]
+      - [1005, 1006]
+      - [1006, 1007]
+      - [1007, 1008]
+      - [1008, 1009]
+      - [1009, 1010]
+      - [1010, 1011]
+      - [1011, 1012]
+      - [1012, 1013]
+      - [1013, 1014]
+      - [1014, 1015]
+      - [1015, 1016]
+      - [1016, 1500]
+      - [1500, 1502]
+      - [1502, 1504]
+      - [1504, 1506]
+      - [1506, 1508]
+      - [1508, 1510]
+      - [1510, 1514]
+      - [1514, 1515]
+      - [1515, 1516]
+      - [1516, 1517]
+      - [1517, 1518]
+      - [1518, 1525]
+      - [1525, 1526]
+      - [1526, 1527]
+      - [1527, 1800]
+      - [1800, 1801]
+      - [1801, 1802]
+      - [1802, 1803]
+      - [1803, 1804]
+      - [1804, 1805]
+      - [1805, 1806]
+      - [1806, 1807]
+      - [1807, 1808]
+      - [1808, 1809]
+      - [1809, 1810]
+      - [1810, 1811]
+      - [1811, 1812]
+      - [1812, 1813]
+      - [1813, 1814]
+      - [1814, 1815]
+      - [1815, 1816]
+      - [1816, 1900]
+      - [1900, 1902]
+      - [1902, 1904]
+      - [1904, 1906]
+      - [1906, 1908]
+      - [1908, 1910]
+      - [1910, 1914]
+      - [1914, 1915]
+      - [1915, 1916]
+      - [1916, 1917]
+      - [1917, 1918]
+      - [1918, 1925]
+      - [1925, 1926]
+      - [1926, 1927]
+      - [1927, 2200]
+      - [2200, 2201]
+      - [2201, 2202]
+      - [2202, 2203]
+      - [2203, 2204]
+      - [2204, 2205]
+      - [2205, 2206]
+      - [2206, 2207]
+      - [2207, 2208]
+      - [2208, 2209]
+      - [2209, 2210]
+      - [2210, 2211]
+      - [2211, 2212]
+      - [2212, 2213]
+      - [2213, 2214]
+      - [2214, 2215]
+      - [2215, 2216]
+      - [2216, 2530]
+      - [2530, 2539]
+      - [2539, 2541]
+      - [2541, 2542]
+      - [2542, 2543]
+      - [2543, 2544]
+      - [2544, 2548]
+      - [2548, 2550]
+      - [2550, 2552]
+      - [2552, 2553]
+      - [2553, 2554]
+      - [2554, 2650]
+      - [2650, 2659]
+      - [2659, 2661]
+      - [2661, 2662]
+      - [2662, 2663]
+      - [2663, 2664]
+      - [2664, 2668]
+      - [2668, 2670]
+      - [2670, 2672]
+      - [2672, 2673]
+      - [2673, 2674]
+      - [2674, 2770]
+      - [2770, 2779]
+      - [2779, 2781]
+      - [2781, 2782]
+      - [2782, 2783]
+      - [2783, 2784]
+      - [2784, 2788]
+      - [2788, 2790]
+      - [2790, 2800]
+      - [2800, 2809]
+      - [2809, 2811]
+      - [2811, 2812]
+      - [2812, 2813]
+      - [2813, 2814]
+      - [2814, 2818]
+      - [2818, 2820]
+      - [2820, 3135]
+      - [3135, 3138]
+      - [3138, 3144]
+      - [3144, 3153]
+      - [3153, 3162]
+      - [3162, 3171]
+      - [3171, 3180]
+      - [3180, 3186]
+      - [3186, 3222]
+      - [3222, 3258]
+      - [3258, 3294]
+      - [3294, 3330]
+      - [3330, 3366]
+      - [3366, 3367]
+      - [3367, 3368]
+      - [3368, 3369]
+      - [3369, 3370]
+      - [3370, 3999]
+      - [3999, 4000]
 
   # OTHER XWALKS
   administration_window_xwalk:
