@@ -279,8 +279,8 @@
         },
         "performanceLevels": [
           {
-            "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/FastBridge/AssessmentReportingMethodDescriptor#18",
-            "performanceLevelDescriptor": "uri://ed.sc.gov/FastBridge/PerformanceLevelDescriptor#{{riskLevel}}",
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#18",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FastBridge/PerformanceLevelDescriptor#{{riskLevel}}",
             "performanceLevelIndicatorName": "{{riskLevel}}"
           }
         ],
@@ -299,7 +299,7 @@
                 {% set objectiveColumnValue = (__row_data__[objectiveColumnTotal] | int) - (__row_data__[objectiveColumnCorrect] | int) %}
               {% endif %}
                 {
-                    "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}",
+                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}",
                     "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
                     "result": "{{objectiveColumnValue}}"
                 }
@@ -321,7 +321,7 @@
                   {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}                      
                   ,
                   {
-                      "assessmentReportingMethodDescriptor": "uri://ed.sc.gov/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}{{comparisonPeriodCode}}",
+                      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}{{comparisonPeriodCode}}",
                       "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
                       "result": "{{objectiveColumnValue}}"
                   }
