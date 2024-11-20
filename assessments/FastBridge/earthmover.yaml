@@ -12,7 +12,8 @@ config:
     STATE_FILE: ./tmp/.earthmover/runs.csv
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: StateID
+    POSSIBLE_STUDENT_ID_COLUMNS: StateID,LocalID
+    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
 
 sources:
   {% set assessment_periods = [
@@ -1380,9 +1381,6 @@ sources:
       - ScreeningPeriod5CBMR-EnglishNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
       - ScreeningPeriod5CBMR-EnglishGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
 
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
-    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -1411,6 +1409,7 @@ transformations:
       - operation: add_columns
         columns:
           join_key: 1
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
       - operation: duplicate_columns
         columns:
           AssessmentLanguage: AssessmentLanguageDescriptor
@@ -1422,15 +1421,6 @@ transformations:
       - operation: map_values
         column: Grade
         map_file: ./seeds/mapping_grade.csv
-      # map Risk levels
-      - operation: map_values
-        columns:
-        {% for period in assessment_periods %}
-          {% for objective_name in objective_names %}
-          - {{period}}{{objective_name}}RiskLevel
-          {% endfor %}
-        {% endfor %}
-        map_file: ./seeds/mapping_risk_level.csv
       # convert date values
       - operation: date_format
         columns: 
@@ -1446,6 +1436,17 @@ transformations:
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
+
+  # Assessment Category Descriptors
+  assessmentCategoryDescriptors:
+    source: $sources.assessments
+    operations:
+      - operation: keep_columns
+        columns:
+          - assessmentCategoryCodeValue
+          - assessmentCategoryNamespace
+          - assessmentCategoryDescription
+      - operation: distinct_rows
 
   # Get assessment base periods
   assessment_base_periods:
@@ -1497,6 +1498,7 @@ transformations:
       - operation: add_columns
         columns:
           join_key: 1
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
       # Generate all combinations between available assessment comparison periods 
       # and growth type descriptors (generate cross apply using outer join)
       - operation: join
@@ -1668,7 +1670,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade}}"
+              "gradeLevelDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{Grade}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -1701,7 +1703,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentReportingMethodDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
-          resultDatatypeTypeDescriptor: "{%raw%}uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
+          resultDatatypeTypeDescriptor: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
           join_key: 1
       - operation: keep_columns
         columns: 
@@ -1782,7 +1784,7 @@ transformations:
         columns:
           assessmentReportingMethodDescriptor: "{%raw%}{{reporting_method_descriptor_namespace}}#18{%endraw%}"
           performanceLevelDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
-          resultDatatypeTypeDescriptor: "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+          resultDatatypeTypeDescriptor: "${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#Level"
       - operation: keep_columns
         columns: 
           - join_key
@@ -1861,6 +1863,10 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      # add: assessmentCategoryDescriptor
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryNamespace}}#{{assessmentCategoryCodeValue}}{%endraw%}"
       # Output columns list
       - operation: keep_columns
         columns: 
@@ -1946,7 +1952,7 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
+    source: $transformations.assessmentCategoryDescriptors
     template: ./templates/assessmentCategoryDescriptors.jsont
     extension: jsonl
     linearize: True

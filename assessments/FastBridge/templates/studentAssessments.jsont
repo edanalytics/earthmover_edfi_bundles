@@ -13,7 +13,7 @@
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationLanguageDescriptor": "uri://ed.sc.gov/LanguageDescriptor#{{AssessmentLanguageDescriptor}}",
+  "administrationLanguageDescriptor": "{{descriptor_namespace_override}}/LanguageDescriptor#{{AssessmentLanguageDescriptor}}",
   "period": {
     "assessmentPeriodDescriptor": "{{assessment_period_namespace}}#{{assessment_period_codeValue}}"
   },
@@ -287,7 +287,7 @@
         "scoreResults": [
           {% for objective in objectives+common_reporting_methods %}
             {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
-            {% set objectiveDataType = 'uri://ed.sc.gov/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
             {% set objectiveName = mapping_reporting_objectives_dictionary[objective] %}
               {% if '08' not in objective %}
                 {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName).replace(' ', '') %}
@@ -314,7 +314,7 @@
             {% if comparison_periods|length > 0 %}
               {% for comparison_period_idx in comparison_periods%}
                   {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
-                  {% set objectiveDataType = 'uri://ed.sc.gov/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+                  {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
                   {% set comparisonPeriodCode = assessment_period_comparison_list[comparison_period_idx] %}
                   {% set comparisonPeriodName = mapping_period_comparison_dictionary[comparisonPeriodCode] %}
                   {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName+comparisonPeriodName).replace(' ', '') %}
@@ -335,5 +335,5 @@
       {% endif %}     
     {% endfor %}
   ],  
-  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{Grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace_override}}/GradeLevelDescriptor#{{Grade}}"
 }
