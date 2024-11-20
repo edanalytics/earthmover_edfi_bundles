@@ -91,10 +91,45 @@ transformations:
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
+
+  # >>>>> Modify seed files for namespace override >>>>>
+
+  transformations_seed_file_assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+        
+  transformations_seed_file_assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  transformations_seed_file_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          academicSubjectDescriptor: "{%raw%}{{academicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          assessmentCategoryNamespace: "{%raw%}{{assessmentCategoryNamespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  transformations_seed_file_objectiveAssessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          AcademicSubjectDescriptor: "{%raw%}{{AcademicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+  
+  # <<<<< Modify seed files for namespace override <<<<<
   
   # Assessment Category Descriptors
   assessmentCategoryDescriptors:
-    source: $sources.assessments
+    source: $transformations.transformations_seed_file_assessments
     operations:
       - operation: keep_columns
         columns:
@@ -105,7 +140,7 @@ transformations:
 
   # Get reporting method growth type descriptors
   assessment_reporting_method_dimA_descriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
     operations:
       - operation: filter_rows
         query: associatedWithDimA == "1"
@@ -123,7 +158,7 @@ transformations:
           - qualifyingDimension
 
   assessment_reporting_method_dimB_descriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
     operations:
       - operation: filter_rows
         query: associatedWithDimB == "1"
@@ -151,7 +186,7 @@ transformations:
 
   # Get distinct assessment identifiers
   assessment_identifiers:
-    source: $sources.assessments
+    source: $transformations.transformations_seed_file_assessments
     operations:
       - operation: keep_columns
         columns: 
@@ -271,7 +306,7 @@ transformations:
 
   # Get assessment base periods
   assessment_base_periods:
-    source: $sources.assessmentPeriodDescriptors
+    source: $transformations.transformations_seed_file_assessmentPeriodDescriptors
     operations:
       - operation: rename_columns
         columns:
@@ -328,7 +363,7 @@ transformations:
 
   # Final assessments dataframe
   assessments:
-    source: $sources.assessments
+    source: $transformations.transformations_seed_file_assessments
     operations:
       # add: grade_json
       - operation: join
@@ -387,7 +422,7 @@ transformations:
           join_key: 1
 
   objective_assessments:
-    source: $sources.objectiveAssessments
+    source: $transformations.transformations_seed_file_objectiveAssessments
     operations:
       - operation: add_columns
         columns:
@@ -427,12 +462,12 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentPeriodDescriptors:
-    source: $sources.assessmentPeriodDescriptors
+    source: $transformations.transformations_seed_file_assessmentPeriodDescriptors
     template: ./templates/assessmentPeriodDescriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
     template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True

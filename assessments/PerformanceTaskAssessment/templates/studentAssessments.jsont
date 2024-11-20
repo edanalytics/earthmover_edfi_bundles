@@ -15,30 +15,30 @@
   },
   {% if 'FALL' in QualifyingDimensionTestName|upper %}
 	"period": {
-		"assessmentPeriodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentPeriodDescriptor#F"
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#F"
 	},
   {% elif 'WINTER' in QualifyingDimensionTestName|upper %}
 	"period": {
-		"assessmentPeriodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentPeriodDescriptor#W"
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#W"
 	},
   {% elif 'SPRING' in QualifyingDimensionTestName|upper %}
 	"period": {
-		"assessmentPeriodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentPeriodDescriptor#S"
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#S"
 	},
   {% endif %}
   {% if NoVerbalScoreReason|length > 0 %}
-  	"reasonNotTestedDescriptor": "uri://ed.sc.gov/ReasonNotTestedDescriptor#{{NoVerbalScoreReason}}",
+  	"reasonNotTestedDescriptor": "{{descriptor_namespace_override}}/ReasonNotTestedDescriptor#{{NoVerbalScoreReason}}",
   {% elif NoNonVerbalScoreReason|length > 0 %}
-  	"reasonNotTestedDescriptor": "uri://ed.sc.gov/ReasonNotTestedDescriptor#{{NoNonVerbalScoreReason}}",
+  	"reasonNotTestedDescriptor": "{{descriptor_namespace_override}}/ReasonNotTestedDescriptor#{{NoNonVerbalScoreReason}}",
   {% endif %}
   "scoreResults": [
     {
-		"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Verbal",
+		"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Verbal",
 		"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
 		"result": "{{VerbalScore}}"
 	},
 	{
-		"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#NonVerbal",
+		"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#NonVerbal",
 		"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
 		"result": "{{NonVerbalScore}}"
 	}
@@ -54,33 +54,33 @@
       "scoreResults": [
 		{% if qualifyingDimension == 'A' %}
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingTotal",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingTotal",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
 			"result": "{{QualifyingTotalPercentileIfDimA}}"
 			},
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingVerbal",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingVerbal",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
 			"result": "{{QualifyingVerbalPercentileDimAorReadingScoreDimB}}"
 			},
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingNonVerbal",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingNonVerbal",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
 			"result": "{{QualifyingNonVerbalPercentileDimAorMathScoreDimB}}"
 			},
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingQuantitave",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingQuantitave",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
 			"result": "{{QualifyingQuantitativePercentileIfavailableDimA}}"
 			}
 		{% elif qualifyingDimension == 'B' %}
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Reading",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Reading",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
 			"result": "{{QualifyingVerbalPercentileDimAorReadingScoreDimB}}"
 			},
 			{
-			"assessmentReportingMethodDescriptor": "uri://ed.sc.gov/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Math",
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Math",
 			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
 			"result": "{{QualifyingNonVerbalPercentileDimAorMathScoreDimB}}"
 			}
