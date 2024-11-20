@@ -37,7 +37,7 @@ sources:
     type: fixedwidth # TODO: ?
     columns:
       - administration_date
-      - grade_level_code
+      - grade_level_tested
       - esc_region_number
       - county_district_campus_number
       - district_name
@@ -72,250 +72,361 @@ sources:
       - blank_37
       - local_student_id
       - blank_41
-      - fall_2023_tsds_peims_county_district_campus_number
+      - enrolled_grade_42
       - blank_43
+      - fall_2023_tsds_peims_county_district_campus_number
+      - fall_2023_tsds_peims_student_language_code
       - fall_2023_tsds_peims_student_attribution_code
-      - family_portal_unique_accesscode
-      - migrant_student_in_texas_migrantinterstate_program_(tmip)
+      - family_portal_unique_access_code
+      - migrant_student_in_texas_migrant_interstate_program_(tmip)
       - fall_2023_tsds_peims_military_connected_student_code
       - fall_2023_tsds_peims_foster_care_indicator_code
-      - blank_50
-      - fall_2023_tsds_peims_dyslexia_indicator_code
       - blank_52
+      - fall_2023_tsds_peims_dyslexia_indicator_code
+      - blank_54
       - new_to_texas
       - tx_unique_student_id
       - local_use_reading_language_arts
       - local_use_mathematics
-      - blank_58
+      - blank_60
       - local_use_social_studies
       - local_use_science
-      - agency_use_code_a_readinglanguage_arts
-      - agency_use_code_b_readinglanguage_arts
-      - agency_use_code_c_readinglanguage_arts
-      - agency_use_code_d_readinglanguage_arts
-      - agency_use_code_e_readinglanguage_arts
-      - agency_use_code_a_mathematics
-      - agency_use_code_b_mathematics
-      - agency_use_code_c_mathematics
-      - agency_use_code_d_mathematics
-      - agency_use_code_e_mathematics
-      - blank_71
-      - agency_use_code_a_social_studies
-      - agency_use_code_b_social_studies
-      - agency_use_code_c_social_studies
-      - agency_use_code_d_social_studies
-      - agency_use_code_e_social_studies
+      - agency_use_code_a_reading_language_arts
+      - agency_use_code_b_reading_language_arts
+      - agency_use_code_c_reading_language_arts
+      - agency_use_code_d_reading_language_arts
+      - agency_use_code_e_reading_language_arts
+      - agency_use_code_a_mathematics___0_9,_blank
+      - agency_use_code_b_mathematics___0_9,_blank
+      - agency_use_code_c_mathematics___0_9,_blank
+      - agency_use_code_d_mathematics___0_9,_blank
+      - agency_use_code_e_mathematics___0_9,_blank
+      - blank_73
+      - agency_use_code_a_social_studies__0_9,_blank
+      - agency_use_code_b_social_studies__0_9,_blank
+      - agency_use_code_c_social_studies__0_9,_blank
+      - agency_use_code_d_social_studies__0_9,_blank
+      - agency_use_code_e_social_studies__0_9,_blank
       - agency_use_code_a_science
       - agency_use_code_b_science
       - agency_use_code_c_science
       - agency_use_code_d_science
       - agency_use_code_e_science
-      - blank_83
+      - eoc/above_grade_reading_language_arts
+      - eoc/above_grade_mathematics
+      - eoc/above_grade_social_studies
+      - eoc/above_grade_science
+      - blank_89
+      - speech_to_text_reading_language_arts
+      - braille/refreshable_braille_device_and_screen_reader_reading_language_arts
+      - large_print_reading_language_arts_1_=_yes
+      - non_embedded_designated_supports_reading_language_arts
+      - extra_day_reading_language_arts
+      - word_prediction_reading_language_arts
+      - blank_97
+      - text_to_speech_reading_language_arts
+      - blank_99
+      - spell_check_reading_language_arts_1_=_yes
+      - content_and_language_supports__reading_language_arts
+      - asl_signed_videos_reading_language_arts
+      - blank_103
+      - braille/refreshable_braille_device_and_screen_reader_mathematics
+      - large_print_mathematics
+      - non_embedded_designated_supports_mathematics
+      - extra_day_mathematics
+      - basic_calculator_mathematics
+      - blank_109
+      - text_to_speech_mathematics
+      - blank_111
+      - content_and_language_supports__mathematics
+      - asl_signed_videos_mathematics
+      - blank_115
+      - auto_text_to_speech_reading_language_arts
+      - auto_text_to_speech_mathematics__1_=_yes
+      - auto_text_to_speech_social_studies
+      - auto_text_to_speech_science
+      - blank_120
+      - speech_to_text_social_studies
+      - braille/refreshable_braille_device_and_screen_reader_social_studies
+      - large_print_social_studies
+      - non_embedded_designated_supports_social_studies
+      - extra_day_social_studies
+      - word_prediction_social_studies
+      - blank_127
+      - text_to_speech_social_studies
+      - blank_129
+      - spell_check_social_studies
+      - content_and_language_supports__social_studies
+      - asl_signed_videos_social_studies
+      - blank_133
+      - speech_to_text_science
+      - braille/refreshable_braille_device_and_screen_reader_science
+      - large_print_science
+      - non_embedded_designated_supports_science
+      - extra_day_science
+      - basic_calculator_science
+      - word_prediction_science
+      - text_to_speech_science
+      - blank_143
+      - spell_check_science
+      - content_and_language_supports_science
+      - asl_signed_videos_science
+      - blank_147
       - score_code_reading_language_arts
       - score_code_mathematics
-      - blank_87
+      - blank_151
       - score_code_social_studies
       - score_code_science
-      - blank_90
-      - reading_language_arts_reportingcategory_1_scores
-      - reading_language_arts_reportingcategory_2_scores
+      - blank_154
+      - reading_language_arts_reporting_category_1_scores
+      - reading_language_arts_reporting_category_2_scores
       - performance_level_indicator_reading_language_arts
       - reading_language_arts_raw_score
       - reading_language_arts_scale_score
-      - blank_98
+      - reading_language_arts_test_language_version
       - reading_language_arts_test_version
-      - blank_100
-      - reading_language_arts_translatedstudent_materials
-      - blank_102
-      - level_ii__satisfactory_academic_performance_in_reading_languagearts
-      - level_iii__accomplished_academic_performance_in_reading_languagearts
-      - staar_alternate_2_progressmeasure_reading_language_arts
-      - blank_107
-      - on_track_to_level_ii__satisfactoryacademic_performance_readinglanguage_arts
-      - previous_year_administration_date__reading_language_arts
-      - previous_year_scale_score_readinglanguage_arts
-      - blank_111
-      - previous_year_score_code_readinglanguage_arts
-      - previous_year_level_ii__satisfactoryacademic_performance_readinglanguage_arts
-      - previous_year_level_iii_accomplished_academic_performance_reading_languagearts
-      - previous_year_tested_grade__reading_language_arts
-      - blank_116
-      - color_or_highlight_119
-      - color_overlays_120
-      - blank_121
-      - photographs_or_objects_122
-      - textured_materials_123
-      - demonstrate_124
-      - raise_or_darken_outline_125
-      - enlarge_126
-      - braille_127
-      - describe_images_128
-      - provide_images_or_text_separately_129
-      - isolate_images_130
-      - picture_representations_131
-      - reread_text_132
-      - use_calculator,_manipulatives,_ormathematics_tools_133
-      - provide_structured_reminders_134
-      - blank_135
-      - mathematics_reporting_category_1scores
-      - mathematics_reporting_category_2scores
-      - mathematics_reporting_category_3scores
-      - mathematics_reporting_category_4scores
+      - test_administration_mode_reading_language_arts
+      - blank_164
+      - meets_grade_level_in_reading_language_arts
+      - approaches_grade_level_in_reading_language_arts
+      - masters_grade_level_in_reading_language_arts
+      - staar_progress_measure_reading_language_arts
+      - blank_171
+      - on_track_to_meet_grade_level_reading_language_arts
+      - previous_year_administration_date_reading_language_arts
+      - previous_year_scale_score_reading_language_arts
+      - previous_year_language_version_reading_language_arts
+      - blank_176
+      - previous_year_score_code_reading_language_arts
+      - blank_178
+      - previous_year_masters_grade_level___reading_language_arts
+      - previous_year_tested_grade_reading_language_arts
+      - el_performance_measure_reading_language_arts
+      - blank_183
+      - item_reporting_category_numbers_reading_language_arts
+      - blank_187
+      - item_student_responses_reading_language_arts
+      - blank_189
+      - item_correct_responses_reading_language_arts
+      - blank_191
+      - lexile_measure_192
+      - percentile_reading_language_arts__the_student_scored_the_same_or_better_than_this_percentage_of_all_texas
+      - extended_constructed_response_score
+      - blank_195
+      - mathematics_reporting_category_1_scores
+      - mathematics_reporting_category_2_scores
+      - mathematics_reporting_category_3_scores
+      - mathematics_reporting_category_4_scores
       - performance_level_indicator_mathematics
       - mathematics_raw_score
       - mathematics_scale_score
-      - blank_145
+      - mathematics_test_language_version
       - mathematics_test_version
-      - blank_147
-      - mathematics_translated_studentmaterials
-      - blank_149
-      - level_ii__satisfactory_academic_performance_in_mathematics
-      - level_iii__accomplished_academic_performance_in_mathematics
-      - staar_alternate_2_mathematicsprogress_measure
-      - blank_154
-      - on_track_to_level_ii__satisfactoryacademic_performance_155
-      - previous_year_administration_date__mathematics
-      - previous_year_scale_score__mathematics
-      - blank_158
-      - previous_year_score_code__mathematics
-      - previous_year_level_ii__satisfactoryacademic_performance__mathematics
-      - previous_year_level_iii_accomplished_academic_performance_mathematics
-      - previous_year_tested_grade__mathematics
-      - blank_163
-      - color_or_highlight_165
-      - color_overlays_166
-      - blank_167
-      - photographs_or_objects_168
-      - textured_materials_170
-      - demonstrate_171
-      - raise_or_darken_outline_172
-      - enlarge_173
-      - braille_174
-      - describe_images_175
-      - provide_images_or_text_separately_176
-      - isolate_images_177
-      - picture_representations_178
-      - reread_text_179
-      - use_calculator,_manipulatives,_ormathematics_tools_180
-      - provide_structured_reminders_181
-      - blank_182
-      - social_studies_reporting_category_1scores
-      - social_studies_reporting_category_2scores
-      - social_studies_reporting_category_3scores
-      - social_studies_reporting_category_4scores
+      - test_administration_mode__mathematics
+      - blank_208
+      - meets_grade_level_in_mathematics
+      - approaches_grade_level_in_mathematics
+      - masters_grade_level_in_mathematics
+      - staar_progress_measure_mathematics
+      - blank_214
+      - on_track_to_meet_grade_level_mathematics
+      - previous_year_administration_date_mathematics
+      - previous_year_scale_score_mathematics
+      - previous_year_language_version_mathematics
+      - blank_219
+      - previous_year_score_code_mathematics
+      - blank_222
+      - previous_year_masters_grade_level__mathematics
+      - previous_year_tested_grade_mathematics
+      - el_performance_measure_mathematics_227
+      - blank_228
+      - item_reporting_category_numbers_mathematics
+      - blank_231
+      - item_student_responses_mathematics
+      - blank_234
+      - item_correct_responses_mathematics
+      - blank_236
+      - percentile_mathematics
+      - quantile_measure_238
+      - mathematics_badge_indicator
+      - blank_240
+      - points_possible_mathematics
+      - points_achieved_mathematics
+      - blank_243
+      - points_possible_reading_language_arts
+      - points_achieved_reading_language_arts
+      - blank_247
+      - social_studies_reporting_category_1_scores
+      - social_studies_reporting_category_2_scores
+      - social_studies_reporting_category_3_scores
+      - social_studies_reporting_category_4_scores
       - social_studies_raw_score
       - social_studies_scale_score
-      - blank_190
+      - social_studies_test_language_version
       - social_studies_test_version
-      - blank_192
-      - social_studies_translated_studentmaterials
-      - blank_194
-      - level_ii__satisfactory_academic_performance_in_social_studies
-      - level_iii__accomplished_academic_performance_in_social_studies
-      - blank_198
-      - color_or_highlight_200
-      - color_overlays_201
-      - blank_202
-      - photographs_or_objects_203
-      - textured_materials_204
-      - demonstrate_205
-      - raise_or_darken_outline_206
-      - enlarge_207
-      - braille_208
-      - describe_images_209
-      - provide_images_or_text_separately_210
-      - isolate_images_211
-      - picture_representations_212
-      - reread_text_213
-      - use_calculator,_manipulatives,_ormathematics_tools_214
-      - provide_structured_reminders_215
-      - blank_216
-      - science_reporting_category_1scores
-      - science_reporting_category_2scores
-      - science_reporting_category_3scores
-      - science_reporting_category_4scores
+      - test_administration_mode_social_studies
+      - blank_259
+      - performance_level_indicator_social_studies
+      - blank_261
+      - meets_grade_level_in_social_studies
+      - approaches_grade_level_in_social_studies
+      - masters_grade_level_in_social_studies
+      - el_performance_measure_social_studies
+      - blank_267
+      - item_reporting_category_numbers_social_studies
+      - blank_270
+      - item_student_responses_social_studies
+      - blank_273
+      - item_correct_responses_social_studies
+      - blank_275
+      - percentile_social_studies
+      - points_possible_social_studies
+      - blank_278
+      - points_achieved_social_studies
+      - blank_280
+      - science_reporting_category_1_scores
+      - science_reporting_category_2_scores
+      - science_reporting_category_3_scores
+      - science_reporting_category_4_scores
       - science_raw_score
       - science_scale_score
-      - blank_224
+      - science_test_language_version
       - science_test_version
-      - blank_226
-      - science_translated_studentmaterials
-      - blank_229
-      - level_ii__satisfactory_academic_performance_in_science
-      - level_iii__accomplished_academic_performance_in_science
-      - blank_232
-      - color_or_highlight_234
-      - color_overlays_235
-      - blank_236
-      - photographs_or_objects_237
-      - textured_materials_238
-      - demonstrate_239
-      - raise_or_darken_outline_240
-      - enlarge_241
-      - braille_242
-      - describe_images_243
-      - provide_images_or_text_separately_244
-      - isolate_images_245
-      - picture_representations_246
-      - reread_text_247
-      - use_calculator,_manipulatives,_ormathematics_tools_248
-      - provide_structured_reminders_249
-      - blank_250
-      - county_district_campus_number_252
-      - blank_254
-      - score_code_255
-      - level_ii__satisfactory_academic_performance_256
-      - level_iii__accomplished_academic_performance_257
-      - scale_score_258
-      - tested_grade_259
-      - blank_260
-      - on_track_to_level_ii__satisfactoryacademic_performance_261
-      - staar_alternate_2_progressmeasure_262
-      - blank_263
-      - county_district_campus_number_265
-      - blank_266
-      - score_code_267
-      - level_ii__satisfactory_academic_performance_268
-      - level_iii__accomplished_academic_performance_269
-      - scale_score_270
-      - tested_grade_271
-      - blank_272
-      - on_track_to_level_ii__satisfactoryacademic_performance_273
-      - staar_alternate_2_progressmeasure_274
-      - blank_275
-      - county_district_campus_number_278
-      - blank_279
-      - score_code_280
-      - level_ii__satisfactory_academic_performance_281
-      - level_iii__accomplished_academic_performance_282
-      - scale_score_283
-      - tested_grade_284
-      - blank_285
-      - county_district_campus_number_287
-      - blank_288
-      - score_code_289
-      - level_ii__satisfactory_academic_performance_290
-      - level_iii__accomplished_academic_performance_291
-      - scale_score_292
-      - tested_grade_293
-      - blank_294
+      - test_administration_mode_science__o_=_online
+      - blank_291
+      - performance_level_indicator_science
+      - blank_293
+      - meets_grade_level_in_science
+      - approaches_grade_level_in_science
+      - masters_grade_level_in_science
+      - el_performance_measure_science
+      - blank_300
+      - item_reporting_category_numbers_science
+      - blank_303
+      - item_student_responses_science
+      - blank_305
+      - item_correct_responses_science
+      - blank_308
+      - percentile_science
+      - blank_310
+      - points_possible___science
+      - blank_312
+      - points_achieved___science
+      - blank_314
+      - county_district_campus_number_316
+      - language_version_317
+      - test_version_318
+      - score_code_319
+      - approaches_grade_level_320
+      - masters_grade_level_321
+      - scale_score_322
+      - tested_grade_323
+      - enrolled_grade_324
+      - on_track_measure_325
+      - staar_progress_measure_326
+      - el_performance_measure_327
+      - lexile_measure_328
+      - blank_329
+      - county_district_campus_number_331
+      - language_version_333
+      - test_version_334
+      - score_code_335
+      - approaches_grade_level_336
+      - masters_grade_level_337
+      - scale_score_338
+      - tested_grade_339
+      - enrolled_grade_340
+      - on_track_measure_341
+      - staar_progress_measure_342
+      - meets_grade_level_343
+      - quantile_measure_344
+      - blank_345
+      - county_district_campus_number_347
+      - language_version_348
+      - test_version_349
+      - score_code_350
+      - approaches_grade_level_351
+      - masters_grade_level_352
+      - scale_score_353
+      - tested_grade_354
+      - enrolled_grade_355
+      - meets_grade_level_356
+      - el_performance_measure_357
+      - blank_358
+      - county_district_campus_number_361
+      - language_version_362
+      - test_version_363
+      - score_code_364
+      - approaches_grade_level_365
+      - masters_grade_level_366
+      - scale_score_367
+      - tested_grade_368
+      - enrolled_grade_369
+      - meets_grade_level_370
+      - el_performance_measure_371
+      - blank_372
+      - meets_grade_level_reading_language_arts
+      - el_performance_measure_mathematics_375
+      - blank_376
+      - lexile_measure_grade_3
+      - lexile_measure_grade_4
+      - lexile_measure_grade_5
+      - lexile_measure_grade_6
+      - lexile_measure_grade_7
+      - lexile_measure_grade_8
+      - blank_384
+      - quantile_measure_grade_3
+      - quantile_measure_grade_4
+      - quantile_measure_grade_5
+      - quantile_measure_grade_6
+      - quantile_measure_grade_7
+      - quantile_measure_grade_8
+      - blank_393
+      - el_performance_measure_(elpm)_plan
+      - plan_year
+      - current_year_telpas_composite_rating
+      - current_year_telpas_years_in_u.s._schools
+      - current_year_telpas_parental_denial__1_=_yes
+      - blank_400
+      - score_code_402
+      - test_version_403
+      - algebra_i_reporting_category_1_raw_score
+      - algebra_i_reporting_category_2_raw_score
+      - algebra_i_reporting_category_3_raw_score
+      - algebra_i_reporting_category_4_raw_score
+      - algebra_i_reporting_category_5_raw_score
+      - blank_409
+      - algebra_i_raw_score
+      - scale_score_411
+      - approaches_grade_level_412
+      - meets_grade_level_413
+      - masters_grade_level_414
+      - staar_progress_measure_416
+      - percentile
+      - quantile_measure_418
+      - test_information_indicator
+      - blank_420
       - fall_2023_tsds_peims_crisis_code
-      - blank_297
-      - test_result_id_reading_languagearts
+      - blank_423
+      - test_result_id_reading_language_arts
       - test_result_id_mathematics
       - test_result_id_social_studies
       - test_result_id_science
-      - blank_303
-      - opportunity_key_readinglanguage_arts
+      - blank_429
+      - opportunity_key_reading_language_arts
       - opportunity_key_mathematics
       - opportunity_key_social_studies
       - opportunity_key_science
-      - blank_309
-      - non_participant_reading_languagearts
+      - blank_434
+      - non_participant_reading_language_arts
       - non_participant_mathematics
       - non_participant_social_studies
       - non_participant_science
-      - blank_314
+      - discrepancy_indicator_reading_language_arts
+      - discrepancy_indicator_mathematics
+      - discrepancy_indicator_social_studies
+      - discrepancy_indicator_science
+      - blank_444
       - period
     colspecs:
       # TODO: uh oh going to need jinja...
