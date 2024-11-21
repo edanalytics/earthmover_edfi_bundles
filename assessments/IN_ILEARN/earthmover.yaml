@@ -10,6 +10,7 @@ config:
   parameter_defaults:
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
+    POSSIBLE_STUDENT_ID_COLUMNS: 'studentUniqueId,STN'
 
     # ILEARN export does not provide a test date/year column, so we have to make one up.  This may change with new ILEARN updates
     TEST_DATE: '2024-04-01'
