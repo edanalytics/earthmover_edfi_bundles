@@ -21,7 +21,6 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
-    encoding: us-ascii
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -67,7 +66,7 @@ transformations:
       - operation: join
         sources:
           - $sources.academicSubjectDescriptors
-        join_type: left
+        join_type: inner
         left_keys:
           - DI_Test_Name
         right_keys: 
@@ -102,7 +101,7 @@ transformations:
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: left
+        join_type: inner
         left_keys:
           - enrolled_grade
           - assessmentIdentifier
@@ -183,5 +182,20 @@ destinations:
   studentAssessments:
     source: $transformations.studentAssessments
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
