@@ -17,9 +17,8 @@ config:
 
 sources:
   #Does not exist by default, must be provided
-  studentAssessments:
+  input:
     file: ${INPUT_FILE}
-    type: ${INPUT_FILETYPE}
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
@@ -38,8 +37,12 @@ sources:
     header_rows: 1
 
 transformations:
+  input:
+    source: $sources.input
+    operations: []
+    
   studentAssessments:
-    source: $sources.studentAssessments
+    source: $transformations.input
     operations:
       #rename columns with spaces in the column name
       - operation: rename_columns
@@ -48,8 +51,8 @@ transformations:
           Enrolled Grade: enrolled_grade
           Overall scale score: overall_scale_score
           Overall proficiency level: overall_proficiency_level
-          ILEARN Reported Lexile® Measure: lexile_measure
-          ILEARN Reported Quantile® Measure: quantile_measure
+          ILEARN Reported Lexile Measure: lexile_measure
+          ILEARN Reported Quantile Measure: quantile_measure
           College and Career Readiness Indicator: cc_readiness_indicator
           STN: studentUniqueId
 
