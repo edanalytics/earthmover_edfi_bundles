@@ -3,6 +3,21 @@
 
 ## Under the hood
 
+## Fixes
+
+# earthmover_edfi_bundles v0.2.1
+## New features
+- MAP Reading Fluency Bundle
+
+## Under the hood
+- Add parameter defaults for output and temp dir for the student ID and student ID wrapper packages
+- Expand the objective assessment codes xwalk for STAAR Interim to include 2022, 2024, and 2025
+- Remove DIBELS 8 records with empty dates
+- Add compatibility with the student ID package to the IB bundle
+
+## Fixes
+- Add quotes around values to fix an issue with writing out a non-matched students file when there are commas in the data
+
 # earthmover_edfi_bundles v0.2.0
 ## New features
 This release adds two packages that offer better functionality for handling student IDs:
