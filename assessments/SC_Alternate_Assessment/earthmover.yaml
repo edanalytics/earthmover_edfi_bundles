@@ -226,12 +226,40 @@ transformations:
       - operation: filter_rows
         query: "assessment_grade.notnull()"
         behavior: include
+      - operation: add_columns
+        columns:
+          - school_year: ${API_YEAR}
       - operation: map_values
         columns:
           - grade
           - assessment_grade
         map_file: seeds/grade_level_xwalk.csv
-        
+
+  # Create one association record per tDistrictID and rDistrictID.
+  sc_alt_assessment_ed_org_assocs__administration:
+    source: $transformations.sc_alt_final
+    operations:
+      - operation: add_columns
+        columns:
+          ed_org_assoc_descriptor: "Administration"
+          ed_org_id: "{% raw %}{{ tdistrictid }}{% endraw %}"
+  
+  sc_alt_assessment_ed_org_assocs__administration:
+    source: $transformations.sc_alt_final
+    operations:
+      - operation: add_columns
+        columns:
+          ed_org_assoc_descriptor: "Association"
+          ed_org_id: "{% raw %}{{ rdistrictid }}{% endraw %}"
+
+  sc_alt_assessment_ed_org_assocs_final:
+    source: $transformations.sc_alt_assessment_ed_org_assocs__administration
+    operations:
+      - operation: union
+        sources: $transformations.sc_alt_assessment_ed_org_assocs__association
+      - operation: filter_rows
+        query: "ed_org_id.notnull()"
+        behavior: include        
     
   # Each subject has a different set of grade levels assigned ([3-8, 11] for ELA and Math; [4, 6, 11] for Sci; 11 for Soc)
   grade_level_descriptors:
@@ -293,3 +321,7 @@ destinations:
     template: templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.sc_alt_assessment_ed_org_assocs_final
+    template: templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
