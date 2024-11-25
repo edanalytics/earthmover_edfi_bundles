@@ -11,7 +11,9 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
     INPUT_FILETYPE: csv
-    POSSIBLE_STUDENT_ID_COLUMNS: Student ID
+    POSSIBLE_STUDENT_ID_COLUMNS: stateid  # Use lowercase column names.
+    EARTHMOVER_NODE_TO_XWALK: "$transformations.source_input_standardize_columns"
+
 
 sources:
   assessments:
@@ -30,68 +32,208 @@ sources:
   input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
-#    encoding: ${source_encoding}
+    optional_fields:  # Add fields found only in certain years to coalesce in transform.
+      # Removed starting in 2017
+      - district
+      - districtid
+      - school
+      - schoolid
+
+      # Only present in 2016
+      - reportedschool
+      - reportedschoolid
+      - reporteddistrictid
+      - testeddiscode
+      - testeddistrictid
+      - testedschcode
+      - testedschoolid
+
+      # Removed starting in 2017
+      - elaformtype
+      - mathformtype
+      - socformtype
+      - sciformtype
+
+      # Only present in 2017
+      - elatest
+      - mathtest
+      - scitest
+      - soctest
+
+      # Renamed to `Level{subject}` starting in 2018
+      - elalev
+      - mathlev
+      - scilev
+      - soclev
+
+      # Renamed to `Status{subject}` starting in 2018
+      - elastatus
+      - mathstatus
+      - scistatus
+      - socstatus
+
+      # Found before 2018
+      - ela_ssh
+      - ela_ssp
+      - math_ssh
+      - math_ssp
+      - sci_ssb
+      - sci_ssp
+      - soc_ssp
+      - ela_ssh_sem
+      - ela_ssp_sem
+      - math_ssh_sem
+      - math_ssp_sem
+      - sci_ssb_sem
+      - sci_ssp_sem
+      - soc_ssp_sem
+
 
 transformations:
-  input:
+
+  # Transformations to complete before ID-xwalking
+  source_input_standardize_columns:
     source: $sources.input
-    operations: []
+    operations:
+
+      # Lowercase all columns to avoid casing errors between years.
+      - operation: modify_columns
+        columns:
+          - "*": "{%raw%}{{value | lower}}{%endraw%}"
+
+      # Coalesce differently-named columns in historic years.
+      - operation: modify_columns
+        columns:
+          - rdistrict: {%raw%}{{ value or district }}{%endraw%}  # TODO: r or t ID?
+          - rdistrictid: {%raw%}{{ value or reporteddistrictid or districtid }}{%endraw%}  # TODO r or t ID?
+          - rschool: {%raw%}{{ value or reportedschool or school }}{%endraw%}
+          - rschoolid: {%raw%}{{ value or reportedschoolid or schoolid }}{%endraw%}
+
+          - tdistrict: {%raw%}{{ value or testeddiscode }}{%endraw%}
+          - tdistrictid: {%raw%}{{ value or testeddistrictid }}{%endraw%}
+          - tschool: {%raw%}{{ value or testedschcode }}{%endraw%}
+          - tschoolid: {%raw%}{{ value or testedschoolid }}{%endraw%}
+
+          - testnameela: {%raw%}{{ value or elatest or elaformtype }}{%endraw%}
+          - testnamemath: {%raw%}{{ value or mathtest or mathformtype }}{%endraw%}
+          - testnamesci: {%raw%}{{ value or scitest or sciformtype }}{%endraw%}
+          - testnamesoc: {%raw%}{{ value or soctest or socformtype }}{%endraw%}
+
+          - levelela: {%raw%}{{ value or elalev }}{%endraw%}
+          - levelmath: {%raw%}{{ value or mathlev }}{%endraw%}
+          - levelsci: {%raw%}{{ value or scilev }}{%endraw%}
+          - levelsoc: {%raw%}{{ value or soclev }}{%endraw%}
+
+          - statusela: {%raw%}{{ value or elastatus }}{%endraw%}
+          - statusmath: {%raw%}{{ value or mathstatus }}{%endraw%}
+          - statussci: {%raw%}{{ value or scistatus }}{%endraw%}
+          - statussoc: {%raw%}{{ value or socstatus }}{%endraw%}
 
   sc_alt_student_assessment:
-    source: $transformations.input
+    source: $transformations.source_input_standardize_columns
     operations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
-      - operation: rename_columns
-        columns:
-          Test Group: test_group
-          Test Subject: subject
-          Test Grade: test_grade
-          Test Name: test_name
-          Student Name: student_name
-          Student ID: student_id
-          Home Schooled: home_schooled
-          Hispanic or Latino: hispanic_or_latino
-          Medically Homebound: medically_homebound
-          Student DOB: student_dob
-          Race: race
-          Enrolled Grade: enrolled_grade
-          Migrant Status: migrant_status
-          Gender: gender
-          EFA Code: efa_code
-          LEP Code: lep_code
-          Enrolled School: enrolled_school
-          Enrolled District: enrolled_district
-          Test Reason: test_reason
-          Test OppNumber: test_opp_number
-          Date Taken: administration_date
-          Test Completion Date: administration_end_date
-          Scale Score: scale_score
-          Scale Score Standard Error: standard_error_of_measurement
-          Performance: performance_level
-      # Force subject to align with hard-coded assessment identifiers in assessments seed.
-      - operation: modify_columns
-        columns:
-          subject: "{%raw%}{{ value | replace(' ', '_') }}{%endraw%}"
+  
+  # Add generic versions of all subject columns before unioning.
+  sc_alt_ela:
+    source: $transformations.sc_alt_student_assessment
+    operations:
       - operation: add_columns
         columns:
-          assessment_identifier: "{%raw%}SC_ALT_{{subject}}_{{API_YEAR}}{%endraw%}"
-          school_year: ${API_YEAR}
-          student_assessment_id: "{%raw%}{{student_id}}_{{subject}}{%endraw%}"
-      - operation: date_format
+          - assessment_identifier: "SC_ALT_ELA_${API_YEAR}"
+          - assessment_grade: "{% raw %}{{ elagrade }}{% endraw %}"
+          - performance_level: "{% raw %}{{ levelela }}{% endraw %}"
+          - ss: "{% raw %}{{ elass }}{% endraw %}"
+          - ss_sem: "{% raw %}{{ elasssem }}{% endraw %}"
+          - ssb: ""  # Only in Science before 2018
+          - ssb_sem: ""
+          - ssh: "{% raw %}{{ ela_ssh }}{% endraw %}"
+          - ssh_sem: "{% raw %}{{ ela_ssh_sem }}{% endraw %}"
+          - ssp: "{% raw %}{{ ela_ssp }}{% endraw %}"
+          - ssp_sem: "{% raw %}{{ ela_ssp_sem }}{% endraw %}"
+          - status: "{% raw %}{{ statusela }}{% endraw %}"
+          - test_name: "{% raw %}{{ testnameela }}{% endraw %}"
+
+  sc_alt_math:
+    source: $transformations.sc_alt_student_assessment
+    operations:
+      - operation: add_columns
         columns:
-          - administration_date
-          - administration_end_date
-          - student_dob
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
+          - assessment_identifier: "SC_ALT_Math_${API_YEAR}"
+          - assessment_grade: "{% raw %}{{ mathgrade }}{% endraw %}"
+          - performance_level: "{% raw %}{{ levelmath }}{% endraw %}"
+          - ss: "{% raw %}{{ mathss }}{% endraw %}"
+          - ss_sem: "{% raw %}{{ mathsssem }}{% endraw %}"
+          - ssb: ""  # Only in Science before 2018
+          - ssb_sem: ""
+          - ssh: "{% raw %}{{ math_ssh }}{% endraw %}"
+          - ssh_sem: "{% raw %}{{ math_ssh_sem }}{% endraw %}"
+          - ssp: "{% raw %}{{ math_ssp }}{% endraw %}"
+          - ssp_sem: "{% raw %}{{ math_ssp_sem }}{% endraw %}"
+          - status: "{% raw %}{{ statusmath }}{% endraw %}"
+          - test_name: "{% raw %}{{ testnamemath }}{% endraw %}"
+
+  sc_alt_sci:
+    source: $transformations.sc_alt_student_assessment
+    operations:
+      - operation: add_columns
+        columns:
+          - assessment_identifier: "SC_ALT_Science_${API_YEAR}"
+          - assessment_grade: "{% raw %}{{ scigrade }}{% endraw %}"
+          - performance_level: "{% raw %}{{ levelsci }}{% endraw %}"
+          - ss: "{% raw %}{{ sciss }}{% endraw %}"
+          - ss_sem: "{% raw %}{{ scisssem }}{% endraw %}"
+          - ssb: "{% raw %}{{ sci_ssb }}{% endraw %}"
+          - ssb_sem: "{% raw %}{{ sci_ssb_sem }}{% endraw %}"
+          - ssh: ""  # Replaced by SSB in Science
+          - ssh_sem: ""
+          - ssp: "{% raw %}{{ sci_ssp }}{% endraw %}"
+          - ssp_sem: "{% raw %}{{ sci_ssp_sem }}{% endraw %}"
+          - status: "{% raw %}{{ statussci }}{% endraw %}"
+          - test_name: "{% raw %}{{ testnamesci }}{% endraw %}"
+
+  sc_alt_soc:
+    source: $transformations.sc_alt_student_assessment
+    operations:
+      - operation: add_columns
+        columns:
+          - assessment_identifier: "SC_ALT_Social_Studies_${API_YEAR}"
+          - assessment_grade: "{% raw %}{{ socgrade }}{% endraw %}"
+          - performance_level: "{% raw %}{{ levelsoc }}{% endraw %}"
+          - ss: "{% raw %}{{ socss }}{% endraw %}"
+          - ss_sem: "{% raw %}{{ socsssem }}{% endraw %}"
+          - ssb: ""  # Only in Science before 2018
+          - ssb_sem: ""
+          - ssh: ""  # Excluded from Social Studies
+          - ssh_sem: ""
+          - ssp: "{% raw %}{{ soc_ssp }}{% endraw %}"
+          - ssp_sem: "{% raw %}{{ soc_ssp_sem }}{% endraw %}"
+          - status: "{% raw %}{{ statussoc }}{% endraw %}"
+          - test_name: "{% raw %}{{ testnamesoc }}{% endraw %}"
+
+  # Union together subject subsets, then finish xwalking of grade levels.
+  sc_alt_final:
+    source: $transformations.sc_alt_ela
+    operations:
+      - operation: union
+        sources:
+          - $transformations.sc_alt_math
+          - $transformations.sc_alt_sci
+          - $transformations.sc_alt_soc
+      # Remove records for non-tied subjects.
+      - operation: filter_rows
+        query: "assessment_grade.notnull()"
+        behavior: include
       - operation: map_values
         columns:
-          - test_grade
+          - grade
+          - assessment_grade
         map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
         
-
+    
+  # Each subject has a different set of grade levels assigned ([3-8, 11] for ELA and Math; [4, 6, 11] for Sci; 11 for Soc)
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -129,6 +271,7 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+
 
 destinations:
   assessments:

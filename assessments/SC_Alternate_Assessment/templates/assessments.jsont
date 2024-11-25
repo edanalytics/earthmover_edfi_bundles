@@ -7,36 +7,127 @@
   "academicSubjects": [
     "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
   ],
+
   "assessedGradeLevels": [
     {
       "gradeLevelDescriptor": [{{grade_json}}]
     }
   ],
+
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Scale Score",
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#District",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#DistrictID",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#DOB",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#English",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#Gender",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#Grade",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#FName",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#LName",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#MName",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#PermID",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#Scale Score",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#Scale Score Standard Error",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSB",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSB_SEM",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSH",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSH_SEM",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSP",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SSP_SEM",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#School",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#SchoolID",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#Status",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#TestAdmin",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://cambriumassessment.com/AssessmentReportingMethodDescriptor#TestName",
+      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
     }
   ],
+
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 1",
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#1",
       "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 2",
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#2",
       "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 3",
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#3",
       "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#Level 4",
+      "assessmentReportingMethodDescriptor":"uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#4",
       "resultDatatypeTypeDescriptor":"uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
     }
   ]

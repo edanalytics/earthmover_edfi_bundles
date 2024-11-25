@@ -1,32 +1,28 @@
 {%- set generic_score_results = [
-    ["Scale Score",scale_score,"Integer"],
-    ["Scale Score Standard Error",standard_error_of_measurement,"Integer"],
-    ["Performance",performance_level,"Level"],
-    ["Test Group",test_group,"Level"],
-    ["Test Subject",subject,"Level"],
-    ["Test Grade",test_grade,"Level"],
-    ["Test Name",test_name,"Level"],
-    ["Student Name",student_name,"Level"],
-    ["Student ID",student_id,"Level"],
-    ["Home Schooled",home_schooled,"Level"],
-    ["Hispanic or Latino",hispanic_or_latino,"Level"],
-    ["Medically Homebound",medically_homebound,"Level"],
-    ["Student DOB",student_dob,"Level"],
-    ["Race",race,"Level"],
-    ["Enrolled Grade",enrolled_grade,"Level"],
-    ["Migrant Status",migrant_status,"Level"],
-    ["Gender",gender,"Level"],
-    ["EFA Code",efa_code,"Level"],
-    ["LEP Code",lep_code,"Level"],
-    ["Enrolled School",enrolled_school,"Level"],
-    ["Enrolled District",enrolled_district,"Level"],
-    ["Test Reason",test_reason,"Level"],
-    ["Test OppNumber",test_opp_number,"Level"],
-    ["Date Taken",administration_date,"Level"],
-    ["Test Completion Date",administration_end_date,"Level"]
-
+    ["District", rdistrict, "Level"],  # TODO: r or t?
+    ["DistrictID", rdistrictid, "Level"],  # TODO: r or t?
+    ["DOB", dob, "Level"],
+    ["English", english, "Level"],
+    ["Gender", gender, "Level"],
+    ["Grade", grade, "Level"],
+    ["FName", fname, "Level"],
+    ["LName", lname, "Level"],
+    ["MName", mname, "Level"],
+    ["PermID", permid, "Level"],
+    ["Scale Score", ss, "Integer"],
+    ["Scale Score Standard Error", ss_sem, "Integer"],
+    ["SSB", ssb_sem, "Integer"],
+    ["SSB_SEM", ssb_sem, "Integer"],
+    ["SSH", ssh_sem, "Integer"],
+    ["SSH_SEM", ssh_sem, "Integer"],
+    ["SSP", ssp_sem, "Integer"],
+    ["SSP_SEM", ssp_sem, "Integer"],
+    ["School", rschool, "Level"],  # TODO: r or t?
+    ["SchoolID", rschoolid, "Level"],  # TODO: r or t?
+    ["Status", status, "Level"],
+    ["TestAdmin", testadmin, "Level"],
+    ["TestName", test_name, "Level"],
 ] -%}
-
 
 {%- set score_results = [] -%}
 {%- for score in generic_score_results -%}
@@ -34,6 +30,7 @@
     {%- set _ = score_results.append(score) -%}
   {%- endif -%}
 {%- endfor -%}
+
 
 {
   "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
@@ -49,23 +46,28 @@
   },
   "administrationDate": "{{administration_date}}",
   "administrationEndDate": "{{administration_end_date}}",
+
+  {%- if performance_level -%}
   "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Performance",
-      "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{performance_level}}",
+      "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#{{performance_level | int}}",
       "performanceLevelMet": true
     }
   ],
+  {%- endif -%}
+
   {%- if score_results -%}
   "scoreResults": [
-  {%- for score in score_results -%}
+    {%- for score in score_results -%}
     {
       "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[1] | int}}"{%- else -%}"{{score[1]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+    {%- endfor -%}
   ],
   {%- endif -%}
-    "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{test_grade | int}}"
+
+  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{assessment_grade | int}}"
 }
