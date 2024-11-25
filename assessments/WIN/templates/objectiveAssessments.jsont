@@ -1,0 +1,34 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lev",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RS",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SS",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Incomplete",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Complete",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ]
+  }

@@ -1,0 +1,61 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "platformTypes": [{{platform_json}}],
+  "scores": [
+    {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CertLevel",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {%- else -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RS",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SS",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {%- endif -%}
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- if assessmentIdentifier == 'WIN_Soft_Skills' -%},
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Pass",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Fail",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Incomplete",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Complete",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- endif -%}
+  ]
+}
