@@ -1,0 +1,94 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{SchoolCode|replace('-','')|int}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  {% if 'FALL' in QualifyingDimensionTestName|upper %}
+	"period": {
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#F"
+	},
+  {% elif 'WINTER' in QualifyingDimensionTestName|upper %}
+	"period": {
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#W"
+	},
+  {% elif 'SPRING' in QualifyingDimensionTestName|upper %}
+	"period": {
+		"assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentPeriodDescriptor#S"
+	},
+  {% endif %}
+  {% if NoVerbalScoreReason|length > 0 %}
+  	"reasonNotTestedDescriptor": "{{descriptor_namespace_override}}/ReasonNotTestedDescriptor#{{NoVerbalScoreReason}}",
+  {% elif NoNonVerbalScoreReason|length > 0 %}
+  	"reasonNotTestedDescriptor": "{{descriptor_namespace_override}}/ReasonNotTestedDescriptor#{{NoNonVerbalScoreReason}}",
+  {% endif %}
+  "scoreResults": [
+    {
+		"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Verbal",
+		"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
+		"result": "{{VerbalScore}}"
+	},
+	{
+		"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#NonVerbal",
+		"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
+		"result": "{{NonVerbalScore}}"
+	}
+  ],
+  "studentObjectiveAssessments": [
+    {
+      "administrationDate": "{{QualifyingDimensionTestAdministrationDate}}",
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{identificationCode}}",
+        "namespace": "{{namespace}}"
+      },
+      "scoreResults": [
+		{% if qualifyingDimension == 'A' %}
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingTotal",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
+			"result": "{{QualifyingTotalPercentileIfDimA}}"
+			},
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingVerbal",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
+			"result": "{{QualifyingVerbalPercentileDimAorReadingScoreDimB}}"
+			},
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingNonVerbal",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
+			"result": "{{QualifyingNonVerbalPercentileDimAorMathScoreDimB}}"
+			},
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingQuantitave",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile",
+			"result": "{{QualifyingQuantitativePercentileIfavailableDimA}}"
+			}
+		{% elif qualifyingDimension == 'B' %}
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Reading",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
+			"result": "{{QualifyingVerbalPercentileDimAorReadingScoreDimB}}"
+			},
+			{
+			"assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Math",
+			"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer",
+			"result": "{{QualifyingNonVerbalPercentileDimAorMathScoreDimB}}"
+			}
+		{% else %}
+		{# No result - Placeholder for future dimensions (possibly Dimension C) #}
+		{% endif %}
+      ]
+    }
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace_override}}/GradeLevelDescriptor#{{PerformanceTaskAdministeredGradeLevel}}"
+}
