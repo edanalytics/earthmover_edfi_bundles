@@ -17,16 +17,16 @@ config:
 
 sources:
   assessments:
-    file: ${BUNDLE_DIR}/seeds/assessments.csv
+    file: seeds/assessments.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
-    file: ${BUNDLE_DIR}/seeds/assessmentReportingMethodDescriptors.csv
+    file: seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
+    file: seeds/performanceLevelDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ${BUNDLE_DIR}/seeds/gradeLevelDescriptors.csv
+    file: seeds/gradeLevelDescriptors.csv
     header_rows: 1
   
   input:
@@ -230,7 +230,7 @@ transformations:
         columns:
           - grade
           - assessment_grade
-        map_file: ${BUNDLE_DIR}/seeds/grade_level_xwalk.csv
+        map_file: seeds/grade_level_xwalk.csv
         
     
   # Each subject has a different set of grade levels assigned ([3-8, 11] for ELA and Math; [4, 6, 11] for Sci; 11 for Soc)
@@ -276,20 +276,20 @@ transformations:
 destinations:
   assessments:
     source:  $transformations.assessments
-    template: ${BUNDLE_DIR}/templates/assessments.jsont
+    template: templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ${BUNDLE_DIR}/templates/descriptors.jsont
+    template: templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ${BUNDLE_DIR}/templates/descriptors.jsont
+    template: templates/descriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.sc_alt_student_assessment
-    template: ${BUNDLE_DIR}/templates/studentAssessments.jsont
+    template: templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
