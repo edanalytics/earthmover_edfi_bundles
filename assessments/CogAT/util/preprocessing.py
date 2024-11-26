@@ -23,7 +23,7 @@ raw = Path(filepath).read_text(encoding="utf-8-sig")
 raw_no_blank_lines = os.linesep.join([s for s in raw.splitlines() if s.strip()])
 
 file_format = pd.read_csv(sys.argv[2])
-colnames = file_format.column_name
+colnames = file_format.field_name
 colspecs = list(zip(file_format.start_index, file_format.end_index))
 df = pd.read_fwf(
     StringIO(raw_no_blank_lines),
