@@ -34,7 +34,8 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 0
-    type: fixedwidth # TODO: ?
+    type: fixedwidth
+    {% if ${API_YEAR} == "2024"  %}
     columns:
       - administration_date
       - grade_level_tested
@@ -429,7 +430,6 @@ sources:
       - blank_444
       - period
     colspecs:
-      # TODO: uh oh going to need jinja...
       - [0, 4]
       - [4, 6]
       - [6, 8]
@@ -822,9 +822,2376 @@ sources:
       - [3373, 3374]
       - [3374, 3999]
       - [3999, 4000]
-
+    {% elif ${API_YEAR} == "2023" %}
+    columns:
+      - administration_date
+      - grade_level_tested
+      - esc_region_number
+      - county_district_campus_number
+      - district_name
+      - campus_name
+      - last_name
+      - first_name
+      - middle_initial
+      - student_id
+      - sex_code
+      - date_of_birth
+      - blank_14
+      - hispanic_latino_code
+      - american_indian_alaska_native_code
+      - asian_code
+      - black_african_american_code
+      - native_hawaiian_pacific_islander_code
+      - white_code
+      - ethnicity/race_reporting_category
+      - economic_disadvantage_code
+      - title_i_part_a_indicator_code
+      - migrant_indicator_code
+      - blank_27
+      - emergent_bilingual_indicator_code
+      - bilingual_indicator_code
+      - esl_indicator_code
+      - fall_2022_tsds_peims_homeless_status_code
+      - special_ed_indicator_code
+      - section_504_indicator_code
+      - blank_34
+      - gifted_talented_indicator_code
+      - at_risk_indicator_code
+      - blank_37
+      - local_student_id
+      - blank_40
+      - enrolled_grade_41
+      - blank_42
+      - fall_2022_tsds_peims_county_district_campus_number
+      - fall_2022_tsds_peims_student_language_code
+      - fall_2022_tsds_peims_student__attribution_code
+      - family_portal_unique_access_code
+      - migrant_student_in_texas_migrant_interstate_program_(tmip)
+      - fall_2022_tsds_peims_military_connected_student_code
+      - fall_2022_tsds_peims_foster_care_indicator_code
+      - blank_51
+      - fall_2022_tsds_peims_dyslexia_indicator_code
+      - blank_53
+      - new_to_texas
+      - tx_unique_student_id
+      - local_use_reading_language_arts
+      - local_use_mathematics
+      - blank_60
+      - local_use_social_studies
+      - local_use_science
+      - agency_use_code_a_reading_language_arts
+      - agency_use_code_b_reading_language_arts
+      - agency_use_code_c_reading_language_arts
+      - agency_use_code_d_reading_language_arts
+      - agency_use_code_e_reading_language_arts
+      - agency_use_code_a_mathematics
+      - agency_use_code_b_mathematics
+      - agency_use_code_c_mathematics
+      - agency_use_code_d_mathematics
+      - agency_use_code_e_mathematics
+      - blank_73
+      - agency_use_code_a_social_studies
+      - agency_use_code_b_social_studies
+      - agency_use_code_c_social_studies
+      - agency_use_code_d_social_studies
+      - agency_use_code_e_social_studies
+      - agency_use_code_a_science
+      - agency_use_code_b_science
+      - agency_use_code_c_science
+      - agency_use_code_d_science
+      - agency_use_code_e_science
+      - eoc/above_grade_reading_language_arts
+      - eoc/above_grade_mathematics
+      - eoc/above_grade_social_studies
+      - eoc/above_grade_science
+      - blank_88
+      - speech_to_text_reading_language_arts
+      - braille_reading_language_arts
+      - large_print_reading_language_arts_1_=_yes
+      - non_embedded_designated_supports_reading_language_arts
+      - extra_day_reading_language_arts
+      - blank_96
+      - text_to_speech_reading_language_arts
+      - blank_98
+      - spelling_assistance_reading_language_arts
+      - content_and_language_supports__reading_language_arts
+      - asl_signed_videos_reading_language_arts
+      - blank_102
+      - braille_mathematics
+      - large_print_mathematics
+      - non_embedded_designated_supports_mathematics
+      - extra_day_mathematics
+      - basic_calculator_mathematics
+      - blank_108
+      - text_to_speech_mathematics
+      - blank_110
+      - content_and_language_supports__mathematics
+      - asl_signed_videos_mathematics
+      - blank_113
+      - auto_text_to_speech_reading_language_arts
+      - auto_text_to_speech_mathematics__1_=_yes
+      - auto_text_to_speech_social_studies
+      - auto_text_to_speech_science
+      - blank_118
+      - speech_to_text_social_studies
+      - braille_social_studies
+      - large_print_social_studies
+      - non_embedded_designated_supports_social_studies
+      - extra_day_social_studies
+      - blank_124
+      - text_to_speech_social_studies
+      - blank_127
+      - spelling_assistance_social_studies
+      - content_and_language_supports__social_studies
+      - asl_signed_videos_social_studies
+      - blank_131
+      - speech_to_text_science
+      - braille_science
+      - large_print_science
+      - non_embedded_designated_supports_science
+      - extra_day_science
+      - basic_calculator_science
+      - blank_138
+      - text_to_speech_science
+      - blank_140
+      - spelling_assistance___science
+      - content_and_language_supports_science
+      - asl_signed_videos_science
+      - blank_144
+      - score_code_reading_language_arts
+      - score_code_mathematics
+      - blank_148
+      - score_code_social_studies
+      - score_code_science
+      - score_code_default_reading_language_arts
+      - score_code_default_mathematics___1_=_the_score_code_was_defaulted_to_‚Äúo‚Äù_because_the_score_code_was_left
+      - blank_154
+      - score_code_default_social_studies___1_=_the_score_code_was_defaulted_to_‚Äúo‚Äù_because_the_score_code_was_left
+      - score_code_default_science
+      - blank_157
+      - reading_language_arts_reporting_category_1_scores
+      - reading_language_arts_reporting_category_2_scores
+      - performance_level_indicator_reading_language_arts
+      - reading_language_arts_raw_score
+      - reading_language_arts_scale_score
+      - reading_language_arts_test_language_version
+      - reading_language_arts_test_version
+      - test_administration_mode_reading_language_arts
+      - blank_167
+      - meets_grade_level_in_reading_language_arts
+      - approaches_grade_level_in_reading_language_arts
+      - masters_grade_level_in_reading_language_arts
+      - blank_171
+      - el_performance_measure_reading_language_arts
+      - blank_176
+      - item_reporting_category_numbers_reading_language_arts
+      - blank_179
+      - item_student_responses_reading_language_arts
+      - blank_181
+      - item_correct_responses_reading_language_arts
+      - blank_183
+      - lexile_measure_184
+      - percentile_185
+      - extended_constructed_response_score
+      - blank_188
+      - mathematics_reporting_category_1_scores
+      - mathematics_reporting_category_2_scores
+      - mathematics_reporting_category_3_scores
+      - mathematics_reporting_category_4_scores
+      - performance_level_indicator_mathematics
+      - mathematics_raw_score
+      - mathematics_scale_score
+      - mathematics_test_language_version
+      - mathematics_test_version
+      - test_administration_mode__mathematics
+      - blank_200
+      - meets_grade_level_in_mathematics
+      - approaches_grade_level_in_mathematics
+      - masters_grade_level_in_mathematics
+      - blank_204
+      - el_performance_measure_mathematics_208
+      - blank_209
+      - item_reporting_category_numbers_mathematics
+      - blank_212
+      - item_student_responses_mathematics
+      - blank_214
+      - item_correct_responses_mathematics
+      - blank_216
+      - percentile_mathematics
+      - quantile_measure_219
+      - mathematics_badge_indicator
+      - blank_221
+      - points_possible_mathematics
+      - points_achieved_mathematics
+      - blank_224
+      - points_possible_reading_language_arts
+      - points_achieved_reading_language_arts
+      - blank_228
+      - social_studies_reporting_category_1_scores
+      - social_studies_reporting_category_2_scores
+      - social_studies_reporting_category_3_scores
+      - social_studies_reporting_category_4_scores
+      - social_studies_raw_score
+      - social_studies_scale_score
+      - social_studies_test_language_version
+      - social_studies_test_version
+      - test_administration_mode_social_studies
+      - blank_239
+      - meets_grade_level_in_social_studies
+      - approaches_grade_level_in_social_studies
+      - masters_grade_level_in_social_studies
+      - el_performance_measure_social_studies
+      - blank_247
+      - item_reporting_category_numbers_social_studies
+      - blank_250
+      - item_student_responses_social_studies
+      - blank_252
+      - item_correct_responses_social_studies
+      - blank_254
+      - percentile_social_studies
+      - points_possible_social_studies
+      - blank_258
+      - points_achieved_social_studies
+      - blank_260
+      - science_reporting_category_1_scores
+      - science_reporting_category_2_scores
+      - science_reporting_category_3_scores
+      - science_reporting_category_4_scores
+      - science_raw_score
+      - science_scale_score
+      - science_test_language_version
+      - science_test_version
+      - test_administration_mode_science__o_=_online
+      - blank_271
+      - meets_grade_level_in_science
+      - approaches_grade_level_in_science
+      - masters_grade_level_in_science
+      - el_performance_measure_science
+      - blank_278
+      - item_reporting_category_numbers_science
+      - blank_282
+      - item_student_responses_science
+      - blank_284
+      - item_correct_responses_science
+      - blank_286
+      - percentile_science
+      - blank_288
+      - points_possible___science
+      - blank_290
+      - points_achieved___science
+      - blank_292
+      - county_district_campus_number_294
+      - language_version_295
+      - test_version_296
+      - score_code_298
+      - approaches_grade_level_299
+      - masters_grade_level_300
+      - scale_score_301
+      - tested_grade_302
+      - enrolled_grade_303
+      - blank_304
+      - staar_progress_measure_305
+      - el_performance_measure_306
+      - lexile_measure_307
+      - blank_308
+      - county_district_campus_number_310
+      - language_version_311
+      - test_version_312
+      - score_code_313
+      - approaches_grade_level_314
+      - masters_grade_level_315
+      - scale_score_316
+      - tested_grade_317
+      - enrolled_grade_318
+      - blank_319
+      - staar_progress_measure_320
+      - meets_grade_level_321
+      - quantile_measure_322
+      - blank_323
+      - county_district_campus_number_326
+      - language_version_327
+      - test_version_328
+      - score_code_329
+      - approaches_grade_level_330
+      - masters_grade_level_331
+      - scale_score_332
+      - tested_grade_333
+      - enrolled_grade_334
+      - meets_grade_level_335
+      - el_performance_measure_336
+      - blank_337
+      - county_district_campus_number_339
+      - language_version_340
+      - test_version_341
+      - score_code_342
+      - approaches_grade_level_343
+      - masters_grade_level_344
+      - scale_score_345
+      - tested_grade_346
+      - enrolled_grade_347
+      - meets_grade_level_348
+      - el_performance_measure_349
+      - blank_351
+      - meets_grade_level_reading
+      - el_performance_measure_mathematics_354
+      - blank_355
+      - lexile_measure_grade_3
+      - lexile_measure_grade_4
+      - lexile_measure_grade_5
+      - lexile_measure_grade_6
+      - lexile_measure_grade_7
+      - lexile_measure_grade_8
+      - blank_363
+      - quantile_measure_grade_3
+      - quantile_measure_grade_4
+      - quantile_measure_grade_5
+      - quantile_measure_grade_6
+      - quantile_measure_grade_7
+      - quantile_measure_grade_8
+      - blank_371
+      - el_performance_measure_(elpm)_plan
+      - year_elpm_plan_determined
+      - plan_year_telpas_composite_rating__0_=_no_rating_available
+      - current_year_telpas_years_in_u.s._schools_(grades_1_12)
+      - current_year_telpas_parental_denial
+      - current_year_telpas_unschooled_asylee/refugee
+      - current_year_telpas_students_with_interrupted_formal_education_(sife)
+      - blank_381
+      - score_code_383
+      - test_version_384
+      - algebra_i_reporting_category_1_raw_score
+      - algebra_i_reporting_category_2_raw_score
+      - algebra_i_reporting_category_3_raw_score
+      - algebra_i_reporting_category_4_raw_score
+      - algebra_i_reporting_category_5_raw_score
+      - blank_390
+      - algebra_i_raw_score
+      - scale_score_392
+      - approaches_grade_level_393
+      - meets_grade_level_394
+      - masters_grade_level_395
+      - blank_396
+      - percentile_397
+      - quantile_measure_398
+      - test_information_indicator
+      - blank_400
+      - tsds_peims_crisis_code_1
+      - tsds_peims_crisis_code_2
+      - tsds_peims_crisis_code_3
+      - test_result_id_reading_language_arts
+      - test_result_id_mathematics
+      - test_result_id_social_studies
+      - test_result_id_science
+      - blank_411
+      - opportunity_key_reading_language_arts
+      - opportunity_key_mathematics
+      - opportunity_key_social_studies
+      - opportunity_key_science
+      - blank_416
+      - non_participant_online_refusal_reading_language_arts
+      - non_participant_online_refusal_mathematics
+      - non_participant_online_refusal_social_studies
+      - non_participant_online_refusal_science
+      - discrepancy_indicator_reading_language_arts
+      - discrepancy_indicator_mathematics
+      - discrepancy_indicator_social_studies
+      - discrepancy_indicator_science
+      - blank_425
+      - period
+    colspecs:
+      - [0, 4]
+      - [4, 6]
+      - [6, 8]
+      - [8, 17]
+      - [17, 32]
+      - [32, 47]
+      - [47, 62]
+      - [62, 72]
+      - [72, 73]
+      - [73, 82]
+      - [82, 83]
+      - [83, 91]
+      - [91, 92]
+      - [92, 93]
+      - [93, 94]
+      - [94, 95]
+      - [95, 96]
+      - [96, 97]
+      - [97, 98]
+      - [98, 99]
+      - [99, 100]
+      - [100, 101]
+      - [101, 102]
+      - [102, 106]
+      - [106, 107]
+      - [107, 108]
+      - [108, 109]
+      - [109, 110]
+      - [110, 111]
+      - [111, 112]
+      - [112, 116]
+      - [116, 117]
+      - [117, 118]
+      - [118, 122]
+      - [122, 131]
+      - [131, 140]
+      - [140, 142]
+      - [142, 143]
+      - [143, 152]
+      - [152, 154]
+      - [154, 156]
+      - [156, 162]
+      - [162, 163]
+      - [163, 164]
+      - [164, 165]
+      - [165, 185]
+      - [185, 186]
+      - [186, 189]
+      - [189, 190]
+      - [190, 200]
+      - [200, 204]
+      - [204, 208]
+      - [208, 212]
+      - [212, 216]
+      - [216, 220]
+      - [220, 221]
+      - [221, 222]
+      - [222, 223]
+      - [223, 224]
+      - [224, 225]
+      - [225, 226]
+      - [226, 227]
+      - [227, 228]
+      - [228, 229]
+      - [229, 230]
+      - [230, 235]
+      - [235, 236]
+      - [236, 237]
+      - [237, 238]
+      - [238, 239]
+      - [239, 240]
+      - [240, 241]
+      - [241, 242]
+      - [242, 243]
+      - [243, 244]
+      - [244, 245]
+      - [245, 246]
+      - [246, 247]
+      - [247, 248]
+      - [248, 249]
+      - [249, 251]
+      - [251, 252]
+      - [252, 253]
+      - [253, 254]
+      - [254, 255]
+      - [255, 256]
+      - [256, 258]
+      - [258, 259]
+      - [259, 260]
+      - [260, 261]
+      - [261, 262]
+      - [262, 263]
+      - [263, 272]
+      - [272, 273]
+      - [273, 274]
+      - [274, 275]
+      - [275, 276]
+      - [276, 277]
+      - [277, 278]
+      - [278, 279]
+      - [279, 281]
+      - [281, 282]
+      - [282, 283]
+      - [283, 285]
+      - [285, 286]
+      - [286, 287]
+      - [287, 288]
+      - [288, 289]
+      - [289, 311]
+      - [311, 312]
+      - [312, 313]
+      - [313, 314]
+      - [314, 315]
+      - [315, 316]
+      - [316, 318]
+      - [318, 319]
+      - [319, 320]
+      - [320, 321]
+      - [321, 322]
+      - [322, 323]
+      - [323, 331]
+      - [331, 332]
+      - [332, 333]
+      - [333, 334]
+      - [334, 335]
+      - [335, 336]
+      - [336, 337]
+      - [337, 338]
+      - [338, 339]
+      - [339, 340]
+      - [340, 341]
+      - [341, 342]
+      - [342, 343]
+      - [343, 350]
+      - [350, 351]
+      - [351, 352]
+      - [352, 353]
+      - [353, 354]
+      - [354, 355]
+      - [355, 356]
+      - [356, 357]
+      - [357, 358]
+      - [358, 359]
+      - [359, 360]
+      - [360, 400]
+      - [400, 402]
+      - [402, 404]
+      - [404, 406]
+      - [406, 408]
+      - [408, 412]
+      - [412, 413]
+      - [413, 414]
+      - [414, 415]
+      - [415, 422]
+      - [422, 423]
+      - [423, 424]
+      - [424, 425]
+      - [425, 444]
+      - [444, 445]
+      - [445, 450]
+      - [450, 495]
+      - [495, 502]
+      - [502, 547]
+      - [547, 554]
+      - [554, 599]
+      - [599, 606]
+      - [606, 611]
+      - [611, 614]
+      - [614, 616]
+      - [616, 750]
+      - [750, 752]
+      - [752, 754]
+      - [754, 756]
+      - [756, 758]
+      - [758, 760]
+      - [760, 762]
+      - [762, 766]
+      - [766, 767]
+      - [767, 768]
+      - [768, 769]
+      - [769, 776]
+      - [776, 777]
+      - [777, 778]
+      - [778, 779]
+      - [779, 797]
+      - [797, 798]
+      - [798, 800]
+      - [800, 840]
+      - [840, 856]
+      - [856, 896]
+      - [896, 912]
+      - [912, 952]
+      - [952, 968]
+      - [968, 971]
+      - [971, 976]
+      - [976, 977]
+      - [977, 1017]
+      - [1017, 1057]
+      - [1057, 1097]
+      - [1097, 1102]
+      - [1102, 1147]
+      - [1147, 1192]
+      - [1192, 1500]
+      - [1500, 1502]
+      - [1502, 1504]
+      - [1504, 1506]
+      - [1506, 1508]
+      - [1508, 1510]
+      - [1510, 1514]
+      - [1514, 1515]
+      - [1515, 1516]
+      - [1516, 1517]
+      - [1517, 1524]
+      - [1524, 1525]
+      - [1525, 1526]
+      - [1526, 1527]
+      - [1527, 1528]
+      - [1528, 1600]
+      - [1600, 1640]
+      - [1640, 1652]
+      - [1652, 1692]
+      - [1692, 1704]
+      - [1704, 1744]
+      - [1744, 1756]
+      - [1756, 1759]
+      - [1759, 1799]
+      - [1799, 1816]
+      - [1816, 1856]
+      - [1856, 1900]
+      - [1900, 1902]
+      - [1902, 1904]
+      - [1904, 1906]
+      - [1906, 1908]
+      - [1908, 1910]
+      - [1910, 1914]
+      - [1914, 1915]
+      - [1915, 1916]
+      - [1916, 1917]
+      - [1917, 1924]
+      - [1924, 1925]
+      - [1925, 1926]
+      - [1926, 1927]
+      - [1927, 1928]
+      - [1928, 2000]
+      - [2000, 2038]
+      - [2038, 2054]
+      - [2054, 2092]
+      - [2092, 2108]
+      - [2108, 2146]
+      - [2146, 2162]
+      - [2162, 2165]
+      - [2165, 2445]
+      - [2445, 2483]
+      - [2483, 2487]
+      - [2487, 2525]
+      - [2525, 2530]
+      - [2530, 2539]
+      - [2539, 2540]
+      - [2540, 2541]
+      - [2541, 2542]
+      - [2542, 2543]
+      - [2543, 2544]
+      - [2544, 2548]
+      - [2548, 2550]
+      - [2550, 2552]
+      - [2552, 2553]
+      - [2553, 2554]
+      - [2554, 2555]
+      - [2555, 2560]
+      - [2560, 2650]
+      - [2650, 2659]
+      - [2659, 2660]
+      - [2660, 2661]
+      - [2661, 2662]
+      - [2662, 2663]
+      - [2663, 2664]
+      - [2664, 2668]
+      - [2668, 2670]
+      - [2670, 2672]
+      - [2672, 2673]
+      - [2673, 2674]
+      - [2674, 2675]
+      - [2675, 2680]
+      - [2680, 2770]
+      - [2770, 2779]
+      - [2779, 2780]
+      - [2780, 2781]
+      - [2781, 2782]
+      - [2782, 2783]
+      - [2783, 2784]
+      - [2784, 2788]
+      - [2788, 2790]
+      - [2790, 2792]
+      - [2792, 2793]
+      - [2793, 2794]
+      - [2794, 2800]
+      - [2800, 2809]
+      - [2809, 2810]
+      - [2810, 2811]
+      - [2811, 2812]
+      - [2812, 2813]
+      - [2813, 2814]
+      - [2814, 2818]
+      - [2818, 2820]
+      - [2820, 2822]
+      - [2822, 2823]
+      - [2823, 2824]
+      - [2824, 2839]
+      - [2839, 2840]
+      - [2840, 2841]
+      - [2841, 2900]
+      - [2900, 2905]
+      - [2905, 2910]
+      - [2910, 2915]
+      - [2915, 2920]
+      - [2920, 2925]
+      - [2925, 2930]
+      - [2930, 2955]
+      - [2955, 2960]
+      - [2960, 2965]
+      - [2965, 2970]
+      - [2970, 2975]
+      - [2975, 2980]
+      - [2980, 2985]
+      - [2985, 3074]
+      - [3074, 3075]
+      - [3075, 3079]
+      - [3079, 3080]
+      - [3080, 3081]
+      - [3081, 3082]
+      - [3082, 3083]
+      - [3083, 3084]
+      - [3084, 3099]
+      - [3099, 3100]
+      - [3100, 3101]
+      - [3101, 3103]
+      - [3103, 3105]
+      - [3105, 3107]
+      - [3107, 3109]
+      - [3109, 3111]
+      - [3111, 3113]
+      - [3113, 3115]
+      - [3115, 3119]
+      - [3119, 3120]
+      - [3120, 3121]
+      - [3121, 3122]
+      - [3122, 3123]
+      - [3123, 3126]
+      - [3126, 3131]
+      - [3131, 3132]
+      - [3132, 3135]
+      - [3135, 3138]
+      - [3138, 3141]
+      - [3141, 3144]
+      - [3144, 3153]
+      - [3153, 3162]
+      - [3162, 3171]
+      - [3171, 3180]
+      - [3180, 3186]
+      - [3186, 3222]
+      - [3222, 3258]
+      - [3258, 3294]
+      - [3294, 3330]
+      - [3330, 3366]
+      - [3366, 3367]
+      - [3367, 3368]
+      - [3368, 3369]
+      - [3369, 3370]
+      - [3370, 3371]
+      - [3371, 3372]
+      - [3372, 3373]
+      - [3373, 3374]
+      - [3374, 3999]
+      - [3999, 4000]
+    {% elif ${API_YEAR} == "2022" %}
+    columns:
+      - administration_date
+      - grade_level_tested
+      - esc_region_number
+      - county_district_campus_number
+      - district_name
+      - campus_name
+      - last_name
+      - first_name
+      - middle_initial
+      - student_id
+      - sex_code
+      - date_of_birth
+      - blank_16
+      - hispanic_latino_code
+      - american_indian_alaska_native_
+      - asian_code
+      - black_african_american_code
+      - native_hawaiian_pacific_islander_
+      - white_code
+      - ethnicity/race_reporting_category
+      - economic_disadvantage_code
+      - title_i_part_a_indicator_code
+      - migrant_indicator_code
+      - blank_48
+      - emergent_bilingual_indicator_code
+      - bilingual_indicator_code
+      - esl_indicator_code
+      - blank_52
+      - special_ed_indicator_code
+      - blank_54
+      - gifted_talented_indicator_code
+      - at_risk_indicator_code
+      - blank_57
+      - local_student_id
+      - blank_60
+      - enrolled_grade_61
+      - blank_63
+      - fall_2021_tsds_peims_county_district_campus_number
+      - blank_65
+      - fall_2021_tsds_peims_studentattribution_code
+      - student_portal_unique_accesscode
+      - migrant_student_in_texas_migrantinterstate_program_(tmip)
+      - fall_2021_tsds_peims_military_connected_student_code
+      - fall_2021_tsds_peims_foster_careindicator
+      - blank_71
+      - fall_2021_tsds_peims_dyslexia_indicator_code
+      - blank_73
+      - new_to_texas
+      - tx_unique_student_id
+      - local_use_reading
+      - local_use_mathematics
+      - blank_79
+      - local_use_social_studies
+      - local_use_science
+      - agency_use_a_reading
+      - agency_use_b_reading
+      - agency_use_c_reading
+      - agency_use_d_reading
+      - agency_use_e_reading
+      - agency_use_a_mathematics
+      - agency_use_b_mathematics
+      - agency_use_c_mathematics
+      - agency_use_d_mathematics
+      - agency_use_e_mathematics
+      - blank_93
+      - agency_use_a_social_studies
+      - agency_use_b_social_studies
+      - agency_use_c_social_studies
+      - agency_use_d_social_studies
+      - agency_use_e_social_studies
+      - agency_use_a_science
+      - agency_use_b_science
+      - agency_use_c_science
+      - agency_use_d_science
+      - agency_use_e_science
+      - eoc/above_grade_reading
+      - eoc/above_grade_mathematics
+      - eoc/above_grade_social_studies
+      - eoc/above_grade_science
+      - blank_108
+      - designated_supports_reading
+      - braille_reading
+      - large_print_reading
+      - oral_administration_reading
+      - extra_day_reading
+      - blank_115
+      - text_to_speech_reading
+      - blank_118
+      - content_and_language_supports__reading
+      - asl_signed_videos_reading
+      - blank_121
+      - designated_supports__mathematics
+      - braille_mathematics
+      - large_print_mathematics
+      - oral_administration_mathematics
+      - extra_day_mathematics
+      - basic_calculator_mathematics
+      - blank_128
+      - text_to_speech_mathematics
+      - blank_130
+      - content_and_language_supports__mathematics
+      - asl_signed_videos_mathematics
+      - blank_133
+      - auto_text_to_speech_reading
+      - auto_text_to_speech__mathematics
+      - auto_text_to_speech_socialstudies
+      - auto_text_to_speech_science
+      - blank_138
+      - designated_supports_socialstudies
+      - braille__social_studies
+      - large_print_social_studies
+      - oral_administration_social_studies
+      - extra_day_social_studies
+      - blank_144
+      - text_to_speech_social_studies
+      - blank_146
+      - content_and_language_supports__social_studies
+      - asl_signed_videos_social_studies
+      - blank_150
+      - designated_supports_science
+      - braille_science
+      - large_print_science
+      - oral_administration_science
+      - extra_day_science
+      - basic_calculator_science
+      - blank_157
+      - text_to_speech_science
+      - blank_159
+      - content_and_language_supports__science
+      - asl_signed_videos_science
+      - blank_162
+      - score_code_reading
+      - score_code_mathematics
+      - blank_166
+      - score_code_social_studies
+      - score_code_science
+      - score_code_default_reading
+      - score_code_default_mathematics
+      - blank_172
+      - score_code_default_social_studies
+      - score_code_default_science
+      - blank_175
+      - reading_reporting_category_1_scores
+      - reading_reporting_category_2_scores
+      - reading_reporting_category_3_scores
+      - reading_raw_score
+      - reading_scale_score
+      - reading_language_version
+      - reading_test_version
+      - test_administration_mode__reading
+      - blank_185
+      - meets_grade_level_in_reading
+      - approaches_grade_level_in_reading
+      - masters_grade_level_in_reading
+      - staar_progress_measure_reading
+      - blank_191
+      - on_track_to_meet_grade_level__reading
+      - previous_year_administration_date__reading
+      - previous_year_scale_score__reading
+      - previous_year_language_version__reading
+      - blank_197
+      - previous_year_score_code__reading
+      - blank_199
+      - previous_year_masters_grade_level__reading
+      - previous_year_tested_grade__reading
+      - el_performance_measure_reading
+      - blank_204
+      - item_reporting_category_numbers__reading
+      - blank_207
+      - item_student_responses_reading
+      - blank_209
+      - item_correct_responses_reading
+      - blank_213
+      - lexile_measure_214
+      - percentile_215
+      - blank_216
+      - mathematics_reporting_category_1_scores
+      - mathematics_reporting_category_2_scores
+      - mathematics_reporting_category_3_scores
+      - mathematics_reporting_category_4_scores
+      - blank_222
+      - mathematics_raw_score
+      - mathematics_scale_score
+      - mathematics_language_version
+      - mathematics_test_version
+      - test_administration_mode__mathematics
+      - blank_228
+      - meets_grade_level_in_mathematics
+      - approaches_grade_level_in_mathematics
+      - masters_grade_level_in_mathematics
+      - staar_progress_measure__mathematics
+      - blank_234
+      - on_track_to_meet_grade_level__mathematics
+      - previous_year_administration_date__mathematics
+      - previous_year_scale_score__mathematics
+      - previous_year_language_version__mathematics
+      - blank_240
+      - previous_year_score_code__mathematics
+      - blank_242
+      - previous_year_masters_grade_level__mathematics
+      - previous_year_tested_grade__mathematics
+      - el_performance_measure__mathematics_246
+      - blank_247
+      - item_reporting_category_numbers__mathematics
+      - blank_250
+      - item_student_responses__mathematics
+      - blank_252
+      - item_correct_responses__mathematics
+      - blank_254
+      - percentile_mathematics
+      - quantile_measure_258
+      - mathematics_badge_indicator
+      - blank_260
+      - social_studies_reporting_category_1_scores
+      - social_studies_reporting_category_2_scores
+      - social_studies_reporting_category_3_scores
+      - social_studies_reporting_category_4_scores
+      - social_studies_raw_score
+      - social_studies_scale_score
+      - social_studies_language_version
+      - social_studies_test_version
+      - test_administration_mode_socialstudies
+      - blank_271
+      - meets_grade_level_in_social_studies
+      - approaches_grade_level_in_social_studies
+      - masters_grade_level_in_social_studies
+      - el_performance_measure_socialstudies
+      - blank_277
+      - item_reporting_category_numbers__social_studies
+      - blank_282
+      - item_student_responses_socialstudies
+      - blank_284
+      - item_correct_responses_socialstudies
+      - blank_286
+      - percentile_social_studies
+      - blank_288
+      - science_reporting_category_1_scores
+      - science_reporting_category_2_scores
+      - science_reporting_category_3_scores
+      - science_reporting_category_4_scores
+      - science_raw_score
+      - science_scale_score
+      - science_language_version
+      - science_test_version
+      - test_administration_mode__science
+      - blank_299
+      - meets_grade_level_in_science
+      - approaches_grade_level_in_science
+      - masters_grade_level_in_science
+      - el_performance_measure_science
+      - blank_307
+      - item_reporting_category_numbers__science
+      - blank_310
+      - item_student_responses_science
+      - blank_312
+      - item_correct_responses_science
+      - blank_314
+      - percentile_science
+      - blank_316
+      - county_district_campus_number_318
+      - language_version_319
+      - test_version_320
+      - score_code_321
+      - approaches_grade_level_322
+      - masters_grade_level_324
+      - scale_score_325
+      - tested_grade_326
+      - enrolled_grade_327
+      - staar_progress_measure_328
+      - el_performance_measure_329
+      - lexile_measure_330
+      - meets_grade_level_331
+      - county_district_campus_number_333
+      - language_version_334
+      - test_version_335
+      - score_code_336
+      - approaches_grade_level_337
+      - masters_grade_level_338
+      - scale_score_339
+      - tested_grade_340
+      - enrolled_grade_341
+      - blank_342
+      - staar_progress_measure_343
+      - el_performance_measure_344
+      - lexile_measure_345
+      - blank_346
+      - county_district_campus_number_348
+      - language_version_349
+      - test_version_350
+      - score_code_351
+      - approaches_grade_level_353
+      - masters_grade_level_354
+      - scale_score_355
+      - tested_grade_356
+      - enrolled_grade_357
+      - staar_progress_measure_358
+      - el_performance_measure_359
+      - meets_grade_level_360
+      - quantile_measure_361
+      - county_district_campus_number_363
+      - language_version_364
+      - test_version_365
+      - score_code_366
+      - approaches_grade_level_367
+      - masters_grade_level_368
+      - scale_score_369
+      - tested_grade_370
+      - enrolled_grade_371
+      - blank_372
+      - staar_progress_measure_373
+      - meets_grade_level_374
+      - quantile_measure_375
+      - blank_376
+      - county_district_campus_number_378
+      - language_version_379
+      - test_version_380
+      - score_code_381
+      - approaches_grade_level_383
+      - masters_grade_level_384
+      - scale_score_385
+      - tested_grade_386
+      - enrolled_grade_387
+      - meets_grade_level_388
+      - el_performance_measure_389
+      - blank_390
+      - county_district_campus_number_392
+      - language_version_393
+      - test_version_394
+      - score_code_395
+      - approaches_grade_level_396
+      - masters_grade_level_397
+      - scale_score_398
+      - tested_grade_399
+      - enrolled_grade_400
+      - meets_grade_level_401
+      - el_performance_measure_402
+      - blank_403
+      - county_district_campus_number_405
+      - language_version_406
+      - test_version_407
+      - score_code_408
+      - approaches_grade_level_409
+      - masters_grade_level_410
+      - scale_score_411
+      - tested_grade_413
+      - enrolled_grade_414
+      - meets_grade_level_415
+      - el_performance_measure_416
+      - blank_417
+      - meets_grade_level_reading
+      - el_performance_measure__mathematics_420
+      - blank_421
+      - lexile_measure_grade_3
+      - lexile_measure_grade_4
+      - lexile_measure_grade_5
+      - lexile_measure_grade_6
+      - lexile_measure_grade_7
+      - lexile_measure_grade_8
+      - blank_429
+      - quantile_measure_grade_3
+      - quantile_measure_grade_4
+      - quantile_measure_grade_5
+      - quantile_measure_grade_6
+      - quantile_measure_grade_7
+      - quantile_measure_grade_8
+      - blank_437
+      - el_performance_measure_(elpm)plan
+      - year_elpm_plan_determined
+      - plan_year_telpas_composite_rating
+      - current_year_telpas_years_in_u.s.schools_(grades_1_12)
+      - current_year_telpas_parentaldenial
+      - current_year_telpas_unschooledasylee/refugee
+      - current_year_telpas_students_withinterrupted_formal_education_(sife)
+      - blank_448
+      - score_code_450
+      - test_version_451
+      - algebra_i_reporting_category_1_rawscore
+      - algebra_i_reporting_category_2_rawscore
+      - algebra_i_reporting_category_3_rawscore
+      - algebra_i_reporting_category_4_rawscore
+      - algebra_i_reporting_category_5_rawscore
+      - blank_457
+      - algebra_i_raw_score
+      - scale_score_459
+      - approaches_grade_level_460
+      - meets_grade_level_461
+      - masters_grade_level_462
+      - staar_progress_measure_463
+      - percentile_465
+      - quantile_measure_466
+      - test_information_indicator
+      - blank_468
+      - tsds_peims_crisis_code_1
+      - tsds_peims_crisis_code_2
+      - tsds_peims_crisis_code_3
+      - test_result_id_reading
+      - test_result_id_mathematics
+      - test_result_id_social_studies
+      - test_result_id_science
+      - blank_478
+      - opportunity_key_reading
+      - opportunity_key_mathematics
+      - opportunity_key_social_studies
+      - opportunity_key_science
+      - blank_483
+      - non_participant_online_refusal__reading
+      - non_participant_online_refusal__mathematics
+      - non_participant_online_refusal__social_studies
+      - non_participant_online_refusal__science
+      - discrepancy_indicator_reading
+      - discrepancy_indicator__mathematics
+      - discrepancy_indicator_socialstudies
+      - discrepancy_indicator_science
+      - blank_493
+      - period
+    colspecs:
+      - [0, 4]
+      - [4, 6]
+      - [6, 8]
+      - [8, 17]
+      - [17, 32]
+      - [32, 47]
+      - [47, 62]
+      - [62, 72]
+      - [72, 73]
+      - [73, 82]
+      - [82, 83]
+      - [83, 91]
+      - [91, 92]
+      - [92, 93]
+      - [93, 94]
+      - [94, 95]
+      - [95, 96]
+      - [96, 97]
+      - [97, 98]
+      - [98, 99]
+      - [99, 100]
+      - [100, 101]
+      - [101, 102]
+      - [102, 106]
+      - [106, 107]
+      - [107, 108]
+      - [108, 109]
+      - [109, 110]
+      - [110, 111]
+      - [111, 116]
+      - [116, 117]
+      - [117, 118]
+      - [118, 122]
+      - [122, 131]
+      - [131, 140]
+      - [140, 142]
+      - [142, 143]
+      - [143, 152]
+      - [152, 154]
+      - [154, 156]
+      - [156, 162]
+      - [162, 163]
+      - [163, 164]
+      - [164, 165]
+      - [165, 185]
+      - [185, 186]
+      - [186, 189]
+      - [189, 190]
+      - [190, 200]
+      - [200, 204]
+      - [204, 208]
+      - [208, 212]
+      - [212, 216]
+      - [216, 220]
+      - [220, 221]
+      - [221, 222]
+      - [222, 223]
+      - [223, 224]
+      - [224, 225]
+      - [225, 226]
+      - [226, 227]
+      - [227, 228]
+      - [228, 229]
+      - [229, 230]
+      - [230, 235]
+      - [235, 236]
+      - [236, 237]
+      - [237, 238]
+      - [238, 239]
+      - [239, 240]
+      - [240, 241]
+      - [241, 242]
+      - [242, 243]
+      - [243, 244]
+      - [244, 245]
+      - [245, 246]
+      - [246, 247]
+      - [247, 248]
+      - [248, 249]
+      - [249, 251]
+      - [251, 252]
+      - [252, 253]
+      - [253, 254]
+      - [254, 255]
+      - [255, 256]
+      - [256, 258]
+      - [258, 259]
+      - [259, 261]
+      - [261, 262]
+      - [262, 263]
+      - [263, 271]
+      - [271, 272]
+      - [272, 273]
+      - [273, 274]
+      - [274, 275]
+      - [275, 276]
+      - [276, 277]
+      - [277, 278]
+      - [278, 279]
+      - [279, 281]
+      - [281, 282]
+      - [282, 283]
+      - [283, 285]
+      - [285, 286]
+      - [286, 287]
+      - [287, 288]
+      - [288, 289]
+      - [289, 311]
+      - [311, 312]
+      - [312, 313]
+      - [313, 314]
+      - [314, 315]
+      - [315, 316]
+      - [316, 318]
+      - [318, 319]
+      - [319, 321]
+      - [321, 322]
+      - [322, 323]
+      - [323, 331]
+      - [331, 332]
+      - [332, 333]
+      - [333, 334]
+      - [334, 335]
+      - [335, 336]
+      - [336, 337]
+      - [337, 338]
+      - [338, 339]
+      - [339, 341]
+      - [341, 342]
+      - [342, 343]
+      - [343, 350]
+      - [350, 351]
+      - [351, 352]
+      - [352, 353]
+      - [353, 354]
+      - [354, 355]
+      - [355, 356]
+      - [356, 357]
+      - [357, 358]
+      - [358, 359]
+      - [359, 360]
+      - [360, 400]
+      - [400, 402]
+      - [402, 404]
+      - [404, 406]
+      - [406, 408]
+      - [408, 412]
+      - [412, 413]
+      - [413, 414]
+      - [414, 415]
+      - [415, 422]
+      - [422, 423]
+      - [423, 424]
+      - [424, 425]
+      - [425, 426]
+      - [426, 428]
+      - [428, 429]
+      - [429, 433]
+      - [433, 437]
+      - [437, 438]
+      - [438, 439]
+      - [439, 440]
+      - [440, 441]
+      - [441, 442]
+      - [442, 444]
+      - [444, 445]
+      - [445, 450]
+      - [450, 494]
+      - [494, 502]
+      - [502, 546]
+      - [546, 554]
+      - [554, 598]
+      - [598, 606]
+      - [606, 611]
+      - [611, 614]
+      - [614, 750]
+      - [750, 752]
+      - [752, 754]
+      - [754, 756]
+      - [756, 758]
+      - [758, 760]
+      - [760, 762]
+      - [762, 766]
+      - [766, 767]
+      - [767, 768]
+      - [768, 769]
+      - [769, 776]
+      - [776, 777]
+      - [777, 778]
+      - [778, 779]
+      - [779, 780]
+      - [780, 781]
+      - [781, 782]
+      - [782, 786]
+      - [786, 790]
+      - [790, 791]
+      - [791, 792]
+      - [792, 793]
+      - [793, 794]
+      - [794, 795]
+      - [795, 797]
+      - [797, 798]
+      - [798, 800]
+      - [800, 842]
+      - [842, 856]
+      - [856, 898]
+      - [898, 912]
+      - [912, 954]
+      - [954, 968]
+      - [968, 971]
+      - [971, 976]
+      - [976, 977]
+      - [977, 1500]
+      - [1500, 1502]
+      - [1502, 1504]
+      - [1504, 1506]
+      - [1506, 1508]
+      - [1508, 1510]
+      - [1510, 1514]
+      - [1514, 1515]
+      - [1515, 1516]
+      - [1516, 1517]
+      - [1517, 1524]
+      - [1524, 1525]
+      - [1525, 1526]
+      - [1526, 1527]
+      - [1527, 1528]
+      - [1528, 1600]
+      - [1600, 1644]
+      - [1644, 1652]
+      - [1652, 1696]
+      - [1696, 1704]
+      - [1704, 1748]
+      - [1748, 1756]
+      - [1756, 1759]
+      - [1759, 1900]
+      - [1900, 1902]
+      - [1902, 1904]
+      - [1904, 1906]
+      - [1906, 1908]
+      - [1908, 1910]
+      - [1910, 1914]
+      - [1914, 1915]
+      - [1915, 1916]
+      - [1916, 1917]
+      - [1917, 1924]
+      - [1924, 1925]
+      - [1925, 1926]
+      - [1926, 1927]
+      - [1927, 1928]
+      - [1928, 2000]
+      - [2000, 2042]
+      - [2042, 2054]
+      - [2054, 2096]
+      - [2096, 2108]
+      - [2108, 2150]
+      - [2150, 2162]
+      - [2162, 2165]
+      - [2165, 2500]
+      - [2500, 2509]
+      - [2509, 2510]
+      - [2510, 2511]
+      - [2511, 2512]
+      - [2512, 2513]
+      - [2513, 2514]
+      - [2514, 2518]
+      - [2518, 2520]
+      - [2520, 2522]
+      - [2522, 2523]
+      - [2523, 2524]
+      - [2524, 2529]
+      - [2529, 2530]
+      - [2530, 2539]
+      - [2539, 2540]
+      - [2540, 2541]
+      - [2541, 2542]
+      - [2542, 2543]
+      - [2543, 2544]
+      - [2544, 2548]
+      - [2548, 2550]
+      - [2550, 2552]
+      - [2552, 2553]
+      - [2553, 2554]
+      - [2554, 2555]
+      - [2555, 2560]
+      - [2560, 2620]
+      - [2620, 2629]
+      - [2629, 2630]
+      - [2630, 2631]
+      - [2631, 2632]
+      - [2632, 2633]
+      - [2633, 2634]
+      - [2634, 2638]
+      - [2638, 2640]
+      - [2640, 2642]
+      - [2642, 2643]
+      - [2643, 2644]
+      - [2644, 2645]
+      - [2645, 2650]
+      - [2650, 2659]
+      - [2659, 2660]
+      - [2660, 2661]
+      - [2661, 2662]
+      - [2662, 2663]
+      - [2663, 2664]
+      - [2664, 2668]
+      - [2668, 2670]
+      - [2670, 2672]
+      - [2672, 2673]
+      - [2673, 2674]
+      - [2674, 2675]
+      - [2675, 2680]
+      - [2680, 2740]
+      - [2740, 2749]
+      - [2749, 2750]
+      - [2750, 2751]
+      - [2751, 2752]
+      - [2752, 2753]
+      - [2753, 2754]
+      - [2754, 2758]
+      - [2758, 2760]
+      - [2760, 2762]
+      - [2762, 2763]
+      - [2763, 2764]
+      - [2764, 2770]
+      - [2770, 2779]
+      - [2779, 2780]
+      - [2780, 2781]
+      - [2781, 2782]
+      - [2782, 2783]
+      - [2783, 2784]
+      - [2784, 2788]
+      - [2788, 2790]
+      - [2790, 2792]
+      - [2792, 2793]
+      - [2793, 2794]
+      - [2794, 2800]
+      - [2800, 2809]
+      - [2809, 2810]
+      - [2810, 2811]
+      - [2811, 2812]
+      - [2812, 2813]
+      - [2813, 2814]
+      - [2814, 2818]
+      - [2818, 2820]
+      - [2820, 2822]
+      - [2822, 2823]
+      - [2823, 2824]
+      - [2824, 2839]
+      - [2839, 2840]
+      - [2840, 2841]
+      - [2841, 2900]
+      - [2900, 2905]
+      - [2905, 2910]
+      - [2910, 2915]
+      - [2915, 2920]
+      - [2920, 2925]
+      - [2925, 2930]
+      - [2930, 2955]
+      - [2955, 2960]
+      - [2960, 2965]
+      - [2965, 2970]
+      - [2970, 2975]
+      - [2975, 2980]
+      - [2980, 2985]
+      - [2985, 3074]
+      - [3074, 3075]
+      - [3075, 3079]
+      - [3079, 3080]
+      - [3080, 3081]
+      - [3081, 3082]
+      - [3082, 3083]
+      - [3083, 3084]
+      - [3084, 3099]
+      - [3099, 3100]
+      - [3100, 3101]
+      - [3101, 3103]
+      - [3103, 3105]
+      - [3105, 3107]
+      - [3107, 3109]
+      - [3109, 3111]
+      - [3111, 3113]
+      - [3113, 3115]
+      - [3115, 3119]
+      - [3119, 3120]
+      - [3120, 3121]
+      - [3121, 3122]
+      - [3122, 3123]
+      - [3123, 3126]
+      - [3126, 3131]
+      - [3131, 3132]
+      - [3132, 3135]
+      - [3135, 3138]
+      - [3138, 3141]
+      - [3141, 3144]
+      - [3144, 3153]
+      - [3153, 3162]
+      - [3162, 3171]
+      - [3171, 3180]
+      - [3180, 3186]
+      - [3186, 3222]
+      - [3222, 3258]
+      - [3258, 3294]
+      - [3294, 3330]
+      - [3330, 3366]
+      - [3366, 3367]
+      - [3367, 3368]
+      - [3368, 3369]
+      - [3369, 3370]
+      - [3370, 3371]
+      - [3371, 3372]
+      - [3372, 3373]
+      - [3373, 3374]
+      - [3374, 3999]
+      - [3999, 4000]
+    {% elif ${API_YEAR} == "2021" %}
+    columns:
+      - administration_date
+      - grade_level_tested
+      - esc_region_number
+      - county_district_campus_number
+      - district_name
+      - campus_name
+      - last_name
+      - first_name
+      - middle_initial
+      - student_id
+      - sex_code
+      - date_of_birth
+      - blank_16
+      - hispanic_latino_code
+      - american_indian_alaska_native_
+      - asian_code
+      - black_african_american_code
+      - native_hawaiian_pacific_islander_
+      - white_code
+      - ethnicity/race_reporting_category
+      - economic_disadvantage_code
+      - title_i_part_a_indicator_code
+      - migrant_indicator_code
+      - blank_48
+      - lep_indicator_code
+      - bilingual_indicator_code
+      - esl_indicator_code
+      - blank_52
+      - special_ed_indicator_code
+      - blank_54
+      - gifted_talented_indicator_code
+      - at_risk_indicator_code
+      - blank_57
+      - local_student_id
+      - document_number
+      - enrolled_grade_61
+      - record_update_indicator
+      - fall_2020_tsds_peims_county_district_campus_number
+      - fall_2020_tsds_peims_crisis_code
+      - fall_2020_tsds_peims_studentattribution_code
+      - student_portal_unique_accesscode
+      - migrant_student_in_texas_migrantinterstate_program_(tmip)
+      - fall_2020_tsds_peims_military_connected_student_code
+      - fall_2020_tsds_peims_foster_careindicator
+      - class_group_name
+      - fall_2020_tsds_peims_dyslexia_indicator_code
+      - blank_73
+      - new_to_texas
+      - tx_unique_student_id
+      - local_use_reading
+      - local_use_mathematics
+      - local_use_writing
+      - local_use_social_studies
+      - local_use_science
+      - agency_use_reading
+      - agency_use_mathematics
+      - agency_use_writing
+      - agency_use_social_studies
+      - agency_use_science
+      - eoc/above_grade_reading
+      - eoc/above_grade_mathematics
+      - eoc/above_grade_social_studies
+      - eoc/above_grade_science
+      - blank_108
+      - designated_supports_reading
+      - braille_reading
+      - large_print_reading
+      - oral_administration_reading
+      - extra_day_reading
+      - blank_115
+      - text_to_speech_reading
+      - blank_118
+      - content_and_language_supports__reading
+      - asl_signed_videos_reading
+      - blank_121
+      - designated_supports__mathematics
+      - braille_mathematics
+      - large_print_mathematics
+      - oral_administration_mathematics
+      - extra_day_mathematics
+      - basic_calculator_mathematics
+      - blank_128
+      - text_to_speech_mathematics
+      - blank_130
+      - content_and_language_supports__mathematics
+      - asl_signed_videos_mathematics
+      - blank_133
+      - designated_supports_writing
+      - braille_writing
+      - large_print_writing
+      - extra_day_writing
+      - oral_administration_writing
+      - text_to_speech_writing
+      - asl_signed_videos_writing
+      - speech_to_text_writing
+      - content_and_language_supports__writing
+      - spelling_assistance_writing
+      - blank_138
+      - designated_supports_socialstudies
+      - braille__social_studies
+      - large_print_social_studies
+      - oral_administration_social_studies
+      - extra_day_social_studies
+      - blank_144
+      - text_to_speech_social_studies
+      - blank_146
+      - content_and_language_supports__social_studies
+      - asl_signed_videos_social_studies
+      - blank_150
+      - designated_supports_science
+      - braille_science
+      - large_print_science
+      - oral_administration_science
+      - extra_day_science
+      - basic_calculator_science
+      - blank_157
+      - text_to_speech_science
+      - blank_159
+      - content_and_language_supports__science
+      - asl_signed_videos_science
+      - blank_162
+      - score_code_reading
+      - score_code_mathematics
+      - score_code_writing
+      - score_code_social_studies
+      - score_code_science
+      - score_code_default_reading
+      - score_code_default_mathematics
+      - score_code_default_writing
+      - score_code_default_social_studies
+      - score_code_default_science
+      - blank_175
+      - reading_reporting_category_scores
+      - reading_raw_score
+      - reading_scale_score
+      - reading_language_version
+      - reading_test_version
+      - test_administration_mode__reading
+      - blank_185
+      - meets_grade_level_in_reading
+      - approaches_grade_level_in_reading
+      - masters_grade_level_in_reading
+      - staar_progress_measure_reading
+      - blank_191
+      - on_track_to_meet_grade_level__reading
+      - previous_year_administration_date__reading
+      - previous_year_scale_score__reading
+      - previous_year_language_version__reading
+      - blank_197
+      - previous_year_score_code__reading
+      - blank_199
+      - previous_year_masters_grade_level__reading
+      - previous_year_tested_grade__reading
+      - el_performance_measure_reading
+      - blank_204
+      - item_reporting_category_numbers__reading
+      - blank_207
+      - item_student_responses_reading
+      - blank_209
+      - item_correct_responses_reading
+      - blank_213
+      - lexile_measure_214
+      - percentile_reading
+      - blank_216
+      - mathematics_reporting_category_scores
+      - blank_222
+      - mathematics_raw_score
+      - mathematics_scale_score
+      - mathematics_language_version
+      - mathematics_test_version
+      - test_administration_mode__mathematics
+      - blank_228
+      - meets_grade_level_in_mathematics
+      - approaches_grade_level_in_mathematics
+      - masters_grade_level_in_mathematics
+      - staar_progress_measure__mathematics
+      - blank_234
+      - on_track_to_meet_grade_level__mathematics
+      - previous_year_administration_date__mathematics
+      - previous_year_scale_score__mathematics
+      - previous_year_language_version__mathematics
+      - blank_240
+      - previous_year_score_code__mathematics
+      - blank_242
+      - previous_year_masters_grade_level__mathematics
+      - previous_year_tested_grade__mathematics
+      - el_performance_measure__mathematics_246
+      - blank_247
+      - item_reporting_category_numbers__mathematics
+      - blank_250
+      - item_student_responses__mathematics
+      - blank_252
+      - item_correct_responses__mathematics
+      - blank_254
+      - percentile_mathematics
+      - quantile_measure_mathematics
+      - mathematics_badge_indicator
+      - blank_260
+      - writing_reporting_category_scores
+      - writing_raw_score
+      - writing_scale_score
+      - writing_language_version
+      - writing_test_version
+      - test_administration_mode__writing
+      - blank_267
+      - writing_test_form_version
+      - meets_grade_level_in_writing
+      - approaches_grade_level_in_writing
+      - masters_grade_level_in_writing
+      - written_composition_score
+      - blank_273
+      - el_performance_measure__writing_246
+      - blank_275
+      - item_reporting_category_numbers__writing
+      - blank_277
+      - item_student_responses__writing
+      - blank_279
+      - item_correct_responses__writing
+      - percentile_writing
+      - blank_282
+      - social_studies_reporting_category_scores
+      - social_studies_raw_score
+      - social_studies_scale_score
+      - social_studies_language_version
+      - social_studies_test_version
+      - test_administration_mode_socialstudies
+      - blank_271
+      - meets_grade_level_in_social_studies
+      - approaches_grade_level_in_social_studies
+      - masters_grade_level_in_social_studies
+      - el_performance_measure_socialstudies
+      - blank_278
+      - item_reporting_category_numbers__social_studies
+      - blank_283
+      - item_student_responses_socialstudies
+      - blank_284
+      - item_correct_responses_socialstudies
+      - blank_286
+      - percentile_social_studies
+      - blank_288
+      - science_reporting_category_scores
+      - science_raw_score
+      - science_scale_score
+      - science_language_version
+      - science_test_version
+      - test_administration_mode__science
+      - blank_299
+      - meets_grade_level_in_science
+      - approaches_grade_level_in_science
+      - masters_grade_level_in_science
+      - el_performance_measure_science
+      - blank_307
+      - item_reporting_category_numbers__science
+      - blank_310
+      - item_student_responses_science
+      - blank_312
+      - item_correct_responses_science
+      - blank_314
+      - percentile_science
+      - blank_316
+      - county_district_campus_number_318
+      - language_version_319
+      - test_version_320
+      - score_code_321
+      - approaches_grade_level_322
+      - masters_grade_level_324
+      - scale_score_325
+      - tested_grade_326
+      - enrolled_grade_327
+      - staar_progress_measure_328
+      - el_performance_measure_329
+      - lexile_measure_330
+      - meets_grade_level_331
+      - county_district_campus_number_333
+      - language_version_334
+      - test_version_335
+      - score_code_336
+      - approaches_grade_level_337
+      - masters_grade_level_338
+      - scale_score_339
+      - tested_grade_340
+      - enrolled_grade_341
+      - blank_342
+      - staar_progress_measure_343
+      - el_performance_measure_344
+      - lexile_measure_345
+      - blank_346
+      - county_district_campus_number_348
+      - language_version_349
+      - test_version_350
+      - score_code_351
+      - approaches_grade_level_353
+      - masters_grade_level_354
+      - scale_score_355
+      - tested_grade_356
+      - enrolled_grade_357
+      - staar_progress_measure_358
+      - el_performance_measure_359
+      - meets_grade_level_360
+      - quantile_measure_361
+      - county_district_campus_number_363
+      - language_version_364
+      - test_version_365
+      - score_code_366
+      - approaches_grade_level_367
+      - masters_grade_level_368
+      - scale_score_369
+      - tested_grade_370
+      - enrolled_grade_371
+      - blank_372
+      - staar_progress_measure_373
+      - meets_grade_level_374
+      - quantile_measure_375
+      - blank_376
+      - county_district_campus_number_378
+      - language_version_379
+      - test_version_380
+      - score_code_381
+      - approaches_grade_level_383
+      - masters_grade_level_384
+      - scale_score_385
+      - tested_grade_386
+      - enrolled_grade_387
+      - meets_grade_level_388
+      - el_performance_measure_389
+      - blank_390
+      - county_district_campus_number_392
+      - language_version_393
+      - test_version_394
+      - score_code_395
+      - approaches_grade_level_396
+      - masters_grade_level_397
+      - scale_score_398
+      - tested_grade_399
+      - enrolled_grade_400
+      - meets_grade_level_401
+      - el_performance_measure_402
+      - blank_403
+      - county_district_campus_number_405
+      - language_version_406
+      - test_version_407
+      - score_code_408
+      - approaches_grade_level_409
+      - masters_grade_level_410
+      - scale_score_411
+      - tested_grade_413
+      - enrolled_grade_414
+      - meets_grade_level_415
+      - el_performance_measure_416
+      - blank_417
+      - meets_grade_level_reading
+      - el_performance_measure__mathematics_420
+      - blank_421
+      - lexile_measure_grade_3
+      - lexile_measure_grade_4
+      - lexile_measure_grade_5
+      - lexile_measure_grade_6
+      - lexile_measure_grade_7
+      - lexile_measure_grade_8
+      - blank_429
+      - quantile_measure_grade_3
+      - quantile_measure_grade_4
+      - quantile_measure_grade_5
+      - quantile_measure_grade_6
+      - quantile_measure_grade_7
+      - quantile_measure_grade_8
+      - blank_437
+      - el_performance_measure_(elpm)plan
+      - year_elpm_plan_determined
+      - plan_year_telpas_composite_rating
+      - current_year_telpas_years_in_u.s.schools_(grades_1_12)
+      - current_year_telpas_parentaldenial
+      - current_year_telpas_unschooledasylee/refugee
+      - current_year_telpas_students_withinterrupted_formal_education_(sife)
+      - blank_448
+      - score_code_450
+      - test_version_451
+      - algebra_i_reporting_category_scores
+      - blank_457
+      - algebra_i_raw_score
+      - scale_score_459
+      - approaches_grade_level_460
+      - meets_grade_level_461
+      - masters_grade_level_462
+      - staar_progress_measure_463
+      - percentile_465
+      - quantile_measure_466
+      - test_information_indicator
+      - blank_468
+      - period
+    colspecs:
+      - [0, 4]
+      - [4, 6]
+      - [6, 8]
+      - [8, 17]
+      - [17, 32]
+      - [32, 47]
+      - [47, 62]
+      - [62, 72]
+      - [72, 73]
+      - [73, 82]
+      - [82, 83]
+      - [83, 91]
+      - [91, 92]
+      - [92, 93]
+      - [93, 94]
+      - [94, 95]
+      - [95, 96]
+      - [96, 97]
+      - [97, 98]
+      - [98, 99]
+      - [99, 100]
+      - [100, 101]
+      - [101, 102]
+      - [102, 106]
+      - [106, 107]
+      - [107, 108]
+      - [108, 109]
+      - [109, 110]
+      - [110, 111]
+      - [111, 116]
+      - [116, 117]
+      - [117, 118]
+      - [118, 122]
+      - [122, 131]
+      - [131, 140]
+      - [140, 142]
+      - [142, 143]
+      - [143, 152]
+      - [152, 154]
+      - [154, 156]
+      - [156, 162]
+      - [162, 163]
+      - [163, 164]
+      - [164, 165]
+      - [165, 185]
+      - [185, 186]
+      - [186, 189]
+      - [189, 190]
+      - [190, 200]
+      - [200, 204]
+      - [204, 208]
+      - [208, 212]
+      - [212, 216]
+      - [216, 220]
+      - [220, 225]
+      - [225, 230]
+      - [230, 235]
+      - [235, 240]
+      - [240, 245]
+      - [245, 246]
+      - [246, 247]
+      - [247, 248]
+      - [248, 249]
+      - [249, 251]
+      - [251, 252]
+      - [252, 253]
+      - [253, 254]
+      - [254, 255]
+      - [255, 256]
+      - [256, 258]
+      - [258, 259]
+      - [259, 261]
+      - [261, 262]
+      - [262, 263]
+      - [263, 271]
+      - [271, 272]
+      - [272, 273]
+      - [273, 274]
+      - [274, 275]
+      - [275, 276]
+      - [276, 277]
+      - [277, 278]
+      - [278, 279]
+      - [279, 281]
+      - [281, 282]
+      - [282, 283]
+      - [283, 291]
+      - [291, 292]
+      - [292, 293]
+      - [293, 294]
+      - [294, 295]
+      - [295, 296]
+      - [296, 297]
+      - [297, 298]
+      - [298, 299]
+      - [299, 300]
+      - [300, 301]
+      - [301, 311]
+      - [311, 312]
+      - [312, 313]
+      - [313, 314]
+      - [314, 315]
+      - [315, 316]
+      - [316, 318]
+      - [318, 319]
+      - [319, 321]
+      - [321, 322]
+      - [322, 323]
+      - [323, 331]
+      - [331, 332]
+      - [332, 333]
+      - [333, 334]
+      - [334, 335]
+      - [335, 336]
+      - [336, 337]
+      - [337, 338]
+      - [338, 339]
+      - [339, 341]
+      - [341, 342]
+      - [342, 343]
+      - [343, 350]
+      - [350, 351]
+      - [351, 352]
+      - [352, 353]
+      - [353, 354]
+      - [354, 355]
+      - [355, 356]
+      - [356, 357]
+      - [357, 358]
+      - [358, 359]
+      - [359, 360]
+      - [360, 400]
+      - [400, 406]
+      - [406, 408]
+      - [408, 412]
+      - [412, 413]
+      - [413, 414]
+      - [414, 415]
+      - [415, 422]
+      - [422, 423]
+      - [423, 424]
+      - [424, 425]
+      - [425, 426]
+      - [426, 428]
+      - [428, 429]
+      - [429, 433]
+      - [433, 437]
+      - [437, 438]
+      - [438, 439]
+      - [439, 440]
+      - [440, 441]
+      - [441, 442]
+      - [442, 444]
+      - [444, 445]
+      - [445, 450]
+      - [450, 494]
+      - [494, 502]
+      - [502, 546]
+      - [546, 554]
+      - [554, 598]
+      - [598, 606]
+      - [606, 611]
+      - [611, 614]
+      - [614, 750]
+      - [750, 758]
+      - [758, 760]
+      - [760, 762]
+      - [762, 766]
+      - [766, 767]
+      - [767, 768]
+      - [768, 769]
+      - [769, 776]
+      - [776, 777]
+      - [777, 778]
+      - [778, 779]
+      - [779, 780]
+      - [780, 781]
+      - [781, 782]
+      - [782, 786]
+      - [786, 790]
+      - [790, 791]
+      - [791, 792]
+      - [792, 793]
+      - [793, 794]
+      - [794, 795]
+      - [795, 797]
+      - [797, 798]
+      - [798, 800]
+      - [800, 842]
+      - [842, 856]
+      - [856, 898]
+      - [898, 912]
+      - [912, 954]
+      - [954, 968]
+      - [968, 971]
+      - [971, 976]
+      - [976, 977]
+      - [977, 1100]
+      - [1100, 1106]
+      - [1106, 1108]
+      - [1108, 1112]
+      - [1112, 1113]
+      - [1113, 1114]
+      - [1114, 1115]
+      - [1115, 1120]
+      - [1120, 1122]
+      - [1122, 1123]
+      - [1123, 1124]
+      - [1124, 1125]
+      - [1125, 1126]
+      - [1126, 1153]
+      - [1153, 1154]
+      - [1154, 1200]
+      - [1200, 1230]
+      - [1230, 1240]
+      - [1240, 1270]
+      - [1270, 1280]
+      - [1280, 1310]
+      - [1310, 1313]
+      - [1313, 1500]
+      - [1500, 1508]
+      - [1508, 1510]
+      - [1510, 1514]
+      - [1514, 1515]
+      - [1515, 1516]
+      - [1516, 1517]
+      - [1517, 1524]
+      - [1524, 1525]
+      - [1525, 1526]
+      - [1526, 1527]
+      - [1527, 1528]
+      - [1528, 1600]
+      - [1600, 1644]
+      - [1644, 1652]
+      - [1652, 1696]
+      - [1696, 1704]
+      - [1704, 1748]
+      - [1748, 1756]
+      - [1756, 1759]
+      - [1759, 1900]
+      - [1900, 1908]
+      - [1908, 1910]
+      - [1910, 1914]
+      - [1914, 1915]
+      - [1915, 1916]
+      - [1916, 1917]
+      - [1917, 1924]
+      - [1924, 1925]
+      - [1925, 1926]
+      - [1926, 1927]
+      - [1927, 1928]
+      - [1928, 2000]
+      - [2000, 2042]
+      - [2042, 2054]
+      - [2054, 2096]
+      - [2096, 2108]
+      - [2108, 2150]
+      - [2150, 2162]
+      - [2162, 2165]
+      - [2165, 2500]
+      - [2500, 2509]
+      - [2509, 2510]
+      - [2510, 2511]
+      - [2511, 2512]
+      - [2512, 2513]
+      - [2513, 2514]
+      - [2514, 2518]
+      - [2518, 2520]
+      - [2520, 2522]
+      - [2522, 2523]
+      - [2523, 2524]
+      - [2524, 2529]
+      - [2529, 2530]
+      - [2530, 2539]
+      - [2539, 2540]
+      - [2540, 2541]
+      - [2541, 2542]
+      - [2542, 2543]
+      - [2543, 2544]
+      - [2544, 2548]
+      - [2548, 2550]
+      - [2550, 2552]
+      - [2552, 2553]
+      - [2553, 2554]
+      - [2554, 2555]
+      - [2555, 2560]
+      - [2560, 2620]
+      - [2620, 2629]
+      - [2629, 2630]
+      - [2630, 2631]
+      - [2631, 2632]
+      - [2632, 2633]
+      - [2633, 2634]
+      - [2634, 2638]
+      - [2638, 2640]
+      - [2640, 2642]
+      - [2642, 2643]
+      - [2643, 2644]
+      - [2644, 2645]
+      - [2645, 2650]
+      - [2650, 2659]
+      - [2659, 2660]
+      - [2660, 2661]
+      - [2661, 2662]
+      - [2662, 2663]
+      - [2663, 2664]
+      - [2664, 2668]
+      - [2668, 2670]
+      - [2670, 2672]
+      - [2672, 2673]
+      - [2673, 2674]
+      - [2674, 2675]
+      - [2675, 2680]
+      - [2680, 2740]
+      - [2740, 2749]
+      - [2749, 2750]
+      - [2750, 2751]
+      - [2751, 2752]
+      - [2752, 2753]
+      - [2753, 2754]
+      - [2754, 2758]
+      - [2758, 2760]
+      - [2760, 2762]
+      - [2762, 2763]
+      - [2763, 2764]
+      - [2764, 2770]
+      - [2770, 2779]
+      - [2779, 2780]
+      - [2780, 2781]
+      - [2781, 2782]
+      - [2782, 2783]
+      - [2783, 2784]
+      - [2784, 2788]
+      - [2788, 2790]
+      - [2790, 2792]
+      - [2792, 2793]
+      - [2793, 2794]
+      - [2794, 2800]
+      - [2800, 2809]
+      - [2809, 2810]
+      - [2810, 2811]
+      - [2811, 2812]
+      - [2812, 2813]
+      - [2813, 2814]
+      - [2814, 2818]
+      - [2818, 2820]
+      - [2820, 2822]
+      - [2822, 2823]
+      - [2823, 2824]
+      - [2824, 2839]
+      - [2839, 2840]
+      - [2840, 2841]
+      - [2841, 2900]
+      - [2900, 2905]
+      - [2905, 2910]
+      - [2910, 2915]
+      - [2915, 2920]
+      - [2920, 2925]
+      - [2925, 2930]
+      - [2930, 2955]
+      - [2955, 2960]
+      - [2960, 2965]
+      - [2965, 2970]
+      - [2970, 2975]
+      - [2975, 2980]
+      - [2980, 2985]
+      - [2985, 3074]
+      - [3074, 3075]
+      - [3075, 3079]
+      - [3079, 3080]
+      - [3080, 3081]
+      - [3081, 3082]
+      - [3082, 3083]
+      - [3083, 3084]
+      - [3084, 3099]
+      - [3099, 3100]
+      - [3100, 3101]
+      - [3101, 3111]
+      - [3111, 3113]
+      - [3113, 3115]
+      - [3115, 3119]
+      - [3119, 3120]
+      - [3120, 3121]
+      - [3121, 3122]
+      - [3122, 3123]
+      - [3123, 3126]
+      - [3126, 3131]
+      - [3131, 3132]
+      - [3132, 3999]
+      - [3999, 4000]
+    {% endif %}
   # OTHER XWALKS
-  administration_window_xwalk:
+  adm, nistration_window_xwalk:
     file: ../../seeds/administration_window_xwalk.csv
     header_rows: 1
 
