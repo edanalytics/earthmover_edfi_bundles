@@ -35,7 +35,7 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 0
     type: fixedwidth
-    colspec_file: ../../fwf_to_csv_xwalks_staar_summative_fwf_xwalk_${API_YEAR}.csv
+    colspec_file: ../../fwf_to_csv_xwalks/staar_summative_fwf_xwalk_${API_YEAR}.csv
 
 #    {% if ${API_YEAR} == "2024"  %}
 #    columns:
@@ -3193,7 +3193,7 @@ sources:
 #      - [3999, 4000]
 #    {% endif %}
   # OTHER XWALKS
-  adm, nistration_window_xwalk:
+  administration_window_xwalk:
     file: ../../seeds/administration_window_xwalk.csv
     header_rows: 1
 
