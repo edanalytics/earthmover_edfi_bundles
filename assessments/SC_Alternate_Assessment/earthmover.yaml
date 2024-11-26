@@ -1,6 +1,5 @@
 version: 2
 
-
 config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
@@ -238,9 +237,9 @@ transformations:
         join_type: inner
         left_key: assessment_identifier
         right_key: assessment_identifier
-      - operation: add_columns
+      - operation: modify_columns
         columns:
-          assessment_identifier: "{% raw %}{{ value }}_${API_YEAR}{% endraw %}"  # TODO: Not filling correctly in assessments.jsonl
+          assessment_identifier: "{% raw %}{{ value }}_${API_YEAR}{% endraw %}"
 
 
 destinations:
