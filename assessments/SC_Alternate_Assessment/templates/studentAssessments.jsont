@@ -1,6 +1,6 @@
 {%- set generic_score_results = [
-    ["District", rdistrict, "Level"],  # TODO: r or t?
-    ["DistrictID", rdistrictid, "Level"],  # TODO: r or t?
+    ["District", rdistrict, "Level"],
+    ["DistrictID", rdistrictid, "Level"],
     ["DOB", dob, "Level"],
     ["English", english, "Level"],
     ["Gender", gender, "Level"],
@@ -17,8 +17,8 @@
     ["SSH_SEM", ssh_sem, "Integer"],
     ["SSP", ssp_sem, "Integer"],
     ["SSP_SEM", ssp_sem, "Integer"],
-    ["School", rschool, "Level"],  # TODO: r or t?
-    ["SchoolID", rschoolid, "Level"],  # TODO: r or t?
+    ["School", rschool, "Level"],
+    ["SchoolID", rschoolid, "Level"],
     ["Status", status, "Level"],
     ["TestAdmin", testadmin, "Level"],
     ["TestName", test_name, "Level"],
@@ -45,20 +45,20 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{administration_date}}",
-  "administrationEndDate": "{{administration_end_date}}",
+  "administrationEndDate": "{{administration_end_date}}"
 
   {%- if performance_level -%}
-  "performanceLevels": [
+  , "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://cambiumassessment.com/PerformanceLevelDescriptor#{{performance_level | int}}",
       "performanceLevelMet": true
     }
-  ],
+  ]
   {%- endif -%}
 
   {%- if score_results -%}
-  "scoreResults": [
+  , "scoreResults": [
     {%- for score in score_results -%}
     {
       "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
@@ -66,8 +66,10 @@
       "result": {% if score[2] == 'Integer' -%}"{{score[1] | int}}"{%- else -%}"{{score[1]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
-  ],
+  ]
   {%- endif -%}
 
-  "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{assessment_grade | int}}"
+  {%- if assessment_grade -%}
+  , "whenAssessedGradeLevelDescriptor": "uri://ed.sc.gov/GradeLevelDescriptor#{{assessment_grade | int}}"
+  {%- endif -%}
 }
