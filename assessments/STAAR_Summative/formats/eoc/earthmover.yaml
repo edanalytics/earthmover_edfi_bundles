@@ -33,7 +33,9 @@ sources:
   # INPUT STU ASSESSMENT FILES
   input:
     file: ${INPUT_FILE}
-    header_rows: 1
+    header_rows: 0
+    type: fixedwidth
+    colspec_file: ../../fwf_to_csv_xwalks/staar_summative_eoc_fwf_xwalk_${API_YEAR}.csv
 
   # OTHER XWALKS
   administration_window_xwalk:

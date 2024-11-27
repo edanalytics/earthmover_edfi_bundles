@@ -8,7 +8,7 @@ config:
   tmp_dir: ${TMP_DIR}
   show_graph: False
   parameter_defaults:
-    OUTPUT_DIR: output
+    OUTPUT_DIR: ./output
     TMP_DIR: /tmp
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature

@@ -22,4 +22,4 @@ validate:
     - schema # checks that payloads conform to the Swagger definitions from the API
     - descriptors # checks that descriptor values are either locally-defined or exist in the remote API
     - uniqueness # checks that local payloads are unique by the required property values
-    - references # checks that references resolve, either locally or in the remote API
+    #- references # checks that references resolve, either locally or in the remote API

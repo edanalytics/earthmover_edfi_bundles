@@ -1,9 +1,9 @@
 * **Title**: STAAR Summative - API 3.X
 * **Description**: This template covers STAAR Summative Data File Formats for:
-    * Grades 3-8 Reporting Data File (21-22 and 22-23 compatible)
-    * Alternate 2 Grades 3-8 Data File (21-22 and 22-23 compatible)
-    * End-of-Course Reporting Data File (21-22 and 22-23 compatible)
-    * Alternate 2 End-of-Course Reporting Data File (21-22 and 22-23 compatible)
+    * Grades 3-8 Reporting Data File (compatibility from 21-22 to 24-25)
+    * Alternate 2 Grades 3-8 Data File (compatibility from 21-22 to 24-25)
+    * End-of-Course Reporting Data File (compatibility from 21-22 to 24-25)
+    * Alternate 2 End-of-Course Reporting Data File (compatibility from 21-22 to 24-25)
       
 For more info on these data files, including the File Format documentation, see https://tea.texas.gov/student-assessment/testing/student-assessment-overview/data-file-formats
 
@@ -17,29 +17,37 @@ Note, there is a separate earthmover.yaml file for each of the 4 reporting data 
 ## CLI Parameters
 
 ### Required
-- OUTPUT_DIR: Where output files will be written
-- API_YEAR: The Ed-Fi API year that the output of this template will send to. e.g. for school year 2022-2023, enter `2023`
-- INPUT_FILE: The path to the STAAR Summative .csv file you want to transform
-- STATE_FILE: Where to store the earthmover runs.csv file
+- `API_YEAR`: The Ed-Fi API year that the output of this template will send to. e.g. for school year 2022-2023, enter `2023`
+- (During `run` only) `INPUT_FILE`: The path to the STAAR Summative .csv file you want to transform
+- (During `deps` only) `FORMAT`: One of the four supported file formats: `['Standard', 'Alternate', 'End-of-Course', 'End-of-Course Alternate']`
 
+In order to run the bundle for a specific format, you must use `earthmover deps` to load the corresponding configuration.
 
 ### Examples
 Running a STAAR Summative 3-8 file:
 ```bash
-earthmover run -c ./earthmover_staar_summative.yaml -p '{
+earthmover deps -c ./earthmover.yaml -p '{
+"API_YEAR": "2023",
+"FORMAT": "Standard"
+}'
+
+earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "./data/sample_anonymized_file.csv",
 "STUDENT_ID_NAME": "tx_unique_student_id",
-"OUTPUT_DIR": "./output",
-"STATE_FILE": "./runs.csv",
-"API_YEAR": "2023"}'
+"API_YEAR": "2023"
+}'
 ```
 Running a STAAR Summative EOC ALT file:
 ```bash
-earthmover run -c ./earthmover_staar_summative_eoc_alt.yaml -p '{
+earthmover deps -c ./earthmover.yaml -p '{
+"API_YEAR": "2023",
+"FORMAT": "End-of-Course Alternate"
+}'
+
+earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "path/to/staar_summative_eoc_alt_2023.csv",
-"OUTPUT_DIR": "./output",
-"STATE_FILE": "./runs.csv",
-"API_YEAR": "2023"}'
+"API_YEAR": "2023"
+}'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
