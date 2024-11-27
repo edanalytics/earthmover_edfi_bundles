@@ -5,7 +5,7 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "academicSubjects": [{"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "scores": [
       {
         "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Result Type",
@@ -17,3 +17,4 @@
       }
   ]
 }
+
