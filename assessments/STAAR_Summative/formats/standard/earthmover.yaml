@@ -259,7 +259,10 @@ transformations:
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
         query: stu_assess_id != ''
-        behavior: include 
+        behavior: include
+      - operation: filter_rows
+        query: stu_assess_id != 'NaN'
+        behavior: include
       # KEEP conformed columns
       - operation: keep_columns
         columns: {{conformed_columns}}
