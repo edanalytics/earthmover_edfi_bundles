@@ -169,6 +169,7 @@ transformations:
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_scores_{{subject}}:
+    debug: true
     source: $transformations.conformed_staar_summative
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
@@ -257,7 +258,7 @@ transformations:
         join_type: left
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        query: length(stu_assess_id) > 0
+        query: stu_assess_id != ''
         behavior: include 
       # KEEP conformed columns
       - operation: keep_columns
