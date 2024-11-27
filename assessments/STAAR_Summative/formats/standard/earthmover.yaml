@@ -169,7 +169,6 @@ transformations:
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_scores_{{subject}}:
-    debug: true
     source: $transformations.conformed_staar_summative
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
@@ -191,7 +190,6 @@ transformations:
           opportunity_key_{{subject}}: stu_assess_id
           {% endif %}
       # ADD subject, missing cols, overall_pl
-      - operation: debug
       - operation: add_columns
         columns:
           subject: {{descriptor_subject}}
