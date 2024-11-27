@@ -257,7 +257,7 @@ transformations:
         join_type: left
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        query: stu_assess_id != ''
+        query: len(stu_assess_id) > 0
         behavior: include 
       # KEEP conformed columns
       - operation: keep_columns
