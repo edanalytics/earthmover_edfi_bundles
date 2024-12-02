@@ -8,12 +8,15 @@
   "academicSubjects": ["{{academicSubjectDescriptor}}"],
   "platformTypes": [{{platform_json}}],
   "scores": [
-    {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CertLevel",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Acc",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
-    {%- else -%}
+    {%- if assessmentIdentifier == 'WIN_Soft_Skills' -%},
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RS",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
@@ -21,21 +24,41 @@
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SS",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Duration",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
     }
     {%- endif -%}
   ],
   "performanceLevels": [
+    {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 5",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 4",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 3",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 2",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Did not earn a credential",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
-    {%- if assessmentIdentifier == 'WIN_Soft_Skills' -%},
+    {%- else -%}
     {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Pass",
@@ -56,6 +79,6 @@
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Complete",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
-    {%- endif -%}
+  {%- endif -%}
   ]
 }

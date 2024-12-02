@@ -38,9 +38,20 @@ sources:
     header_rows: 1
     optional_fields:
       - MathRS
-      - DataRS
       - ReadRS
       - SoftRS
+      - DataLev
+      - DataSS
+      - DataStatus
+      - DataSTime
+      - DataFTime
+      - DataRS
+      - InfoLev
+      - InfoSS
+      - InfoStatus
+      - InfoSTime
+      - InfoFTime
+      - InfoRS
 
 
 transformations:
@@ -64,10 +75,20 @@ transformations:
           schoolYear: "{%raw%}20{%- if season == 'FA' -%}{{year | int + 1}}{%- else -%}{{year}}{%- endif -%}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
           educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment"
+          MathDuration: "{%raw%}{{(MathFTime[:-2] | int * 60 + MathFTime[-2:] | int) - (MathSTime[:-2] | int * 60 + MathSTime[-2:] | int)}}{%endraw%}"
+          DataDuration: "{%raw%}{{(DataFTime[:-2] | int * 60 + DataFTime[-2:] | int) - (DataSTime[:-2] | int * 60 + DataSTime[-2:] | int)}}{%endraw%}"
+          InfoDuration: "{%raw%}{{(InfoFTime[:-2] | int * 60 + InfoFTime[-2:] | int) - (InfoSTime[:-2] | int * 60 + InfoSTime[-2:] | int)}}{%endraw%}"
+          ReadDuration: "{%raw%}{{(ReadFTime[:-2] | int * 60 + ReadFTime[-2:] | int) - (ReadSTime[:-2] | int * 60 + ReadSTime[-2:] | int)}}{%endraw%}"
+          SoftDuration: "{%raw%}{{(SoftFTime[:-2] | int * 60 + SoftFTime[-2:] | int) - (SoftSTime[:-2] | int * 60 + SoftSTime[-2:] | int)}}{%endraw%}"
       - operation: date_format
         column: TestDate
         from_format: "%Y%m%d"
         to_format: "%Y-%m-%d"
+      - operation: map_values
+        column: Acc
+        mapping:
+          "1": "Yes"
+          "0": "No"  
       - operation: map_values
         column: Retake
         mapping:
