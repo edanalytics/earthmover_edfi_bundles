@@ -5,7 +5,7 @@ input_files:
   - display_name: "Assessment data"
     env_var: "INPUT_FILE"
     is_required: true
-    file_type: "csv"
+    file_type: ["csv", "txt"]
 input_params:
   - display_name: "School Year"
     env_var: "API_YEAR"
