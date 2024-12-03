@@ -33,6 +33,8 @@ sources:
 
 
 transformations:
+
+  ### StudentAssessments
   input:
     source: $sources.input
     operations: []
@@ -50,30 +52,30 @@ transformations:
       # Coalesce differently-named columns in historic years.
       - operation: modify_columns  
         columns:
-          rdistrict: "{%raw%}{{ rdistrict or district }}{%endraw%}"  # TODO: r or t ID?
-          rdistrictid: "{%raw%}{{ rdistrictid or reporteddistrictid or districtid }}{%endraw%}"  # TODO r or t ID?
-          rschool: "{%raw%}{{ rschool or reportedschool or school }}{%endraw%}"
-          rschoolid: "{%raw%}{{ rschoolid or reportedschoolid or schoolid }}{%endraw%}"
+          rdistrict: "{% raw %}{{ rdistrict or district }}{% endraw %}"  # TODO: r or t ID?
+          rdistrictid: "{% raw %}{{ rdistrictid or reporteddistrictid or districtid }}{% endraw %}"  # TODO r or t ID?
+          rschool: "{% raw %}{{ rschool or reportedschool or school }}{% endraw %}"
+          rschoolid: "{% raw %}{{ rschoolid or reportedschoolid or schoolid }}{% endraw %}"
 
-          tdistrict: "{%raw%}{{ tdistrict or testeddiscode }}{%endraw%}"
-          tdistrictid: "{%raw%}{{ tdistrictid or testeddistrictid }}{%endraw%}"
-          tschool: "{%raw%}{{ tschool or testedschcode }}{%endraw%}"
-          tschoolid: "{%raw%}{{ tschoolid or testedschoolid }}{%endraw%}"
+          tdistrict: "{% raw %}{{ tdistrict or testeddiscode }}{% endraw %}"
+          tdistrictid: "{% raw %}{{ tdistrictid or testeddistrictid }}{% endraw %}"
+          tschool: "{% raw %}{{ tschool or testedschcode }}{% endraw %}"
+          tschoolid: "{% raw %}{{ tschoolid or testedschoolid }}{% endraw %}"
 
-          testnameela: "{%raw%}{{ testnameela or elatest or elaformtype }}{%endraw%}"
-          testnamemath: "{%raw%}{{ testnamemath or mathtest or mathformtype }}{%endraw%}"
-          testnamesci: "{%raw%}{{ testnamesci or scitest or sciformtype }}{%endraw%}"
-          testnamesoc: "{%raw%}{{ testnamesoc or soctest or socformtype }}{%endraw%}"
+          testnameela: "{% raw %}{{ testnameela or elatest or elaformtype }}{% endraw %}"
+          testnamemath: "{% raw %}{{ testnamemath or mathtest or mathformtype }}{% endraw %}"
+          testnamesci: "{% raw %}{{ testnamesci or scitest or sciformtype }}{% endraw %}"
+          testnamesoc: "{% raw %}{{ testnamesoc or soctest or socformtype }}{% endraw %}"
 
-          levelela: "{%raw%}{{ levelela or elalev }}{%endraw%}"
-          levelmath: "{%raw%}{{ levelmath or mathlev }}{%endraw%}"
-          levelsci: "{%raw%}{{ levelsci or scilev }}{%endraw%}"
-          levelsoc: "{%raw%}{{ levelsoc or soclev }}{%endraw%}"
+          levelela: "{% raw %}{{ levelela or elalev }}{% endraw %}"
+          levelmath: "{% raw %}{{ levelmath or mathlev }}{% endraw %}"
+          levelsci: "{% raw %}{{ levelsci or scilev }}{% endraw %}"
+          levelsoc: "{% raw %}{{ levelsoc or soclev }}{% endraw %}"
 
-          statusela: "{%raw%}{{ statusela or elastatus }}{%endraw%}"
-          statusmath: "{%raw%}{{ statusmath or mathstatus }}{%endraw%}"
-          statussci: "{%raw%}{{ statussci or scistatus }}{%endraw%}"
-          statussoc: "{%raw%}{{ statussoc or socstatus }}{%endraw%}"
+          statusela: "{% raw %}{{ statusela or elastatus }}{% endraw %}"
+          statusmath: "{% raw %}{{ statusmath or mathstatus }}{% endraw %}"
+          statussci: "{% raw %}{{ statussci or scistatus }}{% endraw %}"
+          statussoc: "{% raw %}{{ statussoc or socstatus }}{% endraw %}"
   
   # Add generic versions of all subject columns before unioning.
   sc_alt_ela:
@@ -176,6 +178,8 @@ transformations:
           - assessment_grade
         map_file: seeds/grade_level_xwalk.csv
 
+
+  ### StudentAssessmentEducationOrganizationAssociations
   # Create one association record per tDistrictID and rDistrictID.
   sc_alt_assessment_ed_org_assocs__administration:
     source: $transformations.sc_alt_student_assessment_final
@@ -202,7 +206,9 @@ transformations:
       - operation: filter_rows
         query: "ed_org_id != '' & ed_org_id.notnull()"
         behavior: include        
-    
+  
+  
+  ### Assessments
   # Each subject has a different set of grade levels assigned ([3-8, 11] for ELA and Math; [4, 6, 11] for Sci; 11 for Soc)
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
