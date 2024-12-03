@@ -1,5 +1,8 @@
 version: 2
 
+config:
+  output_dir: ${OUTPUT_DIR}
+
 {% set conformed_columns = 
   ['${STUDENT_ID_NAME}',
    'assessment_identifier',
@@ -248,31 +251,3 @@ transformations:
       - operation: add_columns
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
-
-
-destinations:
-  studentAssessments:
-    source: $transformations.studentAssessments
-    template: ../../templates/studentAssessment.jsont
-    extension: jsonl
-    linearize: True
-  assessments:
-    source: $sources.assessments
-    template: ../../templates/assessments.jsont
-    extension: jsonl
-    linearize: True
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ../../templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    template: ../../templates/performanceLevelDescriptors.jsont
-    extension: jsonl
-    linearize: True
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    template: ../../templates/assessmentReportingMethodDescriptors.jsont
-    extension: jsonl
-    linearize: True

@@ -1,46 +1,4 @@
-# See accompanying README.md for details about this file.
 version: 2
-
-config:
-  log_level: INFO
-  output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
-  memory_limit: 1GB
-  state_file: ${STATE_FILE}
-  show_graph: False
-  parameter_defaults:
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
-
-sources:
-
-  # SEEDS
-  assessmentReportingMethodDescriptors:
-    file: ../../seeds/assessmentReportingMethodDescriptors.csv
-    header_rows: 1
-  performanceLevelDescriptors:
-    file: ../../seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  objectiveAssessments:
-    file: ../../seeds/objectiveAssessments.csv
-    header_rows: 1
-  obj_assess_codes_xwalk:
-    file: ../../seeds/obj_assess_codes_xwalk.csv
-    header_rows: 1
-  assessments:
-    file: ../../seeds/assessments.csv
-    header_rows: 1
-
-  # INPUT STU ASSESSMENT FILES
-  input:
-    file: ${INPUT_FILE}
-    header_rows: 0
-    type: fixedwidth
-    colspec_file: ../../fwf_to_csv_xwalks/staar_summative_alt_fwf_xwalk_${API_YEAR}.csv
-
-  # OTHER XWALKS
-  administration_window_xwalk:
-    file: ../../seeds/administration_window_xwalk.csv
-    header_rows: 1
 
 {% set conformed_columns = 
   ['${STUDENT_ID_NAME}',
@@ -291,31 +249,3 @@ transformations:
       - operation: add_columns
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
-
-
-destinations:
-  studentAssessments:
-    source: $transformations.studentAssessments
-    template: ../../templates/studentAssessment.jsont
-    extension: jsonl
-    linearize: True
-  assessments:
-    source: $sources.assessments
-    template: ../../templates/assessments.jsont
-    extension: jsonl
-    linearize: True
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ../../templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    template: ../../templates/performanceLevelDescriptors.jsont
-    extension: jsonl
-    linearize: True
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    template: ../../templates/assessmentReportingMethodDescriptors.jsont
-    extension: jsonl
-    linearize: True
