@@ -14,19 +14,21 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
 
-{% set format = "" %}
-
 packages:
   {% if "${FORMAT}" == "Standard" %}
+  {% set format = "" %}
   standard:
     local: formats/standard
   {% elif "${FORMAT}" == "Alternate" %}
+  {% set format = "alt_" %}
   alternate:
     local: formats/alt
   {% elif "${FORMAT}" == "End-of-Course" %}
+  {% set format = "eoc_" %}
   end_of_course:
     local: formats/eoc
   {% elif "${FORMAT}" == "End-of-Course Alternate" %}
+  {% set format = "eoc_alt_" %}
   end_of_course_alternate:
     local: formats/eoc_alt
   {% endif %}
