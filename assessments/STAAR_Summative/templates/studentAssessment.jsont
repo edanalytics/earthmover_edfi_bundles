@@ -12,7 +12,6 @@
   },
   "administrationDate": "{{ administration_window_end_date }}",
   "administrationEndDate": "{{ administration_window_end_date }}",
-  "administrationLanguageDescriptor": "",
   "performanceLevels": [
     {% if overall_performance_level is not none and overall_performance_level | length %}
     {
