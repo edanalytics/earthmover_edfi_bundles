@@ -47,6 +47,9 @@ sources:
   assessments:
     file: ../../seeds/assessments.csv
     header_rows: 1
+  administration_window_xwalk:
+    file: ../../seeds/administration_window_xwalk.csv
+    header_rows: 1
 
   # INPUT STU ASSESSMENT FILES
   input:
@@ -61,7 +64,3 @@ sources:
     header_rows: 1
   {% endif %}
 
-  # OTHER XWALKS
-  administration_window_xwalk:
-    file: ../../seeds/administration_window_xwalk.csv
-    header_rows: 1
