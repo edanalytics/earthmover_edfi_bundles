@@ -1,0 +1,178 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir:  ${OUTPUT_DIR}
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: True
+  parameter_defaults:
+    source_encoding: latin-1
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    INPUT_FILE: ''
+    API_YEAR: ''
+    INPUT_FILETYPE: csv
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  languageDescriptors:
+    file: ./seeds/languageDescriptors.csv
+    header_rows: 1 
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  nwea_map_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        columns:
+          school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
+          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' ,'-') }}{%endraw%}"
+          namespace: "uri://www.nwea.org/mapFluency/Assessment"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: date_format
+        column: TestCompletionDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: combine_columns
+        columns:
+          - studentUniqueId
+          - TermName
+          - TestCompletionDate
+          - AssignedTestType
+          - ResultType
+          - TestLanguage
+        new_column: generated_test_id
+        separator: '-'
+      - operation: rename_columns
+        columns:
+          TestLanguage: language
+          Grade: grade
+        #This group by is used so we can loop over duplicate records and create a sequence number
+      - operation: group_by_with_rank
+        group_by_columns:
+          - generated_test_id
+        rank_column: sequence_number
+      - operation: modify_columns
+        columns:
+          generated_test_id: "{%raw%}{{value}}_{{sequence_number}}{%endraw%}"
+          grade: "{%raw%}{{value}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: grade
+        right_key: grade
+      - operation: join
+        sources:
+          - $sources.languageDescriptors
+        join_type: inner
+        left_key: language
+        right_key: language
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    operations:
+      #This group_by operation creates one row per objective assessment, as needed by obejctiveAssessment.jsont
+      - operation: group_by
+        group_by_columns:
+          - assessment_identifier
+          - identification_code
+        create_columns:
+          reporting_methods: agg(reporting_method,,)
+          levels: agg(level,,)
+          score_reporting_methods: agg(score_reporting_method,,)
+          result_data_types: agg(result_data_type,,)
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentFamily
+        create_columns:
+          grade_json: agg(grade_json)
+      # get rid of trailing comma
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentFamily
+        right_key: assessmentFamily
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+destinations:
+  studentAssessments:
+    source: $transformations.nwea_map_student_assessment
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl

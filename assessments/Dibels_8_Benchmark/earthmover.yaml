@@ -64,6 +64,9 @@ transformations:
         columns:
           school_year: *year_mapping
           student_assessment_id: *id_hashing
+      - operation: filter_rows
+        query: client_date != ''
+        behavior: include
   
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
