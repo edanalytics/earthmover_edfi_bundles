@@ -56,7 +56,7 @@ sources:
     type: fixedwidth
     header_rows: 0
     # TODO: jinja my way out of this
-    colspec_file: ../../fwf_to_csv_xwalks/staar_summative_fwf_xwalk_${API_YEAR}.csv
+    colspec_file: ./fwf_to_csv_xwalks/staar_summative_fwf_xwalk_${API_YEAR}.csv
   {% elif "${INPUT_FILE}".endswith(".csv") %}
     file: ${INPUT_FILE}
     type: csv
