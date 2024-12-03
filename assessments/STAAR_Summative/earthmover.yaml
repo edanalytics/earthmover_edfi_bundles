@@ -28,3 +28,40 @@ packages:
   end_of_course_alternate:
     local: formats/eoc_alt
   {% endif %}
+
+sources:
+
+  # SEEDS inside standard package
+  assessmentReportingMethodDescriptors:
+    file: ../../seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ../../seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ../../seeds/objectiveAssessments.csv
+    header_rows: 1
+  obj_assess_codes_xwalk:
+    file: ../../seeds/obj_assess_codes_xwalk.csv
+    header_rows: 1
+  assessments:
+    file: ../../seeds/assessments.csv
+    header_rows: 1
+
+  # INPUT STU ASSESSMENT FILES
+  input:
+  {% if "${INPUT_FILE}".endswith(".txt") %}
+    file: ${INPUT_FILE}
+    type: fixedwidth
+    header_rows: 0
+    colspec_file: ../../fwf_to_csv_xwalks/staar_summative_fwf_xwalk_${API_YEAR}.csv
+  {% elif "${INPUT_FILE}".endswith(".csv") %}
+    file: ${INPUT_FILE}
+    type: csv
+    header_rows: 1
+  {% endif %}
+
+  # OTHER XWALKS
+  administration_window_xwalk:
+    file: ../../seeds/administration_window_xwalk.csv
+    header_rows: 1
