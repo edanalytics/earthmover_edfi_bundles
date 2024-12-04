@@ -52,15 +52,15 @@ transformations:
       # Coalesce differently-named columns in historic years.
       - operation: modify_columns  
         columns:
-          rdistrict: "{% raw %}{{ rdistrict or district }}{% endraw %}"  # TODO: r or t ID?
-          rdistrictid: "{% raw %}{{ rdistrictid or reporteddistrictid or districtid }}{% endraw %}"  # TODO r or t ID?
-          rschool: "{% raw %}{{ rschool or reportedschool or school }}{% endraw %}"
-          rschoolid: "{% raw %}{{ rschoolid or reportedschoolid or schoolid }}{% endraw %}"
+          # rdistrict doesn't have a duplicate column to coalesce.
+          rdistrictid: "{% raw %}{{ rdistrictid or reporteddistrictid }}{% endraw %}"
+          rschool: "{% raw %}{{ rschool or reportedschool }}{% endraw %}"
+          rschoolid: "{% raw %}{{ rschoolid or reportedschoolid }}{% endraw %}"
 
-          tdistrict: "{% raw %}{{ tdistrict or testeddiscode }}{% endraw %}"
-          tdistrictid: "{% raw %}{{ tdistrictid or testeddistrictid }}{% endraw %}"
-          tschool: "{% raw %}{{ tschool or testedschcode }}{% endraw %}"
-          tschoolid: "{% raw %}{{ tschoolid or testedschoolid }}{% endraw %}"
+          tdistrict: "{% raw %}{{ tdistrict or testeddiscode or district }}{% endraw %}"
+          tdistrictid: "{% raw %}{{ tdistrictid or testeddistrictid or districtid }}{% endraw %}"
+          tschool: "{% raw %}{{ tschool or testedschcode or school }}{% endraw %}"
+          tschoolid: "{% raw %}{{ tschoolid or testedschoolid or schoolid }}{% endraw %}"
 
           testnameela: "{% raw %}{{ testnameela or elatest or elaformtype }}{% endraw %}"
           testnamemath: "{% raw %}{{ testnamemath or mathtest or mathformtype }}{% endraw %}"
