@@ -1,0 +1,339 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentIdentifier_namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{School}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationLanguageDescriptor": "{{descriptor_namespace_override}}/LanguageDescriptor#{{AssessmentLanguageDescriptor}}",
+  "period": {
+    "assessmentPeriodDescriptor": "{{assessment_period_namespace}}#{{assessment_period_codeValue}}"
+  },
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {# Mapping Definition 
+      '02' -> 'Percentile at School'
+      '03' -> 'Percentile at LEA'   
+      '04' -> 'Percentile at Nation'
+  #}
+  {% set common_reporting_methods = ['02','03','04'] %}   
+
+  {# Mapping Definition 
+      '01' -> 'Composite Score'
+  #}
+  {% set objectives_list_a = ['01'] %}
+
+  {# Mapping Definition 
+    '05' -> 'Total Items'  
+    '06' -> 'Items Correct'
+    '07' -> 'IC per minute'
+    '08' -> 'Error'        
+  #}
+  {% set objectives_list_b = ['05','06','07','08'] %}
+
+  {# Mapping Definition 
+    '09' -> 'Total Words Read'  
+    '10' -> 'Words Read Correct'
+    '11' -> 'WRC per minute'    
+    '08' -> 'Error'             
+  #}
+  {% set objectives_list_c = ['09','10','11','08'] %}
+
+  {# Mapping Definition 
+    '12' -> 'Median Accuracy'
+  #}
+  {% set objectives_list_d = objectives_list_c + ['12'] %}
+
+  {# Mapping Definition 
+    '01':objectives_list_a -> 'Early Reading English'
+    '02':objectives_list_b -> 'Concepts of Print'    
+    '03':objectives_list_c -> 'Decodable Words'      
+    '04':objectives_list_c -> 'Letter Names'         
+    '05':objectives_list_c -> 'Letter Sounds'        
+    '06':objectives_list_c -> 'Nonsense Words'       
+    '07':objectives_list_b -> 'Onset Sounds'         
+    '08':objectives_list_b -> 'Oral Repetition'      
+    '09':objectives_list_b -> 'Word Rhyming'         
+    '10':objectives_list_c -> 'Sentence Reading'     
+    '11':objectives_list_c -> 'Sight Words'          
+    '12':objectives_list_b -> 'Word Blending'        
+    '13':objectives_list_b -> 'Word Segmenting'        
+  #}
+  {% set reporting_methods_dictionary_earlyReading = {
+    '01':objectives_list_a,
+    '02':objectives_list_b,
+    '03':objectives_list_c,
+    '04':objectives_list_c,
+    '05':objectives_list_c,
+    '06':objectives_list_c,
+    '07':objectives_list_b,
+    '08':objectives_list_b,
+    '09':objectives_list_b,
+    '10':objectives_list_c,
+    '11':objectives_list_c,
+    '12':objectives_list_b,
+    '13':objectives_list_b
+  } %}
+
+  {# Mapping Definition 
+    '14':objectives_list_d -> 'CBMR-English'         
+  #}
+  {% set reporting_methods_dictionary_cbmReading = {
+    '14':objectives_list_d 
+  } %}
+
+  {# Mapping Definition 
+      'FastBridge_earlyReading' ->  'Early Reading English', 'Concepts of Print', 'Decodable Words', 'Letter Names' 
+                                    'Letter Sounds', 'Nonsense Words', 'Onset Sounds', 'Oral Repetition'
+                                    'Word Rhyming', 'Sentence Reading', 'Sight Words', Word Blending', 'Word Segmenting' 
+
+      'FastBridge_CBMReading'   ->  'CBMR-English'
+  #}
+  {% set reporting_methods_dictionary = {
+    'FastBridge_earlyReading':reporting_methods_dictionary_earlyReading,
+    'FastBridge_CBMReading':reporting_methods_dictionary_cbmReading
+  } %}
+
+  {# Mapping Definition 
+    '01' : 'Integer',    -> 'Composite Score'                 
+    '02' : 'Percentile', -> 'Percentile at School'            
+    '03' : 'Percentile', -> 'Percentile at LEA'               
+    '04' : 'Percentile', -> 'Percentile at Nation'            
+    '05' : 'Integer',    -> 'Total Items'                     
+    '06' : 'Integer',    -> 'Items Correct'                   
+    '07' : 'Integer',    -> 'IC per minute'                   
+    '08' : 'Integer',    -> 'Error'                           
+    '09' : 'Integer',    -> 'Total Words Read'                
+    '10' : 'Integer',    -> 'Words Read Correct'              
+    '11' : 'Integer',    -> 'WRC per minute'                  
+    '12' : 'Percentage', -> 'Median Accuracy'                 
+    '13' : 'Integer',    -> 'Growth Score'                    
+    '14' : 'Percentile', -> 'School Growth Percentile'        
+    '15' : 'Percentile', -> 'District Growth Percentile'      
+    '16' : 'Percentile', -> 'National Growth Percentile'      
+    '17' : 'Percentile'  -> 'Growth Percentile by Start Score'
+  #}
+   {% set objectives_datatypes_dictionary = {
+      '01' : 'Integer',   
+      '02' : 'Percentile',
+      '03' : 'Percentile',
+      '04' : 'Percentile',
+      '05' : 'Integer',   
+      '06' : 'Integer',   
+      '07' : 'Integer',   
+      '08' : 'Integer',   
+      '09' : 'Integer',   
+      '10' : 'Integer',   
+      '11' : 'Integer',   
+      '12' : 'Percentage',
+      '13' : 'Integer',   
+      '14' : 'Percentile',
+      '15' : 'Percentile',
+      '16' : 'Percentile',
+      '17' : 'Percentile' } %}
+
+    {# Mapping Definition 
+      '06' -> 'From Fall to Winter'                          
+      '07' -> 'From Fall to Spring'                          
+      '08' -> 'From Winter to Spring'                        
+      '09' -> 'From Fall to Screening Period 4'              
+      '10' -> 'From Winter to Screening Period 4'            
+      '11' -> 'From Spring to Screening Period 4'            
+      '12' -> 'From Fall to Screening Period 5'              
+      '13' -> 'From Winter to Screening Period 5'            
+      '14' -> 'From Spring to Screening Period 5'            
+      '15' -> 'From Screening Period 4 to Screening Period 5'
+    #}
+    {% set assessment_period_comparison_list = [
+      '06',
+      '07',
+      '08',
+      '09',
+      '10',
+      '11',
+      '12',
+      '13',
+      '14',
+      '15' 
+    ] %}
+
+    {# Mapping Definition 
+      '01': [],          -> 'Fall'              
+      '02': [0],         -> 'Winter'            
+      '03': [1, 2],      -> 'Spring'            
+      '04': [3, 4, 5],   -> 'Screening Period 4'
+      '05': [6, 7, 8, 9] -> 'Screening Period 5'
+     #}
+    {% set assessment_objectives_periods_comparison_dictionary = {
+      '01': [],         
+      '02': [0],        
+      '03': [1, 2],     
+      '04': [3, 4, 5],  
+      '05': [6, 7, 8, 9]
+     } %}
+
+    {# Mapping Definition 
+      '13' -> 'Growth Score'                    
+      '14' -> 'School Growth Percentile'        
+      '15' -> 'District Growth Percentile'      
+      '16' -> 'National Growth Percentile'      
+      '17' -> 'Growth Percentile by Start Score'
+    #}
+    {% set assessment_growth_objectives = [
+      '13',
+      '14',
+      '15',
+      '16',
+      '17' 
+    ] %}
+
+    {% set mapping_reporting_objectives_dictionary = {
+      '01': 'Composite Score',
+      '02': 'Percentile at School',
+      '03': 'Percentile at LEA',
+      '04': 'Percentile at Nation',
+      '05': 'Total Items',
+      '06': 'Items Correct',
+      '07': 'IC per minute',
+      '08': 'Error',
+      '09': 'Total Words Read',
+      '10': 'Words Read Correct',
+      '11': 'WRC per minute',
+      '12': 'Median Accuracy',
+      '13': 'Growth Score',
+      '14': 'School Growth Percentile',
+      '15': 'District Growth Percentile',
+      '16': 'National Growth Percentile',
+      '17': 'Growth Percentile by Start Score'
+    } %}
+
+    {% set mapping_assessment_period_dictionary = {
+      '01':'Fall',
+      '02':'Winter',
+      '03':'Spring',
+      '04':'Screening Period 4',
+      '05':'Screening Period 5'
+    } %}
+
+    {% set mapping_reporting_methods_dictionary = {
+      '01':'Early Reading English',
+      '02':'Concepts of Print',
+      '03':'Decodable Words',
+      '04':'Letter Names',
+      '05':'Letter Sounds',
+      '06':'Nonsense Words',
+      '07':'Onset Sounds',
+      '08':'Oral Repetition',
+      '09':'Word Rhyming',
+      '10':'Sentence Reading',
+      '11':'Sight Words',
+      '12':'Word Blending',
+      '13':'Word Segmenting',
+      '14':'CBMR-English'
+    } %}
+    {# Mapping Definition to calculate Error column for above reporting methods
+      '03': (['Total Words Read', 'Words Read Correct']),
+      '04': (['Total Words Read', 'Words Read Correct']),
+      '05': (['Total Words Read', 'Words Read Correct']),
+      '06': (['Total Words Read', 'Words Read Correct']),
+      '02': (['Total Items', 'Items Correct']),
+      '07': (['Total Items', 'Items Correct']),
+      '08': (['Total Items', 'Items Correct']),
+      '09': (['Total Items', 'Items Correct']),
+      '10': (['Total Words Read', 'Words Read Correct']),
+      '11': (['Total Words Read', 'Words Read Correct'])
+    #}
+
+    {% set mapping_period_comparison_dictionary = {
+      '06':'From Fall to Winter',
+      '07':'From Fall to Spring',
+      '08':'From Winter to Spring',
+      '09':'From Fall to Screening Period 4',
+      '10':'From Winter to Screening Period 4',
+      '11':'From Spring to Screening Period 4',
+      '12':'From Fall to Screening Period 5',
+      '13':'From Winter to Screening Period 5',
+      '14':'From Spring to Screening Period 5',
+      '15':'From Screening Period 4 to Screening Period 5'
+    } %}    
+  {#-----------------------------------------------------------------------------------------------------------#}
+  "studentObjectiveAssessments": [
+    {% for method, objectives in reporting_methods_dictionary[assessmentIdentifier].items() %}
+      {% set assessment_period_codeValue_name = mapping_assessment_period_dictionary[assessment_period_codeValue] %}
+      {% set method_name = mapping_reporting_methods_dictionary[method] %}
+      {% set administrationEndDate = __row_data__[(assessment_period_codeValue_name+method_name+'FinalDate').replace(' ', '')] %}
+      {% set riskLevel = __row_data__[(assessment_period_codeValue_name+method_name+'RiskLevel').replace(' ', '')] %}
+      {
+        "administrationEndDate": "{{administrationEndDate}}",
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{method_name}}",
+          "namespace": "{{assessmentIdentifier_namespace}}"
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#18",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FastBridge/PerformanceLevelDescriptor#{{riskLevel}}",
+            "performanceLevelIndicatorName": "{{riskLevel}}"
+          }
+        ],
+        "scoreResults": [
+          {% for objective in objectives+common_reporting_methods %}
+            {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
+            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+            {% set objectiveName = mapping_reporting_objectives_dictionary[objective] %}
+              {% if '08' not in objective %}
+                {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName).replace(' ', '') %}
+                {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}
+              {% else %}
+                {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objective).replace(' ', '') %}
+                {% set objectiveColumnTotal = (assessment_period_codeValue_name+method_name+mapping_reporting_objectives_dictionary[objectives[0]]).replace(' ', '') %}
+                {% set objectiveColumnCorrect = (assessment_period_codeValue_name+method_name+mapping_reporting_objectives_dictionary[objectives[1]]).replace(' ', '') %}
+                {% set objectiveColumnValue = (__row_data__[objectiveColumnTotal] | int) - (__row_data__[objectiveColumnCorrect] | int) %}
+              {% endif %}
+                {
+                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}",
+                    "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
+                    "result": "{{objectiveColumnValue}}"
+                }
+                {% if loop.index < loop.length %}
+                ,
+                {% endif %}
+          {% endfor %}
+          {# Add Growth objectives #}
+          {% for objective in assessment_growth_objectives %}            
+            {% set comparison_periods = assessment_objectives_periods_comparison_dictionary[assessment_period_codeValue] %}
+            {% set objectiveName = mapping_reporting_objectives_dictionary[objective] %}
+            {% if comparison_periods|length > 0 %}
+              {% for comparison_period_idx in comparison_periods%}
+                  {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
+                  {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+                  {% set comparisonPeriodCode = assessment_period_comparison_list[comparison_period_idx] %}
+                  {% set comparisonPeriodName = mapping_period_comparison_dictionary[comparisonPeriodCode] %}
+                  {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName+comparisonPeriodName).replace(' ', '') %}
+                  {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}                      
+                  ,
+                  {
+                      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}{{comparisonPeriodCode}}",
+                      "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
+                      "result": "{{objectiveColumnValue}}"
+                  }
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        ]
+      }
+      {% if loop.index < loop.length %}
+      ,
+      {% endif %}     
+    {% endfor %}
+  ],  
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace_override}}/GradeLevelDescriptor#{{Grade}}"
+}
