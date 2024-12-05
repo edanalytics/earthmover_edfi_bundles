@@ -7,47 +7,47 @@
 	"academicSubjects": [{{subject_json}}],
 	"scores": [
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Scale score",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale score",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Lexile Measure",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lexile Measure",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Quantile Measure",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Quantile Measure",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		}
 	],
 	"performanceLevels": [
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Below Proficiency",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below Proficiency",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Approaching Proficiency",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Approaching Proficiency",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#At Proficiency",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#At Proficiency",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Proficiency level",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Above Proficiency",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above Proficiency",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Workplace readiness score",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#Yes",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#College and Career Readiness Indicator",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{
-			"assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Workplace readiness score",
-			"performanceLevelDescriptor": "uri://idoe.gov/PerformanceLevelDescriptor#No",
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#College and Career Readiness Indicator",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		}
 	]

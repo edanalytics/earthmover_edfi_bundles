@@ -43,6 +43,11 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_CLIENT_SECRET": "yourSecret" }'
 ```
 
+### Notes
+- This template includes the Indiana-specific descriptors for Grade Level and Academic Subject, rather than standard EdFi descriptors.  This assessment is created and administered by the state of Indiana, and is only ever expected to be used within Indiana.
+- 
+
+
 ### Reference
 Here is a complete list of columns provided by the export
 

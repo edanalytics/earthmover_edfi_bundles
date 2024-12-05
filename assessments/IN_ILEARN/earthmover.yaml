@@ -1,28 +1,38 @@
 version: 2
 
 config:
-  config:
   log_level: DEBUG
-  output_dir: ./output
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ./state.csv
+  state_file: ${STATE_FILE}
   show_graph: False
+  show_stacktrace: true
   parameter_defaults:
+    OUTPUT_DIR: ./output
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: STN
+    POSSIBLE_STUDENT_ID_COLUMNS: STN
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
-    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
 
     # ILEARN export does not provide a test date/year column, so we have to make one up.  This may change with new ILEARN updates
-    TEST_DATE: '2024-04-01'
+    TEST_DATE: '2024-04-01' #Format: YYYY-mm-dd
     TEST_YEAR: '2024'
 
 sources:
-  #Does not exist by default, must be provided
+  # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+  # See the accompanying bundle_metadata.json for a list of required columns for this file
+  # Or see data/silearn_sample_data.csv
   input:
     file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
+
   assessments:
     file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
     header_rows: 1
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
@@ -41,10 +51,14 @@ transformations:
   input:
     source: $sources.input
     operations: []
-    
+
   studentAssessments:
     source: $transformations.input
     operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+
       #rename columns with spaces in the column name
       - operation: rename_columns
         columns:
@@ -55,7 +69,26 @@ transformations:
           ILEARN Reported Lexile® Measure: lexile_measure
           ILEARN Reported Quantile® Measure: quantile_measure
           College and Career Readiness Indicator: cc_readiness_indicator
-          STN: studentUniqueId
+          ILEARN Reporting Category 1 Performance: RC1_performance
+          ILEARN Reporting Category 2 Performance: RC2_performance
+          ILEARN Reporting Category 3 Performance: RC3_performance
+          ILEARN Reporting Category 4 Performance: RC4_performance
+          ILEARN Reporting Category 5 Performance: RC5_performance
+          Argumentative Organization/Purpose: arg_org
+          Argumentative Evidence/Development & Elaboration: arg_evid
+          Argumentative Conventions: arg_conv
+          Informative Organization/Purpose: inf_org
+          Informative Evidence/Development & Elaboration: inf_evid
+          Informative Conventions: inf_conv
+          Narrative Organization/Purpose: nar_org
+          Narrative Evidence/Development & Elaboration: nar_evid
+          Narrative Conventions: nar_conv
+          Opinion Organization/Purpose: op_org
+          Opinion Evidence/Development & Elaboration: op_evid
+          Opinion Conventions: op_conv
+          Explanatory Organization/Purpose: expl_org
+          Explanatory Evidence/Development & Elaboration: expl_evid
+          Explanatory Conventions: expl_conv
 
       # Parse the academic subject from the test_name column (format: ILEARN [long subject] Grade [grade number])
       - operation: add_columns
@@ -85,6 +118,7 @@ transformations:
           namespace: 'uri://idoe.gov/assessment/ILEARN'
           schoolYear: '${TEST_YEAR}' #ILearn export doesn't include test date/year, so we have to make one up
           administrationDate: '${TEST_DATE}'
+          DI_adminDate: "{%raw%}{{administrationDate.replace('-', '')}}{%endraw%}" #remove hypens from date in studentassessmentidentifier
       
       # Create StudentAssessmentIdentifier
       # TODO May need to include something else for retests?
@@ -92,7 +126,7 @@ transformations:
         columns:
           - assessmentIdentifier
           - studentUniqueId          
-          - schoolYear      
+          - DI_adminDate
         new_column: studentAssessmentIdentifier
         separator: '-'
 
@@ -108,6 +142,8 @@ transformations:
         right_keys: 
           - gradeLevel
           - assessmentIdentifier
+      #expect: 
+      # TODO check whether the TEST DATE and TEST YEAR params are set 
       
   # Generate academic subject json for assessment template based on seeds
   academicSubjectDescriptors:
@@ -187,6 +223,11 @@ destinations:
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
