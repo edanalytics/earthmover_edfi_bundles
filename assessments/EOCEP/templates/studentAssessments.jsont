@@ -37,7 +37,7 @@
 
     {%- for score in scores -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": "{{score[0]}}"
     } {%- if not loop.last -%},{%-endif -%}
@@ -106,7 +106,7 @@
           ],
             "performanceLevels": [ 
               {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+                "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "uri://ed.sc.gov/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
                 "performanceLevelMet": true
               }
