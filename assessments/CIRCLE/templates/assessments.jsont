@@ -54,6 +54,5 @@
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
       "performanceLevelDescriptor": "uri://www.cliengage.org/circle/assessment/PerformanceLevelDescriptor#Out of Range"
     }
-  ],
-  {% if "${ASSESSMENT_EXTRAS}"!="" %}{% include "${ASSESSMENT_EXTRAS}" %}{%endif%}
+  ]{% if "${ASSESSMENT_EXTRAS}"!="" %},{% include "${ASSESSMENT_EXTRAS}" %}{%endif%}
 }
