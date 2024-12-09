@@ -1,0 +1,164 @@
+{
+    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{ assessment_identifier }}",
+      "namespace": "{{ namespace }}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{ school_year }}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{ studentUniqueId }}"
+    },
+    "administrationDate": "{{ TestCompletionDate }}",
+
+    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+
+    "administrationLanguageDescriptor" : "{{languageDescriptor}}",
+
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Result Type",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ ResultType | truncate(35, True, '', 0) }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Assigned Test Type",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ AssignedTestType | truncate(35, True, '', 0) }}"
+      },
+      {% if DyslexiaScreenerOutcome != "N/A" and DyslexiaScreenerOutcome | length %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Dyslexia Screener Outcome",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ DyslexiaScreenerOutcome }}"
+      },
+      {% endif %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Universal Screener Outcome",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ UniversalScreenerOutcome }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#Term Name",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ TermName }}"
+      }
+    ],
+    "studentObjectiveAssessments": [
+      {% set obj_assess_grp_1 = [
+                                ({"id_code": "Print Concept",
+                                  "perf_levels": [(PrintConceptPerformanceLevel, "Performance Level")],
+                                  "scores": [(PrintConceptCorrect,"Correct","Integer"),
+                                             (PrintConceptAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Sentence Reading Fluency",
+                                  "perf_levels": [(SentenceReadingFluencyPerformanceLevel, "Performance Level")],
+                                  "scores": [(SentenceReadingFluencyCorrect,"Correct","Integer"),
+                                             (SentenceReadingFluencyAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Oral Reading Rate",
+                                  "perf_levels": [(OralReadingRatePerf, "Performance Level")],
+                                  "scores": [(OralReadingWCPMScaled,"WCPM","Integer")]
+                                }),
+                                ({"id_code": "Oral Reading Accuracy",
+                                  "perf_levels": [(OralReadingAccuracyPerf, "Performance Level")],
+                                  "scores": [(OralReadingAccuracyScore,"Oral Reading Accuracy Score","Decimal")]
+                                }),
+                                ({"id_code": "Listening Comprehension",
+                                  "perf_levels": [(ListeningComprehensionPerformanceLevel,"Performance Level")],
+                                  "scores": [(ListeningComprehensionCorrect,"Correct","Integer"),
+                                             (ListeningComprehensionAttempted,"Attempted","Integer")]
+                                }),
+                                ({"id_code": "Picture Vocab",
+                                  "perf_levels": [(PictureVocabPerformanceLevel,"Performance Level")],
+                                  "scores": [(PictureVocabCorrect,"Correct","Integer"),
+                                             (PictureVocabAttempted,"Attempted", "Integer")]
+                                })
+      ] %}
+      {% set obj_assess_grp_2 = [
+                                ({"id_code": "Phonological Awareness",
+                                  "perf_levels": [(PhonologicalAwarenessPerformanceLevel, "Performance Level"), (PhonologicalAwarenessZPDLevel,"ZPD Level") , (PhonologicalAwarenessZPDName,"ZPD Name")],
+                                  "scores": [(PhonologicalAwarenessDomainScore,"Domain Score", "Integer"),
+                                             (PhonologicalAwarenessTestPercentile,"Test Percentile", "Integer")]
+                                }),
+                                ({"id_code": "Phonics Word Recognition",
+                                  "perf_levels": [(PhonicsWordRecognitionPerformanceLevel, "Performance Level"), (PhonicsWordRecognitionZPDLevel, "ZPD Level"), (PhonicsWordRecognitionZPDName, "ZPD Name")],
+                                  "scores": [(PhonicsWordRecognitionDomainScore,"Domain Score", "Integer"),
+                                             (PhonicsWordRecognitionTestPercentile,"Test Percentile", "Integer")]
+                                }),
+                                  ({"id_code": "Literal Comprehension",
+                                  "perf_levels": [(LiteralComprehensionPerf,"Performance Level")],
+                                  "scores": [("not_scored","Literal Comprehension Score (Not Scored)", "Integer")]
+                                })
+                              ]
+        %}
+
+      {% set filtered_obj_assess = [] %}
+      {% for obj_assess in obj_assess_grp_1 %}
+        {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
+        {{ filtered_obj_assess.append(obj_assess) or "" }}
+        {% endif %}
+      {% endfor %}
+      {% for obj_assess in obj_assess_grp_2 %}
+        {% if obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length %}
+        {{ filtered_obj_assess.append(obj_assess) or "" }}
+        {% endif %}
+      {% endfor %}
+
+      {% for obj_assess in filtered_obj_assess %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{ assessment_identifier }}",
+          "identificationCode": "{{ obj_assess["id_code"] }}",
+          "namespace": "{{ namespace }}"
+        },
+
+        "performanceLevels": [
+        {% for perf_level in obj_assess["perf_levels"] %}
+          {% if perf_level[0] is not none and perf_level[0] | length %}
+          {
+            "assessmentReportingMethodDescriptor": "{{ namespace }}ReportingMethodDescriptor#{{ perf_level[1] }}",
+            "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+            "performanceLevelMet": true
+          }
+          {% if not loop.last %},{% endif %}
+          {% endif %}
+        {% endfor %}
+          ]
+            {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
+            ,
+            "scoreResults": [
+            {% for item in obj_assess["scores"] %}
+            {% if item[0] is not none and item[0] | length %}
+                {
+                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
+                    "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ item[2] }}",
+                    {% if obj_assess["id_code"] == "Literal Comprehension" %}
+                    "result": "{{ item[0] }}"
+                    {% else %}
+                    "result": "{{ item[0] }}"
+                    {% endif %}
+                }
+                {% if not loop.last %},{% endif %}
+            {% endif %}
+            {% endfor %}
+          ]
+            {% elif (obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length) and (obj_assess["scores"][0][0] is none or not obj_assess["scores"][0][0] | length) %}
+            ,
+            "scoreResults": [
+            {% for item in obj_assess["scores"] %}
+                {
+                    "assessmentReportingMethodDescriptor": "uri://www.nwea.org/mapFluency/AssessmentReportingMethodDescriptor#{{ item[1] }}",
+                    "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ item[2] }}",
+                    "result": "not_scored"
+                }
+                {% if not loop.last %},{% endif %}
+            {% endfor %}
+          ]
+          {% endif %}
+
+        }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+}

@@ -7,6 +7,9 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'student_unique_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
   macros: > 
       {% macro group_number_with_language(value) -%}
       {%- if group_number == '1' -%}
@@ -34,8 +37,12 @@ sources:
 
 
 transformations:
-  ib_student_results:
+  input:
     source: $sources.input
+    operations: []
+    
+  ib_student_results:
+    source: $transformations.input
     operations:
       - operation: snake_case_columns
       - operation: combine_columns
@@ -56,6 +63,9 @@ transformations:
           school_year: ${API_YEAR}
           administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_id
   
   student_assessments:
     source: $transformations.ib_student_results
