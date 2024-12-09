@@ -59,7 +59,6 @@ sources:
     file: ${INPUT_FILE}
     type: fixedwidth
     header_rows: 0
-    # TODO: jinja my way out of this
     colspec_file: ./fwf_to_csv_xwalks/staar_summative_{{format}}fwf_xwalk_${API_YEAR}.csv
   {% elif "${INPUT_FILE}".endswith(".csv") %}
     file: ${INPUT_FILE}
@@ -70,26 +69,26 @@ sources:
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
-    template: ../../templates/studentAssessment.jsont
+    template: ./templates/studentAssessment.jsont
     extension: jsonl
     linearize: True
   assessments:
     source: $sources.assessments
-    template: ../../templates/assessments.jsont
+    template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
   objectiveAssessments:
     source: $sources.objectiveAssessments
-    template: ../../templates/objectiveAssessments.jsont
+    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
-    template: ../../templates/performanceLevelDescriptors.jsont
+    template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ../../templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
     extension: jsonl
     linearize: True
