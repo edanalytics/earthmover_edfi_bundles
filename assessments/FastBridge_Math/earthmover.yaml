@@ -1,0 +1,2405 @@
+version: 2
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: false
+  show_stacktrace: true
+  parameter_defaults:
+    # You can set these values at the command line or leave the defaults
+    OUTPUT_DIR: ./output/
+    STATE_FILE: ./tmp/.earthmover/runs.csv
+    API_YEAR: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: StateID,LocalID
+    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
+
+sources:
+  {% set assessment_periods = [
+    'Fall',
+    'Winter',
+    'Spring',
+    'ScreeningPeriod4',
+    'ScreeningPeriod5'
+    ] %}
+
+  {% set grade_detail = [
+    'KG',
+    'ONE'
+    ] %}
+
+
+  {% set objective_names = [   
+      'EarlyMath',
+      'Composing',
+      'CountingObjects',
+      'DecomposingONE',
+      'DecomposingKG',
+      'EqualPartitioning',
+      'MatchQuantity',
+      'NumberSequenceONE',
+      'NumberSequenceKG',
+      'NumeralIdentificationONE',
+      'NumeralIdentificationKG',
+      'PlaceValue',
+      'QuantityDiscriminationLeast',
+      'QuantityDiscriminationMost',
+      'Subitizing',
+      'VerbalAddition',
+      'VerbalSubtraction',
+      'StoryProblems'
+   
+  ] %}
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+    columns:
+      - Assessment
+      - AssessmentLanguage
+      - State
+      - District
+      - School
+      - LocalID
+      - StateID
+      - FASTID
+      - FirstName
+      - LastName
+      - Gender
+      - DOB
+      - Race
+      - SpecialEd_Status
+      - Grade
+      - FallEarlyMathCompositeScore
+      - FallEarlyMathPercentileatSchool
+      - FallEarlyMathPercentileatLEA
+      - FallEarlyMathPercentileatNation
+      - FallEarlyMathRiskLevel
+      - FallEarlyMathFinalDate
+      - FallComposingTotalItems
+      - FallComposingItemsCorrect
+      - FallComposingICperminute
+      - FallComposingError(TotalItems-ItemsCorrect)
+      - FallComposingPercentileatSchool
+      - FallComposingPercentileatLEA
+      - FallComposingPercentileatNation
+      - FallComposingRiskLevel
+      - FallComposingFinalDate
+      - FallCountingObjectsTotalItems
+      - FallCountingObjectsItemsCorrect
+      - FallCountingObjectsICperminute
+      - FallCountingObjectsError(TotalItems-ItemsCorrect)
+      - FallCountingObjectsPercentileatSchool
+      - FallCountingObjectsPercentileatLEA
+      - FallCountingObjectsPercentileatNation
+      - FallCountingObjectsRiskLevel
+      - FallCountingObjectsFinalDate
+      - FallDecomposingONETotalItems
+      - FallDecomposingONEItemsCorrect
+      - FallDecomposingONEICperminute
+      - FallDecomposingONEError(TotalItems-ItemsCorrect)
+      - FallDecomposingONEPercentileatSchool
+      - FallDecomposingONEPercentileatLEA
+      - FallDecomposingONEPercentileatNation
+      - FallDecomposingONERiskLevel
+      - FallDecomposingONEFinalDate
+      - FallDecomposingKGTotalItems
+      - FallDecomposingKGItemsCorrect
+      - FallDecomposingKGICperminute
+      - FallDecomposingKGError(TotalItems-ItemsCorrect)
+      - FallDecomposingKGPercentileatSchool
+      - FallDecomposingKGPercentileatLEA
+      - FallDecomposingKGPercentileatNation
+      - FallDecomposingKGRiskLevel
+      - FallDecomposingKGFinalDate
+      - FallEqualPartitioningTotalItems
+      - FallEqualPartitioningItemsCorrect
+      - FallEqualPartitioningICperminute
+      - FallEqualPartitioningError(TotalItems-ItemsCorrect)
+      - FallEqualPartitioningPercentileatSchool
+      - FallEqualPartitioningPercentileatLEA
+      - FallEqualPartitioningPercentileatNation
+      - FallEqualPartitioningRiskLevel
+      - FallEqualPartitioningFinalDate
+      - FallMatchQuantityTotalItems
+      - FallMatchQuantityItemsCorrect
+      - FallMatchQuantityICperminute
+      - FallMatchQuantityError(TotalItems-ItemsCorrect)
+      - FallMatchQuantityPercentileatSchool
+      - FallMatchQuantityPercentileatLEA
+      - FallMatchQuantityPercentileatNation
+      - FallMatchQuantityRiskLevel
+      - FallMatchQuantityFinalDate
+      - FallNumberSequenceONETotalItems
+      - FallNumberSequenceONEItemsCorrect
+      - FallNumberSequenceONEICperminute
+      - FallNumberSequenceONEError(TotalItems-ItemsCorrect)
+      - FallNumberSequenceONEPercentileatSchool
+      - FallNumberSequenceONEPercentileatLEA
+      - FallNumberSequenceONEPercentileatNation
+      - FallNumberSequenceONERiskLevel
+      - FallNumberSequenceONEFinalDate
+      - FallNumberSequenceKGTotalItems
+      - FallNumberSequenceKGItemsCorrect
+      - FallNumberSequenceKGICperminute
+      - FallNumberSequenceKGError(TotalItems-ItemsCorrect)
+      - FallNumberSequenceKGPercentileatSchool
+      - FallNumberSequenceKGPercentileatLEA
+      - FallNumberSequenceKGPercentileatNation
+      - FallNumberSequenceKGRiskLevel
+      - FallNumberSequenceKGFinalDate
+      - FallNumeralIdentificationONETotalNumberRead
+      - FallNumeralIdentificationONENumberReadCorrect
+      - FallNumeralIdentificationONENRCperminute
+      - FallNumeralIdentificationONEError(TotalItems-ItemsCorrect)
+      - FallNumeralIdentificationONEPercentileatSchool
+      - FallNumeralIdentificationONEPercentileatLEA
+      - FallNumeralIdentificationONEPercentileatNation
+      - FallNumeralIdentificationONERiskLevel
+      - FallNumeralIdentificationONEFinalDate
+      - FallNumeralIdentificationKGTotalNumberRead
+      - FallNumeralIdentificationKGNumberReadCorrect
+      - FallNumeralIdentificationKGNRCperminute
+      - FallNumeralIdentificationKGError(TotalItems-ItemsCorrect)
+      - FallNumeralIdentificationKGPercentileatSchool
+      - FallNumeralIdentificationKGPercentileatLEA
+      - FallNumeralIdentificationKGPercentileatNation
+      - FallNumeralIdentificationKGRiskLevel
+      - FallNumeralIdentificationKGFinalDate
+      - FallPlaceValueTotalItems
+      - FallPlaceValueItemsCorrect
+      - FallPlaceValueICperminute
+      - FallPlaceValueError(TotalItems-ItemsCorrect)
+      - FallPlaceValuePercentileatSchool
+      - FallPlaceValuePercentileatLEA
+      - FallPlaceValuePercentileatNation
+      - FallPlaceValueRiskLevel
+      - FallPlaceValueFinalDate
+      - FallQuantityDiscriminationLeastTotalItems
+      - FallQuantityDiscriminationLeastItemsCorrect
+      - FallQuantityDiscriminationLeastICperminute
+      - FallQuantityDiscriminationLeastError(TotalItems-ItemsCorrect)
+      - FallQuantityDiscriminationLeastPercentileatSchool
+      - FallQuantityDiscriminationLeastPercentileatLEA
+      - FallQuantityDiscriminationLeastPercentileatNation
+      - FallQuantityDiscriminationLeastRiskLevel
+      - FallQuantityDiscriminationLeastFinalDate
+      - FallQuantityDiscriminationMostTotalItems
+      - FallQuantityDiscriminationMostItemsCorrect
+      - FallQuantityDiscriminationMostICperminute
+      - FallQuantityDiscriminationMostError(TotalItems-ItemsCorrect)
+      - FallQuantityDiscriminationMostPercentileatSchool
+      - FallQuantityDiscriminationMostPercentileatLEA
+      - FallQuantityDiscriminationMostPercentileatNation
+      - FallQuantityDiscriminationMostRiskLevel
+      - FallQuantityDiscriminationMostFinalDate
+      - FallSubitizingTotalItems
+      - FallSubitizingItemsCorrect
+      - FallSubitizingICperminute
+      - FallSubitizingError(TotalItems-ItemsCorrect)
+      - FallSubitizingPercentileatSchool
+      - FallSubitizingPercentileatLEA
+      - FallSubitizingPercentileatNation
+      - FallSubitizingRiskLevel
+      - FallSubitizingFinalDate
+      - FallVerbalAdditionTotalItems
+      - FallVerbalAdditionItemsCorrect
+      - FallVerbalAdditionICperminute
+      - FallVerbalAdditionError(TotalItems-ItemsCorrect)
+      - FallVerbalAdditionPercentileatSchool
+      - FallVerbalAdditionPercentileatLEA
+      - FallVerbalAdditionPercentileatNation
+      - FallVerbalAdditionRiskLevel
+      - FallVerbalAdditionFinalDate
+      - FallVerbalSubtractionTotalItems
+      - FallVerbalSubtractionItemsCorrect
+      - FallVerbalSubtractionICperminute
+      - FallVerbalSubtractionError(TotalItems-ItemsCorrect)
+      - FallVerbalSubtractionPercentileatSchool
+      - FallVerbalSubtractionPercentileatLEA
+      - FallVerbalSubtractionPercentileatNation
+      - FallVerbalSubtractionRiskLevel
+      - FallVerbalSubtractionFinalDate
+      - FallStoryProblemsTotalItems
+      - FallStoryProblemsItemsCorrect
+      - FallStoryProblemsICperminute
+      - FallStoryProblemsError(TotalItems-ItemsCorrect)
+      - FallStoryProblemsPercentileatSchool
+      - FallStoryProblemsPercentileatLEA
+      - FallStoryProblemsPercentileatNation
+      - FallStoryProblemsRiskLevel
+      - FallStoryProblemsFinalDate
+      - WinterEarlyMathCompositeScore
+      - WinterEarlyMathPercentileatSchool
+      - WinterEarlyMathPercentileatLEA
+      - WinterEarlyMathPercentileatNation
+      - WinterEarlyMathRiskLevel
+      - WinterEarlyMathFinalDate
+      - WinterEarlyMathGrowthScoreFromFalltoWinter
+      - WinterEarlyMathSchoolGrowthPercentileFromFalltoWinter
+      - WinterEarlyMathDistrictGrowthPercentileFromFalltoWinter
+      - WinterEarlyMathNationalGrowthPercentileFromFalltoWinter
+      - WinterEarlyMathGrowthPercentilebyStartScoreFromFalltoWinter        
+      - WinterComposingTotalItems
+      - WinterComposingItemsCorrect
+      - WinterComposingICperminute
+      - WinterComposingError(TotalItems-ItemsCorrect)
+      - WinterComposingPercentileatSchool
+      - WinterComposingPercentileatLEA
+      - WinterComposingPercentileatNation
+      - WinterComposingRiskLevel
+      - WinterComposingFinalDate
+      - WinterComposingGrowthScoreFromFalltoWinter
+      - WinterComposingSchoolGrowthPercentileFromFalltoWinter
+      - WinterComposingDistrictGrowthPercentileFromFalltoWinter
+      - WinterComposingNationalGrowthPercentileFromFalltoWinter
+      - WinterComposingGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterCountingObjectsTotalItems
+      - WinterCountingObjectsItemsCorrect
+      - WinterCountingObjectsICperminute
+      - WinterCountingObjectsError(TotalItems-ItemsCorrect)
+      - WinterCountingObjectsPercentileatSchool
+      - WinterCountingObjectsPercentileatLEA
+      - WinterCountingObjectsPercentileatNation
+      - WinterCountingObjectsRiskLevel
+      - WinterCountingObjectsFinalDate
+      - WinterCountingObjectsGrowthScoreFromFalltoWinter
+      - WinterCountingObjectsSchoolGrowthPercentileFromFalltoWinter
+      - WinterCountingObjectsDistrictGrowthPercentileFromFalltoWinter
+      - WinterCountingObjectsNationalGrowthPercentileFromFalltoWinter
+      - WinterCountingObjectsGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterDecomposingONETotalItems
+      - WinterDecomposingONEItemsCorrect
+      - WinterDecomposingONEICperminute
+      - WinterDecomposingONEError(TotalItems-ItemsCorrect)
+      - WinterDecomposingONEPercentileatSchool
+      - WinterDecomposingONEPercentileatLEA
+      - WinterDecomposingONEPercentileatNation
+      - WinterDecomposingONERiskLevel
+      - WinterDecomposingONEFinalDate
+      - WinterDecomposingONEGrowthScoreFromFalltoWinter
+      - WinterDecomposingONESchoolGrowthPercentileFromFalltoWinter
+      - WinterDecomposingONEDistrictGrowthPercentileFromFalltoWinter
+      - WinterDecomposingONENationalGrowthPercentileFromFalltoWinter
+      - WinterDecomposingONEGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterDecomposingKGTotalItems
+      - WinterDecomposingKGItemsCorrect
+      - WinterDecomposingKGICperminute
+      - WinterDecomposingKGError(TotalItems-ItemsCorrect)
+      - WinterDecomposingKGPercentileatSchool
+      - WinterDecomposingKGPercentileatLEA
+      - WinterDecomposingKGPercentileatNation
+      - WinterDecomposingKGRiskLevel
+      - WinterDecomposingKGFinalDate
+      - WinterDecomposingKGGrowthScoreFromFalltoWinter
+      - WinterDecomposingKGSchoolGrowthPercentileFromFalltoWinter
+      - WinterDecomposingKGDistrictGrowthPercentileFromFalltoWinter
+      - WinterDecomposingKGNationalGrowthPercentileFromFalltoWinter
+      - WinterDecomposingKGGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterEqualPartitioningTotalItems
+      - WinterEqualPartitioningItemsCorrect
+      - WinterEqualPartitioningICperminute
+      - WinterEqualPartitioningError(TotalItems-ItemsCorrect)
+      - WinterEqualPartitioningPercentileatSchool
+      - WinterEqualPartitioningPercentileatLEA
+      - WinterEqualPartitioningPercentileatNation
+      - WinterEqualPartitioningRiskLevel
+      - WinterEqualPartitioningFinalDate
+      - WinterEqualPartitioningGrowthScoreFromFalltoWinter
+      - WinterEqualPartitioningSchoolGrowthPercentileFromFalltoWinter
+      - WinterEqualPartitioningDistrictGrowthPercentileFromFalltoWinter
+      - WinterEqualPartitioningNationalGrowthPercentileFromFalltoWinter
+      - WinterEqualPartitioningGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterMatchQuantityTotalItems
+      - WinterMatchQuantityItemsCorrect
+      - WinterMatchQuantityICperminute
+      - WinterMatchQuantityError(TotalItems-ItemsCorrect)
+      - WinterMatchQuantityPercentileatSchool
+      - WinterMatchQuantityPercentileatLEA
+      - WinterMatchQuantityPercentileatNation
+      - WinterMatchQuantityRiskLevel
+      - WinterMatchQuantityFinalDate
+      - WinterMatchQuantityGrowthScoreFromFalltoWinter
+      - WinterMatchQuantitySchoolGrowthPercentileFromFalltoWinter
+      - WinterMatchQuantityDistrictGrowthPercentileFromFalltoWinter
+      - WinterMatchQuantityNationalGrowthPercentileFromFalltoWinter
+      - WinterMatchQuantityGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterNumberSequenceONETotalItems
+      - WinterNumberSequenceONEItemsCorrect
+      - WinterNumberSequenceONEICperminute
+      - WinterNumberSequenceONEError(TotalItems-ItemsCorrect)
+      - WinterNumberSequenceONEPercentileatSchool
+      - WinterNumberSequenceONEPercentileatLEA
+      - WinterNumberSequenceONEPercentileatNation
+      - WinterNumberSequenceONERiskLevel
+      - WinterNumberSequenceONEFinalDate
+      - WinterNumberSequenceONEGrowthScoreFromFalltoWinter
+      - WinterNumberSequenceONESchoolGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceONEDistrictGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceONENationalGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceONEGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterNumberSequenceKGTotalItems
+      - WinterNumberSequenceKGItemsCorrect
+      - WinterNumberSequenceKGICperminute
+      - WinterNumberSequenceKGError(TotalItems-ItemsCorrect)
+      - WinterNumberSequenceKGPercentileatSchool
+      - WinterNumberSequenceKGPercentileatLEA
+      - WinterNumberSequenceKGPercentileatNation
+      - WinterNumberSequenceKGRiskLevel
+      - WinterNumberSequenceKGFinalDate
+      - WinterNumberSequenceKGGrowthScoreFromFalltoWinter
+      - WinterNumberSequenceKGSchoolGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceKGDistrictGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceKGNationalGrowthPercentileFromFalltoWinter
+      - WinterNumberSequenceKGGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterNumeralIdentificationONETotalNumberRead
+      - WinterNumeralIdentificationONENumberReadCorrect
+      - WinterNumeralIdentificationONENRCperminute
+      - WinterNumeralIdentificationONEError(TotalItems-ItemsCorrect)
+      - WinterNumeralIdentificationONEPercentileatSchool
+      - WinterNumeralIdentificationONEPercentileatLEA
+      - WinterNumeralIdentificationONEPercentileatNation
+      - WinterNumeralIdentificationONERiskLevel
+      - WinterNumeralIdentificationONEFinalDate
+      - WinterNumeralIdentificationONEGrowthScoreFromFalltoWinter
+      - WinterNumeralIdentificationONESchoolGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationONEDistrictGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationONENationalGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationONEGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterNumeralIdentificationKGTotalNumberRead
+      - WinterNumeralIdentificationKGNumberReadCorrect
+      - WinterNumeralIdentificationKGNRCperminute
+      - WinterNumeralIdentificationKGError(TotalItems-ItemsCorrect)
+      - WinterNumeralIdentificationKGPercentileatSchool
+      - WinterNumeralIdentificationKGPercentileatLEA
+      - WinterNumeralIdentificationKGPercentileatNation
+      - WinterNumeralIdentificationKGRiskLevel
+      - WinterNumeralIdentificationKGFinalDate
+      - WinterNumeralIdentificationKGGrowthScoreFromFalltoWinter
+      - WinterNumeralIdentificationKGSchoolGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationKGDistrictGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationKGNationalGrowthPercentileFromFalltoWinter
+      - WinterNumeralIdentificationKGGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterPlaceValueTotalItems
+      - WinterPlaceValueItemsCorrect
+      - WinterPlaceValueICperminute
+      - WinterPlaceValueError(TotalItems-ItemsCorrect)
+      - WinterPlaceValuePercentileatSchool
+      - WinterPlaceValuePercentileatLEA
+      - WinterPlaceValuePercentileatNation
+      - WinterPlaceValueRiskLevel
+      - WinterPlaceValueFinalDate
+      - WinterPlaceValueGrowthScoreFromFalltoWinter
+      - WinterPlaceValueSchoolGrowthPercentileFromFalltoWinter
+      - WinterPlaceValueDistrictGrowthPercentileFromFalltoWinter
+      - WinterPlaceValueNationalGrowthPercentileFromFalltoWinter
+      - WinterPlaceValueGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterQuantityDiscriminationLeastTotalItems
+      - WinterQuantityDiscriminationLeastItemsCorrect
+      - WinterQuantityDiscriminationLeastICperminute
+      - WinterQuantityDiscriminationLeastError(TotalItems-ItemsCorrect)
+      - WinterQuantityDiscriminationLeastPercentileatSchool
+      - WinterQuantityDiscriminationLeastPercentileatLEA
+      - WinterQuantityDiscriminationLeastPercentileatNation
+      - WinterQuantityDiscriminationLeastRiskLevel
+      - WinterQuantityDiscriminationLeastFinalDate
+      - WinterQuantityDiscriminationLeastGrowthScoreFromFalltoWinter
+      - WinterQuantityDiscriminationLeastSchoolGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationLeastDistrictGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationLeastNationalGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationLeastGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterQuantityDiscriminationMostTotalItems
+      - WinterQuantityDiscriminationMostItemsCorrect
+      - WinterQuantityDiscriminationMostICperminute
+      - WinterQuantityDiscriminationMostError(TotalItems-ItemsCorrect)
+      - WinterQuantityDiscriminationMostPercentileatSchool
+      - WinterQuantityDiscriminationMostPercentileatLEA
+      - WinterQuantityDiscriminationMostPercentileatNation
+      - WinterQuantityDiscriminationMostRiskLevel
+      - WinterQuantityDiscriminationMostFinalDate
+      - WinterQuantityDiscriminationMostGrowthScoreFromFalltoWinter
+      - WinterQuantityDiscriminationMostSchoolGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationMostDistrictGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationMostNationalGrowthPercentileFromFalltoWinter
+      - WinterQuantityDiscriminationMostGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterSubitizingTotalItems
+      - WinterSubitizingItemsCorrect
+      - WinterSubitizingICperminute
+      - WinterSubitizingError(TotalItems-ItemsCorrect)
+      - WinterSubitizingPercentileatSchool
+      - WinterSubitizingPercentileatLEA
+      - WinterSubitizingPercentileatNation
+      - WinterSubitizingRiskLevel
+      - WinterSubitizingFinalDate
+      - WinterSubitizingGrowthScoreFromFalltoWinter
+      - WinterSubitizingSchoolGrowthPercentileFromFalltoWinter
+      - WinterSubitizingDistrictGrowthPercentileFromFalltoWinter
+      - WinterSubitizingNationalGrowthPercentileFromFalltoWinter
+      - WinterSubitizingGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterVerbalAdditionTotalItems
+      - WinterVerbalAdditionItemsCorrect
+      - WinterVerbalAdditionICperminute
+      - WinterVerbalAdditionError(TotalItems-ItemsCorrect)
+      - WinterVerbalAdditionPercentileatSchool
+      - WinterVerbalAdditionPercentileatLEA
+      - WinterVerbalAdditionPercentileatNation
+      - WinterVerbalAdditionRiskLevel
+      - WinterVerbalAdditionFinalDate
+      - WinterVerbalAdditionGrowthScoreFromFalltoWinter
+      - WinterVerbalAdditionSchoolGrowthPercentileFromFalltoWinter
+      - WinterVerbalAdditionDistrictGrowthPercentileFromFalltoWinter
+      - WinterVerbalAdditionNationalGrowthPercentileFromFalltoWinter
+      - WinterVerbalAdditionGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterVerbalSubtractionTotalItems
+      - WinterVerbalSubtractionItemsCorrect
+      - WinterVerbalSubtractionICperminute
+      - WinterVerbalSubtractionError(TotalItems-ItemsCorrect)
+      - WinterVerbalSubtractionPercentileatSchool
+      - WinterVerbalSubtractionPercentileatLEA
+      - WinterVerbalSubtractionPercentileatNation
+      - WinterVerbalSubtractionRiskLevel
+      - WinterVerbalSubtractionFinalDate
+      - WinterVerbalSubtractionGrowthScoreFromFalltoWinter
+      - WinterVerbalSubtractionSchoolGrowthPercentileFromFalltoWinter
+      - WinterVerbalSubtractionDistrictGrowthPercentileFromFalltoWinter
+      - WinterVerbalSubtractionNationalGrowthPercentileFromFalltoWinter
+      - WinterVerbalSubtractionGrowthPercentilebyStartScoreFromFalltoWinter
+      - WinterStoryProblemsTotalItems
+      - WinterStoryProblemsItemsCorrect
+      - WinterStoryProblemsICperminute
+      - WinterStoryProblemsError(TotalItems-ItemsCorrect)
+      - WinterStoryProblemsPercentileatSchool
+      - WinterStoryProblemsPercentileatLEA
+      - WinterStoryProblemsPercentileatNation
+      - WinterStoryProblemsRiskLevel
+      - WinterStoryProblemsFinalDate
+      - WinterStoryProblemsGrowthScoreFromFalltoWinter
+      - WinterStoryProblemsSchoolGrowthPercentileFromFalltoWinter
+      - WinterStoryProblemsDistrictGrowthPercentileFromFalltoWinter
+      - WinterStoryProblemsNationalGrowthPercentileFromFalltoWinter
+      - WinterStoryProblemsGrowthPercentilebyStartScoreFromFalltoWinter
+      - SpringEarlyMathCompositeScore
+      - SpringEarlyMathPercentileatSchool
+      - SpringEarlyMathPercentileatLEA
+      - SpringEarlyMathPercentileatNation
+      - SpringEarlyMathRiskLevel
+      - SpringEarlyMathFinalDate
+      - SpringEarlyMathGrowthScoreFromFalltoSpring
+      - SpringEarlyMathSchoolGrowthPercentileFromFalltoSpring
+      - SpringEarlyMathDistrictGrowthPercentileFromFalltoSpring
+      - SpringEarlyMathNationalGrowthPercentileFromFalltoSpring
+      - SpringEarlyMathGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringEarlyMathGrowthScoreFromWintertoSpring
+      - SpringEarlyMathSchoolGrowthPercentileFromWintertoSpring
+      - SpringEarlyMathDistrictGrowthPercentileFromWintertoSpring
+      - SpringEarlyMathNationalGrowthPercentileFromWintertoSpring
+      - SpringEarlyMathGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringComposingTotalItems
+      - SpringComposingItemsCorrect
+      - SpringComposingICperminute
+      - SpringComposingError(TotalItems-ItemsCorrect)
+      - SpringComposingPercentileatSchool
+      - SpringComposingPercentileatLEA
+      - SpringComposingPercentileatNation
+      - SpringComposingRiskLevel
+      - SpringComposingFinalDate
+      - SpringComposingGrowthScoreFromFalltoSpring
+      - SpringComposingSchoolGrowthPercentileFromFalltoSpring
+      - SpringComposingDistrictGrowthPercentileFromFalltoSpring
+      - SpringComposingNationalGrowthPercentileFromFalltoSpring
+      - SpringComposingGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringComposingGrowthScoreFromWintertoSpring
+      - SpringComposingSchoolGrowthPercentileFromWintertoSpring
+      - SpringComposingDistrictGrowthPercentileFromWintertoSpring
+      - SpringComposingNationalGrowthPercentileFromWintertoSpring
+      - SpringComposingGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringCountingObjectsTotalItems
+      - SpringCountingObjectsItemsCorrect
+      - SpringCountingObjectsICperminute
+      - SpringCountingObjectsError(TotalItems-ItemsCorrect)
+      - SpringCountingObjectsPercentileatSchool
+      - SpringCountingObjectsPercentileatLEA
+      - SpringCountingObjectsPercentileatNation
+      - SpringCountingObjectsRiskLevel
+      - SpringCountingObjectsFinalDate
+      - SpringCountingObjectsGrowthScoreFromFalltoSpring
+      - SpringCountingObjectsSchoolGrowthPercentileFromFalltoSpring
+      - SpringCountingObjectsDistrictGrowthPercentileFromFalltoSpring
+      - SpringCountingObjectsNationalGrowthPercentileFromFalltoSpring
+      - SpringCountingObjectsGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringCountingObjectsGrowthScoreFromWintertoSpring
+      - SpringCountingObjectsSchoolGrowthPercentileFromWintertoSpring
+      - SpringCountingObjectsDistrictGrowthPercentileFromWintertoSpring
+      - SpringCountingObjectsNationalGrowthPercentileFromWintertoSpring
+      - SpringCountingObjectsGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringDecomposingONETotalItems
+      - SpringDecomposingONEItemsCorrect
+      - SpringDecomposingONEICperminute
+      - SpringDecomposingONEError(TotalItems-ItemsCorrect)
+      - SpringDecomposingONEPercentileatSchool
+      - SpringDecomposingONEPercentileatLEA
+      - SpringDecomposingONEPercentileatNation
+      - SpringDecomposingONERiskLevel
+      - SpringDecomposingONEFinalDate
+      - SpringDecomposingONEGrowthScoreFromFalltoSpring
+      - SpringDecomposingONESchoolGrowthPercentileFromFalltoSpring
+      - SpringDecomposingONEDistrictGrowthPercentileFromFalltoSpring
+      - SpringDecomposingONENationalGrowthPercentileFromFalltoSpring
+      - SpringDecomposingONEGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringDecomposingONEGrowthScoreFromWintertoSpring
+      - SpringDecomposingONESchoolGrowthPercentileFromWintertoSpring
+      - SpringDecomposingONEDistrictGrowthPercentileFromWintertoSpring
+      - SpringDecomposingONENationalGrowthPercentileFromWintertoSpring
+      - SpringDecomposingONEGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringDecomposingKGTotalItems
+      - SpringDecomposingKGItemsCorrect
+      - SpringDecomposingKGICperminute
+      - SpringDecomposingKGError(TotalItems-ItemsCorrect)
+      - SpringDecomposingKGPercentileatSchool
+      - SpringDecomposingKGPercentileatLEA
+      - SpringDecomposingKGPercentileatNation
+      - SpringDecomposingKGRiskLevel
+      - SpringDecomposingKGFinalDate
+      - SpringDecomposingKGGrowthScoreFromFalltoSpring
+      - SpringDecomposingKGSchoolGrowthPercentileFromFalltoSpring
+      - SpringDecomposingKGDistrictGrowthPercentileFromFalltoSpring
+      - SpringDecomposingKGNationalGrowthPercentileFromFalltoSpring
+      - SpringDecomposingKGGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringDecomposingKGGrowthScoreFromWintertoSpring
+      - SpringDecomposingKGSchoolGrowthPercentileFromWintertoSpring
+      - SpringDecomposingKGDistrictGrowthPercentileFromWintertoSpring
+      - SpringDecomposingKGNationalGrowthPercentileFromWintertoSpring
+      - SpringDecomposingKGGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringEqualPartitioningTotalItems
+      - SpringEqualPartitioningItemsCorrect
+      - SpringEqualPartitioningICperminute
+      - SpringEqualPartitioningError(TotalItems-ItemsCorrect)
+      - SpringEqualPartitioningPercentileatSchool
+      - SpringEqualPartitioningPercentileatLEA
+      - SpringEqualPartitioningPercentileatNation
+      - SpringEqualPartitioningRiskLevel
+      - SpringEqualPartitioningFinalDate
+      - SpringEqualPartitioningGrowthScoreFromFalltoSpring
+      - SpringEqualPartitioningSchoolGrowthPercentileFromFalltoSpring
+      - SpringEqualPartitioningDistrictGrowthPercentileFromFalltoSpring
+      - SpringEqualPartitioningNationalGrowthPercentileFromFalltoSpring
+      - SpringEqualPartitioningGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringEqualPartitioningGrowthScoreFromWintertoSpring
+      - SpringEqualPartitioningSchoolGrowthPercentileFromWintertoSpring
+      - SpringEqualPartitioningDistrictGrowthPercentileFromWintertoSpring
+      - SpringEqualPartitioningNationalGrowthPercentileFromWintertoSpring
+      - SpringEqualPartitioningGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringMatchQuantityTotalItems
+      - SpringMatchQuantityItemsCorrect
+      - SpringMatchQuantityICperminute
+      - SpringMatchQuantityError(TotalItems-ItemsCorrect)
+      - SpringMatchQuantityPercentileatSchool
+      - SpringMatchQuantityPercentileatLEA
+      - SpringMatchQuantityPercentileatNation
+      - SpringMatchQuantityRiskLevel
+      - SpringMatchQuantityFinalDate
+      - SpringMatchQuantityGrowthScoreFromFalltoSpring
+      - SpringMatchQuantitySchoolGrowthPercentileFromFalltoSpring
+      - SpringMatchQuantityDistrictGrowthPercentileFromFalltoSpring
+      - SpringMatchQuantityNationalGrowthPercentileFromFalltoSpring
+      - SpringMatchQuantityGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringMatchQuantityGrowthScoreFromWintertoSpring
+      - SpringMatchQuantitySchoolGrowthPercentileFromWintertoSpring
+      - SpringMatchQuantityDistrictGrowthPercentileFromWintertoSpring
+      - SpringMatchQuantityNationalGrowthPercentileFromWintertoSpring
+      - SpringMatchQuantityGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringNumberSequenceONETotalItems
+      - SpringNumberSequenceONEItemsCorrect
+      - SpringNumberSequenceONEICperminute
+      - SpringNumberSequenceONEError(TotalItems-ItemsCorrect)
+      - SpringNumberSequenceONEPercentileatSchool
+      - SpringNumberSequenceONEPercentileatLEA
+      - SpringNumberSequenceONEPercentileatNation
+      - SpringNumberSequenceONERiskLevel
+      - SpringNumberSequenceONEFinalDate
+      - SpringNumberSequenceONEGrowthScoreFromFalltoSpring
+      - SpringNumberSequenceONESchoolGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceONEDistrictGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceONENationalGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceONEGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringNumberSequenceONEGrowthScoreFromWintertoSpring
+      - SpringNumberSequenceONESchoolGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceONEDistrictGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceONENationalGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceONEGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringNumberSequenceKGTotalItems
+      - SpringNumberSequenceKGItemsCorrect
+      - SpringNumberSequenceKGICperminute
+      - SpringNumberSequenceKGError(TotalItems-ItemsCorrect)
+      - SpringNumberSequenceKGPercentileatSchool
+      - SpringNumberSequenceKGPercentileatLEA
+      - SpringNumberSequenceKGPercentileatNation
+      - SpringNumberSequenceKGRiskLevel
+      - SpringNumberSequenceKGFinalDate
+      - SpringNumberSequenceKGGrowthScoreFromFalltoSpring
+      - SpringNumberSequenceKGSchoolGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceKGDistrictGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceKGNationalGrowthPercentileFromFalltoSpring
+      - SpringNumberSequenceKGGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringNumberSequenceKGGrowthScoreFromWintertoSpring
+      - SpringNumberSequenceKGSchoolGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceKGDistrictGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceKGNationalGrowthPercentileFromWintertoSpring
+      - SpringNumberSequenceKGGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringNumeralIdentificationONETotalNumberRead
+      - SpringNumeralIdentificationONENumberReadCorrect
+      - SpringNumeralIdentificationONENRCperminute
+      - SpringNumeralIdentificationONEError(TotalItems-ItemsCorrect)
+      - SpringNumeralIdentificationONEPercentileatSchool
+      - SpringNumeralIdentificationONEPercentileatLEA
+      - SpringNumeralIdentificationONEPercentileatNation
+      - SpringNumeralIdentificationONERiskLevel
+      - SpringNumeralIdentificationONEFinalDate
+      - SpringNumeralIdentificationONEGrowthScoreFromFalltoSpring
+      - SpringNumeralIdentificationONESchoolGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationONEDistrictGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationONENationalGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationONEGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringNumeralIdentificationONEGrowthScoreFromWintertoSpring
+      - SpringNumeralIdentificationONESchoolGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationONEDistrictGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationONENationalGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationONEGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringNumeralIdentificationKGTotalNumberRead
+      - SpringNumeralIdentificationKGNumberReadCorrect
+      - SpringNumeralIdentificationKGNRCperminute
+      - SpringNumeralIdentificationKGError(TotalItems-ItemsCorrect)
+      - SpringNumeralIdentificationKGPercentileatSchool
+      - SpringNumeralIdentificationKGPercentileatLEA
+      - SpringNumeralIdentificationKGPercentileatNation
+      - SpringNumeralIdentificationKGRiskLevel
+      - SpringNumeralIdentificationKGFinalDate
+      - SpringNumeralIdentificationKGGrowthScoreFromFalltoSpring
+      - SpringNumeralIdentificationKGSchoolGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationKGDistrictGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationKGNationalGrowthPercentileFromFalltoSpring
+      - SpringNumeralIdentificationKGGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringNumeralIdentificationKGGrowthScoreFromWintertoSpring
+      - SpringNumeralIdentificationKGSchoolGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationKGDistrictGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationKGNationalGrowthPercentileFromWintertoSpring
+      - SpringNumeralIdentificationKGGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringPlaceValueTotalItems
+      - SpringPlaceValueItemsCorrect
+      - SpringPlaceValueICperminute
+      - SpringPlaceValueError(TotalItems-ItemsCorrect)
+      - SpringPlaceValuePercentileatSchool
+      - SpringPlaceValuePercentileatLEA
+      - SpringPlaceValuePercentileatNation
+      - SpringPlaceValueRiskLevel
+      - SpringPlaceValueFinalDate
+      - SpringPlaceValueGrowthScoreFromFalltoSpring
+      - SpringPlaceValueSchoolGrowthPercentileFromFalltoSpring
+      - SpringPlaceValueDistrictGrowthPercentileFromFalltoSpring
+      - SpringPlaceValueNationalGrowthPercentileFromFalltoSpring
+      - SpringPlaceValueGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringPlaceValueGrowthScoreFromWintertoSpring
+      - SpringPlaceValueSchoolGrowthPercentileFromWintertoSpring
+      - SpringPlaceValueDistrictGrowthPercentileFromWintertoSpring
+      - SpringPlaceValueNationalGrowthPercentileFromWintertoSpring
+      - SpringPlaceValueGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringQuantityDiscriminationLeastTotalItems
+      - SpringQuantityDiscriminationLeastItemsCorrect
+      - SpringQuantityDiscriminationLeastICperminute
+      - SpringQuantityDiscriminationLeastError(TotalItems-ItemsCorrect)
+      - SpringQuantityDiscriminationLeastPercentileatSchool
+      - SpringQuantityDiscriminationLeastPercentileatLEA
+      - SpringQuantityDiscriminationLeastPercentileatNation
+      - SpringQuantityDiscriminationLeastRiskLevel
+      - SpringQuantityDiscriminationLeastFinalDate
+      - SpringQuantityDiscriminationLeastGrowthScoreFromFalltoSpring
+      - SpringQuantityDiscriminationLeastSchoolGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationLeastDistrictGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationLeastNationalGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationLeastGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringQuantityDiscriminationLeastGrowthScoreFromWintertoSpring
+      - SpringQuantityDiscriminationLeastSchoolGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationLeastDistrictGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationLeastNationalGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationLeastGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringQuantityDiscriminationMostTotalItems
+      - SpringQuantityDiscriminationMostItemsCorrect
+      - SpringQuantityDiscriminationMostICperminute
+      - SpringQuantityDiscriminationMostError(TotalItems-ItemsCorrect)
+      - SpringQuantityDiscriminationMostPercentileatSchool
+      - SpringQuantityDiscriminationMostPercentileatLEA
+      - SpringQuantityDiscriminationMostPercentileatNation
+      - SpringQuantityDiscriminationMostRiskLevel
+      - SpringQuantityDiscriminationMostFinalDate
+      - SpringQuantityDiscriminationMostGrowthScoreFromFalltoSpring
+      - SpringQuantityDiscriminationMostSchoolGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationMostDistrictGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationMostNationalGrowthPercentileFromFalltoSpring
+      - SpringQuantityDiscriminationMostGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringQuantityDiscriminationMostGrowthScoreFromWintertoSpring
+      - SpringQuantityDiscriminationMostSchoolGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationMostDistrictGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationMostNationalGrowthPercentileFromWintertoSpring
+      - SpringQuantityDiscriminationMostGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringSubitizingTotalItems
+      - SpringSubitizingItemsCorrect
+      - SpringSubitizingICperminute
+      - SpringSubitizingError(TotalItems-ItemsCorrect)
+      - SpringSubitizingPercentileatSchool
+      - SpringSubitizingPercentileatLEA
+      - SpringSubitizingPercentileatNation
+      - SpringSubitizingRiskLevel
+      - SpringSubitizingFinalDate
+      - SpringSubitizingGrowthScoreFromFalltoSpring
+      - SpringSubitizingSchoolGrowthPercentileFromFalltoSpring
+      - SpringSubitizingDistrictGrowthPercentileFromFalltoSpring
+      - SpringSubitizingNationalGrowthPercentileFromFalltoSpring
+      - SpringSubitizingGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringSubitizingGrowthScoreFromWintertoSpring
+      - SpringSubitizingSchoolGrowthPercentileFromWintertoSpring
+      - SpringSubitizingDistrictGrowthPercentileFromWintertoSpring
+      - SpringSubitizingNationalGrowthPercentileFromWintertoSpring
+      - SpringSubitizingGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringVerbalAdditionTotalItems
+      - SpringVerbalAdditionItemsCorrect
+      - SpringVerbalAdditionICperminute
+      - SpringVerbalAdditionError(TotalItems-ItemsCorrect)
+      - SpringVerbalAdditionPercentileatSchool
+      - SpringVerbalAdditionPercentileatLEA
+      - SpringVerbalAdditionPercentileatNation
+      - SpringVerbalAdditionRiskLevel
+      - SpringVerbalAdditionFinalDate
+      - SpringVerbalAdditionGrowthScoreFromFalltoSpring
+      - SpringVerbalAdditionSchoolGrowthPercentileFromFalltoSpring
+      - SpringVerbalAdditionDistrictGrowthPercentileFromFalltoSpring
+      - SpringVerbalAdditionNationalGrowthPercentileFromFalltoSpring
+      - SpringVerbalAdditionGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringVerbalAdditionGrowthScoreFromWintertoSpring
+      - SpringVerbalAdditionSchoolGrowthPercentileFromWintertoSpring
+      - SpringVerbalAdditionDistrictGrowthPercentileFromWintertoSpring
+      - SpringVerbalAdditionNationalGrowthPercentileFromWintertoSpring
+      - SpringVerbalAdditionGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringVerbalSubtractionTotalItems
+      - SpringVerbalSubtractionItemsCorrect
+      - SpringVerbalSubtractionICperminute
+      - SpringVerbalSubtractionError(TotalItems-ItemsCorrect)
+      - SpringVerbalSubtractionPercentileatSchool
+      - SpringVerbalSubtractionPercentileatLEA
+      - SpringVerbalSubtractionPercentileatNation
+      - SpringVerbalSubtractionRiskLevel
+      - SpringVerbalSubtractionFinalDate
+      - SpringVerbalSubtractionGrowthScoreFromFalltoSpring
+      - SpringVerbalSubtractionSchoolGrowthPercentileFromFalltoSpring
+      - SpringVerbalSubtractionDistrictGrowthPercentileFromFalltoSpring
+      - SpringVerbalSubtractionNationalGrowthPercentileFromFalltoSpring
+      - SpringVerbalSubtractionGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringVerbalSubtractionGrowthScoreFromWintertoSpring
+      - SpringVerbalSubtractionSchoolGrowthPercentileFromWintertoSpring
+      - SpringVerbalSubtractionDistrictGrowthPercentileFromWintertoSpring
+      - SpringVerbalSubtractionNationalGrowthPercentileFromWintertoSpring
+      - SpringVerbalSubtractionGrowthPercentilebyStartScoreFromWintertoSpring
+      - SpringStoryProblemsTotalItems
+      - SpringStoryProblemsItemsCorrect
+      - SpringStoryProblemsICperminute
+      - SpringStoryProblemsError(TotalItems-ItemsCorrect)
+      - SpringStoryProblemsPercentileatSchool
+      - SpringStoryProblemsPercentileatLEA
+      - SpringStoryProblemsPercentileatNation
+      - SpringStoryProblemsRiskLevel
+      - SpringStoryProblemsFinalDate
+      - SpringStoryProblemsGrowthScoreFromFalltoSpring
+      - SpringStoryProblemsSchoolGrowthPercentileFromFalltoSpring
+      - SpringStoryProblemsDistrictGrowthPercentileFromFalltoSpring
+      - SpringStoryProblemsNationalGrowthPercentileFromFalltoSpring
+      - SpringStoryProblemsGrowthPercentilebyStartScoreFromFalltoSpring
+      - SpringStoryProblemsGrowthScoreFromWintertoSpring
+      - SpringStoryProblemsSchoolGrowthPercentileFromWintertoSpring
+      - SpringStoryProblemsDistrictGrowthPercentileFromWintertoSpring
+      - SpringStoryProblemsNationalGrowthPercentileFromWintertoSpring
+      - SpringStoryProblemsGrowthPercentilebyStartScoreFromWintertoSpring
+      - ScreeningPeriod4EarlyMathCompositeScore
+      - ScreeningPeriod4EarlyMathPercentileatSchool
+      - ScreeningPeriod4EarlyMathPercentileatLEA
+      - ScreeningPeriod4EarlyMathPercentileatNation
+      - ScreeningPeriod4EarlyMathRiskLevel
+      - ScreeningPeriod4EarlyMathFinalDate
+      - ScreeningPeriod4EarlyMathGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EarlyMathGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4ComposingTotalItems
+      - ScreeningPeriod4ComposingItemsCorrect
+      - ScreeningPeriod4ComposingICperminute
+      - ScreeningPeriod4ComposingError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4ComposingPercentileatSchool
+      - ScreeningPeriod4ComposingPercentileatLEA
+      - ScreeningPeriod4ComposingPercentileatNation
+      - ScreeningPeriod4ComposingRiskLevel
+      - ScreeningPeriod4ComposingFinalDate
+      - ScreeningPeriod4ComposingGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4ComposingSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4ComposingDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4ComposingNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4ComposingGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4ComposingGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4ComposingSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4ComposingDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4ComposingNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4ComposingGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4ComposingGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4ComposingSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4ComposingDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4ComposingNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4ComposingGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsTotalItems
+      - ScreeningPeriod4CountingObjectsItemsCorrect
+      - ScreeningPeriod4CountingObjectsICperminute
+      - ScreeningPeriod4CountingObjectsError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4CountingObjectsPercentileatSchool
+      - ScreeningPeriod4CountingObjectsPercentileatLEA
+      - ScreeningPeriod4CountingObjectsPercentileatNation
+      - ScreeningPeriod4CountingObjectsRiskLevel
+      - ScreeningPeriod4CountingObjectsFinalDate
+      - ScreeningPeriod4CountingObjectsGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4CountingObjectsGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONETotalItems
+      - ScreeningPeriod4DecomposingONEItemsCorrect
+      - ScreeningPeriod4DecomposingONEICperminute
+      - ScreeningPeriod4DecomposingONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4DecomposingONEPercentileatSchool
+      - ScreeningPeriod4DecomposingONEPercentileatLEA
+      - ScreeningPeriod4DecomposingONEPercentileatNation
+      - ScreeningPeriod4DecomposingONERiskLevel
+      - ScreeningPeriod4DecomposingONEFinalDate
+      - ScreeningPeriod4DecomposingONEGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONESchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONENationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONESchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONENationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONESchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONENationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGTotalItems
+      - ScreeningPeriod4DecomposingKGItemsCorrect
+      - ScreeningPeriod4DecomposingKGICperminute
+      - ScreeningPeriod4DecomposingKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4DecomposingKGPercentileatSchool
+      - ScreeningPeriod4DecomposingKGPercentileatLEA
+      - ScreeningPeriod4DecomposingKGPercentileatNation
+      - ScreeningPeriod4DecomposingKGRiskLevel
+      - ScreeningPeriod4DecomposingKGFinalDate
+      - ScreeningPeriod4DecomposingKGGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4DecomposingKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningTotalItems
+      - ScreeningPeriod4EqualPartitioningItemsCorrect
+      - ScreeningPeriod4EqualPartitioningICperminute
+      - ScreeningPeriod4EqualPartitioningError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4EqualPartitioningPercentileatSchool
+      - ScreeningPeriod4EqualPartitioningPercentileatLEA
+      - ScreeningPeriod4EqualPartitioningPercentileatNation
+      - ScreeningPeriod4EqualPartitioningRiskLevel
+      - ScreeningPeriod4EqualPartitioningFinalDate
+      - ScreeningPeriod4EqualPartitioningGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4EqualPartitioningGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityTotalItems
+      - ScreeningPeriod4MatchQuantityItemsCorrect
+      - ScreeningPeriod4MatchQuantityICperminute
+      - ScreeningPeriod4MatchQuantityError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4MatchQuantityPercentileatSchool
+      - ScreeningPeriod4MatchQuantityPercentileatLEA
+      - ScreeningPeriod4MatchQuantityPercentileatNation
+      - ScreeningPeriod4MatchQuantityRiskLevel
+      - ScreeningPeriod4MatchQuantityFinalDate
+      - ScreeningPeriod4MatchQuantityGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantitySchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantitySchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantitySchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4MatchQuantityGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONETotalItems
+      - ScreeningPeriod4NumberSequenceONEItemsCorrect
+      - ScreeningPeriod4NumberSequenceONEICperminute
+      - ScreeningPeriod4NumberSequenceONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4NumberSequenceONEPercentileatSchool
+      - ScreeningPeriod4NumberSequenceONEPercentileatLEA
+      - ScreeningPeriod4NumberSequenceONEPercentileatNation
+      - ScreeningPeriod4NumberSequenceONERiskLevel
+      - ScreeningPeriod4NumberSequenceONEFinalDate
+      - ScreeningPeriod4NumberSequenceONEGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONESchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONENationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONESchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONENationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONESchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONENationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGTotalItems
+      - ScreeningPeriod4NumberSequenceKGItemsCorrect
+      - ScreeningPeriod4NumberSequenceKGICperminute
+      - ScreeningPeriod4NumberSequenceKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4NumberSequenceKGPercentileatSchool
+      - ScreeningPeriod4NumberSequenceKGPercentileatLEA
+      - ScreeningPeriod4NumberSequenceKGPercentileatNation
+      - ScreeningPeriod4NumberSequenceKGRiskLevel
+      - ScreeningPeriod4NumberSequenceKGFinalDate
+      - ScreeningPeriod4NumberSequenceKGGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumberSequenceKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONETotalNumberRead
+      - ScreeningPeriod4NumeralIdentificationONENumberReadCorrect
+      - ScreeningPeriod4NumeralIdentificationONENRCperminute
+      - ScreeningPeriod4NumeralIdentificationONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4NumeralIdentificationONEPercentileatSchool
+      - ScreeningPeriod4NumeralIdentificationONEPercentileatLEA
+      - ScreeningPeriod4NumeralIdentificationONEPercentileatNation
+      - ScreeningPeriod4NumeralIdentificationONERiskLevel
+      - ScreeningPeriod4NumeralIdentificationONEFinalDate
+      - ScreeningPeriod4NumeralIdentificationONEGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONESchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONENationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONESchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONENationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONESchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONENationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGTotalNumberRead
+      - ScreeningPeriod4NumeralIdentificationKGNumberReadCorrect
+      - ScreeningPeriod4NumeralIdentificationKGNRCperminute
+      - ScreeningPeriod4NumeralIdentificationKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4NumeralIdentificationKGPercentileatSchool
+      - ScreeningPeriod4NumeralIdentificationKGPercentileatLEA
+      - ScreeningPeriod4NumeralIdentificationKGPercentileatNation
+      - ScreeningPeriod4NumeralIdentificationKGRiskLevel
+      - ScreeningPeriod4NumeralIdentificationKGFinalDate
+      - ScreeningPeriod4NumeralIdentificationKGGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4NumeralIdentificationKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueTotalItems
+      - ScreeningPeriod4PlaceValueItemsCorrect
+      - ScreeningPeriod4PlaceValueICperminute
+      - ScreeningPeriod4PlaceValueError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4PlaceValuePercentileatSchool
+      - ScreeningPeriod4PlaceValuePercentileatLEA
+      - ScreeningPeriod4PlaceValuePercentileatNation
+      - ScreeningPeriod4PlaceValueRiskLevel
+      - ScreeningPeriod4PlaceValueFinalDate
+      - ScreeningPeriod4PlaceValueGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4PlaceValueGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastTotalItems
+      - ScreeningPeriod4QuantityDiscriminationLeastItemsCorrect
+      - ScreeningPeriod4QuantityDiscriminationLeastICperminute
+      - ScreeningPeriod4QuantityDiscriminationLeastError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4QuantityDiscriminationLeastPercentileatSchool
+      - ScreeningPeriod4QuantityDiscriminationLeastPercentileatLEA
+      - ScreeningPeriod4QuantityDiscriminationLeastPercentileatNation
+      - ScreeningPeriod4QuantityDiscriminationLeastRiskLevel
+      - ScreeningPeriod4QuantityDiscriminationLeastFinalDate
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostTotalItems
+      - ScreeningPeriod4QuantityDiscriminationMostItemsCorrect
+      - ScreeningPeriod4QuantityDiscriminationMostICperminute
+      - ScreeningPeriod4QuantityDiscriminationMostError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4QuantityDiscriminationMostPercentileatSchool
+      - ScreeningPeriod4QuantityDiscriminationMostPercentileatLEA
+      - ScreeningPeriod4QuantityDiscriminationMostPercentileatNation
+      - ScreeningPeriod4QuantityDiscriminationMostRiskLevel
+      - ScreeningPeriod4QuantityDiscriminationMostFinalDate
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4QuantityDiscriminationMostGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4SubitizingTotalItems
+      - ScreeningPeriod4SubitizingItemsCorrect
+      - ScreeningPeriod4SubitizingICperminute
+      - ScreeningPeriod4SubitizingError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4SubitizingPercentileatSchool
+      - ScreeningPeriod4SubitizingPercentileatLEA
+      - ScreeningPeriod4SubitizingPercentileatNation
+      - ScreeningPeriod4SubitizingRiskLevel
+      - ScreeningPeriod4SubitizingFinalDate
+      - ScreeningPeriod4SubitizingGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4SubitizingSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4SubitizingDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4SubitizingNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4SubitizingGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4SubitizingGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4SubitizingSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4SubitizingDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4SubitizingNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4SubitizingGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4SubitizingGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4SubitizingSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4SubitizingDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4SubitizingNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4SubitizingGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionTotalItems
+      - ScreeningPeriod4VerbalAdditionItemsCorrect
+      - ScreeningPeriod4VerbalAdditionICperminute
+      - ScreeningPeriod4VerbalAdditionError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4VerbalAdditionPercentileatSchool
+      - ScreeningPeriod4VerbalAdditionPercentileatLEA
+      - ScreeningPeriod4VerbalAdditionPercentileatNation
+      - ScreeningPeriod4VerbalAdditionRiskLevel
+      - ScreeningPeriod4VerbalAdditionFinalDate
+      - ScreeningPeriod4VerbalAdditionGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalAdditionGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionTotalItems
+      - ScreeningPeriod4VerbalSubtractionItemsCorrect
+      - ScreeningPeriod4VerbalSubtractionICperminute
+      - ScreeningPeriod4VerbalSubtractionError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4VerbalSubtractionPercentileatSchool
+      - ScreeningPeriod4VerbalSubtractionPercentileatLEA
+      - ScreeningPeriod4VerbalSubtractionPercentileatNation
+      - ScreeningPeriod4VerbalSubtractionRiskLevel
+      - ScreeningPeriod4VerbalSubtractionFinalDate
+      - ScreeningPeriod4VerbalSubtractionGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4VerbalSubtractionGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsTotalItems
+      - ScreeningPeriod4StoryProblemsItemsCorrect
+      - ScreeningPeriod4StoryProblemsICperminute
+      - ScreeningPeriod4StoryProblemsError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod4StoryProblemsPercentileatSchool
+      - ScreeningPeriod4StoryProblemsPercentileatLEA
+      - ScreeningPeriod4StoryProblemsPercentileatNation
+      - ScreeningPeriod4StoryProblemsRiskLevel
+      - ScreeningPeriod4StoryProblemsFinalDate
+      - ScreeningPeriod4StoryProblemsGrowthScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsSchoolGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsDistrictGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsNationalGrowthPercentileFromFalltoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsGrowthPercentilebyStartScoreFromFalltoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsGrowthScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsSchoolGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsDistrictGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsNationalGrowthPercentileFromWintertoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsGrowthPercentilebyStartScoreFromWintertoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsGrowthScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsSchoolGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsDistrictGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsNationalGrowthPercentileFromSpringtoScreeningPeriod4
+      - ScreeningPeriod4StoryProblemsGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod4
+      - ScreeningPeriod5EarlyMathCompositeScore
+      - ScreeningPeriod5EarlyMathPercentileatSchool
+      - ScreeningPeriod5EarlyMathPercentileatLEA
+      - ScreeningPeriod5EarlyMathPercentileatNation
+      - ScreeningPeriod5EarlyMathRiskLevel
+      - ScreeningPeriod5EarlyMathFinalDate
+      - ScreeningPeriod5EarlyMathGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EarlyMathSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EarlyMathDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EarlyMathNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EarlyMathGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5ComposingTotalItems
+      - ScreeningPeriod5ComposingItemsCorrect
+      - ScreeningPeriod5ComposingICperminute
+      - ScreeningPeriod5ComposingError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5ComposingPercentileatSchool
+      - ScreeningPeriod5ComposingPercentileatLEA
+      - ScreeningPeriod5ComposingPercentileatNation
+      - ScreeningPeriod5ComposingRiskLevel
+      - ScreeningPeriod5ComposingFinalDate
+      - ScreeningPeriod5ComposingGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5ComposingSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5ComposingDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5ComposingNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5ComposingSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5ComposingDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5ComposingNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5ComposingSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5ComposingDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5ComposingNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5ComposingSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5ComposingDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5ComposingNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5ComposingGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsTotalItems
+      - ScreeningPeriod5CountingObjectsItemsCorrect
+      - ScreeningPeriod5CountingObjectsICperminute
+      - ScreeningPeriod5CountingObjectsError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5CountingObjectsPercentileatSchool
+      - ScreeningPeriod5CountingObjectsPercentileatLEA
+      - ScreeningPeriod5CountingObjectsPercentileatNation
+      - ScreeningPeriod5CountingObjectsRiskLevel
+      - ScreeningPeriod5CountingObjectsFinalDate
+      - ScreeningPeriod5CountingObjectsGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5CountingObjectsGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingONETotalItems
+      - ScreeningPeriod5DecomposingONEItemsCorrect
+      - ScreeningPeriod5DecomposingONEICperminute
+      - ScreeningPeriod5DecomposingONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5DecomposingONEPercentileatSchool
+      - ScreeningPeriod5DecomposingONEPercentileatLEA
+      - ScreeningPeriod5DecomposingONEPercentileatNation
+      - ScreeningPeriod5DecomposingONERiskLevel
+      - ScreeningPeriod5DecomposingONEFinalDate
+      - ScreeningPeriod5DecomposingONEGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONESchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONENationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONESchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONENationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONESchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONENationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingONESchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingONENationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingONEGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGTotalItems
+      - ScreeningPeriod5DecomposingKGItemsCorrect
+      - ScreeningPeriod5DecomposingKGICperminute
+      - ScreeningPeriod5DecomposingKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5DecomposingKGPercentileatSchool
+      - ScreeningPeriod5DecomposingKGPercentileatLEA
+      - ScreeningPeriod5DecomposingKGPercentileatNation
+      - ScreeningPeriod5DecomposingKGRiskLevel
+      - ScreeningPeriod5DecomposingKGFinalDate
+      - ScreeningPeriod5DecomposingKGGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5DecomposingKGGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningTotalItems
+      - ScreeningPeriod5EqualPartitioningItemsCorrect
+      - ScreeningPeriod5EqualPartitioningICperminute
+      - ScreeningPeriod5EqualPartitioningError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5EqualPartitioningPercentileatSchool
+      - ScreeningPeriod5EqualPartitioningPercentileatLEA
+      - ScreeningPeriod5EqualPartitioningPercentileatNation
+      - ScreeningPeriod5EqualPartitioningRiskLevel
+      - ScreeningPeriod5EqualPartitioningFinalDate
+      - ScreeningPeriod5EqualPartitioningGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5EqualPartitioningGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityTotalItems
+      - ScreeningPeriod5MatchQuantityItemsCorrect
+      - ScreeningPeriod5MatchQuantityICperminute
+      - ScreeningPeriod5MatchQuantityError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5MatchQuantityPercentileatSchool
+      - ScreeningPeriod5MatchQuantityPercentileatLEA
+      - ScreeningPeriod5MatchQuantityPercentileatNation
+      - ScreeningPeriod5MatchQuantityRiskLevel
+      - ScreeningPeriod5MatchQuantityFinalDate
+      - ScreeningPeriod5MatchQuantityGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantitySchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantitySchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantitySchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5MatchQuantitySchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5MatchQuantityGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONETotalItems
+      - ScreeningPeriod5NumberSequenceONEItemsCorrect
+      - ScreeningPeriod5NumberSequenceONEICperminute
+      - ScreeningPeriod5NumberSequenceONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5NumberSequenceONEPercentileatSchool
+      - ScreeningPeriod5NumberSequenceONEPercentileatLEA
+      - ScreeningPeriod5NumberSequenceONEPercentileatNation
+      - ScreeningPeriod5NumberSequenceONERiskLevel
+      - ScreeningPeriod5NumberSequenceONEFinalDate
+      - ScreeningPeriod5NumberSequenceONEGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONESchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONENationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONESchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONENationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONESchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONENationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONESchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONENationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceONEGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGTotalItems
+      - ScreeningPeriod5NumberSequenceKGItemsCorrect
+      - ScreeningPeriod5NumberSequenceKGICperminute
+      - ScreeningPeriod5NumberSequenceKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5NumberSequenceKGPercentileatSchool
+      - ScreeningPeriod5NumberSequenceKGPercentileatLEA
+      - ScreeningPeriod5NumberSequenceKGPercentileatNation
+      - ScreeningPeriod5NumberSequenceKGRiskLevel
+      - ScreeningPeriod5NumberSequenceKGFinalDate
+      - ScreeningPeriod5NumberSequenceKGGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumberSequenceKGGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONETotalNumberRead
+      - ScreeningPeriod5NumeralIdentificationONENumberReadCorrect
+      - ScreeningPeriod5NumeralIdentificationONENRCperminute
+      - ScreeningPeriod5NumeralIdentificationONEError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5NumeralIdentificationONEPercentileatSchool
+      - ScreeningPeriod5NumeralIdentificationONEPercentileatLEA
+      - ScreeningPeriod5NumeralIdentificationONEPercentileatNation
+      - ScreeningPeriod5NumeralIdentificationONERiskLevel
+      - ScreeningPeriod5NumeralIdentificationONEFinalDate
+      - ScreeningPeriod5NumeralIdentificationONEGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONESchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONENationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONESchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONENationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONESchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONENationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONESchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONENationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationONEGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGTotalNumberRead
+      - ScreeningPeriod5NumeralIdentificationKGNumberReadCorrect
+      - ScreeningPeriod5NumeralIdentificationKGNRCperminute
+      - ScreeningPeriod5NumeralIdentificationKGError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5NumeralIdentificationKGPercentileatSchool
+      - ScreeningPeriod5NumeralIdentificationKGPercentileatLEA
+      - ScreeningPeriod5NumeralIdentificationKGPercentileatNation
+      - ScreeningPeriod5NumeralIdentificationKGRiskLevel
+      - ScreeningPeriod5NumeralIdentificationKGFinalDate
+      - ScreeningPeriod5NumeralIdentificationKGGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5NumeralIdentificationKGGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5PlaceValueTotalItems
+      - ScreeningPeriod5PlaceValueItemsCorrect
+      - ScreeningPeriod5PlaceValueICperminute
+      - ScreeningPeriod5PlaceValueError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5PlaceValuePercentileatSchool
+      - ScreeningPeriod5PlaceValuePercentileatLEA
+      - ScreeningPeriod5PlaceValuePercentileatNation
+      - ScreeningPeriod5PlaceValueRiskLevel
+      - ScreeningPeriod5PlaceValueFinalDate
+      - ScreeningPeriod5PlaceValueGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5PlaceValueSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5PlaceValueDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5PlaceValueNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5PlaceValueGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastTotalItems
+      - ScreeningPeriod5QuantityDiscriminationLeastItemsCorrect
+      - ScreeningPeriod5QuantityDiscriminationLeastICperminute
+      - ScreeningPeriod5QuantityDiscriminationLeastError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5QuantityDiscriminationLeastPercentileatSchool
+      - ScreeningPeriod5QuantityDiscriminationLeastPercentileatLEA
+      - ScreeningPeriod5QuantityDiscriminationLeastPercentileatNation
+      - ScreeningPeriod5QuantityDiscriminationLeastRiskLevel
+      - ScreeningPeriod5QuantityDiscriminationLeastFinalDate
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationLeastGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostTotalItems
+      - ScreeningPeriod5QuantityDiscriminationMostItemsCorrect
+      - ScreeningPeriod5QuantityDiscriminationMostICperminute
+      - ScreeningPeriod5QuantityDiscriminationMostError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5QuantityDiscriminationMostPercentileatSchool
+      - ScreeningPeriod5QuantityDiscriminationMostPercentileatLEA
+      - ScreeningPeriod5QuantityDiscriminationMostPercentileatNation
+      - ScreeningPeriod5QuantityDiscriminationMostRiskLevel
+      - ScreeningPeriod5QuantityDiscriminationMostFinalDate
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5QuantityDiscriminationMostGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5SubitizingTotalItems
+      - ScreeningPeriod5SubitizingItemsCorrect
+      - ScreeningPeriod5SubitizingICperminute
+      - ScreeningPeriod5SubitizingError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5SubitizingPercentileatSchool
+      - ScreeningPeriod5SubitizingPercentileatLEA
+      - ScreeningPeriod5SubitizingPercentileatNation
+      - ScreeningPeriod5SubitizingRiskLevel
+      - ScreeningPeriod5SubitizingFinalDate
+      - ScreeningPeriod5SubitizingGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5SubitizingSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5SubitizingDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5SubitizingNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5SubitizingSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5SubitizingDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5SubitizingNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5SubitizingSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5SubitizingDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5SubitizingNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5SubitizingSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5SubitizingDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5SubitizingNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5SubitizingGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionTotalItems
+      - ScreeningPeriod5VerbalAdditionItemsCorrect
+      - ScreeningPeriod5VerbalAdditionICperminute
+      - ScreeningPeriod5VerbalAdditionError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5VerbalAdditionPercentileatSchool
+      - ScreeningPeriod5VerbalAdditionPercentileatLEA
+      - ScreeningPeriod5VerbalAdditionPercentileatNation
+      - ScreeningPeriod5VerbalAdditionRiskLevel
+      - ScreeningPeriod5VerbalAdditionFinalDate
+      - ScreeningPeriod5VerbalAdditionGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalAdditionGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionTotalItems
+      - ScreeningPeriod5VerbalSubtractionItemsCorrect
+      - ScreeningPeriod5VerbalSubtractionICperminute
+      - ScreeningPeriod5VerbalSubtractionError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5VerbalSubtractionPercentileatSchool
+      - ScreeningPeriod5VerbalSubtractionPercentileatLEA
+      - ScreeningPeriod5VerbalSubtractionPercentileatNation
+      - ScreeningPeriod5VerbalSubtractionRiskLevel
+      - ScreeningPeriod5VerbalSubtractionFinalDate
+      - ScreeningPeriod5VerbalSubtractionGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5VerbalSubtractionGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsTotalItems
+      - ScreeningPeriod5StoryProblemsItemsCorrect
+      - ScreeningPeriod5StoryProblemsICperminute
+      - ScreeningPeriod5StoryProblemsError(TotalItems-ItemsCorrect)
+      - ScreeningPeriod5StoryProblemsPercentileatSchool
+      - ScreeningPeriod5StoryProblemsPercentileatLEA
+      - ScreeningPeriod5StoryProblemsPercentileatNation
+      - ScreeningPeriod5StoryProblemsRiskLevel
+      - ScreeningPeriod5StoryProblemsFinalDate
+      - ScreeningPeriod5StoryProblemsGrowthScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsSchoolGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsDistrictGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsNationalGrowthPercentileFromFalltoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthPercentilebyStartScoreFromFalltoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsSchoolGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsDistrictGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsNationalGrowthPercentileFromWintertoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthPercentilebyStartScoreFromWintertoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsSchoolGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsDistrictGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsNationalGrowthPercentileFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthPercentilebyStartScoreFromSpringtoScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthScoreFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsSchoolGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsDistrictGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsNationalGrowthPercentileFromScreeningPeriod4toScreeningPeriod5
+      - ScreeningPeriod5StoryProblemsGrowthPercentilebyStartScoreFromScreeningPeriod4toScreeningPeriod5
+
+
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+      source: $sources.input
+      operations: []
+
+
+  # modify input for basic mappings
+  cleaned_input:
+    source: $transformations.input
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: 1
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      - operation: duplicate_columns
+        columns:
+          AssessmentLanguage: AssessmentLanguageDescriptor
+      # map assessment language to its descriptor
+      - operation: map_values
+        column: AssessmentLanguageDescriptor
+        map_file: ./seeds/mapping_assessment_language.csv
+      # map grades
+      - operation: map_values
+        column: Grade
+        map_file: ./seeds/mapping_grade.csv
+      # convert date values
+      - operation: date_format
+        columns: 
+          - DOB
+        {% for period in assessment_periods %}
+          {% for objective_name in objective_names %}            
+          - {{period}}{{objective_name}}FinalDate
+          {% endfor %}
+        {% endfor %}
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      # rename student id column after x-walk operation
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+
+  # >>>>> Modify seed files for namespace override >>>>>
+
+  transformations_seed_file_assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+        
+  transformations_seed_file_assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  transformations_seed_file_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          academicSubjectDescriptor: "{%raw%}{{academicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          assessmentCategoryNamespace: "{%raw%}{{assessmentCategoryNamespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  transformations_seed_file_objectiveAssessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          AcademicSubjectDescriptor: "{%raw%}{{AcademicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  transformations_seed_file_performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  # <<<<< Modify seed files for namespace override <<<<<
+
+  # Assessment Category Descriptors
+  assessmentCategoryDescriptors:
+    source: $transformations.transformations_seed_file_assessments
+    operations:
+      - operation: keep_columns
+        columns:
+          - assessmentCategoryCodeValue
+          - assessmentCategoryNamespace
+          - assessmentCategoryDescription
+      - operation: distinct_rows
+
+  # Get assessment base periods
+  assessment_base_periods:
+    source: $transformations.transformations_seed_file_assessmentPeriodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isBasePeriod == "1"
+        behavior: include
+      - operation: rename_columns
+        columns:
+          codeValue: assessment_period_codeValue
+          namespace: assessment_period_namespace
+          shortDescription: assessment_period_shortDescription
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          join_key: 1
+
+  # Get assessment comparison periods
+  assessment_comparison_periods:
+    source: $transformations.transformations_seed_file_assessmentPeriodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isBasePeriod == "0"
+        behavior: include
+      - operation: rename_columns
+        columns:
+          codeValue: assessment_period_codeValue
+          namespace: assessment_period_namespace
+          shortDescription: assessment_period_shortDescription
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          join_key: 1
+  
+  # Get reporting method growth type descriptors
+  assessment_reporting_method_growth_descriptors:
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isComparisonPeriodMetric == "1"
+        behavior: include
+      - operation: rename_columns
+        columns:
+          codeValue: assessment_reporting_method_codeValue
+          namespace: assessment_reporting_method_namespace
+          description: assessment_reporting_method_description
+          shortDescription: assessment_reporting_method_shortDescription
+      - operation: add_columns
+        columns:
+          join_key: 1
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      # Generate all combinations between available assessment comparison periods 
+      # and growth type descriptors (generate cross apply using outer join)
+      - operation: join
+        sources: 
+          - $transformations.assessment_comparison_periods
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          codeValue: "{%raw%}{{assessment_reporting_method_codeValue}}{{assessment_period_codeValue}}{%endraw%}"
+          namespace: "{%raw%}{{assessment_reporting_method_namespace}}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          assessment_reporting_method_description: "{%raw%}{{assessment_reporting_method_description}} {{assessment_period_shortDescription}}{%endraw%}"
+          assessment_reporting_method_shortDescription: "{%raw%}{{codeValue}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - codeValue
+          - namespace
+          - assessment_reporting_method_description
+          - assessment_reporting_method_shortDescription
+          - datatype
+      - operation: rename_columns
+        columns:
+          assessment_reporting_method_description: description
+          assessment_reporting_method_shortDescription: shortDescription
+
+    # Get reporting method non growth type descriptors
+  assessment_reporting_method_non_growth_descriptors:
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isComparisonPeriodMetric == "0"
+        behavior: include
+      - operation: keep_columns
+        columns:
+          - codeValue
+          - namespace
+          - description
+          - shortDescription
+          - datatype
+    # Get reporting method non score descriptors
+  assessment_reporting_method_non_score_descriptors:
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isComparisonPeriodMetric == "-1"
+        behavior: include
+      - operation: keep_columns
+        columns:
+          - codeValue
+          - namespace
+          - description
+          - shortDescription
+          - datatype
+
+  assessmentReportingMethodDescriptors:
+    source: $transformations.assessment_reporting_method_growth_descriptors
+    operations:
+      - operation: union
+        sources:
+          - $transformations.assessment_reporting_method_non_growth_descriptors
+  # >>>>> Prepare assessment reporting method descriptors final >>>>>
+  assessmentReportingMethodDescriptorsFinal:
+    source: $transformations.assessmentReportingMethodDescriptors
+    operations:
+      - operation: union
+        sources:
+          - $transformations.assessment_reporting_method_non_score_descriptors
+
+  # >>>>> Prepare assessments >>>>>
+
+  # Get distinct grade levels
+  grade_levels:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: keep_columns
+        columns: 
+          - Grade
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          join_key: 1
+
+  # Get distinct assessment identifiers
+  assessment_identifiers:
+    source: $transformations.transformations_seed_file_assessments
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - namespace
+      - operation: rename_columns
+        columns:
+          namespace: assessmentIdentifier_namespace
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          join_key: 1
+
+  # Get assessment periods
+  assessment_periods:
+    source: $transformations.assessment_base_periods
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessment_period_codeValue
+          - assessment_period_namespace
+          - join_key
+      - operation: distinct_rows
+
+  # Generate attributes for assessment periods
+  assessment_period_descriptors:
+    source: $transformations.assessment_periods
+    operations:
+      # Generate all combinations between available assessment periods and assessment identifiers
+      # (generate cross apply using outer join)
+      - operation: join
+        sources: 
+          - $transformations.assessment_identifiers
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          assessment_periods_json: >
+            {%raw-%}
+            {
+              "assessmentPeriodDescriptor": "{{assessment_period_namespace}}#{{assessment_period_codeValue}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          assessment_periods_json: "{%raw%}{{assessment_periods_json | replace('\n', '')-}}{%endraw%}"
+
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          assessment_periods_json: agg(assessment_periods_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          assessment_periods_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - assessment_periods_json
+
+
+
+
+  # Generate attributes for grade levels
+  grade_level_descriptors:
+    source: $transformations.grade_levels
+    operations:
+      # Generate all combinations between available grade levels and assessment identifiers
+      # (generate cross apply using outer join)
+      - operation: join
+        sources: 
+          - $transformations.assessment_identifiers
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{Grade}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - grade_json
+
+        
+
+  # Generate attributes for scores
+  score_attributes:
+    source: $transformations.assessmentReportingMethodDescriptors
+    operations:
+      - operation: keep_columns
+        columns: 
+          - codeValue
+          - namespace
+          - datatype
+      - operation: add_columns
+        columns:
+          assessmentReportingMethodDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+          resultDatatypeTypeDescriptor: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
+          join_key: 1
+      - operation: keep_columns
+        columns: 
+          - join_key
+          - assessmentReportingMethodDescriptor
+          - resultDatatypeTypeDescriptor
+
+  assessment_scores_descriptors:
+    source: $transformations.score_attributes
+    operations:
+      # Generate all combinations between available reporting methods and assessment identifiers
+      # (generate cross apply using outer join)
+      - operation: join
+        sources: 
+          - $transformations.assessment_identifiers
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          scores_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{assessmentReportingMethodDescriptor}}",
+              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          scores_json: "{%raw%}{{scores_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          scores_json: agg(scores_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          scores_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - scores_json   
+
+  # Generate attributes for performance levels
+  assessmentReportingMethodDescriptor_namespace:
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
+    operations:
+      - operation: keep_columns
+        columns: 
+          - namespace
+      - operation: distinct_rows
+      - operation: rename_columns
+        columns:
+          namespace: reporting_method_descriptor_namespace
+      - operation: add_columns
+        columns:
+          join_key: 1
+
+  performance_level_attributes:
+    source: $transformations.transformations_seed_file_performanceLevelDescriptors
+    operations:
+      - operation: keep_columns
+        columns: 
+          - codeValue
+          - namespace
+      - operation: add_columns
+        columns:
+          join_key: 1
+      - operation: join
+        sources: 
+          - $transformations.assessmentReportingMethodDescriptor_namespace
+        join_type: left
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          assessmentReportingMethodDescriptor: "{%raw%}{{reporting_method_descriptor_namespace}}#17{%endraw%}"
+          performanceLevelDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+          resultDatatypeTypeDescriptor: "${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#Level"
+      - operation: keep_columns
+        columns: 
+          - join_key
+          - assessmentReportingMethodDescriptor
+          - performanceLevelDescriptor
+          - resultDatatypeTypeDescriptor
+
+  assessment_performance_levels:
+    source: $transformations.performance_level_attributes
+    operations:
+      # Generate all combinations between available performance levels and assessment identifiers
+      # (generate cross apply using outer join)
+      - operation: join
+        sources: 
+          - $transformations.assessment_identifiers
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          performance_levels_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{assessmentReportingMethodDescriptor}}",
+              "performanceLevelDescriptor": "{{performanceLevelDescriptor}}",
+              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_levels_json: "{%raw%}{{performance_levels_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          performance_levels_json: agg(performance_levels_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          performance_levels_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - performance_levels_json
+
+  # Final assessments dataframe
+  assessments:
+    source: $transformations.transformations_seed_file_assessments
+    operations:
+      # add: grade_json
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # add: assessmentReportingMethodscores_json, resultDatatypeTypescores_json
+      - operation: join
+        sources:
+          - $transformations.assessment_scores_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # add: performance_levels_json
+      - operation: join
+        sources:
+          - $transformations.assessment_performance_levels
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # add: assessment_assessment_periods_json
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # add: assessmentCategoryDescriptor
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryNamespace}}#{{assessmentCategoryCodeValue}}{%endraw%}"      
+      # Output columns list
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - academicSubjectDescriptor
+          - namespace
+          - assessmentCategoryDescriptor
+          - assessmentFamily
+          - assessmentTitle
+          - grade_json
+          - performance_levels_json
+          - assessment_periods_json
+          - scores_json
+
+  # <<<<< Prepare assessments <<<<<
+
+  # >>>>> Prepare objective-assessments >>>>>
+
+  assessments_base:
+    source: $transformations.assessments
+    operations:
+      - operation: keep_columns
+        columns: 
+          - assessmentIdentifier
+          - namespace
+          - scores_json
+          - performance_levels_json
+      - operation: add_columns
+        columns:
+          join_key: 1
+
+  objective_assessments:
+    source: $transformations.transformations_seed_file_objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: 1
+      - operation: join
+        sources:
+          - $transformations.assessments_base
+        join_type: inner
+        left_keys: [assessmentIdentifier, namespace]
+        right_keys: [assessmentIdentifier, namespace]
+
+  # <<<<< Prepare objective-assessments <<<<<
+
+  # >>>>> Prepare student-assessments >>>>>
+
+  student_assessments:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: join
+        sources:
+          - $transformations.assessment_identifiers
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
+      - operation: join
+        sources:
+          - $transformations.assessment_base_periods
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
+      - operation: add_columns
+        columns:
+          SchoolYear: ${SCHOOL_YEAR}
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}"  
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+
+  # <<<<< Prepare student-assessments <<<<<
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $transformations.assessmentReportingMethodDescriptorsFinal
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentPeriodDescriptors:
+    source: $transformations.assessment_base_periods
+    template: ./templates/assessmentPeriodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $transformations.assessmentCategoryDescriptors
+    template: ./templates/assessmentCategoryDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $transformations.transformations_seed_file_performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
