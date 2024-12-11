@@ -62,7 +62,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://cambiumassessment.com/AssessmentReportingMethodDescriptor#{{score[0]}}",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{score[2]}}",
-      "result": {% if score[2] == 'Integer' -%}"{{score[1] | int}}"{%- else -%}"{{score[1]}}"{%- endif %}
+      "result": {% if score[2] == 'Integer' -%}"{{score[1] | int}}"{%- else -%}"{{score[1][:35]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ]
