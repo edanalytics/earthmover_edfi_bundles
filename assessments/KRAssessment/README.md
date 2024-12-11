@@ -1,61 +1,41 @@
-# Assessment Details
+* **Title**: Kindergarten Readiness Assessment (KRA) - API 3.X
+* **Description**: This template includes the KRA assessments, designed to measure individual readiness across various domains.
+* **API version**: 5.3
+* **Submitter name**: Bruk Woldearegay
+* **Submitter organization**: CrocusLLC
+To run this bundle, please add your own source file<code>data/KRA_Data_File.csv</code>
 
-## Assessment Identifier(s)
-- KRA (the name of the assessment)
+This bundle works with KRA files in the format provided by the assessment vendor. For details about the mapping look at the [mapping document](./mapping.md) found here.
 
-## Assessment Family
-- None yet
+## CLI Parameters
 
-## Assessment Score Method Descriptors
-- uri://ed.sc.gov/assessmentReportingMethodDescriptor#ScaleScore
-- uri://ed.sc.gov/assessmentReportingMethodDescriptor#PerformanceLevel
+### Required
+- **OUTPUT_DIR**: Where output files will be written
+- **INPUT_FILE**: The assessment file to be mapped
+- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `PS_StudentID`, `StudentSUNS`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
+- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `PS_StudentID`, `StudentSUNS` ) . 
+### Optional
+- **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor . The default value is : uri://ed-fi.org
 
-# Hierarchy
-![alt text](image.png)
+### Examples
 
-## StudentAssessmentEducationOrganizationAssociation
--SchoolCode is mapped for this entity. 
+Using an ID column from the assessment file:
+```bash
+earthmover run -c ./earthmover.yaml -p '{
+  "INPUT_FILE": "path/to/KRA_Data_File.csv",
+  "OUTPUT_DIR": "./output",
+  "STUDENT_ID_NAME": "PS_StudentID"
+}'
+```
 
-## Reasoning
-The kindergarten readiness assessment is a composite assessment with objectives such as:
-- Social Foundation  mapping to Social Foundations academic subject 
-- Language and Literacy  mapping to English/Language Arts academic subject 
-- Mathematics mapping to Mathematics academic subject 
-- Physical Well-Being and Motor Development  mapping to Physical Well-Being academic subject  
-in the North Carolina Academic subject name space .
+Once you have inspected the output JSONL for issues, check the settings in lightbeam.yaml and transmit them to your Ed-Fi API with:
 
-## Summary of Descriptor Fields and Mappings
-
-### assessmentCategoryDescriptor:
-- **assessments.jsont**: `uri://ed-fi.org/assessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}`
-- **assessments.csv**: kindergarten Readiness
-
-### academicSubjectDescriptor:
-- **assessments.jsont**: `uri://ed.sc.gov/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}`
-- **assessments.csv**: Composite 
-
-### assessmentReportingMethodDescriptor:
-- **assessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
-- **objectiveAssessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
-- **studentAssessments.jsont**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
-- **studentAssessments.jsont (within studentObjectiveAssessments)**: `{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore`
-- here the namespace is :  `uri://ed.sc.gov/KRA` 
-### resultDatatypeTypeDescriptor:
-- **assessments.jsont**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-- **objectiveAssessments.jsont**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-- **studentAssessments.jsont**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-- **studentAssessments.jsont (within studentObjectiveAssessments)**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-
-### performanceLevelDescriptor:
-- **studentAssessments.jsont**: `{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevelDescriptor}}`
-- **studentAssessments.jsont (within studentObjectiveAssessments)**: `{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_SFScore}}, {{PerformanceLevel_LLScore}}, {{PerformanceLevel_MAScore}}, {{PerformanceLevel_PDScore}}`
--Here the performance level descriptors match the top level values :Demonstrating Readiness, Emerging Readiness and Approaching Readiness 
-### whenAssessedGradeLevelDescriptor:
-- **studentAssessments.jsont**: `{{whenAssessedGradeLevelDescriptor}}`
--Here there is an assumption made the exam is taken by prekindergarten/preschool students : uri://ed-fi.org/GradeLevelDescriptor#Prekindergarten/Preschool
-### educationOrganizationAssociationTypeDescriptor:
-- **educationOrganizationAssociationTypeDescriptor**: `uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration`
-
-### Other mapping decisions  
-- using **DistrictCode** vs **SchoolCode** for the studentAssessmentEducationOrganizationAssociation entity.
-
+```bash
+lightbeam validate+send -c ./lightbeam.yaml -p '{
+  "DATA_DIR": "./output/",
+  "API_YEAR": "yourAPIYear",
+  "BASE_URL": "yourURL",
+  "EDFI_API_CLIENT_ID": "yourID",
+  "EDFI_API_CLIENT_SECRET": "yourSecret"
+}'
+```
