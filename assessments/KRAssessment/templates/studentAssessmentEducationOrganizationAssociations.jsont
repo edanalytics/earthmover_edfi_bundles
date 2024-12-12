@@ -1,0 +1,15 @@
+ {
+      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Administration",
+      "educationOrganizationReference": {
+        "educationOrganizationId": {{ schoolId }}
+      },
+      "schoolYearTypeReference": {
+        "schoolYear": {{SchoolYear}}
+      },
+      "studentAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier }}",
+        "namespace": "{{ namespace }}",
+        "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
+        "studentUniqueId": "{{ studentUniqueId }}"
+      }
+    }
