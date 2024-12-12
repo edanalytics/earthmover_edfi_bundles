@@ -8,6 +8,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'STD_STI,ID' # Is ID column an identifier for students??
+    DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
   
 sources:
   input:
@@ -162,6 +163,7 @@ transformations:
           administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "uri://ed.sc.gov/GradeLevelDescriptor#0"
           schoolYear: "{%raw%}{{YEAR[-4:]}}{%endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  ASSESSDATE) }}{% endraw %}"
@@ -202,6 +204,9 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessments:
