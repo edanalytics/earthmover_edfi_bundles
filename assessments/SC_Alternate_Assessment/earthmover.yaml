@@ -102,7 +102,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          assessment_identifier: "SC_ALT_Math_${API_YEAR}"
+          assessment_identifier: "SC_ALT_Mathematics_${API_YEAR}"
           assessment_grade: "{% raw %}{{ mathgrade }}{% endraw %}"
           performance_level: "{% raw %}{{ levelmath }}{% endraw %}"
           ss: "{% raw %}{{ mathss }}{% endraw %}"
