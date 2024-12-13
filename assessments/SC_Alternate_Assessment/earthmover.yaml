@@ -30,6 +30,9 @@ sources:
   input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
+    optional_fields:  # Define optional fields that cause issues during lowercase dedupe.
+      - grade
+      - dob
 
 
 transformations:
@@ -45,12 +48,22 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
+
+      # Ugly workaround to handle case-duplicate columns in historic years.
+      - operation: modify_columns
+        columns:
+          Grade: "{% raw %}{{ Grade or grade }}{% endraw %}"
+          DOB: "{% raw %}{{ DOB or dob }}{% endraw %}"
+      - operation: drop_columns
+        columns:
+          - grade
+          - dob
       
       # Lowercase all columns to avoid casing errors between years.
       - operation: lowercase_columns
 
       # Coalesce differently-named columns in historic years.
-      - operation: modify_columns  
+      - operation: add_columns  
         columns:
           # rdistrict doesn't have a duplicate column to coalesce.
           rdistrictid: "{% raw %}{{ rdistrictid or reporteddistrictid }}{% endraw %}"
