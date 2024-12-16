@@ -63,8 +63,8 @@ sources:
     colspec_headers:
       start: start_index
       end: end_index
-      width: field_length
-      name: field_name
+      #width: field_length
+      #name: field_name
 
   {% elif "${INPUT_FILE}".endswith(".csv") %}
     file: ${INPUT_FILE}
