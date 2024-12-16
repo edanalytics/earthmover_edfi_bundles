@@ -217,8 +217,8 @@ transformations:
         sources:
           - $transformations.sc_alt_assessment_ed_org_assocs__association
       - operation: filter_rows
-        query: "ed_org_id != '' & ed_org_id.notnull()"
-        behavior: include        
+        query: ed_org_id.notnull() & (ed_org_id != "") & (ed_org_id != "None")
+        behavior: include
   
   
   ### Assessments
