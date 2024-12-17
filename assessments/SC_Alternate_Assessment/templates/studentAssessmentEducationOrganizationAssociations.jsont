@@ -1,0 +1,15 @@
+{
+  "educationOrganizationAssociationTypeDescriptor": "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#{{ ed_org_assoc_descriptor }}",
+  "educationOrganizationReference": {
+    "educationOrganizationId": {{ed_org_id}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentAssessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "uri://cambiumassessment.com/Assessment",
+    "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+    "studentUniqueId": "{{student_unique_id}}"
+  }
+}
