@@ -31,9 +31,7 @@
     {%- endfor -%}
   ],
    "scoreResults": [
-    {%- set all_scores = [
-        [student_grade, "Assessment Grade Level", "Level"]
-    ] -%}
+    {%- set all_scores = [] -%}
 
     {%- if overall_scale_score and overall_scale_score != "NA" -%}
         {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
@@ -174,4 +172,8 @@
 
     {%- endfor -%}
   ]
+
+  {% if student_grade and student_grade != "NA" %}
+  , "whenAssessedGradeLevel": {{ student_grade }}
+  {% endif %}
 }
