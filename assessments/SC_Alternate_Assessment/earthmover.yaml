@@ -32,7 +32,9 @@ sources:
     type: ${INPUT_FILETYPE}
     optional_fields:  # Define optional fields that cause issues during lowercase dedupe.
       - grade
+      - districtid
       - dob
+      - dob2
 
 
 transformations:
@@ -53,11 +55,15 @@ transformations:
       - operation: add_columns
         columns:
           Grade: "{% raw %}{{ Grade or grade }}{% endraw %}"
+          DistrictID: "{% raw %}{{ DistrictID or districtid }}{% endraw %}"
           DOB: "{% raw %}{{ DOB or dob }}{% endraw %}"
+          DOB2: "{% raw %}{{ DOB2 or dob2 }}{% endraw %}"
       - operation: drop_columns
         columns:
           - grade
+          - districtid
           - dob
+          - dob2
       
       # Lowercase all columns to avoid casing errors between years.
       - operation: lowercase_columns
