@@ -31,9 +31,7 @@
     {%- endfor -%}
   ],
    "scoreResults": [
-    {%- set all_scores = [
-        [student_grade, "Assessment Grade Level", "Level"]
-    ] -%}
+    {%- set all_scores = [] -%}
 
     {%- if overall_scale_score and overall_scale_score != "NA" -%}
         {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
@@ -90,7 +88,7 @@
     {%- for score in all_scores -%}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
@@ -166,7 +164,7 @@
       "scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{ obj_assess[0] | int}}"
         }
       ]
@@ -174,4 +172,8 @@
 
     {%- endfor -%}
   ]
+
+  {% if student_grade and student_grade != "NA" %}
+  , "whenAssessedGradeLevel": {{ student_grade }}
+  {% endif %}
 }
