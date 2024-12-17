@@ -50,7 +50,7 @@ transformations:
           ${STUDENT_ID_NAME}: student_unique_id
 
       # Ugly workaround to handle case-duplicate columns in historic years.
-      - operation: modify_columns
+      - operation: add_columns
         columns:
           Grade: "{% raw %}{{ Grade or grade }}{% endraw %}"
           DOB: "{% raw %}{{ DOB or dob }}{% endraw %}"
