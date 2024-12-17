@@ -94,6 +94,18 @@ transformations:
       - operation: add_columns
         columns:
           DI_Test_Name: "{%raw%}{{test_name.split(' Grade ')[0]}}{%endraw%}"
+          # Parse out whether this is a checkpoint or End-of-Year (EoY) assessment
+          DI_Assessment_Period: "{%raw%}
+            {% if 'Checkpoint_1' in test_name %}
+              Chk1
+            {% elif 'Checkpoint_2' in test_name %}
+              Chk2
+            {% elif 'Checkpoint_3' in test_name %}
+              Chk3
+            {% else %}
+              EoY
+            {% endif %}
+          {%endraw%}"
       # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
       # (specified in academicSubjectDescriptor seed table)
       - operation: join
@@ -121,11 +133,11 @@ transformations:
           DI_adminDate: "{%raw%}{{administrationDate.replace('-', '')}}{%endraw%}" #remove hypens from date in studentassessmentidentifier
       
       # Create StudentAssessmentIdentifier
-      # TODO May need to include something else for retests?
       - operation: combine_columns
         columns:
           - assessmentIdentifier
-          - studentUniqueId          
+          - studentUniqueId
+          - DI_Assessment_Period
           - DI_adminDate
         new_column: studentAssessmentIdentifier
         separator: '-'
