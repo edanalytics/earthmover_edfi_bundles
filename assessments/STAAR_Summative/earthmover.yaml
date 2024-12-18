@@ -60,11 +60,11 @@ sources:
     type: fixedwidth
     header_rows: 0
     colspec_file: ./fwf_to_csv_xwalks/staar_summative_{{format}}fwf_xwalk_${API_YEAR}.csv
-    #colspec_headers:
-    #  #start: start_index
-    #  #end: end_index
-    #  #width: field_length
-    #  name: field_name
+    colspec_headers:
+      start: start_index
+      end: end_index
+      width: field_length
+      name: field_name
 
   {% elif "${INPUT_FILE}".endswith(".csv") %}
     file: ${INPUT_FILE}
