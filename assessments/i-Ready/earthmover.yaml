@@ -160,7 +160,7 @@ transformations:
           school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
       - operation: add_columns
         columns:
-          namespace: 'uri://curriculumassociates.com'
+          namespace: 'uri://cainc.com'
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
           student_assessment_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
           assessmentIdentifier: '{% raw %}{% if quantile_measure %}CAINC-IREADY-DIAGNOSTIC-MATH{% endif %}{% if lexile_measure %}CAINC-IREADY-DIAGNOSTIC-ELA{% endif %}{% endraw %}'
