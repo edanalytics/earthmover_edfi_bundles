@@ -16,6 +16,8 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
     optional_fields:
+      - Student_State_ID,
+      - STUDENT_STATE_ID
       - TXKEA_VOCABULARY_RESULTS__TXKEA_VOCABULARY
       - TXKEA_LETTER_NAMES_RESULTS__TXKEA_LETTER_NAMES
       - TXKEA_SPELLING_RESULTS__TXKEA_SPELLING
