@@ -134,7 +134,7 @@ transformations:
           schoolYear: ${API_YEAR}
           assessmentIdentifier: ${TEST_TYPE}
           namespace: "uri://collegeboard.org"
-          assessmentCategoryDescriptor: "uri://ed-fi.org/AssessmentCategoryDescriptor#College entrance exam"
+          assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESAPCE}/AssessmentCategoryDescriptor#College entrance exam"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
