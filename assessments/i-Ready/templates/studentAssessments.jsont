@@ -173,7 +173,7 @@
     {%- endfor -%}
   ]
 
-  {% if student_grade and student_grade != "NA" %}
+  {% if student_grade is not none and student_grade != "" and student_grade != "NA" %}
   , "whenAssessedGradeLevel": "{{ student_grade }}"
   {% endif %}
 }
