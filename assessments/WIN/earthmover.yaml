@@ -11,6 +11,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: StudentID
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID,StateID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
   assessments:
@@ -74,6 +75,7 @@ transformations:
           year: "{%raw%}{{TestAdmin[-2:]}}{%endraw%}"
           schoolYear: "{%raw%}20{%- if season == 'FA' -%}{{year | int + 1}}{%- else -%}{{year}}{%- endif -%}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE} 
           educationOrganizationAssociationTypeDescriptor: "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment"
           MathDuration: "{%raw%}{{(MathFTime[:-2] | int * 60 + MathFTime[-2:] | int) - (MathSTime[:-2] | int * 60 + MathSTime[-2:] | int)}}{%endraw%}"
           DataDuration: "{%raw%}{{(DataFTime[:-2] | int * 60 + DataFTime[-2:] | int) - (DataSTime[:-2] | int * 60 + DataSTime[-2:] | int)}}{%endraw%}"
@@ -212,6 +214,16 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessments:
@@ -227,7 +239,7 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
-    source: $sources.objectiveAssessments
+    source: $transformations.objective_assessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
