@@ -103,7 +103,11 @@
         "identificationCode": "{{ obj_assess[0] }}",
         "namespace": "{{namespace}}"
       },
-      "scoreResults": [],
+      "scoreResults": [{
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#ObjectiveName",
+        "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{obj_assess[0]}}"
+      }],
       "performanceLevels": [ 
         {
           "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
