@@ -87,7 +87,7 @@
 
   {%- set all_obj_assess = [] -%}
   {%- for obj_assess in possible_obj_assess -%}
-      {%- if obj_assess[0] is not none and obj_assess[0] | length -%}
+      {%- if obj_assess[1] is not none and obj_assess[1] | length -%}
       {%- set _ = all_obj_assess.append(obj_assess) -%}
       {%- endif -%}
   {%- endfor -%}
