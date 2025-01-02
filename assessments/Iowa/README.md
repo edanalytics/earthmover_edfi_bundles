@@ -27,7 +27,7 @@ Sample file: `data/sample_anonymized_file_IOWA.csv`)
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/sample_anonymized_file_earlyReading.csv",
+"INPUT_FILE": "data/sample_anonymized_file_IOWA.csv",
 "STATE_FILE": "./tmp/runs.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "StateID",
