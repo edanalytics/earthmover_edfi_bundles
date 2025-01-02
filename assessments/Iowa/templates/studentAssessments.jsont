@@ -1,0 +1,229 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{Building_Code}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {#  Accommodations Logic #}
+
+  {% set accomodation_descriptor_dictionary = {
+    1:  'Online desktop or laptop',
+    2:  'Online tablet',
+    3:  'Reserved for future',
+    4:  'Reserved for future',
+    5:  'Braille',
+    6:  'Large Print',
+    7:  'Proctor led',
+    8:  'Self-paced',
+    9:  'Audio Type',
+    10: 'English Language Administration',
+    11: 'Spanish Language Administration',
+    12: 'Extended Time',
+    13: 'Reserved for future'
+  } %}
+  {% set vars = {'is_first_item': True} %}  
+  {% if Mode_of_Administration|length > 0 and Mode_of_Administration != '0' %}
+    "accommodations": [
+    {% for c in Mode_of_Administration %}
+      {% if c == '1' and loop.index < 13 %}
+        {% if not vars.is_first_item %}
+        ,
+        {% endif %}
+        {
+          "accommodationDescriptor": "{{descriptor_namespace_override}}/AccommodationDescriptor#{{accomodation_descriptor_dictionary[loop.index]}}"
+        }
+        {% if vars.update({'is_first_item': False}) %} {% endif %}  
+      {% endif %}
+    {% endfor %}
+    ],
+  {% endif %}
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {# Mapping Definition 
+
+      # Score Name        : Reporting method column name in data frame
+      # Reporting Method  : Reporting method descriptor code value
+      # Slot Length       : If 0 then does not have indexed objectives
+      # Data Type         : Result data type
+
+      'ScoreName': ([ReportingMethod, SlotLength, DataType])
+    #}
+    {% set scores_without_objective_dictionary = {
+      "Predicted_SAT_Critical_Reading_High"                               : (["Predicted SAT Critical Reading High",                0, "Integer"    ]),
+      "Predicted_SAT_Critical_Reading_Low"                                : (["Predicted SAT Critical Reading Low",                 0, "Integer"    ]),
+      "Predicted_SAT_Math_High"                                           : (["Predicted SAT Math High",                            0, "Integer"    ]),
+      "Predicted_SAT_Math_Low"                                            : (["Predicted SAT Math Low",                             0, "Integer"    ]),
+      "Predicted_ACT_Composite_High"                                      : (["Predicted ACT Composite High",                       0, "Integer"    ]),
+      "Predicted_ACT_Composite_Low"                                       : (["Predicted ACT Composite Low",                        0, "Integer"    ])
+    } %}
+
+  "administrationDate": "{{Date_Tested}}",
+  "period": {
+    "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#{{Semester}}"
+  },
+  "scoreResults": [
+    {% for score_name in scores_without_objective_dictionary %}
+      {% set ReportingMethod, SlotLength, DataType = scores_without_objective_dictionary[score_name] %}
+      {% set score_string = __row_data__[score_name]|trim %}
+      {# Report score as it is if scores are not saved within substrings #}
+      {% if score_string|length > 0 and score_string != 'NULL' and SlotLength == 0 %}
+        {
+          "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#{{ReportingMethod}}",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{DataType}}",
+          "result": "{{score_string}}"
+        }
+        {% if loop.index < loop.length %}
+        ,
+        {% endif %}
+      {% endif %}
+    {% endfor %} 
+  ],
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {#  Objective-Score Logic - Sourced from Appendix A #}
+  {% set objectives_dictionary = {
+    '1':'R',
+    '2':'V',
+    '3':'SP',
+    '4':'CP',
+    '5':'PC',
+    '6':'L',
+    '7':'WE',
+    '7':'CW',
+    '8':'ET',
+    '9':'WA',
+    '10':'Li',
+    '11':'XET',
+    '12':'M',
+    '13':'MC',
+    '14':'MT',
+    '15':'CT',
+    '16':'XCT',
+    '17':'CT-',
+    '18':'XCT-',
+    '19':'SS',
+    '20':'SC',
+    '21':'CC',
+    '22':'XCC',
+    '23':'CC-',
+    '24':'XCC-',
+    '25':'RW',
+    '26':'RC',
+    '27':'RT',
+    '28':'LT',
+    '29':'N/A',
+    '30':'N/A-2'
+    } %}
+
+  {# Mapping Definition 
+
+    # Score Name        : Reporting method column name in data frame
+    # Reporting Method  : Reporting method descriptor code value
+    # Slot Length       : Number of substring indices to represent a score for an objective
+                          If 0 then does not have indexed objectives
+    # Data Type         : Result data type
+
+    'ScoreName': ([ReportingMethod, SlotLength, DataType]),
+
+    TODO:
+      
+    "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct" : (["SDCD Levels Percent Correct",                        3, "Percentage" ]),
+    "Common_Core_Standards_Domain_Percent_Correct"                      : (["CSS Domain Percent Correct",                         3, "Percentage" ]),
+  #}
+  {% set scores_names = {
+    "Number_Attempted"                                                  : (["Number Attempted",                                   2, "Integer"    ]),
+    "Raw_Score"                                                         : (["Raw Score",                                          2, "Integer"    ]),
+    "Standard_Score"                                                    : (["Standard Score",                                     3, "Integer"    ]),
+    "Grade_Equivalent"                                                  : (["Grade Equivalent",                                   4, "Decimal"    ]),
+    "National_Percentile_Rank"                                          : (["National Percentile Rank",                           2, "Percentile" ]),
+    "National_Curve_Equivalent"                                         : (["National Curve Equivalent",                          2, "Percentile" ]),
+    "National_Stanine"                                                  : (["National Stanine",                                   1, "Integer"    ]),
+    "Predicted_Standard_Score"                                          : (["Predicted Standard Score",                           3, "Integer"    ]),
+    "Predicted_Grade_Equivalent"                                        : (["Predicted Grade Equivalent",                         4, "Decimal"    ]),
+    "Predicted_National_Percentile_Rank"                                : (["Predicted National Percentile Rank",                 2, "Percentile" ]),
+    "Predicted_Standard_Score_Diffs"                                    : (["Predicted Standard Score Diffs",                     4, "Integer"    ]),
+    "Predicted_Grade_Equivalent_Diffs"                                  : (["Predicted Grade Equivalent Diffs",                   4, "Decimal"    ]),
+    "Local_Percentil_Rank"                                              : (["Local Percentile Rank",                              2, "Percentile" ]),
+    "Local_Stanine"                                                     : (["Local Stanine",                                      1, "Integer"    ]),
+    "College_Readiness"                                                 : (["College Readiness",                                  1, "Level"      ]),
+    "Standard_Score_Norm_Based"                                         : (["Standard Score based on 2011/2005 norms",            3, "Integer"    ]),
+    "Grade_Equivalent_Norm_Based"                                       : (["Grade Equivalent based on 2011/2005 norms",          2, "Percentage" ]),
+    "National_Percentile_Rank_Norm_Based"                               : (["National Percentile Rank based on 2011/2005 norms",  2, "Percentile" ]),
+    "National_Stanine_Norm_Based"                                       : (["National Stanine based on 2011/2005 norms",          1, "Integer"    ])
+  } %}
+
+  {% set performanceLevelDictionary = {
+    "1" : "Completion Criteria met",
+    "0" : "Completion Criteria not met",
+    "-1": "Test not included in the Battery"
+  } %}
+  {#-----------------------------------------------------------------------------------------------------------#}
+  "studentObjectiveAssessments": [
+    {% for idx, identification_code in objectives_dictionary.items() %}
+      {
+        {% set idx = idx|int %}
+        "administrationDate": "{{Date_Tested}}",
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{identification_code}}",
+          "namespace": "{{namespace}}"
+        },
+        {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] %}
+        {# Performance levels 0, 1 or blank #}
+        {% set performanceLevelCodeValue = performanceLevelCodeValue if performanceLevelCodeValue|trim != "" else '-1' %}        
+        {% set performanceLevelIndicatorName = performanceLevelDictionary[performanceLevelCodeValue] %}
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
+            "performanceLevelIndicatorName": "{{performanceLevelIndicatorName}}"
+          }
+        ],
+        "scoreResults": [
+          {% set vars = {'is_first_item': True} %} 
+          {% for score_name in scores_names %}
+            {% set ReportingMethod, SlotLength, DataType = scores_names[score_name] %}
+            {% set score_string = __row_data__[score_name] %}            
+            {% if score_string|length > 0 and score_string != 'NULL' and SlotLength != 0 %}
+              {# Set reporting method for Norm based scores #}
+              {% set ReportingMethod = "Standard Score based on 2005 norms" if score_name == "Standard_Score_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
+              {% set ReportingMethod = "Standard Score based on 2011 norms" if score_name == "Standard_Score_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
+              {% set ReportingMethod = "Grade Equivalent based on 2005 norms" if score_name == "Grade_Equivalent_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
+              {% set ReportingMethod = "Grade Equivalent based on 2011 norms" if score_name == "Grade_Equivalent_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
+              {% set ReportingMethod = "National Percentile Rank based on 2005 norms" if score_name == "National_Percentile_Rank_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
+              {% set ReportingMethod = "National Percentile Rank based on 2011 norms" if score_name == "National_Percentile_Rank_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
+              {% set ReportingMethod = "National Stanine based on 2005 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
+              {% set ReportingMethod = "National Stanine based on 2011 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
+
+              {% set scoreValue = score_string[idx*SlotLength-SlotLength:idx*SlotLength] if idx*SlotLength <= score_string|length else "" %}
+              {% set scoreValue = scoreValue|trim %}
+              {% if scoreValue|length > 0 %}
+                {% if not vars.is_first_item %}
+                ,
+                {% endif %}
+                {
+                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#{{ReportingMethod}}",
+                    "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{DataType}}",
+                    "result": "{{scoreValue|trim}}"
+                }
+                {% if vars.update({'is_first_item': False}) %} {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        ]
+      }
+    {% if loop.index < loop.length %}
+    ,
+    {% endif %} 
+    {% endfor %}
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{Class_Grade_Descriptor}}"
+}

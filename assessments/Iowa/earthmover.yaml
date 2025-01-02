@@ -1,0 +1,418 @@
+version: 2
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: false
+  show_stacktrace: true
+  parameter_defaults:
+    # You can set these values at the command line or leave the defaults
+    OUTPUT_DIR: ./output/
+    STATE_FILE: ./tmp/.earthmover/runs.csv
+    API_YEAR: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: Student_Id,Secondary_Student_Id
+    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
+
+sources:
+  {% set columns_dictionary = ({
+    "Test":"Test",
+    "State Name":"State_Name",
+    "Building Code":"Building_Code",
+    "Class Grade":"Class_Grade",
+    "Date Tested":"Date_Tested",
+    "GUID":"Guid",
+    "Student ID":"Student_Id",
+    "Secondary Student ID":"Secondary_Student_Id",
+    "Battery":"Battery",
+    "Level":"Level",
+    "Form":"Form",
+    "Norm Year":"Norm_Year",
+    "Semester":"Semester",
+    "Programs String":"Programs_String",
+    "Number Attempted (NA)":"Number_Attempted",
+    "Completion Criteria (CC)":"Completion_Criteria",
+    "Raw Score (RS)":"Raw_Score",
+    "Standard Score (SS)":"Standard_Score",
+    "Grade Equivalent (GE)":"Grade_Equivalent",
+    "National Percentile Rank (NPR)":"National_Percentile_Rank",
+    "National Curve Equivalent (NCE)":"National_Curve_Equivalent",
+    "National Stanine (NS)":"National_Stanine",
+    "Predicted Standard Score (PSS)":"Predicted_Standard_Score",
+    "Predicted Grade Equivalent (PGE)":"Predicted_Grade_Equivalent",
+    "Predicted National Percentile Rank (PNPR)":"Predicted_National_Percentile_Rank",
+    "Predicted Standard Score Diffs":"Predicted_Standard_Score_Diffs",
+    "Predicted Grade Equivalent Diffs":"Predicted_Grade_Equivalent_Diffs",
+    "Significant Diff Indicators":"Significant_Diff_Indicators",
+    "Local Percentil Rank":"Local_Percentil_Rank",
+    "Local Stanine":"Local_Stanine",
+    "Catholic - Private PR":"Catholic_Private_PR",
+    "HSES PR":"HSES_PR",
+    "Predicted SAT Critical Reading High":"Predicted_SAT_Critical_Reading_High",
+    "Predicted SAT Critical Reading Low":"Predicted_SAT_Critical_Reading_Low",
+    "Predicted SAT Math High":"Predicted_SAT_Math_High",
+    "Predicted SAT Math Low":"Predicted_SAT_Math_Low",
+    "Predicted ACT Composite High":"Predicted_ACT_Composite_High",
+    "Predicted ACT Composite Low":"Predicted_ACT_Composite_Low",
+    "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct":"Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct",
+    "Common Core Standards (CSS) Domain Percent Correct":"Common_Core_Standards_Domain_Percent_Correct",
+    "College Readiness":"College_Readiness",
+    "Standard Score based on 2011 or 2005 norms":"Standard_Score_Norm_Based",
+    "Grade Equivalent based on 2011 or 2005 norms":"Grade_Equivalent_Norm_Based",
+    "National Percentile Rank based on 2011 or 2005 norms":"National_Percentile_Rank_Norm_Based",
+    "National Stanine based on 2011 or 2005 norms":"National_Stanine_Norm_Based",
+    "Mode of Administration":"Mode_of_Administration"
+    }) %}
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  appendix_a:
+    file: ./seeds/appendix_a_tests.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+    
+  cleaned_input:
+    source: $transformations.input
+    operations:
+      # Filter only required columns
+      - operation: keep_columns
+        columns:
+        {% for col in columns_dictionary.keys() %}
+          - {{col}}
+        {% endfor %}
+      # Simplify column names
+      - operation: rename_columns
+        columns:
+        {% for old,new in columns_dictionary.items() %}
+        {% if old != new %} #avoids column name overwrite warning
+          {{old}}: {{new}}
+        {% endif %}
+        {% endfor %}
+      - operation: modify_columns
+        columns:
+          Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+      - operation: date_format
+        column: Date_Tested
+        from_format: "%m%d%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          school_year: ${SCHOOL_YEAR}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+    {% if "${DESCRIPTOR_NAMESPACE_OVERRIDE}" == "uri://ed-fi.org" %}
+      - operation: map_values
+        column: Class_Grade
+        map_file: ./seeds/gradeMappings.csv
+    {% else %}
+      - operation: modify_columns
+        columns:
+          Class_Grade: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{value}}{%endraw%}"
+    {% endif %}
+      - operation: map_values
+        column: Semester
+        mapping:
+          "1": Fall
+          "2": MidYear
+          "3": Spring
+      - operation: rename_columns
+        columns:
+          Class_Grade: Class_Grade_Descriptor
+      # rename student id column after x-walk operation
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+    # TODO: ! REMOVE !
+      - operation: limit_rows
+        count: 3 # required, no default
+
+  appendix_a:
+    source: $sources.appendix_a
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "1"
+
+  # >>>>> Prepare descriptors >>>>>
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - position
+      - operation: distinct_rows
+
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  # <<<<< Prepare descriptors <<<<<
+
+  # >>>>> Prepare assessments >>>>>
+            
+  grades_json:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Battery
+          - Form
+          - Level
+          - Class_Grade_Descriptor
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{Class_Grade_Descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - Battery
+          - Form
+          - Level
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - Battery
+          - Form
+          - Level
+          - grade_json
+
+  scores_json:
+    source: $transformations.assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isPerformanceLevel == 0
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          assessmentReportingMethodDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+          resultDatatypeTypeDescriptor: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          scores_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{assessmentReportingMethodDescriptor}}",
+              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          scores_json: "{%raw%}{{scores_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns:
+          scores_json: agg(scores_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          scores_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns: 
+          - join_key
+          - scores_json
+  
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          academicSubjectDescriptor: "{%raw%}{{academicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      - operation: join
+        sources: 
+          - $transformations.scores_json
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: join
+        sources: 
+          - $transformations.grades_json
+        join_type: inner
+        left_keys: 
+          - Battery
+          - Form
+          - Level 
+        right_keys: 
+          - Battery
+          - Form
+          - Level  
+  
+  # <<<<< Prepare assessments <<<<<
+
+  # >>>>> Prepare objective-assessments >>>>>
+
+  objectiveAssessments:
+    source: $transformations.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.appendix_a
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+    # Cleanup level-slot combination as per appendix a
+    {% for i in range(5,19) %}
+      {% if i > 8 %}
+      - operation: filter_rows
+        query: 'test_slot == "6" & Level == "{{i}}" & identificationCode == "L"'
+        behavior: exclude
+      {% endif %}
+      {% if i < 9 or i > 17 %}
+      - operation: filter_rows
+        query: 'test_slot == "6" & Level == "{{i}}" & identificationCode == "WE"'
+        behavior: exclude
+      {% endif %}
+      {% if i != 6 %}
+      - operation: filter_rows
+        query: 'test_slot == "25" & Level == "{{i}}"'
+        behavior: exclude
+      {% endif %}
+      {% if i != 6 %}
+      - operation: filter_rows
+        query: 'test_slot == "26" & Level == "{{i}}"'
+        behavior: exclude
+      {% endif %}
+    {% endfor %}
+
+  # <<<<< Prepare objective-assessments <<<<<
+
+  # >>>>> Prepare student-assessments >>>>>
+
+  student_assessments:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: join
+        sources:
+          - $transformations.assessments
+        join_type: left
+        left_keys: 
+          - Battery
+          - Form
+          - Level 
+        right_keys: 
+          - Battery
+          - Form
+          - Level
+      - operation: add_columns
+        columns:
+          SchoolYear: ${SCHOOL_YEAR}
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+
+  # <<<<< Prepare student-assessments <<<<<
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $transformations.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $transformations.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentPeriodDescriptors:
+    source: $transformations.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $transformations.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  accommodationDescriptors:
+    source: $transformations.accommodationDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
