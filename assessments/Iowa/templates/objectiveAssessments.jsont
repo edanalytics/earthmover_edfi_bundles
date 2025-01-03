@@ -1,0 +1,30 @@
+{
+  "identificationCode": "{{identificationCode}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "academicSubjectDescriptor": "{{academicSubjectDescriptor}}",
+  "description": "{{objective_assessment_description}}",
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
+      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelIndicatorName": "Completion Criteria met"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
+      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#0",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelIndicatorName": "Completion Criteria not met"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
+      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#-1",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelIndicatorName": "Test not included in the Battery"
+    }
+  ],
+  "scores": [{{scores_json}}]
+}
