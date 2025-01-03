@@ -30,7 +30,7 @@
       {%- for score in all_scores -%}
       {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESAPCE}/ResultDatatypeTypeDescriptor#{{score[1]}}",
           "result": "{{score[2]}}"
       }
       {%- if not loop.last -%},
@@ -155,7 +155,7 @@
           {%- for obj_assess_score in obj_asses[1] -%}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_assess_score[0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+            "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESAPCE}/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{obj_assess_score[1]}}"
           }
           {%- if not loop.last -%},
