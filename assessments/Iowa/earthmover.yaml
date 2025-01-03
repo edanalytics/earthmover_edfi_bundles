@@ -145,9 +145,6 @@ transformations:
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
-    # TODO: ! REMOVE !
-      - operation: limit_rows
-        count: 3 # required, no default
 
   appendix_a:
     source: $sources.appendix_a
