@@ -119,9 +119,10 @@ transformations:
       column: TestDate
       from_format: "%Y%m%d"
       to_format: "%Y-%m-%d"
-    - operation: filter_rows  # Empty administration dates are rare but must be removed.
-        query: TestDate != ''
-        behavior: include
+      # Empty administration dates are rare but must be removed.
+    - operation: filter_rows
+      query: TestDate != ''
+      behavior: include
     - operation: join
       sources:
         - $sources.grade_level_descriptors
