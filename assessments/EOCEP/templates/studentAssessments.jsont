@@ -109,7 +109,7 @@
         "result": "{{obj_assess[0][:35]}}"
       }]
 
-      {%- if obj_assess[1] and obj_assess[1] is not none and obj_assess[1] | length -%}
+      {%- if obj_assess[1] and obj_assess[1] is not none and obj_assess[1] | length and obj_assess[1] != 'None' -%}
       , "performanceLevels": [ 
         {
           "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
@@ -118,7 +118,7 @@
         }
       ]
       {%- endif -%}
-      
+
     }{%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ]
