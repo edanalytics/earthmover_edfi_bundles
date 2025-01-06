@@ -107,14 +107,18 @@
         "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#ObjectiveName",
         "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level",
         "result": "{{obj_assess[0][:35]}}"
-      }],
-      "performanceLevels": [ 
+      }]
+
+      {%- if obj_assess[1] and obj_assess[1] is not none and obj_assess[1] | length -%}
+      , "performanceLevels": [ 
         {
           "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
           "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
         }
       ]
+      {%- endif -%}
+      
     }{%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ]
