@@ -121,7 +121,7 @@ transformations:
       to_format: "%Y-%m-%d"
       # Empty administration dates are rare but must be removed.
     - operation: filter_rows
-      query: TestDate != ''
+      query: TestDate.notnull() & (TestDate != '')
       behavior: include
     - operation: join
       sources:
