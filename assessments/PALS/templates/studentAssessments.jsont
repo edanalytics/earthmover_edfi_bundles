@@ -19,7 +19,7 @@
   "periods": [{"assessmentPeriodDescriptor": "uri://renaissance.com/products/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
   "scoreResults": [{
     "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{codeValue}}",
-    "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+    "resultDatatypeTypeDescriptor": "{{namespace}}/ResultDatatypeTypeDescriptor#Integer",
     "result": "{{ result }}"
     }]
 }

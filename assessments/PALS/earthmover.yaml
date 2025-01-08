@@ -9,7 +9,11 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'STD_STI,ID' # Is ID column an identifier for students??
     DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
-  
+
+packages:
+  pkgSC: 
+    local: ./pkgSC
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -61,11 +65,11 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          score_json: >
+          score_json: > #"resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer", 
               {%raw-%}  
               {
                 "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{codeValue}}",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+                "resultDatatypeTypeDescriptor": "{{namespace}}/ResultDatatypeTypeDescriptor#Integer",  
                 "minimumScore":"{{ minimumScore }}",
                 "maximumScore":"{{ maximumScore }}"                
               }
@@ -161,7 +165,7 @@ transformations:
       - operation: add_columns
         columns:
           administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "uri://ed.sc.gov/GradeLevelDescriptor#0"
+          whenAssessedGradeLevelDescriptor: "${DESCRIPTOR_NAMESPACE}/GradeLevelDescriptor#0" #uri://ed.sc.gov/GradeLevelDescriptor#0
           schoolYear: "{%raw%}{{YEAR[-4:]}}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: add_columns
@@ -229,7 +233,7 @@ destinations:
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
 
-  assessmentPeriodsDescriptors:
+  assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
