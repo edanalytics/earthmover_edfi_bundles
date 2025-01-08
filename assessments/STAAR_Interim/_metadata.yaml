@@ -1,6 +1,7 @@
 display_name: "STAAR Interim"
 path: "assessments/STAAR_Interim"
 valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
 input_files:
   - display_name: "Assessment data"
     env_var: "INPUT_FILE"
