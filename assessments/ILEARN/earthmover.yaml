@@ -43,11 +43,17 @@ transformations:
       - operation: snake_case_columns
       - operation: add_columns
         columns:
-          admin_date: "${ADMIN_DATE}"
+          file_dir: "${INPUT_FILE}"
+          admin_date: "{% raw %}{{ file_dir.split('/')[8] }}{% endraw %}"
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
-          school_year: "${API_YEAR}"
+          school_year: "{% raw %}{{ file_dir.split('/')[7] }}{% endraw %}"
           namespace: "uri://idoe.gov/ILEARN/assessment"
+      - operation: map_values
+        column: admin_date
+        # or a CSV/TSV with two columns (from, to) and header row
+        # paths may be absolute or relative paths to the location of the `earthmover` YAML configuration file
+        map_file: ./seeds/administrationDate.csv
       - operation: rename_columns
         columns:
           stn: student_unique_id
