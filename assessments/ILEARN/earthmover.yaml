@@ -44,7 +44,7 @@ transformations:
       - operation: add_columns
         columns:
           file_dir: "${INPUT_FILE}"
-          admin_date: "{% raw %}{{ file_dir.split('/')[8] }}{% endraw %}"
+          admin_date: "{% raw %}{{ file_dir.split('/')[10] }}{% endraw %}"
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           school_year: "{% raw %}{{ file_dir.split('/')[7] }}{% endraw %}"
