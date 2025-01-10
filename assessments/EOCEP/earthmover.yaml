@@ -118,6 +118,7 @@ transformations:
       column: TestDate
       from_format: "%Y%m%d"
       to_format: "%Y-%m-%d"
+      ignore_errors: True
       # Empty administration dates are rare but must be removed.
     - operation: filter_rows
       query: TestDate.notnull() & (TestDate != '')
