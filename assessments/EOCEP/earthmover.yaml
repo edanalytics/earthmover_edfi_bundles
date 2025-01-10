@@ -17,6 +17,10 @@ config:
 
 sources:
 
+  accommodation_descriptors:
+    files: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+
   assessment_reporting_method_descriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -193,15 +197,21 @@ destinations:
     extension: jsonl
     linearize: True
 
+  accommodationDescriptors:
+    source: $sources.accommodation_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
   assessmentReportingMethodDescriptors:
     source: $sources.assessment_reporting_method_descriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
 
   performanceLevelDescriptors:
     source: $sources.performance_level_descriptors
-    template: ./templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
 
@@ -210,12 +220,6 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
-
-  # academicSubjectDescriptors:
-  #   source: $sources.academic_subject_descriptors
-  #   template: ./templates/academicSubjectDescriptors.jsont
-  #   extension: jsonl
-  #   linearize: True
 
   studentAssessmentEducationOrganizationAssociations:
     source: $transformations.eocep_student_assessments

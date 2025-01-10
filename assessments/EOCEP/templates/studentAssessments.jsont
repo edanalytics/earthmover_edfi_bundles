@@ -1,3 +1,135 @@
+{%- set possible_scores = [
+  [ActCode, 'ActCode', 'Level'],
+  [ActCodePRC, 'ActCodePRC', 'Level'],
+  [AdultEd, 'AdultEd', 'Level'],
+  [Agg, 'Agg', 'Level'],
+  [AttemptFlag, 'AttemptFlag', 'Level'],
+  [AttemptItems, 'AttemptItems', 'Level'],
+  [Course, 'Course', 'Level'],
+  [District, 'District', 'Level'],
+  [DOB, 'DOB', 'Level'],
+  [Duplicate, 'Duplicate', 'Level'],
+  [English, 'English', 'Level'],
+  [FAMPM, 'FAMPM', 'Level'],
+  [FAMPMW, 'FAMPMW', 'Level'],
+  [FedReport, 'FedReport', 'Level'],
+  [FileNumber, 'FileNumber', 'Level'],
+  [FName, 'FName', 'Level'],
+  [Form, 'Form', 'Level'],
+  [FormNum, 'FormNum', 'Level'],
+  [FTime, 'FTime', 'Level'],
+  [FTimeW, 'FTimeW', 'Level'],
+  [Gender, 'Gender', 'Level'],
+  [Gifted, 'Gifted', 'Level'],
+  [GR9, 'GR9', 'Level'],
+  [Hispanic, 'Hispanic', 'Level'],
+  [Homeless, 'Homeless', 'Level'],
+  [HomeSch, 'HomeSch', 'Level'],
+  [IEP_AU, 'IEP_AU', 'Level'],
+  [IEP_DB, 'IEP_DB', 'Level'],
+  [IEP_DD, 'IEP_DD', 'Level'],
+  [IEP_EH, 'IEP_EH', 'Level'],
+  [IEP_EM, 'IEP_EM', 'Level'],
+  [IEP_HH, 'IEP_HH', 'Level'],
+  [IEP_LD, 'IEP_LD', 'Level'],
+  [IEP_MD, 'IEP_MD', 'Level'],
+  [IEP_OH, 'IEP_OH', 'Level'],
+  [IEP_OHI, 'IEP_OHI', 'Level'],
+  [IEP_PMD, 'IEP_PMD', 'Level'],
+  [IEP_SP, 'IEP_SP', 'Level'],
+  [IEP_TBI, 'IEP_TBI', 'Level'],
+  [IEP_TM, 'IEP_TM', 'Level'],
+  [IEP_VH, 'IEP_VH', 'Level'],
+  [IEP, 'IEP', 'Level'],
+  [InstrSetting, 'InstrSetting', 'Level'],
+  [LastItem, 'LastItem', 'Level'],
+  [Level, 'Level', 'Level'],
+  [Lex, 'Lex', 'Level'],
+  [LexLow, 'LexLow', 'Level'],
+  [LexNPR, 'LexNPR', 'Level'],
+  [LexUp, 'LexUp', 'Level'],
+  [LName, 'LName', 'Level'],
+  [Makeup, 'Makeup', 'Level'],
+  [MakeupW, 'MakeupW', 'Level'],
+  [Migrant, 'Migrant', 'Level'],
+  [MName, 'MName', 'Level'],
+  [Mode, 'Mode', 'Level'],
+  [ObjectiveName, 'ObjectiveName', 'Level'],
+  [OutOfState, 'OutOfState', 'Level'],
+  [Performance, 'Performance', 'Level'],
+  [Plan504, 'Plan504', 'Level'],
+  [Precoded, 'Precoded', 'Level'],
+  [PSchool, 'PSchool', 'Level'],
+  [Quant, 'Quant', 'Level'],
+  [QuantLow, 'QuantLow', 'Level'],
+  [QuantNPR, 'QuantNPR', 'Level'],
+  [QuantUp, 'QuantUp', 'Level'],
+  [RaceA, 'RaceA', 'Level'],
+  [RaceB, 'RaceB', 'Level'],
+  [RaceI, 'RaceI', 'Level'],
+  [RaceP, 'RaceP', 'Level'],
+  [RaceW, 'RaceW', 'Level'],
+  [RSchoolID, 'RSchoolID', 'Level'],
+  [SAMPM, 'SAMPM', 'Level'],
+  [SAMPMW, 'SAMPMW', 'Level'],
+  [School, 'School', 'Level'],
+  [SS, 'SS', 'Level'],
+  [STime, 'STime', 'Level'],
+  [STimeW, 'STimeW', 'Level'],
+  [TDANoScore, 'TDANoScore', 'Level'],
+  [TDAScore, 'TDAScore', 'Level'],
+  [TeachFI, 'TeachFI', 'Level'],
+  [TeachLName, 'TeachLName', 'Level'],
+  [TeachMI, 'TeachMI', 'Level'],
+  [TestAdmin, 'TestAdmin', 'Level'],
+  [TestDateW, 'TestDateW', 'Level'],
+  [TestDuration, 'TestDuration', 'Level'],
+  [TestDurationW, 'TestDurationW', 'Level'],
+  [TrueGrade, 'TrueGrade', 'Level'],
+  [TSchoolID, 'TSchoolID', 'Level'],
+  [VSchool, 'VSchool', 'Level'],
+] -%}
+
+{%- set possible_accommodations = [
+  [Acc1, "Acc1"],
+  [Acc2, "Acc2"],
+  [Acc3, "Acc3"],
+  [Acc4, "Acc4"],
+  [Acc5, "Acc5"],
+  [Acc6, "Acc6"],
+  [AccW1, "AccW1"],
+  [AccW2, "AccW2"],
+  [AccW3, "AccW3"],
+  [AccW4, "AccW4"],
+  [AccW5, "AccW5"],
+  [AccW6, "AccW6"],
+  [ESLAcc1, "ESLAcc1"],
+  [ESLAcc2, "ESLAcc2"],
+  [ESLAcc3, "ESLAcc3"],
+  [ESLAcc4, "ESLAcc4"],
+  [ESLAcc5, "ESLAcc5"],
+  [ESLAcc6, "ESLAcc6"],
+  [ESLAccW1, "ESLAccW1"],
+  [ESLAccW2, "ESLAccW2"],
+  [ESLAccW3, "ESLAccW3"],
+  [ESLAccW4, "ESLAccW4"],
+  [ESLAccW5, "ESLAccW5"],
+  [ESLAccW6, "ESLAccW6"],
+  [CMat1, "CMat1"],
+  [CMat2, "CMat2"],
+  [CMat3, "CMat3"],
+  [CMat4, "CMat4"],
+  [CMat5, "CMat5"],
+  [CMat6, "CMat6"],
+  [CMat7, "CMat7"],
+  [CMat8, "CMat8"],
+  [CMatW6, "CMatW6"],
+  [CMatW7, "CMatW7"],
+  [CMatW8, "CMatW8"],
+  [SpecReq, "SpecReq"],
+  [SpecReqW, "SpecReqW"],
+] -%}
+
 {
   "studentAssessmentIdentifier": "{{UID}}",
   "assessmentReference": {
@@ -14,19 +146,6 @@
   "administrationDate": "{{TestDate}}",
   "whenAssessedLevelDescriptor": "{{gradeLevelDescriptor}}"
 
-  {%- set possible_scores = [
-      [Lex, 'Lex', 'Level'],
-      [LexLow, 'LexLow', 'Level'],
-      [LexUp, 'LexUp', 'Level'],
-      [QuantLow, 'QuantLow', 'Level'],
-      [QuantUp, 'QuantUp', 'Level'],
-      [Level, 'Level', 'Level'],
-      [TDAScore, 'TDAScore', 'Level'],
-      [TDANoScore, 'TDANoScore', 'Level'],
-      [QuantNPR, 'QuantNPR', 'Level'],
-      [TestAdmin, 'TestAdmin', 'Level']
-  ] -%}
-
   {%- set scores = [] -%}
   {%- for score in possible_scores -%}
     {%- if score[0] is not none and score[0] | length -%}
@@ -36,7 +155,6 @@
 
   {%- if scores -%}
   , "scoreResults": [
-
     {%- for score in scores -%}
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
@@ -45,7 +163,23 @@
     } {%- if not loop.last -%},{%-endif -%}
     {%- endfor -%}
   ]
+  {%- endif -%}
 
+  {%- set accommodations = [] -%}
+  {%- for acc in possible_accommodations -%}
+    {%- if acc[0] is not none and acc[0] | length -%}
+      {%- set _ = accommodations.append(acc) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+   {%- if accommodations -%}
+   , "accommodations": [
+      {%- for acc in accommodations -%}
+      {
+        "accommodationDescriptor": "uri://datarecognitioncorp.com/AccommodationDescriptor#{{acc[1]}}"
+      } {%- if not loop.last -%},{%- endif -%}
+      {%- endfor -%}
+  ]
   {%- endif -%}
 
   {%- if Subject == 'E2' -%}
