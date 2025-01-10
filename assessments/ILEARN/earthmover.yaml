@@ -1,0 +1,105 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  show_graph: False
+  show_stacktrace: true
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  ilearn_results:
+    source: $transformations.input
+    operations:
+      - operation: snake_case_columns
+      - operation: add_columns
+        columns:
+          admin_date: "${ADMIN_DATE}"
+          subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
+          generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
+          school_year: "${API_YEAR}"
+          namespace: "uri://idoe.gov/ILEARN/assessment"
+      - operation: rename_columns
+        columns:
+          stn: student_unique_id
+          ilearn_reported_lexile®_measure: lexile_measure
+          ilearn_reported_quantile®_measure: quantile_measure
+          college_and_career_readiness_indicator: cc_readiness_indicator
+          argumentative_organization_purpose: arg_org
+          argumentative_evidence_development_elaboration: arg_evid
+          argumentative_conventions: arg_conv
+          informative_organization_purpose: inf_org
+          informative_evidence_development_elaboration: inf_evid
+          informative_conventions: inf_conv
+          narrative_organization_purpose: nar_org
+          narrative_evidence_development_elaboration: nar_evid
+          narrative_conventions: nar_conv
+          opinion_organization_purpose: op_org
+          opinion_evidence_development_elaboration: op_evid
+          opinion_conventions: op_conv
+          explanatory_organization_purpose: expl_org
+          explanatory_evidence_development_elaboration: expl_evid
+          explanatory_conventions: expl_conv
+
+
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.ilearn_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: False
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: False
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: False
+
+  assessments:
+    source: $sources.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: False
+
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: False

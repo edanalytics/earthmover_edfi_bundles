@@ -1,0 +1,21 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{description}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      }
+    ]
+  }

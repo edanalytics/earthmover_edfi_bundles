@@ -1,0 +1,114 @@
+{
+  "studentAssessmentIdentifier": "{{ md5(generated_test_id) }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "ILEARN",
+    "namespace": "uri://idoe.gov/ILEARN/assessment"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{ school_year }}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{ student_unique_id }}"
+  },
+  "administrationDate": "{{ admin_date }}",
+  "scoreResults": [
+    {%- set possible_scores = [
+        [overall_scale_score, "Scale Score", "Integer"],
+        [lexile_measure, "Lexile Measure", "Level"],
+			  [quantile_measure, "Quantile Measure", "Level"]
+    ] -%}
+
+    {%- set scores = [] -%}
+    {%- for score in possible_scores -%}
+      {%- if score[0] is not none and score[0] | length -%}
+        {%- set _ = scores.append(score) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- for score in scores -%}
+    {%- if score[0] != '' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{ subject_descriptor }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      }{% if not loop.last %},{% endif %}
+    {%- endif %}
+    {%- endfor %}
+  ],
+
+  "performanceLevels": [
+    {%- set possible_perf_levels = [
+        [overall_proficiency_level, "Proficiency level", "Level"],
+			  [cc_readiness_indicator, "College and Career Readiness Indicator", "Level"]
+    ] -%}
+
+    {%- set perf_levels = [] -%}
+    {%- for perf_level in possible_perf_levels -%}
+      {%- if perf_level[0] is not none and perf_level[0] | length -%}
+        {%- set _ = perf_levels.append(perf_level) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% for perf_level in perf_levels %}
+    {%- if perf_level[0] != '' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "resultDatatypeTypeDescriptor":"{{namespace}}/ResultDatatypeTypeDescriptor#{{perf_level[2]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      }{% if not loop.last %},{% endif %}
+    {%- endif -%}
+    {% endfor %}
+  ],
+
+  "studentObjectiveAssessments": [
+  {%- set possible_obj_assess_scores = [
+    ["arg_org", "Argumentative Organization/Purpose", arg_org],
+    ["arg_evid", "Argumentative Evidence/Development & Elaboration", arg_evid],
+    ["arg_conv", "Argumentative Conventions", arg_conv],
+    ["inf_org", "Informative Organization/Purpose", inf_org],
+    ["inf_evid", "Informative Evidence/Development & Elaboration", inf_evid],
+    ["inf_conv", "Informative Conventions", inf_conv],
+    ["nar_org", "Narrative Organization/Purpose", nar_org],
+    ["nar_evid", "Narrative Evidence/Development & Elaboration", nar_evid],
+    ["nar_conv", "Narrative Conventions", nar_conv],
+    ["op_org", "Opinion Organization/Purpose", op_org],
+    ["op_evid", "Opinion Evidence/Development & Elaboration", op_evid],
+    ["op_conv", "Opinion Conventions", op_conv],
+    ["expl_org", "Explanatory Organization/Purpose", expl_org],
+    ["expl_evid", "Explanatory Evidence/Development & Elaboration", expl_evid],
+    ["expl_conv", "Explanatory Conventions", expl_conv]
+  ] -%}
+
+  {%- set obj_assess_scores = [] -%}
+  {%- for obj_assess_score in possible_obj_assess_scores -%}
+    {%- if obj_assess_score[0] is not none and obj_assess_score[0] | length -%}
+      {%- set _ = obj_assess_scores.append(obj_assess_score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- for obj_assess_score in obj_assess_scores -%}
+  {%- if obj_assess_score[2] != '' %}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "ILEARN",
+      "identificationCode": "{{obj_assess_score[0]}}",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_assess_score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{obj_assess_score[2]}}"
+      }
+    ]
+  }{% if not loop.last %},{% endif %}  
+  {%- endif %}
+  {%- endfor %}
+  ]
+}
