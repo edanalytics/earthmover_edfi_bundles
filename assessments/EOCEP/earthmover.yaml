@@ -121,7 +121,7 @@ transformations:
     # Some dates are missing day-of-year. Force these to the first of the month.
     - operation: modify_columns
       columns:
-        TestDate: "{%raw%}{%- if TestDate and TestDate | length == 6 -%}{{ TestDate }}01{%- else -%}{{ TestDate }}{%- endif -%}{%endraw%}"
+        TestDate: "{%raw%}{{ TestDate ~ '01' if TestDate | length == 6 else TestDate }}{%endraw%}"
     - operation: date_format
       column: TestDate
       from_format: "%Y%m%d"
