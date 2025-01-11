@@ -159,7 +159,7 @@
     {
       "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#{{score[2]}}",
-      "result": "{{score[0][35]}}"
+      "result": "{{score[0][:35]}}"
     } {%- if not loop.last -%},{%-endif -%}
     {%- endfor -%}
   ]
