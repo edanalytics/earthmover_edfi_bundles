@@ -240,6 +240,7 @@ transformations:
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
   studentAssessments:
+    debug: True
     source: $transformations.stacked_scores
     operations:
       - operation: duplicate_columns
