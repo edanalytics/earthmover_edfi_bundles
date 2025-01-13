@@ -34,6 +34,7 @@ transformations:
 
   # CONFORMED 3-8 ALT
   conformed_staar_summative_alt:
+    debug: True
     source: $transformations.input
     operations:
       # RENAME columns to easily convert from wide to long
@@ -133,7 +134,6 @@ transformations:
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_alt_scores_{{subject}}:
-    debug: True
     source: $transformations.conformed_staar_summative_alt
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
@@ -228,11 +228,11 @@ transformations:
 
   # STACK ALL CONFORMED SETS TOGETHER
   stacked_scores:
-    source: $transformations.staar_summative_alt_scores_mathematics
+    source: $transformations.staar_summative_alt_scores_reading
     operations:
       - operation: union
         sources:
-          - $transformations.staar_summative_alt_scores_reading
+          - $transformations.staar_summative_alt_scores_mathematics
           - $transformations.staar_summative_alt_scores_social_studies
           - $transformations.staar_summative_alt_scores_science
         {% if ${API_YEAR} <= 2021 %} 
