@@ -24,8 +24,8 @@ sources:
     query: >
       with act_stu_assess as (
           select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-          where tenant_code = '{ACT_TENANT_CODE}'
-          and api_year = {ACT_API_YEAR}
+          where tenant_code = '${ACT_TENANT_CODE}'
+          and api_year = ${ACT_API_YEAR}
       ),
       act_stu_ids as (
           select 
@@ -38,8 +38,8 @@ sources:
             on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
             and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
             and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
-          where bld_ef3__wide_ids_student.tenant_code = '{ACT_TENANT_CODE}'
-          and bld_ef3__wide_ids_student.api_year = {ACT_API_YEAR}
+          where bld_ef3__wide_ids_student.tenant_code = '${ACT_TENANT_CODE}'
+          and bld_ef3__wide_ids_student.api_year = ${ACT_API_YEAR}
       )
       select 
         act_stu_assess.*,
