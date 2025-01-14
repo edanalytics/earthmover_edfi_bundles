@@ -1,0 +1,87 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{DistrictCode}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {% set objectives_list = [
+    'AFQT',
+    'VA',
+    'MA',
+    'TEC',
+    'GS',
+    'AR',
+    'WK',
+    'PC',
+    'MK',
+    'EI',
+    'ASI',
+    'MC',
+    ] %}
+  {#-----------------------------------------------------------------------------------------------------------#}
+  "studentObjectiveAssessments": [
+    {% set vars = {'is_first_item': True} %} 
+    {% for identification_code in objectives_list %}
+      {% set aftq = __row_data__["AFQT"]|int %}
+      {% set performanceLevelDescriptorValue = "" %}
+      {% if aftq >= 93 and aftq < 100 %}
+        {% set performanceLevelDescriptorValue = "I" %}
+      {% elif aftq >= 65 and aftq <= 92 %}
+        {% set performanceLevelDescriptorValue = "II" %}
+      {% elif aftq >= 50 and aftq <= 64 %}
+        {% set performanceLevelDescriptorValue = "IIIA" %}
+      {% elif aftq >= 31 and aftq <= 49 %}
+        {% set performanceLevelDescriptorValue = "IIIB" %}
+      {% elif aftq >= 21 and aftq <= 30 %}
+        {% set performanceLevelDescriptorValue = "IVA" %}
+      {% elif aftq >= 16 and aftq <= 20 %}
+        {% set performanceLevelDescriptorValue = "IVB" %}
+      {% elif aftq >= 10 and aftq <= 15 %}
+        {% set performanceLevelDescriptorValue = "IVC" %}
+      {% else %}
+        {% set performanceLevelDescriptorValue = "V" %}
+      {% endif %}
+
+      {% set score_value = __row_data__[identification_code] %}
+      {% if score_value|length > 0 and score_value|upper != "NULL" %}
+        {% if not vars.is_first_item %}
+        ,
+        {% endif %}
+        {
+          "administrationDate": "{{DateTaken}}",
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}",
+            "namespace": "{{namespace}}",
+            "identificationCode": "{{identification_code}}"
+          },
+          "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/ASVAB/AssessmentReportingMethodDescriptor#Score",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/ASVAB/PerformanceLevelDescriptor#{{performanceLevelDescriptorValue}}",
+              "performanceLevelIndicatorName": "AFQT Category - {{performanceLevelDescriptorValue}}"            
+            }
+          ],
+          "scoreResults": [          
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/ASVAB/AssessmentReportingMethodDescriptor#Score",
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Score",
+              "result": "{{score_value}}"
+            }        
+          ]
+        }
+        {% if vars.update({'is_first_item': False}) %} {% endif %}
+      {% endif %}
+    {% endfor %}
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{GradeLevelDescriptor}}"
+}
