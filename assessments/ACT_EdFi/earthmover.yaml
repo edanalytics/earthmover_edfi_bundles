@@ -105,10 +105,6 @@ transformations:
             
             {% endfor %}
           {% endfor %}
-      # reformat obj assess IDs that come from raw EdFi, to match format of rest of this template
-      - operation: modify_columns
-        columns: >
-           {{ v_student_objective_assessments | replace('THE-', '') | replace('-', '_') }}
   student_assessments: 
     source: $transformations.unpacked_scores
     operations:
