@@ -1,0 +1,16 @@
+{
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
+    }
+  ],
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "namespace": "{{ namespace }}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "performanceLevels": [{{ performance_levels_json }}],
+  "periods": [{{ assessment_periods_json }}],
+  "scores": [{{scores_json}}]
+}
