@@ -94,9 +94,6 @@ transformations:
   unpacked_scores:
     source: $transformations.input
     operations:
-    #   # limit columns to keep frame small # note, add this back later and make it a join below, if performance becomes an issue
-    #   - operation: keep_columns
-    #     columns: [student_assessment_identifier, v_score_results]
       # add wide score columns for certain scores that we want to eventually convert to objective assessments
         # note, this is based on guidance from EA's assessment governance to map STEM & ELA as objective assessments rather than at the top level
       - operation: add_columns
@@ -108,35 +105,10 @@ transformations:
             
             {% endfor %}
           {% endfor %}
-
-            # # Construct the `topline_obj_assess` array
-            # v_topline_obj_assess: |
-            #   [
-            #     {% for obj_id, score_columns in unpackable_obj_assess.items() %}
-            #     {
-            #       "objectiveAssessmentReference": {
-            #         "assessmentIdentifier": "{%raw%}{{assessment_identifier}}{%endraw%}",
-            #         "identificationCode": "{{obj_id}}",
-            #         "namespace": "{%raw%}{{namespace}}{%endraw%}"
-            #       }
-            #       ,
-            #       "scoreResults": [
-            #       {%- for score_key, score_column in score_columns.items() -%}
-            #         {
-            #           "assessmentReportingMethodDescriptor": "{%raw%}{{namespace}}{%endraw%}/AssessmentReportingMethodDescriptor#{{score_column}}",
-            #           "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-            #           "result": "{%raw%}self._TemplateReference__context.resolve({{obj_id}}_{{score_key}}){%endraw%}"
-            #           "result": "{%raw%}{{__row_data__[obj_id + "_" + score_key]}}{%endraw%}"
-            #         }
-            #         {%- if not loop.last -%},
-            #         {%- else %}{% endif %}{%- endfor -%}
-            #       ]
-            #     {%- if not loop.last %}, {% endif %}
-            #     {% endfor %}
-            #   ]
-      # - operation: modify_columns
-      #   columns: 
-      #     v_student_objective_assessments: '{ {%raw%}{{v_student_objective_assessments|tojson}}{%endraw%} }'
+       # reformat obj assess IDs that come from raw EdFi, to match format of rest of this template
+       - operation: modify_columns
+         columns: 
+           v_student_objective_assessments: '{ {%raw%}{{v_student_objective_assessments| replace('THE-', '') | replace('-', '_')}}{%endraw%} }'
 
   student_assessments: 
     source: $transformations.unpacked_scores
