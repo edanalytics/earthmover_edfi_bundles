@@ -2,7 +2,7 @@ version: 2
 
 config:
   output_dir: ${OUTPUT_DIR}
-  log_level: INFO
+  log_level: DEBUG
   show_stacktrace: True
   show_graph: False
   parameter_defaults:
@@ -23,3 +23,4 @@ packages:
 transformations:
   input:
     source: $transformations.input_xwalked
+    debug: True
