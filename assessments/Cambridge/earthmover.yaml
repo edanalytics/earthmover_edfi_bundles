@@ -1,0 +1,376 @@
+version: 2
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: false
+  show_stacktrace: true
+  parameter_defaults:
+    # You can set these values at the command line or leave the defaults
+    OUTPUT_DIR: ./output/
+    STATE_FILE: ./tmp/.earthmover/runs.csv
+    API_YEAR: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: Student_Id,Secondary_Student_Id
+    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
+
+sources:
+{% set objectives_list = [
+  'Accounting',
+  'Afrikaans',
+  'AfrikaansLanguage',
+  'Arabic',
+  'ArabicLanguage',
+  'ArtAndDesign',
+  'BiblicalStudies',
+  'Biology',
+  'Business',
+  'Chemistry',
+  'Chinese',
+  'ChineseLanguage',
+  'ClassicalStudies',
+  'ComputerScience',
+  'DesignAndTechnology',
+  'DesignAndTextiles',
+  'DigitalMediaAndDesign',
+  'Divinity',
+  'Drama',
+  'Economics',
+  'EnglishLanguage',
+  'EnglishLanguageAndLiterature',
+  'EnglishLiterature',
+  'EnglishGeneralPaper',
+  'EnvironmentalManagement',
+  'FrenchLanguage',
+  'French',
+  'Geography',
+  'GermanLanguage',
+  'German',
+  'GlobalPerspectivesAndResearch',
+  'HindiLanguage',
+  'HindiLiterature',
+  'Hindi',
+  'Hinduism',
+  'History',
+  'InformationTechnology',
+  'IslamicStudies',
+  'JapaneseLanguage',
+  'Law',
+  'MarineScience',
+  'Mathematics',
+  'MathematicsFurther',
+  'MediaStudies',
+  'Music',
+  'PhysicalEducation',
+  'Physics',
+  'PortugueseLanguage',
+  'Portuguese',
+  'Psychology',
+  'Sociology',
+  'SpanishFirstLanguage',
+  'SpanishLanguage',
+  'SpanishLiterature',
+  'Spanish',
+  'SportAndPhysicalEducation',
+  'Tamil',
+  'TamilLanguage',
+  'ThinkingSkills',
+  'TravelAndTourism',
+  'UrduLanguage',
+  'UrduPakistan',
+  'Urdu'
+  ] %}
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  resultDatatypeTypeDescriptors:
+    file: ./seeds/resultDatatypeTypeDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+    
+  cleaned_input:
+    source: $transformations.input
+    operations:
+      - operation: add_columns
+        columns:
+          school_year: ${SCHOOL_YEAR}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+    {% if "${DESCRIPTOR_NAMESPACE_OVERRIDE}" == "uri://ed-fi.org" %}
+      - operation: map_values
+        column: GradeLevel
+        map_file: ./seeds/gradeMappings.csv
+    {% else %}
+      - operation: modify_columns
+        columns:
+          GradeLevel: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{value}}{%endraw%}"
+    {% endif %}
+      - operation: rename_columns
+        columns:
+          GradeLevel: GradeLevelDescriptor
+          TestFamilyDefinition: assessmentIdentifier
+      # rename student id column after x-walk operation
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+
+  # >>>>> Prepare descriptors >>>>>
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  resultDatatypeTypeDescriptors:
+    source: $sources.resultDatatypeTypeDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+
+  {% for objective in objectives_list %}
+  performanceLevel{{objective}}:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - {{objective}}LevelAwarded
+      - operation: rename_columns
+        columns:
+          {{objective}}LevelAwarded: LevelAwarded
+  {% endfor %}
+
+  performanceLevelDescriptors:
+    source: $transformations.performanceLevelAccounting
+    operations:
+      - operation: union
+        sources:
+        {% for objective in objectives_list[1:] %}
+          - $transformations.performanceLevel{{objective}}
+        {% endfor %}
+        fill_missing_columns: False
+      - operation: rename_columns
+        columns:
+          LevelAwarded: codeValue
+      - operation: modify_columns
+        columns:
+          codeValue: "{%raw%}{{value|trim}}{%endraw%}"
+      - operation: distinct_rows
+      - operation: filter_rows
+        query: 'codeValue == "NULL" | codeValue == ""'
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          description: "{%raw%}Level Awarded - {{codeValue}}{%endraw%}"
+          shortDescription: "{%raw%}Level Awarded - {{codeValue}}{%endraw%}"
+          namespace: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/Cambridge Assessments/PerformanceLevelDescriptor{%endraw%}"
+
+  # <<<<< Prepare descriptors <<<<<
+
+  # >>>>> Prepare assessments >>>>>
+            
+  grades_json:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: keep_columns
+        columns:
+          - GradeLevelDescriptor
+          - assessmentIdentifier
+      - operation: distinct_rows
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{GradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - grade_json
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - grade_json
+
+  performance_level_json:
+    source: $transformations.performanceLevelDescriptors
+    operations:
+      - operation: keep_columns
+        columns: 
+          - namespace
+          - codeValue
+      - operation: add_columns
+        columns:
+          join_key: "1"
+      - operation: add_columns
+        columns:
+          performanceLevel_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/Cambridge Assessments/AssessmentReportingMethodDescriptor#Level",
+              "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/Cambridge Assessments/ResultDataTypeDescriptor#String (Enum)",
+              "performanceLevelIndicatorName": "{{codeValue}}"
+            },
+            {%-endraw%}
+      - operation: keep_columns
+        columns: 
+          - join_key
+          - performanceLevel_json
+      - operation: modify_columns
+        columns:
+          performanceLevel_json: "{%raw%}{{performanceLevel_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns:
+          performanceLevel_json: agg(performanceLevel_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          performanceLevel_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns: 
+          - join_key
+          - performanceLevel_json
+  
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: modify_columns
+        columns:
+          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          academicSubjectDescriptor: "{%raw%}{{academicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      - operation: join
+        sources: 
+          - $transformations.performance_level_json
+        join_type: outer
+        left_key: join_key
+        right_key: join_key
+      - operation: join
+        sources: 
+          - $transformations.grades_json
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+  
+  # <<<<< Prepare assessments <<<<<
+
+  # >>>>> Prepare objective-assessments >>>>>
+
+  objectiveAssessments:
+    source: $transformations.assessments
+    operations:
+      - operation: join
+        sources:
+          - $sources.objectiveAssessments
+        join_type: outer
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+  # <<<<< Prepare objective-assessments <<<<<
+
+  # >>>>> Prepare student-assessments >>>>>
+
+  studentAssessments:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: join
+        sources:
+          - $transformations.assessments
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          SchoolYear: ${SCHOOL_YEAR}
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+
+  # <<<<< Prepare student-assessments <<<<<
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $transformations.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $transformations.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  resultDatatypeTypeDescriptors:
+    source: $transformations.resultDatatypeTypeDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $transformations.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True

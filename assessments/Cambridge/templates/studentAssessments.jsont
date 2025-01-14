@@ -1,0 +1,125 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{SchoolCode}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{DateTaken}}",
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {% set objectives_list = [
+    'Accounting',
+    'Afrikaans',
+    'AfrikaansLanguage',
+    'Arabic',
+    'ArabicLanguage',
+    'ArtAndDesign',
+    'BiblicalStudies',
+    'Biology',
+    'Business',
+    'Chemistry',
+    'Chinese',
+    'ChineseLanguage',
+    'ClassicalStudies',
+    'ComputerScience',
+    'DesignAndTechnology',
+    'DesignAndTextiles',
+    'DigitalMediaAndDesign',
+    'Divinity',
+    'Drama',
+    'Economics',
+    'EnglishLanguage',
+    'EnglishLanguageAndLiterature',
+    'EnglishLiterature',
+    'EnglishGeneralPaper',
+    'EnvironmentalManagement',
+    'FrenchLanguage',
+    'French',
+    'Geography',
+    'GermanLanguage',
+    'German',
+    'GlobalPerspectivesAndResearch',
+    'HindiLanguage',
+    'HindiLiterature',
+    'Hindi',
+    'Hinduism',
+    'History',
+    'InformationTechnology',
+    'IslamicStudies',
+    'JapaneseLanguage',
+    'Law',
+    'MarineScience',
+    'Mathematics',
+    'MathematicsFurther',
+    'MediaStudies',
+    'Music',
+    'PhysicalEducation',
+    'Physics',
+    'PortugueseLanguage',
+    'Portuguese',
+    'Psychology',
+    'Sociology',
+    'SpanishFirstLanguage',
+    'SpanishLanguage',
+    'SpanishLiterature',
+    'Spanish',
+    'SportAndPhysicalEducation',
+    'Tamil',
+    'TamilLanguage',
+    'ThinkingSkills',
+    'TravelAndTourism',
+    'UrduLanguage',
+    'UrduPakistan',
+    'Urdu'
+  ] %}
+  {#-----------------------------------------------------------------------------------------------------------#}
+  "studentObjectiveAssessments": [
+    {% set vars = {'is_first_item': True} %} 
+    {% for objective in objectives_list %}
+      {% set performanceLevelColumnName = objective + "LevelAwarded" %}
+      {% set scoreColumnName = objective+"Result" %}
+      {% set score_value = __row_data__[scoreColumnName]|trim %}
+      {% if score_value|length > 0 and score_value|upper != "NULL" %}
+        {# Only put comma if there are more than 1 elements #}
+        {% if not vars.is_first_item %}
+          ,
+        {% endif %}
+        {% if vars.update({'is_first_item': False}) %} {% endif %}
+
+        {
+          "administrationDate": "{{DateTaken}}",
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}",
+            "identificationCode": "{{objective}}",
+            "namespace": "{{namespace}}"
+          },
+          
+          {% set performanceLevelCodeValue = __row_data__[performanceLevelColumnName] %}
+          "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/AssessmentReportingMethodDescriptor#Level",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
+              "performanceLevelIndicatorName": "{{performanceLevelCodeValue}}"
+            }
+          ],
+          "scoreResults": [
+            {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/AssessmentReportingMethodDescriptor#Result",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/ResultDataTypeDescriptor#String (Enum)",
+            "result": "{{score_value}}"
+            }
+          ]
+        }        
+      {% endif %}
+    {% endfor %}
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{GradeLevelDescriptor}}"
+}
