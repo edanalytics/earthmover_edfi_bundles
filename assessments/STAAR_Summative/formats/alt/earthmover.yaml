@@ -34,7 +34,6 @@ transformations:
 
   # CONFORMED 3-8 ALT
   conformed_staar_summative_alt:
-    debug: True
     source: $transformations.input
     operations:
       # RENAME columns to easily convert from wide to long
@@ -134,7 +133,6 @@ transformations:
   {% for subject in subjects %}
   {% set descriptor_subject = subjects[subject] %}
   staar_summative_alt_scores_{{subject}}:
-    debug: True
     source: $transformations.conformed_staar_summative_alt
     operations:
       # RENAME subject-specific columns to generic colnames so we can stack the data long
