@@ -1,0 +1,401 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentIdentifier_namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{School}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationLanguageDescriptor": "{{descriptor_namespace_override}}/LanguageDescriptor#{{AssessmentLanguageDescriptor}}",
+  "period": {
+    "assessmentPeriodDescriptor": "{{assessment_period_namespace}}#{{assessment_period_codeValue}}"
+  },
+  {#-----------------------------------------------------------------------------------------------------------#}
+  {# Mapping Definition 
+      '02' -> 'Percentile at School'
+      '03' -> 'Percentile at LEA'   
+      '04' -> 'Percentile at Nation'
+  #}
+  {% set common_reporting_methods = ['02','03','04'] %}   
+
+  {# Mapping Definition 
+      '01' -> 'Composite Score'
+  #}
+  {% set objectives_list_a = ['01'] %}
+
+  {# Mapping Definition 
+    '05' -> 'Total Items'  
+    '06' -> 'Items Correct'
+    '07' -> 'IC per minute'
+    '08' -> 'Error'        
+  #}
+  {% set objectives_list_b = ['05','06','07','08'] %}
+
+  {# Mapping Definition 
+    '09' -> 'Total Number Read'  
+    '10' -> 'Number Read Correct'
+    '11' -> 'NRC per minute'    
+    '08' -> 'Error'             
+  #}
+  {% set objectives_list_c = ['09','10','11','08'] %}
+
+
+
+  {# Mapping Definition 
+    '01':objectives_list_a -> 'Early Math'
+    '02':objectives_list_b -> 'Composing'    
+    '03':objectives_list_b -> 'Counting Objects'      
+    '04':objectives_list_b -> 'Decomposing KG'    
+    '05':objectives_list_b -> 'Decomposing ONE'      
+    '06':objectives_list_b -> 'Equal Partitioning'        
+    '07':objectives_list_b -> 'Match Quantity'       
+    '08':objectives_list_b -> 'Number Sequence KG'     
+    '09':objectives_list_b -> 'Number Sequence ONE'      
+    '10':objectives_list_c -> 'Numeral Identification KG'      
+    '11':objectives_list_c -> 'Numeral Identification ONE'    
+    '12':objectives_list_b -> 'Place Value'         
+    '13':objectives_list_b -> 'Quantity Discrimination Least'     
+    '14':objectives_list_b -> 'Quantity Discrimination Most'          
+    '15':objectives_list_b -> 'Subitizing'        
+    '16':objectives_list_b -> 'Verbal Addition'        
+    '17':objectives_list_b -> 'Verbal Subtraction'   
+    '18':objectives_list_b -> 'Story Problems' 
+  #}
+  {% set reporting_methods_dictionary_earlyMath = {
+    '01':objectives_list_a,
+    '02':objectives_list_b,
+    '03':objectives_list_b,
+    '04':objectives_list_b,
+    '05':objectives_list_b,
+    '06':objectives_list_b,
+    '07':objectives_list_b,
+    '08':objectives_list_b,
+    '09':objectives_list_b,
+    '10':objectives_list_c,
+    '11':objectives_list_c,
+    '12':objectives_list_b,
+    '13':objectives_list_b,
+    '14':objectives_list_b,
+    '15':objectives_list_b,
+    '16':objectives_list_b,
+    '17':objectives_list_b,
+    '18':objectives_list_b
+   
+  } %}
+
+  {# Mapping Definition 
+    '01' -> 'KG'  
+    '02' -> 'ONE'           
+  #}
+  {% set grade_objective_dictionary = {
+      '01':'KG'  ,
+      '02':'ONE'   
+
+  } %}
+  
+  {# Mapping Definition 
+    '01' -> 'Y'  ,
+    '02' -> 'N'           
+  #}
+  {% set graded_column_objective_dictionary =  {
+      '01':'Y'  ,
+      '02':'N'
+  } %}
+
+  {# Mapping Definition
+    '01':'02' -> 'Early Math'
+    '02':'02' -> 'Composing'    
+    '03':'02' -> 'Counting Objects'      
+    '04':'01' -> 'Decomposing'         
+    '05':'02' -> 'Equal Partitioning'        
+    '06':'02' -> 'Match Quantity'       
+    '07':'01' -> 'Number Sequence'         
+    '08':'01' -> 'Numeral Identification'      
+    '09':'02' -> 'Place Value'         
+    '10':'02' -> 'Quantity Discrimination Least'     
+    '11':'02' -> 'Quantity Discrimination Most'          
+    '12':'02' -> 'Subitizing'        
+    '13':'02' -> 'Verbal Addition'        
+    '14':'02' -> 'Verbal Subtraction'   
+    '15':'02' -> 'Story Problems' 
+  #}
+
+  {% set graded_column_map_dictionary = {
+    '01':'02',
+    '02':'02',
+    '03':'02',
+    '04':'01',
+    '05':'02',
+    '06':'02',
+    '07':'01',
+    '08':'01',
+    '09':'02',
+    '10':'02',
+    '11':'02',
+    '12':'02',
+    '13':'02',
+    '14':'02',
+    '15':'02'
+  } %}
+
+  {# Mapping Definition 
+      'FastBridge_earlyMath' ->  'Early Math','Composing','Counting Objects','Decomposing','Equal Partitioning',
+                                    'Match Quantity','Number Sequence','Numeral Identification','Place Value',
+                                    'Quantity Discrimination Least','Quantity Discrimination Most','Subitizing',
+                                    'Verbal Addition','Verbal Subtraction','Story Problems'  
+  #}
+  {% set reporting_methods_dictionary = {
+    'FastBridge_earlyMath':reporting_methods_dictionary_earlyMath
+  } %}
+
+  {# Mapping Definition 
+    '01' : 'Integer',    -> 'Composite Score'                 
+    '02' : 'Percentile', -> 'Percentile at School'            
+    '03' : 'Percentile', -> 'Percentile at LEA'               
+    '04' : 'Percentile', -> 'Percentile at Nation'            
+    '05' : 'Integer',    -> 'Total Items'                     
+    '06' : 'Integer',    -> 'Items Correct'                   
+    '07' : 'Integer',    -> 'IC per minute'                   
+    '08' : 'Integer',    -> 'Error'                           
+    '09' : 'Integer',    -> 'Total Number Read'                
+    '10' : 'Integer',    -> 'Number Read Correct'              
+    '11' : 'Integer',    -> 'NRC per minute'               
+    '12' : 'Integer',    -> 'Growth Score'                    
+    '13' : 'Percentile', -> 'School Growth Percentile'        
+    '14' : 'Percentile', -> 'District Growth Percentile'      
+    '15' : 'Percentile', -> 'National Growth Percentile'      
+    '16' : 'Percentile'  -> 'Growth Percentile by Start Score'
+  #}
+   {% set objectives_datatypes_dictionary = {
+      '01' : 'Integer',   
+      '02' : 'Percentile',
+      '03' : 'Percentile',
+      '04' : 'Percentile',
+      '05' : 'Integer',   
+      '06' : 'Integer',   
+      '07' : 'Integer',   
+      '08' : 'Integer',   
+      '09' : 'Integer',   
+      '10' : 'Integer',   
+      '11' : 'Integer',   
+      '12' : 'Integer',
+      '13' : 'Percentile',   
+      '14' : 'Percentile',
+      '15' : 'Percentile',
+      '16' : 'Percentile' 
+      
+      } %}
+
+    {# Mapping Definition 
+      '06' -> 'From Fall to Winter'                          
+      '07' -> 'From Fall to Spring'                          
+      '08' -> 'From Winter to Spring'                        
+      '09' -> 'From Fall to Screening Period 4'              
+      '10' -> 'From Winter to Screening Period 4'            
+      '11' -> 'From Spring to Screening Period 4'            
+      '12' -> 'From Fall to Screening Period 5'              
+      '13' -> 'From Winter to Screening Period 5'            
+      '14' -> 'From Spring to Screening Period 5'            
+      '15' -> 'From Screening Period 4 to Screening Period 5'
+    #}
+    {% set assessment_period_comparison_list = [
+      '06',
+      '07',
+      '08',
+      '09',
+      '10',
+      '11',
+      '12',
+      '13',
+      '14',
+      '15' 
+    ] %}
+
+    {# Mapping Definition 
+      '01': [],          -> 'Fall'              
+      '02': [0],         -> 'Winter'            
+      '03': [1, 2],      -> 'Spring'            
+      '04': [3, 4, 5],   -> 'Screening Period 4'
+      '05': [6, 7, 8, 9] -> 'Screening Period 5'
+     #}
+    {% set assessment_objectives_periods_comparison_dictionary = {
+      '01': [],         
+      '02': [0],        
+      '03': [1, 2],     
+      '04': [3, 4, 5],  
+      '05': [6, 7, 8, 9]
+     } %}
+
+    {# Mapping Definition 
+      '12' -> 'Growth Score'                    
+      '13' -> 'School Growth Percentile'        
+      '14' -> 'District Growth Percentile'      
+      '15' -> 'National Growth Percentile'      
+      '16' -> 'Growth Percentile by Start Score'
+    #}
+    {% set assessment_growth_objectives = [
+      '12',
+      '13',
+      '14',
+      '15',
+      '16' 
+    ] %}
+
+    {% set mapping_reporting_objectives_dictionary = {
+      '01': 'Composite Score',
+      '02': 'Percentile at School',
+      '03': 'Percentile at LEA',
+      '04': 'Percentile at Nation',
+      '05': 'Total Items',
+      '06': 'Items Correct',
+      '07': 'IC per minute',
+      '08': 'Error',
+      '09': 'Total Number Read',
+      '10': 'Number Read Correct',
+      '11': 'NRC per minute',
+      '12': 'Growth Score',
+      '13': 'School Growth Percentile',
+      '14': 'District Growth Percentile',
+      '15': 'National Growth Percentile',
+      '16': 'Growth Percentile by Start Score'
+    } %}
+
+    {% set mapping_assessment_period_dictionary = {
+      '01':'Fall',
+      '02':'Winter',
+      '03':'Spring',
+      '04':'Screening Period 4',
+      '05':'Screening Period 5'
+    } %}
+
+    {% set mapping_reporting_methods_dictionary = {
+      '01' : 'Early Math',
+      '02' : 'Composing',
+      '03' : 'Counting Objects',
+      '04' : 'Decomposing KG',
+      '05' : 'Decomposing ONE',
+      '06' : 'Equal Partitioning',
+      '07' : 'Match Quantity',
+      '08' : 'Number Sequence KG',
+      '09' : 'Number Sequence ONE',
+      '10' : 'Numeral Identification KG',
+      '11' : 'Numeral Identification ONE',
+      '12' : 'Place Value',
+      '13' : 'Quantity Discrimination Least',
+      '14' : 'Quantity Discrimination Most',
+      '15' : 'Subitizing',
+      '16' : 'Verbal Addition',
+      '17' : 'Verbal Subtraction',
+      '18' : 'Story Problems'
+    } %}
+    {# Mapping Definition to calculate Error column for above reporting methods
+      '03': (['Total Number Read', 'Number Read Correct']),
+      '04': (['Total Number Read', 'Number Read Correct']),
+      '05': (['Total Number Read', 'Number Read Correct']),
+      '06': (['Total Number Read', 'Number Read Correct']),
+      '02': (['Total Items', 'Items Correct']),
+      '07': (['Total Items', 'Items Correct']),
+      '08': (['Total Items', 'Items Correct']),
+      '09': (['Total Items', 'Items Correct']),
+      '10': (['Total Number Read', 'Number Read Correct']),
+      '11': (['Total Number Read', 'Number Read Correct'])
+    #}
+
+    {% set mapping_period_comparison_dictionary = {
+      '06':'From Fall to Winter',
+      '07':'From Fall to Spring',
+      '08':'From Winter to Spring',
+      '09':'From Fall to Screening Period 4',
+      '10':'From Winter to Screening Period 4',
+      '11':'From Spring to Screening Period 4',
+      '12':'From Fall to Screening Period 5',
+      '13':'From Winter to Screening Period 5',
+      '14':'From Spring to Screening Period 5',
+      '15':'From Screening Period 4 to Screening Period 5'
+    } %}    
+  {#-----------------------------------------------------------------------------------------------------------#}
+
+  "studentObjectiveAssessments": [
+    {% for method, objectives in reporting_methods_dictionary[assessmentIdentifier].items() %}
+      {% set assessment_period_codeValue_name = mapping_assessment_period_dictionary[assessment_period_codeValue] %}
+      {% set method_name = mapping_reporting_methods_dictionary[method] %}
+      {% set administrationEndDate = __row_data__[(assessment_period_codeValue_name+method_name+'FinalDate').replace(' ', '')] %}
+      {% set riskLevel = __row_data__[(assessment_period_codeValue_name+method_name+'RiskLevel').replace(' ', '')] %}
+      {
+        "administrationEndDate": "{{administrationEndDate}}",
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{method_name}}",
+          "namespace": "{{assessmentIdentifier_namespace}}"
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#17",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FastBridge/PerformanceLevelDescriptor#{{riskLevel}}",
+            "performanceLevelIndicatorName": "{{riskLevel}}"
+          }
+        ],
+        "scoreResults": [
+          {% for objective in objectives+common_reporting_methods %}
+            {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
+            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+            {% set objectiveName = mapping_reporting_objectives_dictionary[objective] %}
+              {% if '08' not in objective %}
+                {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName).replace(' ', '') %}
+                {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}
+              {% else %}
+                {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objective).replace(' ', '') %}
+                {% set objectiveColumnTotal = (assessment_period_codeValue_name+method_name+mapping_reporting_objectives_dictionary[objectives[0]]).replace(' ', '') %}
+                {% set objectiveColumnCorrect = (assessment_period_codeValue_name+method_name+mapping_reporting_objectives_dictionary[objectives[1]]).replace(' ', '') %}
+                {% set objectiveColumnValue = (__row_data__[objectiveColumnTotal] | int) - (__row_data__[objectiveColumnCorrect] | int) %}
+              {% endif %}
+              {% if objectiveColumnValue %}
+                {
+                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}",
+                    "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
+                    "result": "{{objectiveColumnValue}}"
+                }
+                {% if loop.index < loop.length %}
+                ,
+                {% endif %}
+              {% endif %} 
+          {% endfor %}
+          {# Add Growth objectives #}
+          {% for objective in assessment_growth_objectives %}            
+            {% set comparison_periods = assessment_objectives_periods_comparison_dictionary[assessment_period_codeValue] %}
+            {% set objectiveName = mapping_reporting_objectives_dictionary[objective] %}
+            {% if comparison_periods|length > 0 %}
+              {% for comparison_period_idx in comparison_periods%}
+                  {% set objectiveDataTypeName = objectives_datatypes_dictionary[objective] %}
+                  {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+                  {% set comparisonPeriodCode = assessment_period_comparison_list[comparison_period_idx] %}
+                  {% set comparisonPeriodName = mapping_period_comparison_dictionary[comparisonPeriodCode] %}
+                  {% set objectiveColumnName = (assessment_period_codeValue_name+method_name+objectiveName+comparisonPeriodName).replace(' ', '') %}
+                  {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}
+                  
+                  {% if objectiveColumnValue|length > 0 %}
+                    ,
+                    {
+                        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FastBridge/AssessmentReportingMethodDescriptor#{{objective}}{{comparisonPeriodCode}}",
+                        "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
+                        "result": "{{objectiveColumnValue}}"
+                    }
+                  {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        ]
+      }
+      {% if loop.index < loop.length %}
+      ,
+      {% endif %} 
+    {% endfor %}
+  ] 
+}
