@@ -68,10 +68,18 @@
       {% endif %}
       {%- endfor -%}
       {%- if v_student_objective_assessments -%}
-      ,{% for existing_obj in fromjson(v_student_objective_assessments) %}
-      {{existing_obj}}{%- if not loop.last -%},
-      {%- else %}{% endif %}
-      {%- endfor -%}
-      {% endif %}
+      ,{% for item in fromjson(v_student_objective_assessments | default('[]')) %}
+        {
+         "objectiveAssessmentReference": {
+           "assessmentIdentifier": "{{ item.objectiveAssessmentReference.assessmentIdentifier.replace('THE-', '').replace('-', '_') }}",
+           "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
+           "namespace": "{{ item.objectiveAssessmentReference.namespace }}"
+         },
+         "performanceLevels": {{ item.performanceLevels }},
+         "scoreResults": {{ item.scoreResults }}
+        }{% if not loop.last %},{% endif %}
+       {% endfor %}
+      {%- endif -%}
     ]
   }
+
