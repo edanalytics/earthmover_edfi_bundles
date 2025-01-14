@@ -48,7 +48,7 @@
       {% if all_score_obj|length > 0 %}
       {
         "objectiveAssessmentReference": {
-          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "assessmentIdentifier": "{{assessment_identifier}}",
           "identificationCode": "{{obj[0]}}",
           "namespace": "{{namespace}}"
         }
