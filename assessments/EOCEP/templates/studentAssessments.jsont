@@ -143,10 +143,10 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{TestDate}}",
+  "administrationDate": "{{TestDate}}"
 
   {%- if gradeLevelDescriptor and gradeLevelDescriptor | length -%}
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  , "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
   {%- endif -%}
 
   {%- set scores = [] -%}
