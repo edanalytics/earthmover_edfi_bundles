@@ -144,7 +144,10 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{TestDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+
+  {%- if gradeLevelDescriptor and gradeLevelDescriptor | length -%}
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {%- endif -%}
 
   {%- set scores = [] -%}
   {%- for score in possible_scores -%}
