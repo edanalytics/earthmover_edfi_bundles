@@ -9,7 +9,7 @@ config:
   macros: >
       {% macro clean_administration_date(value) -%}
       {%- if value | length == 6 -%}{{ value ~ '01' }}
-      {%- elif value[:-2] == '00' -%}{{ value[:6] ~ '01' }}
+      {%- elif value[-2:] == '00' -%}{{ value[:6] ~ '01' }}
       {%- else -%}{{ value }}
       {%- endif -%}
       {%- endmacro %}
