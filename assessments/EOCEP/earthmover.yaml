@@ -6,6 +6,13 @@ config:
   memory_limit: 1GB
   state_file: ./runs.csv
   show_graph: False
+  macros: >
+      {% macro clean_administration_date(value) -%}
+      {%- if value | length == 6 -%}{{ value ~ '01' }}
+      {%- elif value[:-2] == '00' -%}{{ value[:6] ~ '01' }}
+      {%- else -%}{{ value }}
+      {%- endif -%}
+      {%- endmacro %}
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
@@ -121,7 +128,7 @@ transformations:
     # Some dates are missing day-of-year. Force these to the first of the month.
     - operation: modify_columns
       columns:
-        TestDate: "{%raw%}{{ TestDate ~ '01' if TestDate | length == 6 else TestDate }}{%endraw%}"
+        TestDate: "{%raw%}{{ clean_administration_date(TestDate) }}{%endraw%}"
     - operation: date_format
       column: TestDate
       from_format: "%Y%m%d"
