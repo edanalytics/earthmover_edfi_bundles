@@ -147,6 +147,9 @@ transformations:
   grade_level_descriptors:
     source: $sources.grade_level_descriptors
     operations:
+      - operation: filter_rows
+        query: gradeLevelDescriptor.notnull() & (gradeLevelDescriptor != '')
+        behavior: include
       - operation: add_columns
         columns:
           grade_json: >
