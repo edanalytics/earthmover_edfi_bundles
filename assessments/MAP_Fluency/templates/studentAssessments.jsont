@@ -14,7 +14,9 @@
 
     "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
 
+    {% if administrationLanguageDescriptor != "N/A" and DyslexiaScreenerOutcome | length %}
     "administrationLanguageDescriptor" : "{{languageDescriptor}}",
+    {% endif %}
 
     "scoreResults": [
       {

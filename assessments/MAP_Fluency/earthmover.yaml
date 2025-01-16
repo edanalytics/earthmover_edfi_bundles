@@ -93,7 +93,7 @@ transformations:
       - operation: join
         sources:
           - $sources.languageDescriptors
-        join_type: inner
+        join_type: left
         left_key: language
         right_key: language
 
