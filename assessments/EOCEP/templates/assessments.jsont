@@ -1,3 +1,109 @@
+{%- set generic_score_results = [
+  "ActCode",
+  "ActCodePRC",
+  "AdultEd",
+  "Agg",
+  "AttemptFlag",
+  "AttemptItems",
+  "Course",
+  "District",
+  "DOB",
+  "Duplicate",
+  "English",
+  "FAMPM",
+  "FAMPMW",
+  "FedReport",
+  "FileNumber",
+  "FName",
+  "Form",
+  "FormNum",
+  "FTime",
+  "FTimeW",
+  "Gender",
+  "Gifted",
+  "GR9",
+  "Hispanic",
+  "Homeless",
+  "HomeSch",
+  "IEP_AU",
+  "IEP_DB",
+  "IEP_DD",
+  "IEP_EH",
+  "IEP_EM",
+  "IEP_HH",
+  "IEP_LD",
+  "IEP_MD",
+  "IEP_OH",
+  "IEP_OHI",
+  "IEP_PMD",
+  "IEP_SP",
+  "IEP_TBI",
+  "IEP_TM",
+  "IEP_VH",
+  "IEP",
+  "InstrSetting",
+  "LastItem",
+  "Level",
+  "LName",
+  "Makeup",
+  "MakeupW",
+  "Migrant",
+  "MName",
+  "Mode",
+  "ObjectiveName",
+  "OutOfState",
+  "Performance",
+  "Plan504",
+  "Precoded",
+  "PSchool",
+  "RaceA",
+  "RaceB",
+  "RaceI",
+  "RaceP",
+  "RaceW",
+  "RSchoolID",
+  "SAMPM",
+  "SAMPMW",
+  "School",
+  "SS",
+  "STime",
+  "STimeW",
+  "TeachFI",
+  "TeachLName",
+  "TeachMI",
+  "TestAdmin",
+  "TestDateW",
+  "TestDuration",
+  "TestDurationW",
+  "TrueGrade",
+  "TSchoolID",
+  "VSchool",
+] -%}
+
+{%- set ela_score_results = [
+  "Lex",
+  "LexLow",
+  "LexNPR",
+  "LexUp",
+  "TDANoScore",
+  "TDAScore",
+] -%}
+
+{%- set math_score_results = [
+  "Quant",
+  "QuantLow",
+  "QuantNPR",
+  "QuantUp",
+] -%}
+
+{%- if 'EOCEP_E2' in assessmentIdentifier -%}
+  {%- set subject_score_results = generic_score_results + ela_score_results -%}
+{%- elif 'EOCEP_A' in asssessmentIdentifier -%}
+  {%- set subject_score_results = generic_score_results + math_score_results -%}
+{%- else -%}
+  {%- set subject_score_results = generic_score_results -%}
+{%- endif -%}
+
 {
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
@@ -10,48 +116,11 @@
     }
   ],
   "scores": [
+    {%- for score_result in subject_score_results -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Level",
+      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score_result}}",
       "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {% if assessmentIdentifier == 'EOCEP-E2' %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Lex",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#LexLow",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#LexUp",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#TDAScore",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#TDANoScore",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-        {% elif assessmentIdentifier == 'EOCEP-A' %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#QuantLow",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#QuantUp",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#QuantNPR",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
-    },
-    {% endif %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#TestAdmin",
-      "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Level"
-    }
+    }{%- if not loop.last -%}, {%- endif -%}
+    {%- endfor -%}
   ]
 }
