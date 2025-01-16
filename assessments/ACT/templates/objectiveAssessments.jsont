@@ -5,11 +5,13 @@
       "namespace": "{{namespace}}"
     },
     "description": "{{description}}",
+    {% if parentIdentificationCode | length %}
     "parentObjectiveAssessmentReference":{
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}",
       "identificationCode": "{{parentIdentificationCode}}"
     },
+    {% endif %}
     "scores": [
       {
         "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#US Rank",
