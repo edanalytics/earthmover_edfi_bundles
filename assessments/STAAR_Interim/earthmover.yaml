@@ -99,7 +99,7 @@ transformations:
           "Reporting Category 5: Raw Score or RAW SCORE REPORTING CATEGORY 5": RAW_SCORE_REPORTING_CATEGORY_5
           "Reporting Category 6: Raw Score or RAW SCORE REPORTING CATEGORY 6": RAW_SCORE_REPORTING_CATEGORY_6
           "REPORTING CATEGORY 1 STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_1_STRENGTH_WEAKNESS_INDICATOR
-          {% if "${API_YEAR}" <= 2023 %}
+          {% if (${API_YEAR} | int) <= 2023 %}
           "REPORTING CATEGORY 2  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_2_STRENGTH_WEAKNESS_INDICATOR
           "REPORTING CATEGORY 3  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_3_STRENGTH_WEAKNESS_INDICATOR
           "REPORTING CATEGORY 4  STRENGTH/WEAKNESS INDICATOR": REPORTING_CATEGORY_4_STRENGTH_WEAKNESS_INDICATOR
@@ -123,7 +123,7 @@ transformations:
           "SE ALIGNMENT: Segment 3 MEDIUM": SE_ALIGNMENT:_Segment_3_MEDIUM
           "SE ALIGNMENT: Segment 4 LOW": SE_ALIGNMENT:_Segment_4_LOW
           "Overall Raw Score": Overall_Raw_Score
-          {% if "${API_YEAR}" <= 2023 %}
+          {% if (${API_YEAR} | int) <= 2023 %}
           "Overall Performance Level": Overall_Performance_Level
           {% else %}
           "Predicted STAAR Performance Level": Predicted_STAAR_Performance_Level
