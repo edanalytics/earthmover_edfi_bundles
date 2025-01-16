@@ -1,0 +1,100 @@
+ {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  {% if schoolId is not none and schoolId | length %}
+  "reportedSchoolReference": {
+      "schoolId": {{schoolId}}
+          
+  },
+   {% endif %}
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "administrationEndDate": "{{administrationEndDate}}",
+  {% if gradelevel is not none and gradelevel | length %}
+    
+  "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
+  
+    {% endif %}
+  "scoreResults": [
+   
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_TOTAL_INT",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{ totalscore1 }}"
+    },
+    
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_TOTAL_PER",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Percentile",
+      "result": "{{ totalpercentile1 }}"
+    }
+    
+  ],
+  "studentObjectiveAssessments": [
+
+   {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "MOTOR",
+      "namespace": "{{descriptorNamespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_MOTR_INT",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ motorscore1 }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_MOTR_PER",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Percentile",
+        "result": "{{ motorpercentile1 }}"
+      }
+    ]
+  },
+    {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "LANGUAGE",
+      "namespace": "{{descriptorNamespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_LANG_INT",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ languagescore1 }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_LANG_PER",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Percentile",
+        "result": "{{ languagepercentile1 }}"
+      }
+    ]
+  },
+    {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "CONCEPTS",
+      "namespace": "{{descriptorNamespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_CONC_INT",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ conceptsscore1 }}"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#DIAL_CONC_PER",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Percentile",
+        "result": "{{ conceptspercentile1 }}"
+      }
+    ]
+  }  ]
+}
