@@ -19,6 +19,12 @@
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Overall_Performance_Level}}",
       "performanceLevelMet": true
     }
+    {% elif Predicted_STAAR_Performance_Level is not none and Predicted_STAAR_Performance_Level | length %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Predicted_STAAR_Performance_Level}}",
+      "performanceLevelMet": true
+    }
     {% endif %}
   ],
   "scoreResults": [

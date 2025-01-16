@@ -162,7 +162,12 @@ transformations:
         column: TEST_DATE
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
-
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          api_year: ${API_YEAR}
 
 destinations:
   studentAssessments:
@@ -171,7 +176,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessments:
-    source: $sources.assessments
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
