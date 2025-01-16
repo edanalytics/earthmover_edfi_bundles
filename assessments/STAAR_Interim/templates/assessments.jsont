@@ -83,7 +83,7 @@
     }
   ],
   "performanceLevels": [
-    {% if api_year <= 2023 %}
+    {% if (api_year | int) <= 2023 %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#1",
