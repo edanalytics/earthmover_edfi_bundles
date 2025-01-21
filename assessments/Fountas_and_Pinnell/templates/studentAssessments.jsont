@@ -1,0 +1,109 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentIdentifier_namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{SchoolCode}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+ 
+  {#-----------------------------------------------------------------------------------------------------------#}
+
+  {% set objective_names = [
+    'Fiction',
+    'Nonfiction',
+    'Generic'
+    ] %}
+
+  {% set reportingMethods = {
+      '01' :	'Words Per Minute',
+      '02' :	'Self Correction Rate',
+      '03' :	'Fluency Level',
+      '04' :	'Lexile Level',
+      '05' :	'Text Reading Accuracy',
+      '06' :	'Text Reading Accuracy 2',
+      '07' :	'Comprehension 2',
+      '08' :	'Comprehension',
+      '09' :	'Text Reading',
+      '11' :  'Meaning',
+      '12' :  'Visual',
+      '13' :  'Early Literacy Behaviors',
+      '14' :  'Letter Recognition',
+      '15' :  'Initial Sounds',
+      '16' :  'High Frequency Words',
+      '17' :  'Word Writing',
+      '18' :  'Rhyming Assessment'
+    } %}
+
+  {% set reportingMethod_datatypes_dictionary = {
+      '01' : 'Integer',   
+      '02' : 'Float',
+      '03' : 'Float',
+      '04' : 'String',
+      '05' : 'Percentile',   
+      '06' : 'Percentile',   
+      '07' : 'Percentile',   
+      '08' : 'Percentile',   
+      '09' : 'String',
+      '10' : 'Integer',
+      '11' : 'Integer',    
+      '12' : 'Integer',
+      '13' : 'Integer',
+      '14' : 'Integer',
+      '15' : 'Integer',
+      '16' : 'Integer',
+      '17' : 'Integer',
+      '18' : 'Integer'
+    } %}
+
+  
+  "studentObjectiveAssessments": [ 
+
+      {
+
+        "administrationEndDate": "{{DateTaken}}",
+        "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}",
+            "identificationCode": "{{Genre}}",
+            "namespace": "{{descriptor_namespace_override}}/FountasAndPinnell//Reading/{{Genre}}"
+        },
+        "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{ComprehensionLevel}}",
+            "performanceLevelIndicatorName": "{{ComprehensionLevel}}"
+          }
+        ],
+        
+        "scoreResults": [
+          {% set i = 0 %} 
+          {% for k, v in reportingMethods.items() %}                
+            {% set reportingKey = k %}
+            {% set objectiveDataTypeName = reportingMethod_datatypes_dictionary[reportingKey] %}
+            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
+            {% set objectiveName = reportingMethods[reportingKey] %}                
+            {% set objectiveColumnName = (objectiveName).replace(' ', '') %}
+            {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}
+            {% if objectiveColumnValue !=  "NULL" %}
+              {% if objectiveColumnValue %}                           
+                {%- if not loop.first %}, {%- endif %}
+                {
+                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#{{objectiveName}}",
+                    "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
+                    "result": "{{objectiveColumnValue}}"
+                }     
+              {% endif %}
+            {% endif %} 
+          {% endfor %}            
+        ]
+      }    
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace_override}}/GradeLevelDescriptor#{{GradeLevel}}" 
+}
