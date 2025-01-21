@@ -12,21 +12,23 @@
   },
   "administrationDate": "{{TEST_DATE}}",
   "administrationLanguageDescriptor": "uri://ed-fi.org/LanguageDescriptor#{{language}}",
+  {% if (api_year | int <= 2023 and Overall_Performance_Level is not none and Overall_Performance_Level | length) %}
   "performanceLevels": [
-    {% if Overall_Performance_Level is not none and Overall_Performance_Level | length %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Overall_Performance_Level}}",
       "performanceLevelMet": true
     }
-    {% elif Predicted_STAAR_Performance_Level is not none and Predicted_STAAR_Performance_Level | length %}
+  ],
+  {% elif (api_year | int > 2023 and Predicted_STAAR_Performance_Level is not none and Predicted_STAAR_Performance_Level | length ) %}
+  "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Predicted_STAAR_Performance_Level}}",
       "performanceLevelMet": true
     }
-    {% endif %}
   ],
+  {% endif %}
   "scoreResults": [
     {% set scores_present = [] %}
     {% set all_scores = {'Subject':['Level',subject],
