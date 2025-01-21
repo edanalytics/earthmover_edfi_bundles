@@ -1,0 +1,109 @@
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+      "schoolId": {{schoolId}}
+          
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "administrationEndDate": "{{administrationEndDate}}",
+  "administrationLanguageDescriptor": "{{descriptorNamespace}}/LanguageDescriptor#{{administrationLanguage}}",
+  "whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}",
+  "assessedMinutes": {{assessedMinutes|int}},
+  "eventDescription": "{{eventDescription}}",
+  "serialNumber": "{{serialNumber}}",
+  "scoreResults": [
+    {% if CompositeScore is not none and CompositeScore | length %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Decimal",
+      "result": "{{CompositeScore}}"
+    }
+    {% endif %}
+  ],
+  "studentObjectiveAssessments": [
+
+   {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "Reading",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ Reading_Score }}"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Reading_Level}}",
+        "performanceLevelMet": true
+      }
+    ], 
+    "assessedMinutes": {{Reading_Length|int}}
+  },
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "Writing",
+      "namespace": "{{namespace}}"
+    },
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Writing_Level}}",
+        "performanceLevelMet": true
+      }
+    ],
+    "assessedMinutes": {{Writing_Length|int}} 
+  },
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "Listening",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ Listening_Score }}"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Listening_Level}}",
+        "performanceLevelMet": true
+      }
+    ],
+    "assessedMinutes": {{Listening_Length|int}}
+  },
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "Speaking",
+      "namespace": "{{namespace}}"
+    },
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Speaking_Level}}",
+        "performanceLevelMet": true
+      }
+    ],
+    "assessedMinutes": {{Speaking_Length|int}}
+  }  ]
+}

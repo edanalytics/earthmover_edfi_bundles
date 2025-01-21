@@ -1,0 +1,29 @@
+state_dir: ~/.lightbeam/
+data_dir: ./output/
+edfi_api:
+  base_url: ${EDFI_API_BASE_URL}
+  version: 3
+  mode: district_specific
+  year: ${API_YEAR}
+  client_id: ${EDFI_API_CLIENT_ID}
+  client_secret: ${EDFI_API_CLIENT_SECRET}
+connection:
+  pool_size: 8
+  timeout: 60
+  num_retries: 10
+  backoff_factor: 1.5
+  retry_statuses: [429, 500, 502, 503, 504]
+  verify_ssl: True
+count:
+  separator: \,
+fetch:
+  page_size: 100
+validate:
+  methods:
+    - schema # checks that payloads conform to the Swagger definitions from the API
+    - descriptors # checks that descriptor values are either locally-defined or exist in the remote API
+    - uniqueness # checks that local payloads are unique by the required property values
+    #- references # checks that references resolve, either locally or in the remote API
+force_delete: True
+log_level: INFO
+show_stacktrace: True
