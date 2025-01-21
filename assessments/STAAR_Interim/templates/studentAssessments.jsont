@@ -73,7 +73,7 @@
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{ assessment_identifier }}",
-        "identificationCode": "{{ id_code }}",
+        "identificationCode": "{{ id_code[:60] }}",
         "namespace": "uri://tea.texas.gov/student-assessment"
       }
       {% if pl_name is not none and pl_name | length %}
