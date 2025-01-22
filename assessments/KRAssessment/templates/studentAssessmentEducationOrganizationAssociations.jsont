@@ -1,7 +1,8 @@
+{% if districtId is not none and districtId | length %}
  {
       "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Administration",
       "educationOrganizationReference": {
-        "educationOrganizationId": {{ schoolId }}
+        "educationOrganizationId": {{ districtId }}
       },
       "schoolYearTypeReference": {
         "schoolYear": {{SchoolYear}}
@@ -13,3 +14,4 @@
         "studentUniqueId": "{{ studentUniqueId }}"
       }
     }
+   {% endif %} 

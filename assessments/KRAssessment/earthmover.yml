@@ -200,6 +200,7 @@ transformations:
       - operation: rename_columns
         columns:
           SchoolCode: schoolId
+          DistrictCode: districtId
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
@@ -249,12 +250,16 @@ transformations:
           - MAScore
           - PDScore
           - schoolId
+          - districtId
           - descriptorNamespace
         create_columns: 
           PerformanceLevel_SFScore: agg(PerformanceLevel_SFScore,)
           PerformanceLevel_LLScore: agg(PerformanceLevel_LLScore,)
           PerformanceLevel_MAScore: agg(PerformanceLevel_MAScore,)
           PerformanceLevel_PDScore: agg(PerformanceLevel_PDScore,)
+      - operation: filter_rows
+        query: "OverallScore != 'NULL'"
+        behavior: include
      
                
 

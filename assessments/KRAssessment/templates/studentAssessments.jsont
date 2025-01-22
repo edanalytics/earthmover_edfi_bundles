@@ -5,10 +5,12 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
   },
+  {% if schoolId is not none and schoolId | length %}
   "reportedSchoolReference": {
       "schoolId": {{schoolId}}
           
   },
+  {% endif %}
   "schoolYearTypeReference": {
     "schoolYear": {{SchoolYear | int}}
   },
