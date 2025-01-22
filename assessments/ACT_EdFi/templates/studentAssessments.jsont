@@ -15,7 +15,7 @@
 
     "performanceLevels": {{fromjson(v_performance_levels)}},
 
-    {% set subscores_to_remove_from_top = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
+    {% set subscores_to_remove_from_scores = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
                                            'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
                                            'uri://act.org/AssessmentReportingMethodDescriptor#STEM State Rank',
                                            'uri://act.org/AssessmentReportingMethodDescriptor#Super STEM Score',
