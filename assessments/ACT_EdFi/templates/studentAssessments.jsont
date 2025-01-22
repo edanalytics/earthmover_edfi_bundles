@@ -15,7 +15,24 @@
 
     "performanceLevels": {{fromjson(v_performance_levels)}},
 
-    "scoreResults": {{fromjson(v_score_results)}},
+    {% set subscores_to_remove_from_top = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM State Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super STEM Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Standard Error of Measurement',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA US Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA State Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super ELA Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Standard Error of Measurement'
+                                           ] %}
+    "scoreResults": [
+      {% for item in fromjson(v_score_results | default('[]')) %}
+        {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
+          {{ item }}
+        {% endif %}
+      {% endfor %}
+    ],
 
     "studentObjectiveAssessments": [
       {% set topline_obj_assess = [['ACT_ELA', 
