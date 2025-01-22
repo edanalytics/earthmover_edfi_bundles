@@ -15,6 +15,7 @@ config:
     ACT_SNOWFLAKE_API_YEAR: ${SNOWFLAKE_API_YEAR}
     ACT_SNOWFLAKE_EDU_STG_SCHEMA: ${SNOWFLAKE_EDU_STG_SCHEMA}
     ACT_SNOWFLAKE_EDU_BLD_SCHEMA: 'analytics.prod_build'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 
 sources:
@@ -124,6 +125,9 @@ transformations:
       - operation: modify_columns
         columns:
           assessment_identifier: 'ACT'
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
@@ -190,6 +194,16 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+  
+  objective_assessments:
+    source: $source.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessmentReportingMethodDescriptors:
@@ -208,7 +222,7 @@ destinations:
     extension: jsonl
     linearize: True
   objectiveAssessments:
-    source: $sources.objectiveAssessments
+    source: $transformations.objective_assessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
     linearize: True

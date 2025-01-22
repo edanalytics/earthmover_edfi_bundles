@@ -57,7 +57,7 @@
          {%- for score in all_score_obj -%}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{score[1]}}"
           }
           {%- if not loop.last -%},
