@@ -136,6 +136,12 @@ transformations:
           {% endif %}
           "Opportunity Key": Opportunity_Key
           "END OF RECORD": END_OF_RECORD
+      {% if ("${API_YEAR}" | int) > 2023 %}
+      # remove whitespace at end of string
+      - operation: modify_columns
+        columns:
+          Predicted_STAAR_Performance_Level: "{%raw%}{{ value.strip() }}{%endraw%}"
+      {% endif %}
       # join test info (e.g. subject, grade level from test code xwalk)
       - operation: join
         sources:

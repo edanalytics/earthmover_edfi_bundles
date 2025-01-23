@@ -1,47 +1,10 @@
-# See accompanying README.md for details about this file.
 version: 2
 
 config:
-  log_level: INFO
-  output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is
-  memory_limit: 1GB
-  state_file: ${STATE_FILE}
-  show_graph: False
-  parameter_defaults:
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
-
-sources:
-
-  # SEEDS
-  assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
-    header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
-  obj_assess_codes_xwalk:
-    file: ./seeds/obj_assess_codes_xwalk.csv
-    header_rows: 1
-  assessments:
-    file: ./seeds/assessments.csv
-    header_rows: 1
-
-  # INPUT STU ASSESSMENT FILES
-  input:
-    file: ${INPUT_FILE}
-    header_rows: 1
-
-  # OTHER XWALKS
-  administration_window_xwalk:
-    file: ./seeds/administration_window_xwalk.csv
-    header_rows: 1
+  output_dir: ${OUTPUT_DIR}
 
 {% set conformed_columns = 
-  ['tx_unique_student_id',
+  ['${STUDENT_ID_NAME}',
    'assessment_identifier',
    'grade_level_code',
    'administration_window',
@@ -237,7 +200,7 @@ transformations:
           - administration_window
         right_drop_columns:
           - course_abbrev
-        join_type: inner  
+        join_type: left  
       # JOIN obj assess descriptive names
       - operation: join
         sources:
@@ -252,11 +215,11 @@ transformations:
           - school_year
           - subject
           - course
-        join_type: inner
+        join_type: left
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        query: stu_assess_id != ''
-        behavior: include 
+        query: stu_assess_id.notnull() & stu_assess_id != ''
+        behavior: include
       # KEEP conformed columns
       - operation: keep_columns
         columns: {{conformed_columns}}
@@ -288,31 +251,3 @@ transformations:
       - operation: add_columns
         columns:
           api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''
-
-
-destinations:
-  studentAssessments:
-    source: $transformations.studentAssessments
-    template: ./templates/studentAssessment.jsont
-    extension: jsonl
-    linearize: True
-  assessments:
-    source: $sources.assessments
-    template: ./templates/assessments.jsont
-    extension: jsonl
-    linearize: True
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ./templates/objectiveAssessments.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    template: ./templates/performanceLevelDescriptors.jsont
-    extension: jsonl
-    linearize: True
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
-    extension: jsonl
-    linearize: True

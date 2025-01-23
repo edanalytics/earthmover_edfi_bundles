@@ -87,25 +87,43 @@
     }
   ],
   "performanceLevels": [
+    {% if is_alt_assessment|string == 'True' %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
-      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#1",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Developing",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
-      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#2",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Satisfactory",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
-      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#3",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
-      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#4",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Accomplished",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
+    {% else %} 
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Did Not Meet",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Approaches",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Meets",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Masters",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% endif %}
   ]
 }

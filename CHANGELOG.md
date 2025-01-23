@@ -5,6 +5,15 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v0.2.2
+## New features
+- South Carolina Alternate Assessment Bundle
+
+## Fixes
+- Capitalize student ID columns for TX-KEA bundle to work with the student ID wrapper
+- Update 2024 entries in the administration window xwalk and removes a blank descriptor field in STAAR Summative bundle
+- Fix academic subject array structure in MAP Fluency bundle
+
 # earthmover_edfi_bundles v0.2.1
 ## New features
 - MAP Reading Fluency Bundle
