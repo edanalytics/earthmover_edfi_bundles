@@ -9,7 +9,7 @@
     "academicSubjectDescriptor": "{{namespace}}/AcademicSubjectDescriptor#{{codeValue}}",
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/KRA/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethodDescriptor}}",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "minimumScore":"{{ minimumScore | string }}",
         "maximumScore":"{{ maximumScore | string}}"

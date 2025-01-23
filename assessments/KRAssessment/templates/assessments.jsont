@@ -8,7 +8,7 @@
   "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethodDescriptor}}",
       "resultDatatypeTypeDescriptor": "uri://{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer", 
       "minimumScore":"{{ minimumScore }}",
       "maximumScore":"{{ maximumScore }}"

@@ -22,7 +22,7 @@
   "scoreResults": [
     {% if OverallScore is not none and OverallScore | length %}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
       "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{OverallScore}}"
     }
@@ -32,7 +32,7 @@
     {% set perf_levels = [] %}
 
     {% if PerformanceLevelDescriptor is not none and PerformanceLevelDescriptor | length %}
-      {% set _ = perf_levels.append([PerformanceLevelDescriptor, 'PerformanceLevel']) %}
+      {% set _ = perf_levels.append([PerformanceLevelDescriptor, 'Proficiency level']) %}
     {% endif %}
 
 
@@ -54,14 +54,14 @@
     },
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ SFScore }}"
       }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_SFScore}}",
         "performanceLevelMet": true
       }
@@ -75,14 +75,14 @@
     },
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ LLScore }}"
       }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_LLScore}}",
         "performanceLevelMet": true
       }
@@ -96,14 +96,14 @@
     },
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ MAScore }}"
       }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_MAScore}}",
         "performanceLevelMet": true
       }
@@ -117,14 +117,14 @@
     },
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ PDScore }}"
       }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_PDScore}}",
         "performanceLevelMet": true
       }

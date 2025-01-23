@@ -28,6 +28,7 @@ sources:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
+    
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
   assessmentCategoryDescriptors:
@@ -53,8 +54,10 @@ transformations:
           - codeValue
           - minimumScore
           - maximumScore
+
+
+          
   performance_levels:
-    
     source: $sources.performanceLevelDescriptors
     operations:
       - operation: add_columns
@@ -67,12 +70,13 @@ transformations:
           - namespace
           - minimumScore
           - maximumScore
+          - assessmentReportingMethodDescriptor
       - operation: add_columns
         columns:
           performance_json: >
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
+                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethodDescriptor}}",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}",
                 "minimumScore": "{{ minimumScore | string }}",
                 "maximumScore": "{{ maximumScore | string }}"
@@ -89,7 +93,6 @@ transformations:
         
 
   performance_level_max_min_score:
-    
     source: $sources.performanceLevelDescriptors
     operations:
       - operation: add_columns
@@ -261,8 +264,6 @@ transformations:
         query: "OverallScore != 'NULL'"
         behavior: include
      
-               
-
 destinations:
   assessments:
     source: $transformations.prepare_assessments
