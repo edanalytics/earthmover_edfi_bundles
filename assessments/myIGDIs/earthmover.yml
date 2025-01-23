@@ -105,7 +105,6 @@ transformations:
     {% for objective in objectives %}
       {% for window in assessment_window.get(assessment_name, []) %}
   unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}:
-      debug: true
       source: $transformations.source_assessment
       operations:
         - operation: keep_columns

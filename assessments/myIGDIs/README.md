@@ -1,6 +1,6 @@
 * **Title**: myIGDIs Assessment Bundle - API 3.X
 * **Description**: This template includes the myIGDIs assessments, designed to measure individual growth and development indicators across various domains.
-* **API version**: 5.3
+* **API version**: 7.1
 * **Submitter name**: Bruk Woldearegay
 * **Submitter organization**: CrocusLLC
 
