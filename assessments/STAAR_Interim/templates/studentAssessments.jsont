@@ -56,9 +56,9 @@
   ]
   {% set objs_present = [] %}
   {%- for n in range(1,6) -%}
-    {% set score_name = self._TemplateReference__context.resolve('RAW_SCORE_REPORTING_CATEGORY_'~n)%}
-    {% if score_name is not none and score_name | length %}
-      {% set _= objs_present.append(score_name) %}
+    {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
+    {% if pl_name is not none and pl_name | length %}
+      {% set _= objs_present.append(pl_name) %}
     {% endif %}
   {% endfor %}
   {% if objs_present | length %}
@@ -73,7 +73,7 @@
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{ assessment_identifier }}",
-        "identificationCode": "{{ id_code }}",
+        "identificationCode": "{{ id_code[:60] }}",
         "namespace": "uri://tea.texas.gov/student-assessment"
       }
       {% if pl_name is not none and pl_name | length %}
