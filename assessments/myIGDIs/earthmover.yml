@@ -34,7 +34,7 @@ sources:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
 transformations:
-  {% set assessment = {
+   {% set assessment = {
        
      'Early Literacy+': [
         'Alliteration',
@@ -89,6 +89,7 @@ transformations:
         'Fall Screening', 'Winter Screening', 'Spring Screening', 'Summer Screening'
     ]
   } %}
+
   input:
     source: $sources.input
     operations: []
@@ -104,6 +105,7 @@ transformations:
     {% for objective in objectives %}
       {% for window in assessment_window.get(assessment_name, []) %}
   unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}:
+      debug: true
       source: $transformations.source_assessment
       operations:
         - operation: keep_columns
@@ -128,7 +130,7 @@ transformations:
             Assessment: {{assessment_name}}
             objective: {{objective}}
             timeWindow: {{window.replace(' ', '')}} 
-            namespace: uri://ed.sc.gov/myIGDIs
+            namespace: uri://renaissance.com/products/myigdis-for-preschool
             assessmentIdentifier: {{ assessment_name.replace(' ', '') }}_{{ objective.replace(' ', '') }}
         - operation: rename_columns
           columns:
@@ -192,7 +194,7 @@ transformations:
           performance_json: >
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#PerformanceLevel",
+                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
                 "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
               }
               {%-endraw%}  
@@ -263,7 +265,7 @@ destinations:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-  assessmentPeriodsDescriptors:
+  assessmentPeriodDescriptors:
     source: $sources.assessmentReportingPeriodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
