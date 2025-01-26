@@ -12,8 +12,19 @@
     },
     "administrationDate": "{{administration_date}}",
     "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
-
-    "performanceLevels": {{fromjson(v_performance_levels)}},
+    
+    {% set pls_to_keep = ['uri://act.org/AssessmentReportingMethodDescriptor#Composite Score'] %}
+    "performanceLevels": [
+      {% for item in fromjson(v_performance_levels | default('[]')) %}
+        {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+            "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}},
+            "performanceLevelMet": true
+          }
+        {% endif %}
+      {% endfor %}
+    ],
 
     {% set subscores_to_remove_from_scores = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
                                            'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
@@ -42,7 +53,8 @@
                                     'US Rank':ACT_ELA_us_rank,
                                     'State Rank':ACT_ELA_state_rank,
                                     'Superscore':ACT_ELA_super_scale_score,
-                                   }],
+                                   },
+                                   'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score'],
                                    ['ACT_STEM',
                                    {
                                     'Score':ACT_STEM_scale_score,
@@ -50,7 +62,8 @@
                                     'US Rank':ACT_STEM_us_rank,
                                     'State Rank':ACT_STEM_state_rank,
                                     'Superscore':ACT_STEM_super_scale_score,
-                                   }]
+                                   },
+                                   'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score']
                                ] %}
 
   
@@ -70,6 +83,17 @@
           "namespace": "{{namespace}}"
         }
         ,
+        "performanceLevels": [
+          {%- for level in fromjson(v_performance_levels | default('[]')) -%}
+            {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
+              {
+                "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+                "performanceLevelDescriptor": "{{ level.performanceLevelDescriptor }}",
+                "performanceLevelMet": true
+              }
+            {%- endif -%}
+          {%- endfor -%}
+        ],
         "scoreResults": [
          {%- for score in all_score_obj -%}
           {
