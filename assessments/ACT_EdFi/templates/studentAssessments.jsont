@@ -19,7 +19,7 @@
         {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-            "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}},
+            "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}}",
             "performanceLevelMet": true
           }
         {% endif %}
