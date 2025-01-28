@@ -56,6 +56,8 @@ transformations:
           namespace: "uri://idoe.gov/ILEARN/assessment"
         # or a CSV/TSV with two columns (from, to) and header row
         # paths may be absolute or relative paths to the location of the `earthmover` YAML configuration file
+      - operation: map_values
+        column: admin_date
         map_file: ./seeds/administrationDate.csv
       - operation: rename_columns
         columns:
