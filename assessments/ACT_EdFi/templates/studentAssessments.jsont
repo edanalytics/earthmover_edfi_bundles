@@ -114,7 +114,7 @@
          "objectiveAssessmentReference": {
            "assessmentIdentifier": "{{ item.objectiveAssessmentReference.assessmentIdentifier.replace('THE-', '').replace('-', '_') }}",
            "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
-           "namespace": "{{ item.objectiveAssessmentReference.namespace }}"
+           "namespace": "{{ namespace }}"
          },
          "performanceLevels": {{ item.performanceLevels }},
          "scoreResults": {{ item.scoreResults }}
