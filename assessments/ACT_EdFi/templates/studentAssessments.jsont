@@ -40,7 +40,12 @@
     "scoreResults": [
       {% for item in fromjson(v_score_results | default('[]')) %}
         {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
-          {{ item }}{% if not loop.last %},{% endif %}
+         {
+            "assessmentReportingMethodDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('Composite ', '').replace('Super Score', 'Superscore')}}",
+            "resultDatatypeTypeDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('uri://ed-fi.org',descriptor_namespace)}}",
+            "result": "{{item.result}}"
+         }
+          {% if not loop.last %},{% endif %}
         {% endif %}
       {% endfor %}
     ],
