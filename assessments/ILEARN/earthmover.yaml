@@ -54,8 +54,6 @@ transformations:
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           school_year: "{% raw %}{{ file_dir.split('/')[7] }}{% endraw %}"
           namespace: "uri://idoe.gov/ILEARN/assessment"
-      - operation: map_values
-        column: admin_date
         # or a CSV/TSV with two columns (from, to) and header row
         # paths may be absolute or relative paths to the location of the `earthmover` YAML configuration file
         map_file: ./seeds/administrationDate.csv
@@ -80,6 +78,13 @@ transformations:
           explanatory_organization_purpose: expl_org
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
+      - operation: map_values
+        columns:
+          - overall_scale_score
+          - lexile_measure
+          - quantile_measure
+        mapping:
+          UND: null
 
 
 
