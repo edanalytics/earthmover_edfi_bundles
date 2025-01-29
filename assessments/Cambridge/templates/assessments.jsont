@@ -1,0 +1,20 @@
+{
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+    }
+  ],
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "performanceLevels": [{{performanceLevel_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Cambridge/AssessmentReportingMethodDescriptor#Result",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/Cambridge/ResultDataTypeDescriptor#String (Enum)"
+    }
+  ]
+}

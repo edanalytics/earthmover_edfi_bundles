@@ -1,0 +1,16 @@
+{
+  "identificationCode": "{{identificationCode}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "academicSubjectDescriptor": "{{academicSubjectDescriptor}}",
+  "description": "Assessment for {{identificationCode}}",
+  "performanceLevels": [{{performanceLevel_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/AssessmentReportingMethodDescriptor#Result",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/Cambridge Assessments/ResultDataTypeDescriptor#String (Enum)"
+    }
+  ]
+}
