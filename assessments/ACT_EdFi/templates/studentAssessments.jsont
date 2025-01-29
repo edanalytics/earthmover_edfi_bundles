@@ -18,7 +18,7 @@
       {% for item in fromjson(v_performance_levels | default('[]')) %}
         {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
           {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
             "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}}",
             "performanceLevelMet": true
           }
@@ -102,8 +102,8 @@
         "scoreResults": [
          {%- for score in all_score_obj -%}
           {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{score[0]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}ResultDatatypeTypeDescriptor#Integer",
             "result": "{{score[1]}}"
           }
           {%- if not loop.last -%},
