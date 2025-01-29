@@ -5,11 +5,13 @@
       "namespace": "{{namespace}}"
     },
     "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
     "parentObjectiveAssessmentReference":{
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}",
       "identificationCode": "{{parentIdentificationCode}}"
     },
+    {% endif %}
     "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
     "scores": [
       {
