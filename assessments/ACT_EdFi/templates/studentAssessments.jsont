@@ -42,7 +42,7 @@
         {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
          {
             "assessmentReportingMethodDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('Composite ', '').replace('Super Score', 'Superscore')}}",
-            "resultDatatypeTypeDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('uri://ed-fi.org',descriptor_namespace)}}",
+            "resultDatatypeTypeDescriptor": "{{item.resultDatatypeTypeDescriptor.replace('uri://ed-fi.org',descriptor_namespace)}}",
             "result": "{{item.result}}"
          }
           {% if not loop.last %},{% endif %}
@@ -103,7 +103,7 @@
          {%- for score in all_score_obj -%}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}ResultDatatypeTypeDescriptor#Integer",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
             "result": "{{score[1]}}"
           }
           {%- if not loop.last -%},
