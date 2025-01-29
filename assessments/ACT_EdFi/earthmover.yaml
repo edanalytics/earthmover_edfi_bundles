@@ -128,7 +128,7 @@ transformations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-          namespace: "uri://act.org"
+          namespace: "uri://act.org/"
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
