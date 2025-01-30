@@ -121,7 +121,7 @@ transformations:
     - operation: add_columns
       columns:
         namespace: "uri://datarecognitioncorp.com/Assessment"
-        school_year: "{%raw%}20{{TestAdmin[2:4] | int}}{%endraw%}"
+        school_year: "${API_YEAR}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
         # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
         educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor/Administration"
