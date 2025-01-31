@@ -52,6 +52,9 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: filter_rows
+        query: AssignedTestType.notnull() & (AssignedTestType != "")
+        behavior: include
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
