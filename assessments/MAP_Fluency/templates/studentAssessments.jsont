@@ -14,7 +14,9 @@
 
     "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
 
+    {% if administrationLanguageDescriptor is not none and administrationLanguageDescriptor | length %}
     "administrationLanguageDescriptor" : "{{languageDescriptor}}",
+    {% endif %}
 
     "scoreResults": [
       {

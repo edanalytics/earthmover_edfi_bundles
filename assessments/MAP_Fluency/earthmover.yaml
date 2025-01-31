@@ -38,6 +38,7 @@ sources:
 
   input:
     file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
 
 transformations:
@@ -93,7 +94,7 @@ transformations:
       - operation: join
         sources:
           - $sources.languageDescriptors
-        join_type: inner
+        join_type: left
         left_key: language
         right_key: language
 
