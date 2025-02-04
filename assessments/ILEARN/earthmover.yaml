@@ -53,7 +53,7 @@ transformations:
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           school_year: "{% raw %}{{ file_dir.split('/')[7] }}{% endraw %}"
-          namespace: "uri://idoe.gov/ILEARN/assessment"
+          namespace: "uri://idoe.gov/ILEARN/Assessment"
         # or a CSV/TSV with two columns (from, to) and header row
         # paths may be absolute or relative paths to the location of the `earthmover` YAML configuration file
       - operation: map_values
