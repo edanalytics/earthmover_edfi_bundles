@@ -31,9 +31,7 @@ sources:
     
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
-    header_rows: 1
+
 
 transformations:
   input:
@@ -288,8 +286,4 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
-    extension: jsonl
-  assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
-    template: ./templates/assessmentCategoryDescriptors.jsont
     extension: jsonl
