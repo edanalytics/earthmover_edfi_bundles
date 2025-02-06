@@ -10,7 +10,6 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: "Student Id"
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     
-
 sources:
   input:
     file: ${INPUT_FILE}
@@ -34,62 +33,6 @@ sources:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
 transformations:
-   {% set assessment = {
-       
-     'Early Literacy+': [
-        'Alliteration',
-        'Picture Naming',
-        'Rhyming',
-        'Sound ID',
-        'WODB'
-    ],
-    'Early Numeracy': [
-        '1-to-1 Correspondence Counting',
-        'Number Naming',
-        'Oral Counting',
-        'Quantity Comparison'
-    ],
-    'Español': [
-        'Expressive Verbs/Verbos Expressivos',
-        'First Sounds/Primeros Sonidos',
-        'Letter ID/Identificación de las letras',
-        'Picture Naming/Denominacion de los Dibujos',
-        'Sound ID/Identificación de los sonidos'
-    ],
-    'ProLADR': [
-        'Approaches to Learning',
-        'Cognitive',
-        'Creativity and the Arts',
-        'Language and Literacy',
-        'Physical and Motor',
-        'Social and Emotional'
-    ]
-  } %}
-
-  {% set assessment_window = {
-    'Early Literacy+': [
-        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
-        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
-        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
-        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
-    ],
-    'Early Numeracy': [
-        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
-        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
-        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
-        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
-    ],
-    'Español': [
-        'Fall 1', 'Fall 2', 'Fall 3', 'Fall 4', 'Fall Screening',
-        'Winter 1', 'Winter 2', 'Winter 3', 'Winter 4', 'Winter Screening',
-        'Spring 1', 'Spring 2', 'Spring 3', 'Spring 4', 'Spring Screening',
-        'Summer 1', 'Summer 2', 'Summer 3', 'Summer 4', 'Summer Screening'
-    ],
-    'ProLADR': [
-        'Fall Screening', 'Winter Screening', 'Spring Screening', 'Summer Screening'
-    ]
-  } %}
-
   input:
     source: $sources.input
     operations: []
@@ -99,83 +42,24 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-  
-
-  {% for assessment_name, objectives in assessment.items() %}
-    {% for objective in objectives %}
-      {% for window in assessment_window.get(assessment_name, []) %}
-  unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}:
-      source: $transformations.source_assessment
-      operations:
-        - operation: keep_columns
-          columns:
-            - "School Year"
-            - "State Name"
-            - "District Name"
-            - "School Name"
-            - "Classroom Name"
-            - "Init District Id"
-            - "studentUniqueId"
-            - {{assessment_name}}/{{objective}}/{{window}}/Date Of Administration
-            {% if assessment_name == 'Early Literacy+' %}
-            - {{assessment_name}}/{{objective}}/{{window}}/Scaled Score
-            {% else %}
-            - {{assessment_name}}/{{objective}}/{{window}}/Score
-            {% endif %}
-            - {{assessment_name}}/{{objective}}/{{window}}/Tier
-
-        - operation: add_columns
-          columns:
-            Assessment: {{assessment_name}}
-            objective: {{objective}}
-            timeWindow: {{window.replace(' ', '')}} 
-            namespace: uri://renaissance.com/products/myigdis-for-preschool
-            assessmentIdentifier: {{ assessment_name.replace(' ', '') }}_{{ objective.replace(' ', '') }}
-        - operation: rename_columns
-          columns:
-            "School Year": SchoolYear
-            "State Name": StateName
-            "District Name": DistrictName
-            "School Name": SchoolName
-            "Classroom Name": ClassroomName
-            "Init District Id": InitDistrictId
-
-            {{assessment_name}}/{{objective}}/{{window}}/Date Of Administration: administrationDate
-            {% if assessment_name == 'Early Literacy+' %}
-            {{assessment_name}}/{{objective}}/{{window}}/Scaled Score: Score
-            {% else %}
-            {{assessment_name}}/{{objective}}/{{window}}/Score: Score
-            {% endif %}
-            {{assessment_name}}/{{objective}}/{{window}}/Tier: Tier
-        - operation: filter_rows
-          query: Score != ''
-          behavior: include
-        - operation: add_columns
-          columns:
-            studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
-            assessmentFamily: {{assessment_name}}}
-            schoolYearFormatted: "{% raw %}{{ SchoolYear.split('-')[1] | int }}{% endraw %}"
-        
-
-      {% endfor %}
-    {% endfor %}
-  {% endfor %}
-
-  combined_results:
-      source: $transformations.unpivot_columns_{{assessment.keys() | list | first}}_{{assessment.values() | list | first | first}}_{{assessment_window.values() | list | first | first}}
-      operations:
-        - operation: union
-          sources:
-            {% for assessment_name, objectives in assessment.items() %}
-              {% for objective in objectives %}
-                {% for window in assessment_window.get(assessment_name, []) %}
-                - $transformations.unpivot_columns_{{assessment_name}}_{{objective}}_{{window}}
-                {% endfor %}
-              {% endfor %}
-            {% endfor %}
-        - operation: add_columns
-          columns:
-            descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: filter_rows
+        query: Score != ''
+        behavior: include
+      - operation: add_columns
+        columns:
+          namespace: uri://renaissance.com/products/myigdis-for-preschool
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~ administrationDate) }}{% endraw %}"
+          assessmentFamily: "{{ assessment_name }}"
+          schoolYearFormatted: "{% raw %}{{ SchoolYear.split('-')[1] | int }}{% endraw %}"
+      - operation: add_columns
+        columns:
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+          timeWindow: "{%raw%}{{TimeWindow | replace(' ', '')-}}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          AssessmentIdentifier: assessmentIdentifier
+          AdministrationDate: administrationDate
+      
   performance_levels:
     
     source: $sources.performanceLevelDescriptors
@@ -249,7 +133,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.combined_results
+    source: $transformations.source_assessment
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessments:
@@ -273,6 +157,6 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.combined_results
+    source: $transformations.source_assessment
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
