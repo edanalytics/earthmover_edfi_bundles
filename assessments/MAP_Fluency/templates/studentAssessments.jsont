@@ -70,12 +70,12 @@
 {% set filtered_obj_assess = [] %}
 {% for obj_assess in obj_assess_grp_1 %}
   {% if obj_assess["scores"][0][0] is not none and obj_assess["scores"][0][0] | length %}
-  {{ filtered_obj_assess.append(obj_assess)}}
+  {{ set _ = filtered_obj_assess.append(obj_assess)}}
   {% endif %}
 {% endfor %}
 {% for obj_assess in obj_assess_grp_2 %}
   {% if obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length %}
-  {{ filtered_obj_assess.append(obj_assess)}}
+  {{ set _ = filtered_obj_assess.append(obj_assess)}}
   {% endif %}
 {% endfor %}
 
