@@ -150,7 +150,7 @@
           {% endfor %}
         ]
 
-        {% elif (obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length) and (obj_assess["scores"][0][0] is none or not obj_assess["scores"][0][0] | length) %}
+        {% elif obj_assess["perf_levels"][0][0] is not none and obj_assess["perf_levels"][0][0] | length %}
         , "scoreResults": [
           {% for item in obj_assess["scores"] %}
             {
