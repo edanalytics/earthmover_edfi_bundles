@@ -110,7 +110,7 @@
           "result": "{{score[0][:35] | trim}}"
         } {%- if not loop.last -%},{%- endif -%}
       {%- endfor -%}
-    ],
+    ]
     {%- endif -%}
 
     {%- if filtered_obj_assess -%}
