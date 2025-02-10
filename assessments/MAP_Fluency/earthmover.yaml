@@ -53,7 +53,7 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: filter_rows
-        query: AssignedTestType.notnull() & (AssignedTestType != "")
+        query: (AssignedTestType.notnull() & (AssignedTestType != "")) | (ResultType.notnull() & (ResultType != ""))
         behavior: include
       - operation: add_columns
         columns:
