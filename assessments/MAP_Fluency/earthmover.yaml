@@ -9,8 +9,8 @@ config:
   macros: >
       {% macro build_test_type(test_type, result_type) -%}
       {%- if test_type and test_type | length -%}{{ test_type | replace(' ' , '-') }}
-      {%- elif result_type == 'Oral Reading' -%}Adaptive Oral Reading
-      {%- elif result_type == 'Dyslexia Screener' -%}Foundational Skills with Dyslexia Screener
+      {%- elif result_type == 'Oral Reading' -%}Adaptive-Oral-Reading
+      # {%- elif result_type == 'Dyslexia Screener' -%}Foundational-Skills-with-Dyslexia-Screener
       {%- else -%}{{ result_type | replace(' ' , '-') }}
       {%- endif -%}
       {%- endmacro %}
