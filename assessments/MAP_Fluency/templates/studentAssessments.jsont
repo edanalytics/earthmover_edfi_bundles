@@ -15,7 +15,7 @@
 
 
 
-{% set obj_assess_grp_1 = [
+{%- set obj_assess_grp_1 = [
   {
     "id_code": "Print Concept",
     "perf_levels": [(PrintConceptPerformanceLevel, "Performance Level")],
@@ -46,9 +46,9 @@
     "perf_levels": [(PictureVocabPerformanceLevel, "Performance Level")],
     "scores": [(PictureVocabCorrect, "Correct", "Integer"), (PictureVocabAttempted, "Attempted", "Integer")]
   },
-] %}
+] -%}
 
-{% set obj_assess_grp_2 = [
+{%- set obj_assess_grp_2 = [
   {
     "id_code": "Phonological Awareness",
     "perf_levels": [(PhonologicalAwarenessPerformanceLevel, "Performance Level"), (PhonologicalAwarenessZPDLevel, "ZPD Level") , (PhonologicalAwarenessZPDName, "ZPD Name")],
@@ -64,8 +64,7 @@
     "perf_levels": [(LiteralComprehensionPerf, "Performance Level")],
     "scores": [("not_scored", "Literal Comprehension Score (Not Scored)", "Integer")]
   },
-]
-%}
+] -%}
 
 {%- set filtered_obj_assess = [] -%}
 {%- for obj_assess in obj_assess_grp_1 -%}
