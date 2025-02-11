@@ -123,15 +123,13 @@
         },
 
         "performanceLevels": [
-          {% for perf_level in obj_assess["perf_levels"] %}
-            {% if perf_level[0] is not none and perf_level[0] | length %}
+          {% for perf_level in obj_assess["perf_levels"] if (perf_level[0] is not none and perf_level[0] | length) %}
             {
               "assessmentReportingMethodDescriptor": "{{ namespace }}ReportingMethodDescriptor#{{ perf_level[1] }}",
               "performanceLevelDescriptor": "uri://www.nwea.org/mapFluency/PerformanceLevelDescriptor#{{ perf_level[0] }}",
               "performanceLevelMet": true
             }
             {% if not loop.last %},{% endif %}
-            {% endif %}
           {% endfor %}
         ]
 
