@@ -1,0 +1,10 @@
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
+    "namespace": "{{ namespace }}"
+  },
+  "academicSubjectDescriptor": "{{ AcademicSubjectDescriptor }}",
+  "performanceLevels": [{{ performance_levels_json }}],
+  "scores": [{{ scores_json }}]
+}
