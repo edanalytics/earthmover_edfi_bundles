@@ -1,0 +1,12 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "DIAL",
+  "assessmentForm": "{{assessmentForm}}",
+  "assessmentCategoryDescriptor": "{{namespace}}/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "namespace": "{{namespace}}",
+  "periods": [{{period_json}}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": [  {"academicSubjectDescriptor":"{{namespace}}/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "scores": [{{score_json}}]
+}

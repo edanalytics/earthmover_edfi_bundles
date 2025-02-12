@@ -1,0 +1,14 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "academicSubjectDescriptor": "{{namespace}}/AcademicSubjectDescriptor#{{codeValue}}",
+    "scores": [
+      {{ scores }}
+
+    ]
+  }
