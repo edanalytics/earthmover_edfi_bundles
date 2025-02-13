@@ -2,9 +2,32 @@
 	"assessmentIdentifier": "{{assessmentIdentifier}}",
 	"assessmentTitle": "{{assessmentTitle}}",
 	"namespace": "{{namespace}}",
-	"assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#State assessment",
-	"assessedGradeLevels": [{{grade_json}}],
-	"academicSubjects": [{{subject_json}}],
+	"assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+	"assessedGradeLevels": [
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Third grade"
+		},
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade"
+		},
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade"
+		},
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade"
+		},
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade"
+		},
+		{
+		"gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
+		}
+	],
+	"academicSubjects": [
+		{
+		"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+		}
+	],
 	"scores": [
 		{
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale score",
@@ -38,6 +61,11 @@
 		{
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
 			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#UND",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		},
 		{

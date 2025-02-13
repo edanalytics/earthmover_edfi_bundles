@@ -5,8 +5,8 @@
     "student_id_names": ["STN"],
     "input_files": {
         "INPUT_FILE": {"optional": "False",
-                       "required_fields": ["STN", "Test name", "Enrolled Grade", "Overall scale scoree", "Overall proficiency level", "College and Career Readiness Indicator"],
-                       "optional_fields": ["ILEARN Reported Lexile® Measure", "ILEARN Reported Quantile® Measure"]}
+                       "required_fields": ["student_unique_id", "file_dir", "overall_scale_score", "overall_proficiency_level", "college_and_career_readiness_indicator"],
+                       "optional_fields": ["ILEARN Reported Lexile® Measure", "ILEARN Reported Quantile® Measure", "ilearn_reporting_category_1_performance", "ilearn_reporting_category_2_performance", "ilearn_reporting_category_3_performance", "ilearn_reporting_category_4_performance", "ilearn_reporting_category_5_performance"]}
                     },
     "params": {
         "INPUT_FILE": 
@@ -37,16 +37,6 @@
                 "description": "The set of student ID columns from the assessment file to compare to Ed-Fi student IDs using the compute_match_rates package",
                 "optional": "True",
                 "default": "STN"
-            },
-		"TEST_DATE":
-			{
-				"description": "Arbitrary date that the assessment was taken (since ILEARN export file does not provide a test date/year",
-				"optional": "False"
-			},
-		"TEST_YEAR":
-			{
-				"description": "Year that the assessment was taken (since ILEARN export file does not provide a test date/year",
-				"optional": "False"
-			}
+            }
     }
 }
