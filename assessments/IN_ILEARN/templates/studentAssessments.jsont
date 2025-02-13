@@ -28,6 +28,11 @@
 
 		{% for score in scores %}
 		{
+			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#Subject",
+			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#Level",
+			"result": "{{subject_descriptor}}"
+		},
+		{
 			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{score[1]}}",
 			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{score[2]}}",
 			"result": "{{score[0]}}"
