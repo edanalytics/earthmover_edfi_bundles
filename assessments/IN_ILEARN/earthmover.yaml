@@ -128,7 +128,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessments:
-    source: $transformations.assessments
+    source: $sources.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
