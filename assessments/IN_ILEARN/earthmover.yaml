@@ -28,6 +28,9 @@ sources:
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -105,6 +108,21 @@ transformations:
           - quantile_measure   
         mapping:
           UND: null  
+
+      # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
+      # (specified in academicSubjectDescriptor seed table)
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_keys:
+          - subject_descriptor
+        right_keys: 
+          - academicSubject
+        right_keep_columns:
+          - assessmentIdentifier
+          - assessmentTitle
+
      
   
 destinations:
