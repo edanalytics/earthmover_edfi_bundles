@@ -119,8 +119,8 @@ transformations:
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
-        left_keys: [assessment_identifier, when_assessed_grade_level]
-        right_keys: [assessmentIdentifier, gradeLevelShort]
+        left_keys: [when_assessed_grade_level]
+        right_keys: [gradeLevelShort]
       # overwrite assess ID to match governance decision
       - operation: modify_columns
         columns:
