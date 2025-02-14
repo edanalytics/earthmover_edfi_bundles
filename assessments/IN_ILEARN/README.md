@@ -1,6 +1,6 @@
 This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
 * **Title**: Indiana ILearn - API 3.X
-* **Description**: This template includes ILEARN subjects ELA, Math, Social Studies.  (TODO: Add Science, Bio, and US Government)
+* **Description**: This template includes ILEARN subjects ELA, Math, Social Studies, Science, Biology, US Government.
 * **API version**: 7.1
 * **Submitter name**: Matt Criscenzo
 * **Submitter organization**: Education Analytics
@@ -15,9 +15,7 @@ This bundle currently works with ILEARN scores as exported from CRS, as of SY 20
 ## CLI Parameters
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- INPUT_FILE: The student assessment file to be mapped
-- TEST_YEAR: School year during which the assessment was taken.  The ILearn export does not currently include a Test Date/Year.  So you have to manually set these.
-- TEST_DATE: Date that the test was taken (format: YYYY-MM-DD).  The ILearn export does not currently include a Test Date/Year.  So you have to manually set these.  
+- INPUT_FILE: The student assessment file to be mapped 
 - API_YEAR: The API year of the ODS for which we would send these records
 
 ### Examples
@@ -27,8 +25,6 @@ earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "./data/ilearn_sample_data.csv",
-"TEST_YEAR": "2024"
-"TEST_DATE": "2024-04-01"
 "API_YEAR": "2024"
 }'
 ```
@@ -44,9 +40,7 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 ```
 
 ### Notes
-- This template includes the Indiana-specific descriptors for Grade Level and Academic Subject, rather than standard EdFi descriptors.  This assessment is created and administered by the state of Indiana, and is only ever expected to be used within Indiana.
-- 
-
+- This assessment is created and administered by the state of Indiana, and is only ever expected to be used within Indiana.
 
 ### Reference
 Here is a complete list of columns provided by the export
