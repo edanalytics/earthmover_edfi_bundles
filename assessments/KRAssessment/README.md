@@ -5,7 +5,7 @@
 * **Submitter organization**: CrocusLLC
 To run this bundle, please add your own source file<code>data/KRA_Data_File.csv</code>
 
-This bundle works with KRA files in the format provided by the assessment vendor. For details about the mapping look at the [mapping document](./mapping.md) found here.
+This bundle works with KRA files in the format provided by the assessment vendor. 
 
 ## CLI Parameters
 
