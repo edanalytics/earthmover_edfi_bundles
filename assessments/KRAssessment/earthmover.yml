@@ -140,7 +140,7 @@ transformations:
         columns:
           assessmentIdentifier: "KRA"
 
-  prepare_assessments:
+  prepare_assessments: 
     source: $transformations.stage_assessments
     operations:
       - operation: join
@@ -189,8 +189,7 @@ transformations:
         columns:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
     
-      
-
+    
   prepare_student_assessments:
     source: $transformations.input
     operations:

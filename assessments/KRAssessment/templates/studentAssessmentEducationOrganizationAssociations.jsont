@@ -1,6 +1,6 @@
 {% if districtId is not none and districtId | length %}
  {
-      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Administration",
+      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration",
       "educationOrganizationReference": {
         "educationOrganizationId": {{ districtId }}
       },
