@@ -6,8 +6,7 @@
 
 To run this bundle, please add your own source file `data/myIGDIs_Data_File.csv`
 
-This bundle works with myIGDIs files in the format provided by the assessment vendor. For details about the mapping, look at the [mapping document](./mapping.md) found here.
-
+This bundle works with myIGDIs files in the format provided by the assessment vendor. 
 ## CLI Parameters
 
 ### Required
@@ -23,11 +22,18 @@ This bundle works with myIGDIs files in the format provided by the assessment ve
 
 ### Examples
 
-Using an ID column from the assessment file:
+### Examples
+
+There is a pre executing python function that needs to be run before running earthmover to vertically stack the results. The pre-execution step is created to resolve performance issues when using earthmover: 
+```bash
+python -c'import python_pre_exec.myIGDIS_pre_exec; myIGDIS_pre_exec(input_file="./data/myIGDIs_Score_Export_SAMPLE_data_file.csv", output_file="./data/stacked_format_output.csv")'
+```
+
+Using an ID column from the assessment file and running earthmover on the pre processed file:
 
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/myIGDIs_Data_File.csv",
+  "INPUT_FILE": "path/to/mstacked_format_output.csv",
   "OUTPUT_DIR": "./output",
   "STUDENT_ID_NAME": "Student Id"
 }'
