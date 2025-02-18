@@ -127,6 +127,11 @@ transformations:
           - assessmentIdentifier
           - assessmentTitle
 
+    expect: 
+      - admin_date in ('EOY', 'EOY Biology', 'EOY Government')
+      - school_year|int != 0
+      - subject_descriptor in ('English/Language Arts', 'Mathematics', 'Social Studies', 'Science', 'Biology', 'U.S. Government')
+
      
   
 destinations:
