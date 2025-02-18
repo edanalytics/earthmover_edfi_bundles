@@ -28,9 +28,6 @@ sources:
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
-    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -117,7 +114,7 @@ transformations:
       # (specified in academicSubjectDescriptor seed table)
       - operation: join
         sources:
-          - $sources.academicSubjectDescriptors
+          - $sources.assessments
         join_type: inner
         left_keys:
           - subject_descriptor
