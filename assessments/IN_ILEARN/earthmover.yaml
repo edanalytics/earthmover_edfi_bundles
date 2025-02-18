@@ -8,7 +8,7 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: STN
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: STN
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
@@ -94,6 +94,10 @@ transformations:
           explanatory_organization_purpose: expl_org
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
+      
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: stn
       
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
