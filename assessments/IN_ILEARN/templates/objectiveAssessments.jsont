@@ -1,0 +1,108 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "scores": [],
+    "performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#At/Near",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#UND",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N/A",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Invalidated",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Blank",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Non-Scorable Language",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Insufficient",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Off Purpose",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Off Topic",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Illegible",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Invalidated",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N/A",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+    ]
+  }
