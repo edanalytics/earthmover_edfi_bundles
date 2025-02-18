@@ -5,7 +5,7 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{namespace}}/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [  {"academicSubjectDescriptor":"uri://ed-fi.org/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
