@@ -24,19 +24,18 @@
 		{%- if score[0] is not none and score[0] | length -%}
 			{%- set _ = scores.append(score) -%}
 		{%- endif -%}
-		{%- endfor -%}
-
-		{% for score in scores %}
+		{%- endfor -%}		
 		{
 			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#Subject",
 			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#Level",
 			"result": "{{subject_descriptor}}"
 		},
+		{%- for score in scores %}
 		{
 			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{score[1]}}",
 			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{score[2]}}",
 			"result": "{{score[0]}}"
-		} {% if not loop.last %},{% endif %}
+		}{% if not loop.last %},{% endif %}
 		{% endfor %}
 	],
 

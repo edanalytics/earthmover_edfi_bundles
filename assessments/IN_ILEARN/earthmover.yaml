@@ -31,6 +31,9 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -129,8 +132,48 @@ transformations:
       - school_year|int != 0
       - subject_descriptor in ('English/Language Arts', 'Mathematics', 'Social Studies', 'Science', 'Biology', 'U.S. Government')
 
-     
-  
+
+
+  # Generate grade level json for assessment template based on seeds
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+
+        
+          
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
@@ -138,7 +181,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessments:
-    source: $sources.assessments
+    source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
     linearize: True
