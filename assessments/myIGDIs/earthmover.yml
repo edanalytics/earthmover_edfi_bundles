@@ -7,7 +7,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    POSSIBLE_STUDENT_ID_COLUMNS: "StudentId"
+    POSSIBLE_STUDENT_ID_COLUMNS: "Student Id"
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     
 sources:
@@ -77,7 +77,7 @@ transformations:
           performance_json: >
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+                "assessmentReportingMethodDescriptor": "{{namespace.split('/')[:-1] | join('/')}}/AssessmentReportingMethodDescriptor#Proficiency level",
                 "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
               }
               {%-endraw%}  
@@ -130,6 +130,9 @@ transformations:
         join_type: left
         left_key: cross_join_key
         right_key: cross_join_key 
+      - operation: add_columns
+        columns:
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   studentAssessments:
