@@ -61,7 +61,7 @@ transformations:
         columns:
           file_dir: "${INPUT_FILE}"
           admin_date: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
-          school_year: "{% raw %}{{ file_dir.split('/')[7] }}{% endraw %}"
+          school_year: "${API_YEAR}"
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://idoe.gov/ILEARN/Assessment"
@@ -95,7 +95,7 @@ transformations:
       
       - operation: duplicate_columns
         columns:
-          ${STUDENT_ID_NAME}: student_unique_id
+          ${STUDENT_ID_NAME}: studentUniqueId
       
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
