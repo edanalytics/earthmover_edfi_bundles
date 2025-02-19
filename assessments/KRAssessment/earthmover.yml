@@ -23,15 +23,15 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
-    
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
-
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -285,4 +285,8 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/assessmentCategoryDescriptors.jsont
     extension: jsonl
