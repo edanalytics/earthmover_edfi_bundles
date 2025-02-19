@@ -8,7 +8,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    POSSIBLE_STUDENT_ID_COLUMNS: 'stn, student_unique_id'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'stn'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
 
@@ -69,7 +69,6 @@ transformations:
       # Rename columns for brevity.
       - operation: rename_columns
         columns:
-          stn: student_unique_id
           ilearn_reporting_category_1_performance: rc1_performance
           ilearn_reporting_category_2_performance: rc2_performance
           ilearn_reporting_category_3_performance: rc3_performance
