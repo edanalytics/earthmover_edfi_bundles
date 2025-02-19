@@ -4,12 +4,11 @@ config:
   log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    POSSIBLE_STUDENT_ID_COLUMNS: STN
+    POSSIBLE_STUDENT_ID_COLUMNS: 'stn'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
 
@@ -97,7 +96,7 @@ transformations:
       
       - operation: duplicate_columns
         columns:
-          ${STUDENT_ID_NAME}: stn
+          ${STUDENT_ID_NAME}: student_unique_id
       
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
