@@ -95,7 +95,7 @@ transformations:
       
       - operation: duplicate_columns
         columns:
-          ${STUDENT_ID_NAME}: student_unique_id
+          ${STUDENT_ID_NAME}: stn
       
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
