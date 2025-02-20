@@ -45,6 +45,10 @@ transformations:
   studentAssessments:
     source: $transformations.input
     operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+          
       # An additional python pre-processing step occurs on ILEARN's col names due to special characters (e.g. "®").
       - operation: snake_case_columns
 
@@ -92,10 +96,6 @@ transformations:
           explanatory_organization_purpose: expl_org
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
-      
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: stn
       
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
