@@ -97,6 +97,11 @@ transformations:
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
       
+      # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
+      - operation: duplicate_columns
+        columns:
+          admin_date: admin_date_string
+
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
         column: admin_date
@@ -126,7 +131,7 @@ transformations:
           - assessmentTitle
 
     expect: 
-      - admin_date == 'EOY' or admin_date == 'EOY Biology' or admin_date == 'EOY Government' 
+      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' 
       - school_year|int != 0
       - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government')
 
