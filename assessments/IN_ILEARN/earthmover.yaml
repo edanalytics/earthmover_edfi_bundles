@@ -126,9 +126,9 @@ transformations:
           - assessmentTitle
 
     expect: 
-      - admin_date in ('EOY', 'EOY Biology', 'EOY Government')
+      - admin_date == 'EOY' or admin_date == 'EOY Biology' or admin_date == 'EOY Government' 
       - school_year|int != 0
-      - subject_descriptor in ('English/Language Arts', 'Mathematics', 'Social Studies', 'Science', 'Biology', 'U.S. Government')
+      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government')
 
 
 
