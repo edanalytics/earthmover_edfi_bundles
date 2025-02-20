@@ -2,10 +2,10 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "assessmentFamily": "PALS",
-  "assessmentCategoryDescriptor": "uri://renaissance.com/products/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "namespace": "{{namespace}}",
   "periods": [{"assessmentPeriodDescriptor": "uri://renaissance.com/products/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
   "assessedGradeLevels": [{{grade_json}}],
-  "academicSubjects": [  {"academicSubjectDescriptor":"{{descriptorNamespace}}/AcademicSubjectDescriptor#{{academicSubjectDescriptor}}"}],
+  "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "scores": [{{score_json}}]
 }
