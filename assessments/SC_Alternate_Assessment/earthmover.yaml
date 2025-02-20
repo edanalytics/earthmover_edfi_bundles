@@ -184,7 +184,7 @@ transformations:
           - $transformations.sc_alt_soc
       # Remove records for non-tied subjects.
       - operation: filter_rows
-        query: "assessment_grade.notnull()"
+        query: assessment_grade.notnull() & (assessment_grade != "") & ss.notnull() & (ss != "")
         behavior: include
       - operation: add_columns
         columns:
