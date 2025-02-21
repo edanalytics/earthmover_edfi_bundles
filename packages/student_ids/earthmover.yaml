@@ -291,6 +291,7 @@ transformations:
       - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
     # ensure there's not 0 rows:
     require_rows: True
+    require_rows_exit_code: 44
 
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
