@@ -1,0 +1,113 @@
+{
+	"studentAssessmentIdentifier": "{{md5(generated_test_id)}}",
+	"assessmentReference": {
+		"assessmentIdentifier": "{{assessmentIdentifier}}",
+		"namespace": "{{namespace}}"
+	},
+	"schoolYearTypeReference": {
+		"schoolYear": "{{school_year}}"
+	},
+	"studentReference": {
+		"studentUniqueId": "{{stn}}"
+	},
+	"administrationDate": "{{admin_date}}",
+
+	"scoreResults": [
+		{%- set possible_scores = [
+			[overall_scale_score, "Scale Score", "Integer"],
+			[lexile_measure, "Lexile Measure", "Level"],
+			[quantile_measure, "Quantile Measure", "Level"]
+		] -%}
+
+		{%- set scores = [] -%}
+		{%- for score in possible_scores -%}
+		{%- if score[0] is not none and score[0] | length -%}
+			{%- set _ = scores.append(score) -%}
+		{%- endif -%}
+		{%- endfor -%}		
+		{
+			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#Subject",
+			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#Level",
+			"result": "{{subject_descriptor}}"
+		},
+		{%- for score in scores %}
+		{
+			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{score[1]}}",
+			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{score[2]}}",
+			"result": "{{score[0]}}"
+		}{% if not loop.last %},{% endif %}
+		{% endfor %}
+	],
+
+	"performanceLevels": [
+		{%- set possible_perf_levels = [
+			[overall_proficiency_level, "Proficiency level", "Level"],
+			[cc_readiness_indicator, "College and Career Readiness Indicator", "Level"]
+		] -%}
+
+		{%- set perf_levels = [] -%}
+		{%- for perf_level in possible_perf_levels -%}
+		{%- if perf_level[0] is not none and perf_level[0] | length -%}
+			{%- set _ = perf_levels.append(perf_level) -%}
+		{%- endif -%}
+		{%- endfor -%}
+
+		{% for perf_level in perf_levels %}
+		{
+			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+       		"resultDatatypeTypeDescriptor":"uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{perf_level[2]}}",
+			"performanceLevelDescriptor": "uri://idoe.gov/ILEARN/PerformanceLevelDescriptor#{{perf_level[0]}}",
+			"performanceLevelMet": true
+		} {% if not loop.last %},{% endif %}
+		{% endfor %}
+	], 
+
+	"studentObjectiveAssessments": [
+		{% set possible_obj_assess = [
+			[rc1_performance, "rc1_performance", "Reporting Category Performance Level", "Level"],
+			[rc2_performance, "rc2_performance", "Reporting Category Performance Level", "Level"],
+			[rc3_performance, "rc3_performance", "Reporting Category Performance Level", "Level"],
+			[rc4_performance, "rc4_performance", "Reporting Category Performance Level", "Level"],
+			[rc5_performance, "rc5_performance", "Reporting Category Performance Level", "Level"],
+			[arg_org, "arg_org", "Essay Score", "Level"],
+			[arg_evid, "arg_evid", "Essay Score", "Level"],
+			[arg_conv, "arg_conv", "Essay Score", "Level"],
+			[inf_org, "inf_org", "Essay Score", "Level"],
+			[inf_evid, "inf_evid", "Essay Score", "Level"],
+			[inf_conv, "inf_conv", "Essay Score", "Level"],
+			[nar_org, "nar_org", "Essay Score", "Level"],
+			[nar_evid, "nar_evid", "Essay Score", "Level"],
+			[nar_conv, "nar_conv", "Essay Score", "Level"],
+			[op_org, "op_org", "Essay Score", "Level"],
+			[op_evid, "op_evid", "Essay Score", "Level"],
+			[op_conv, "op_conv", "Essay Score", "Level"],
+			[expl_org, "expl_org", "Essay Score", "Level"],
+			[expl_evid, "expl_evid", "Essay Score", "Level"],
+			[expl_conv, "expl_conv", "Essay Score", "Level"]
+		] %}
+		{% set all_obj_assessment = [] %}
+		{%- for obj in possible_obj_assess -%}
+			{% if obj[0] is not none and obj[0] | length %}
+			{% set _= all_obj_assessment.append(obj) %}
+			{% endif %}
+		{% endfor %}
+		{%- for obj in all_obj_assessment -%}
+		{
+			"objectiveAssessmentReference": {
+			"assessmentIdentifier": "{{assessmentIdentifier}}",
+			"identificationCode": "{{obj[1]}}",
+			"namespace": "{{namespace}}"
+			},
+			"scoreResults": [],
+			"performanceLevels": [
+			{
+				"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{obj[2]}}",
+       			"resultDatatypeTypeDescriptor":"uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{obj[3]}}",
+				"performanceLevelDescriptor": "uri://idoe.gov/ILEARN/PerformanceLevelDescriptor#{{obj[0]}}",
+				"performanceLevelMet": true
+			}
+			] 
+		} {% if not loop.last %},{% endif %}
+		{% endfor %}
+	]
+}
