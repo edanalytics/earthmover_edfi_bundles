@@ -8,7 +8,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    POSSIBLE_STUDENT_ID_COLUMNS: 'stn'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
 
@@ -68,7 +68,7 @@ transformations:
           school_year: "${API_YEAR}"
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
-          namespace: "uri://idoe.gov/ILEARN/Assessment"
+          namespace: "uri://doe.in.gov/ILEARN/Assessment"
 
       # Rename columns for brevity.
       - operation: rename_columns
