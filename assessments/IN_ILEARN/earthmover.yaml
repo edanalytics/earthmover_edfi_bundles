@@ -8,7 +8,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
-    POSSIBLE_STUDENT_ID_COLUMNS: 'stn'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
 
@@ -48,7 +48,7 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
-          
+
       # An additional python pre-processing step occurs on ILEARN's col names due to special characters (e.g. "®").
       - operation: snake_case_columns
 
@@ -68,7 +68,7 @@ transformations:
           school_year: "${API_YEAR}"
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
-          namespace: "uri://idoe.gov/ILEARN/Assessment"
+          namespace: "uri://doe.in.gov/ILEARN/Assessment"
 
       # Rename columns for brevity.
       - operation: rename_columns
@@ -96,7 +96,7 @@ transformations:
           explanatory_organization_purpose: expl_org
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
-      
+
       # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
       - operation: duplicate_columns
         columns:
@@ -175,8 +175,8 @@ transformations:
         right_key: assessmentIdentifier
 
 
-        
-          
+
+
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
