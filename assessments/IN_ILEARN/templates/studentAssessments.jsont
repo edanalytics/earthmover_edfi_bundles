@@ -26,14 +26,14 @@
 		{%- endif -%}
 		{%- endfor -%}		
 		{
-			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#Subject",
-			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#Level",
+			"assessmentReportingMethodDescriptor": "uri://doe.in.gov/ILEARN/AssessmentReportingMethodDescriptor#Subject",
+			"resultDatatypeTypeDescriptor": "uri://doe.in.gov/ILEARN/ResultDatatypeTypeDescriptor#Level",
 			"result": "{{subject_descriptor}}"
 		},
 		{%- for score in scores %}
 		{
-			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{score[1]}}",
-			"resultDatatypeTypeDescriptor": "uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{score[2]}}",
+			"assessmentReportingMethodDescriptor": "uri://doe.in.gov/ILEARN/AssessmentReportingMethodDescriptor#{{score[1]}}",
+			"resultDatatypeTypeDescriptor": "uri://doe.in.gov/ILEARN/ResultDatatypeTypeDescriptor#{{score[2]}}",
 			"result": "{{score[0]}}"
 		}{% if not loop.last %},{% endif %}
 		{% endfor %}
@@ -54,9 +54,9 @@
 
 		{% for perf_level in perf_levels %}
 		{
-			"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-       		"resultDatatypeTypeDescriptor":"uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{perf_level[2]}}",
-			"performanceLevelDescriptor": "uri://idoe.gov/ILEARN/PerformanceLevelDescriptor#{{perf_level[0]}}",
+			"assessmentReportingMethodDescriptor": "uri://doe.in.gov/ILEARN/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+       		"resultDatatypeTypeDescriptor":"uri://doe.in.gov/ILEARN/ResultDatatypeTypeDescriptor#{{perf_level[2]}}",
+			"performanceLevelDescriptor": "uri://doe.in.gov/ILEARN/PerformanceLevelDescriptor#{{perf_level[0]}}",
 			"performanceLevelMet": true
 		} {% if not loop.last %},{% endif %}
 		{% endfor %}
@@ -98,12 +98,11 @@
 			"identificationCode": "{{obj[1]}}",
 			"namespace": "{{namespace}}"
 			},
-			"scoreResults": [],
 			"performanceLevels": [
 			{
-				"assessmentReportingMethodDescriptor": "uri://idoe.gov/ILEARN/AssessmentReportingMethodDescriptor#{{obj[2]}}",
-       			"resultDatatypeTypeDescriptor":"uri://idoe.gov/ILEARN/ResultDatatypeTypeDescriptor#{{obj[3]}}",
-				"performanceLevelDescriptor": "uri://idoe.gov/ILEARN/PerformanceLevelDescriptor#{{obj[0]}}",
+				"assessmentReportingMethodDescriptor": "uri://doe.in.gov/ILEARN/AssessmentReportingMethodDescriptor#{{obj[2]}}",
+       			"resultDatatypeTypeDescriptor":"uri://doe.in.gov/ILEARN/ResultDatatypeTypeDescriptor#{{obj[3]}}",
+				"performanceLevelDescriptor": "uri://doe.in.gov/ILEARN/PerformanceLevelDescriptor#{{obj[0]}}",
 				"performanceLevelMet": true
 			}
 			] 
