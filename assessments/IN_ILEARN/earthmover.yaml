@@ -65,7 +65,7 @@ transformations:
         columns:
           file_dir: "${INPUT_FILE}"
           admin_date: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
-          school_year: "${API_YEAR}"
+          school_year: ${API_YEAR}
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
