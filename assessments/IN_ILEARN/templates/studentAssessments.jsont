@@ -29,7 +29,7 @@
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
 			"result": "{{subject_descriptor}}"
-		},
+		}{% if scores | length > 0 %},{% endif %}
 		{%- for score in scores %}
 		{
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
