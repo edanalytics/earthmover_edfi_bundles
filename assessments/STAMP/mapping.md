@@ -60,10 +60,10 @@ This bundle was designed for 2 types of STAMP test; STAMP 4S and STAMP WS.
 ## Assessment Family
 - STAMP
 
-## Assessment Score Method Descriptors
+## Assessment Score Assessment Reporting Method Descriptors
 - uri://avantassessment.com/AssessmentReportingMethodDescriptor#Composite Score
 
-## OnjectiveAssessment Score Method Descriptors
+## OnjectiveAssessment Score Assessment Reporting Method Descriptors
 - uri://avantassessment.com/AssessmentReportingMethodDescriptor#Scale score
 - uri://avantassessment.com/AssessmentReportingMethodDescriptor#Proficiency level
 

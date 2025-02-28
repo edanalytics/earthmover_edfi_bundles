@@ -8,7 +8,12 @@
     "academicSubjectDescriptor": "{{descriptorNamespace}}/AcademicSubjectDescriptor#{{code}}",
     "description": "{{description}}",
     "performanceLevels": [
-       {{ performance_json }}
- 
+      {% if identificationCode =='Reading' or identificationCode =='Listening' or identificationCode =='Receptive' %}
+        {{ performanceRL_json }}
+      {% endif %}
+
+      {% if identificationCode =='Writing' or identificationCode =='Speaking' or identificationCode =='Expressive' %}
+        {{ performanceWS_json }}
+      {% endif %}
     ]
-  }
+}
