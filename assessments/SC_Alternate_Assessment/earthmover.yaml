@@ -184,7 +184,7 @@ transformations:
           - $transformations.sc_alt_soc
       # Remove records for non-tied subjects.
       - operation: filter_rows
-        query: ss.notnull() & (ss != "")
+        query: ss.notnull() & (ss != "") & (ss != 'None')
         behavior: include
       - operation: add_columns
         columns:
