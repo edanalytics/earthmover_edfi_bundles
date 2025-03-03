@@ -20,44 +20,50 @@
   "whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}",
   "assessedMinutes": {{assessedMinutes|int}},
   "eventDescription": "{{eventDescription}}",
-  "serialNumber": "{{serialNumber}}",
+  "serialNumber": "{{serialNumber}}"
+  {% if CompositeScore is not none and CompositeScore | length %}
+  ,
   "scoreResults": [
-    {% if CompositeScore is not none and CompositeScore | length %}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
       "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Decimal",
       "result": "{{CompositeScore}}"
     }
-    {% endif %}
-  ],
-  "studentObjectiveAssessments": [
+  ] {% endif %}
 
+  {% if Reading_Level is not none and Reading_Level | length or Writing_Level is not none and Writing_Level | length or Listening_Level is not none and Listening_Level | length or Speaking_Level is not none and Speaking_Level | length or Reading_Score is not none and Reading_Score | length or Listening_Score is not none and Listening_Score | length %}
+  ,
+  "studentObjectiveAssessments": [
+   {% if Reading_Score is not none and Reading_Score | length or Reading_Level is not none and Reading_Level | length%}
    {
     "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "assessmentIdentifier": "{{assessmentIdentifier}}", 
       "identificationCode": "Reading",
       "namespace": "{{namespace}}"
-    },
+    }
+    {% if Reading_Score is not none and Reading_Score | length %}
+    ,
     "scoreResults": [
-      {% if Reading_Score is not none and Reading_Score | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ Reading_Score }}"
       }
-      {% endif %}
-    ],
+    ] {% endif %}
+    {% if Reading_Level is not none and Reading_Level | length %}
+    ,
     "performanceLevels": [
-      {% if Reading_Level is not none and Reading_Level | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Reading_Level}}",
         "performanceLevelMet": true
       }
-      {% endif %}
-    ], 
-    "assessedMinutes": {{Reading_Length|int}}
-  },
+    ], {% endif %} 
+    "assessedMinutes": {{Reading_Length|int}}  
+  } {% endif %}
+
+  {% if Writing_Level is not none and Writing_Level | length %}
+  ,
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -65,42 +71,46 @@
       "namespace": "{{namespace}}"
     },
     "performanceLevels": [
-      {% if Writing_Level is not none and Writing_Level | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Writing_Level}}",
         "performanceLevelMet": true
       }
-      {% endif %}
     ],
     "assessedMinutes": {{Writing_Length|int}} 
-  },
+  } {% endif %}
+
+  {% if Listening_Score is not none and Listening_Score | length or Listening_Level is not none and Listening_Level | length%}
+  ,
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "Listening",
       "namespace": "{{namespace}}"
-    },
+    }
+    {% if Listening_Score is not none and Listening_Score | length %}
+    ,
     "scoreResults": [
-      {% if Listening_Score is not none and Listening_Score | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ Listening_Score }}"
       }
-      {% endif %}
-    ],
+    ] {% endif %}
+    {% if Listening_Level is not none and Listening_Level | length %}
+    ,
     "performanceLevels": [
-      {% if Listening_Level is not none and Listening_Level | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Listening_Level}}",
         "performanceLevelMet": true
       }
-      {% endif %}
-    ],
+    ], {% endif %}
     "assessedMinutes": {{Listening_Length|int}}
-  },
+  }{% endif %}
+
+  {% if Speaking_Level is not none and Speaking_Level | length %}
+  ,
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -108,14 +118,12 @@
       "namespace": "{{namespace}}"
     },
     "performanceLevels": [
-      {% if Speaking_Level is not none and Speaking_Level | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Speaking_Level}}",
         "performanceLevelMet": true
       }
-      {% endif %}
     ],
     "assessedMinutes": {{Speaking_Length|int}}
-  }  ]
+  } {% endif %} ] {% endif %}
 }
