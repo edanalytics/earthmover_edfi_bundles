@@ -4,13 +4,16 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
   },
+  {% if schoolId is not none and schoolId | length %}
   "reportedSchoolReference": {
-      "schoolId": {{schoolId}}
-          
-  },
+      "schoolId": {{schoolId}}    
+  },{% endif %} 
+  
+  {% if schoolYear is not none and schoolYear | length %}
   "schoolYearTypeReference": {
     "schoolYear": {{schoolYear| int}}
-  },
+  },{% endif %}
+
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
@@ -32,6 +35,7 @@
   ] {% endif %}
   {% if Reading_Level is not none and Reading_Level | length or Writing_Level is not none and Writing_Level | length or Listening_Level is not none and Listening_Level | length or Speaking_Level is not none and Speaking_Level | length or Reading_Score is not none and Reading_Score | length or Listening_Score is not none and Listening_Score | length %}
   ,
+  {% set comma = "" %}
   "studentObjectiveAssessments": [
    {% if Reading_Score is not none and Reading_Score | length or Reading_Level is not none and Reading_Level | length%}
    {
@@ -57,10 +61,14 @@
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Reading_Level}}",
         "performanceLevelMet": true
       }
-    ], {% endif %} 
+    ] {% endif %} ,
     "assessedMinutes": {{Reading_Length|int}}  
-  } ,{% endif %}
+  } 
+  {% set comma = "," %}
+  {% endif %}
+
   {% if Writing_Level is not none and Writing_Level | length %}
+  {{comma}}
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -75,9 +83,12 @@
       }
     ],
     "assessedMinutes": {{Writing_Length|int}} 
-  } {% endif %}
+  } 
+  {% set comma = "," %}
+  {% endif %}
+
   {% if Listening_Score is not none and Listening_Score | length or Listening_Level is not none and Listening_Level | length%}
-  ,
+  {{comma}}
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -93,8 +104,9 @@
         "result": "{{ Listening_Score }}"
       }
     ] {% endif %}
+    {% set comma = "" %}
     {% if Listening_Level is not none and Listening_Level | length %}
-    ,
+   ,
     "performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
@@ -103,9 +115,11 @@
       }
     ], {% endif %}
     "assessedMinutes": {{Listening_Length|int}}
-  }{% endif %}
+  }
+  {% set comma = "," %}
+  {% endif %}
   {% if Speaking_Level is not none and Speaking_Level | length %}
-  ,
+  {{comma}}
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",

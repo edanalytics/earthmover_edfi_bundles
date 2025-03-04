@@ -213,7 +213,7 @@ transformations:
       - operation: add_columns
         columns:
           performanceRL_json: >
-              {%raw-%} {% if codeValue != '8-Advanced-Mid/High' %}
+              {%raw-%} {%- if codeValue != '8-Advanced-Mid/High' and codeValue is not none and codeValue|length -%}
               {
                 "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
@@ -221,7 +221,7 @@ transformations:
               {%- endif -%}
               {%-endraw%} 
           performanceWS_json: >
-              {%raw-%} {% if codeValue != '9-Advanced-High' %}
+              {%raw-%} {%- if codeValue != '9-Advanced-High' and codeValue is not none and codeValue|length -%}
               {
                 "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
