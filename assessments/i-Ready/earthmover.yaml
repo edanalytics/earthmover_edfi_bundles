@@ -9,7 +9,7 @@ config:
   parameter_defaults:
     INPUT_FILETYPE: csv
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    STUDENT_ID_NAME: Student ID
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Student ID
 
 
@@ -80,6 +80,7 @@ sources:
     - Percent Progress to Annual Typical Growth (%)
     - Percent Progress to Annual Stretch Growth (%)
     - Diagnostic Gain
+    - Activity Id
 
 
 transformations:
@@ -155,6 +156,7 @@ transformations:
           Rush Flag: rush_flag
           Diagnostic Gain: diagnostic_gain
           Grouping: grouping
+          Activity Id: activity_id
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
@@ -162,7 +164,8 @@ transformations:
         columns:
           namespace: 'uri://cainc.com'
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
-          student_assessment_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
+          created_stu_assess_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
+          student_assessment_id: '{% raw %}{% if activity_id %}{{activity_id}}{% else %}{{ md5(created_stu_assess_id) }}{% endif %}{% endraw %}'
           assessmentIdentifier: '{% raw %}{% if quantile_measure %}CAINC-IREADY-DIAGNOSTIC-MATH{% endif %}{% if lexile_measure %}CAINC-IREADY-DIAGNOSTIC-ELA{% endif %}{% endraw %}'
       - operation: join
         sources:

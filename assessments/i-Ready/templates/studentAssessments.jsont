@@ -1,5 +1,5 @@
 {
-  "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+  "studentAssessmentIdentifier": "{{ student_assessment_id }}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
@@ -173,7 +173,7 @@
     {%- endfor -%}
   ]
 
-  {% if student_grade is not none and student_grade != "" and student_grade != "NA" %}
-  , "whenAssessedGradeLevel": "{{ student_grade }}"
+  {% if gradeLevelDescriptor is not none and gradeLevelDescriptor != "" and gradeLevelDescriptor != "NA" %}
+  , "whenAssessedGradeLevel": "{{ gradeLevelDescriptor }}"
   {% endif %}
 }
