@@ -113,7 +113,7 @@ transformations:
             {%- if Language == 'Latin' -%} STAMP Latin
             {%- elif Language == 'Spanish Monolingual' -%} STAMP Monolingual
             {%- elif Language == 'ASL' -%} STAMP ASL
-            {%- elif Language != 'Latin' and Language != 'ASL' and Language != 'Spanish Monolingual' and ReadingLevel is none and ListeningLevel is none and WritingLevel is not none and SpeakingLevel is not none -%} "STAMP WS"
+            {%- elif Language != 'Latin' and Language != 'ASL' and Language != 'Spanish Monolingual' and ReadingLevel is none and ListeningLevel is none and WritingLevel is not none and WritingLevel | length and SpeakingLevel is not none and SpeakingLevel | length -%} "STAMP WS"
             {%- else -%} STAMP 4S
             {%- endif -%}
             {%-endraw%}

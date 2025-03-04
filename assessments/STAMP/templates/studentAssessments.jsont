@@ -30,7 +30,6 @@
       "result": "{{CompositeScore}}"
     }
   ] {% endif %}
-
   {% if Reading_Level is not none and Reading_Level | length or Writing_Level is not none and Writing_Level | length or Listening_Level is not none and Listening_Level | length or Speaking_Level is not none and Speaking_Level | length or Reading_Score is not none and Reading_Score | length or Listening_Score is not none and Listening_Score | length %}
   ,
   "studentObjectiveAssessments": [
@@ -60,10 +59,8 @@
       }
     ], {% endif %} 
     "assessedMinutes": {{Reading_Length|int}}  
-  } {% endif %}
-
+  } ,{% endif %}
   {% if Writing_Level is not none and Writing_Level | length %}
-  ,
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -79,7 +76,6 @@
     ],
     "assessedMinutes": {{Writing_Length|int}} 
   } {% endif %}
-
   {% if Listening_Score is not none and Listening_Score | length or Listening_Level is not none and Listening_Level | length%}
   ,
   {
@@ -108,7 +104,6 @@
     ], {% endif %}
     "assessedMinutes": {{Listening_Length|int}}
   }{% endif %}
-
   {% if Speaking_Level is not none and Speaking_Level | length %}
   ,
   {
