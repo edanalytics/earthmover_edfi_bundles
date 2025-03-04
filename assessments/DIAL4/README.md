@@ -1,6 +1,6 @@
-* **Title**:  Developmental Indicators for the Assessment of Learning, Fourth Edition (DIAL-4) - API 3.X
-* **Description**: This template includes the DIAL-4 assessment, designed to identify young children who need further testing or who need help with
-academic skills. The DIAL-4 tests a child’s motor skills (skipping, jumping, cutting, writing), conceptual skills (knowledge
+* **Title**:  Developmental Indicators for the Assessment of Learning (DIAL3_4) - API 3.X
+* **Description**: This template includes the DIAL3_4 assessment, designed to identify young children who need further testing or who need help with
+academic skills. The DIAL3_4 tests a child’s motor skills (skipping, jumping, cutting, writing), conceptual skills (knowledge
 of colors, counting), and language skills (knowledge of letters and words, ability to solve problems).
 * **API version**: 5.3
 * **Submitter name**: Mariela Suárez
@@ -15,8 +15,6 @@ To run this bundle, please add your own source file<code>data/DIAL4_SAMPLE_data_
 - **INPUT_FILE**: The assessment file to be mapped
 - **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `suns`, `student_number`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
 - **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `suns`, `student_number`). 
-- **SCHOOL_ID**: Which column to use as the Ed-Fi `schoolId`. Can be one of the native columns in the assessment file (e.g., `schoolcode`, `districtcode`) when the bundle is run directly.
-- **POSSIBLE_SCHOOL_ID_COLUMNS**: This should contain all the possible school id columns in the assessment file( e.g., `schoolcode`, `districtcode`). 
 ### Optional
 - **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor. The default value is : uri://ed-fi.org
 
@@ -27,8 +25,7 @@ Using an ID column from the assessment file:
 earthmover run -c ./earthmover.yaml -p '{
   "INPUT_FILE": "./data/sample_anonymized_file.csv",
   "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "suns",
-  "SCHOOL_ID":"schoolcode"
+  "STUDENT_ID_NAME": "suns"
 }'
 ```
 
