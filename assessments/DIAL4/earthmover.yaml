@@ -7,9 +7,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    SCHOOL_ID: 'schoolcode'
     POSSIBLE_STUDENT_ID_COLUMNS: 'student_number,suns'
-    POSSIBLE_SCHOOL_ID_COLUMNS: 'schoolcode,districtcode'
     DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
 
 sources:
@@ -80,7 +78,7 @@ transformations:
           - "namespace"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "DIAL4" 
+          assessmentIdentifier: "DIAL3_4" 
       - operation: add_columns
         columns:
           period_json: >
@@ -110,7 +108,7 @@ transformations:
           score_json: >
             {%raw%}
             {
-              "assessmentReportingMethodDescriptor": "${DESCRIPTOR_NAMESPACE}/AssessmentReportingMethodDescriptor#{{codeValue}}",
+              "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
               "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}",
               "minimumScore": "{{minimumScore}}",
               "maximumScore": "{{maximumScore}}"
@@ -137,7 +135,7 @@ transformations:
           score_json: >
             {% raw %}
             {
-              "assessmentReportingMethodDescriptor": "${namespace}/AssessmentReportingMethodDescriptor#{{codeValue}}",
+              "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
               "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}",
               "minimumScore": "{{minimumScore}}",
               "maximumScore": "{{maximumScore}}"
@@ -164,19 +162,18 @@ transformations:
           - $transformations.objectiveAssessmentScores
         join_type: left
         left_key: identificationCode
-        right_key: objectiveIdentificationCode
+        right_key: objectiveIdentificationCode      
       - operation: add_columns
         columns:
           scores: "{% raw %}{{scores}}{% endraw %}"  # Add the scores array
-          #descriptorNamespace: "${DESCRIPTOR_NAMESPACE}"
       - operation: keep_columns
         columns:
           - identificationCode
-          - namespace #descriptorNamespace 
+          - namespace 
           - description
-          - codeValue
           - scores
           - assessmentIdentifier
+          - academicSubjectDescriptor
  
 
   prepare_period:
@@ -187,7 +184,7 @@ transformations:
           - "administration"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "DIAL4" 
+          assessmentIdentifier: "DIAL3_4" 
       - operation: duplicate_columns
         columns: 
           administration: assessmentPeriodDescriptor
@@ -270,7 +267,7 @@ transformations:
           descriptorNamespace: "${DESCRIPTOR_NAMESPACE}" 
       - operation: add_columns
         columns:
-          assessmentIdentifier: "DIAL4"
+          assessmentIdentifier: "DIAL3_4"
       - operation: join
         sources:
           - $sources.assessments          
@@ -308,7 +305,7 @@ transformations:
       - operation: keep_columns
         columns:
           - ${STUDENT_ID_NAME}
-          - ${SCHOOL_ID}
+          - "schoolcode"
           - "startdate"
           - "enddate"
           - "schoolyear"
@@ -324,10 +321,10 @@ transformations:
           - "gradelevel"
       - operation: duplicate_columns
         columns: 
-          ${SCHOOL_ID}: schoolId
+          schoolcode: schoolId
       - operation: add_columns
         columns:
-          assessmentIdentifier: "DIAL4"
+          assessmentIdentifier: "DIAL3_4"
       - operation: join
         sources:
           - $transformations.prepare_assessments
@@ -378,11 +375,11 @@ destinations:
     extension: jsonl
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
-    template: ./templates/assessmentCategoryDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
