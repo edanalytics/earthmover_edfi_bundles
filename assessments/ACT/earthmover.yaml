@@ -18,13 +18,6 @@ sources:
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
-    optional_fields:
-      - Composite
-      - StRnk_Comp
-      - USRnk_Comp
-      - Sup_Composite
-      - Sum_Scale
-      - Sup_Sum_Scale
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
@@ -45,6 +38,13 @@ sources:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
+    optional_fields:
+      - Composite
+      - StRnk_Comp
+      - USRnk_Comp
+      - Sup_Composite
+      - Sum_Scale
+      - Sup_Sum_Scale
     # See the accompanying bundle_metadata.json for a list of required columns for this file
     # Or see data/sample_anonymized_file.csv
 
