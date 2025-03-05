@@ -5,7 +5,7 @@
 * **Submitter organization**: CrocusLLC
 To run this bundle, please add your own source file<code>data/STAMP_Data_File.csv</code>
 
-This bundle works with STAMP 4S and STAMP WS files in the format provided by the assessment vendor. For details about the mapping look at the [mapping document](./mapping.md) found here.
+This bundle works with STAMP 4S, STAMP WS, STAMP Monolingual, STAMP Latin and STAMP ASL (Partially since data files do not have fields for expressive and receptive) files in the format provided by the assessment vendor. For details about the mapping look at the [mapping document](./mapping.md) found here.
 
 ## CLI Parameters
 

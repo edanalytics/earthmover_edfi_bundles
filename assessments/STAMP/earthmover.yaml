@@ -8,7 +8,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'Test Taker ID' #'PS_StudentID,StudentSUNS'
-    DESCRIPTOR_NAMESPACE: uri://ed.sc.gov #uri://ed-fi.org #uri://ed.sc.gov
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org #uri://ed.sc.gov
   
 sources:
   input:
