@@ -18,6 +18,13 @@ sources:
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
+    optional_fields:
+      - Composite
+      - StRnk_Comp
+      - USRnk_Comp
+      - Sup_Composite
+      - Sum_Scale
+      - Sup_Sum_Scale
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
@@ -103,7 +110,7 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: filter_rows
         # query: ((Composite == '-') | (Composite == '--') | (Composite == '---')) & ((StRnk_Comp == '-') | (StRnk_Comp == '--') | (StRnk_Comp == '---')) & ((USRnk_Comp == '-') | (USRnk_Comp == '--') | (USRnk_Comp == '---')) & ((Sup_Composite == '-') | (Sup_Composite == '--') | (Sup_Composite == '---')) & ((Sum_Scale == '-') | (Sum_Scale == '--') | (Sum_Scale == '---')) & ((Sup_Sum_Scale == '-') | (Sup_Sum_Scale == '--') | (Sup_Sum_Scale == '---'))
-        query: Composite.str.fullmatch('-+') & StRnk_Comp.str.fullmatch('-+') & USRnk_Comp.str.fullmatch('-+') & Sup_Composite.str.fullmatch('-+') & Sum_Scale.str.fullmatch('-+') & Sup_Sum_Scale.str.fullmatch('-+')
+        query: Composite.str.fullmatch('-*') & StRnk_Comp.str.fullmatch('-*') & USRnk_Comp.str.fullmatch('-*') & Sup_Composite.str.fullmatch('-*') & Sum_Scale.str.fullmatch('-*') & Sup_Sum_Scale.str.fullmatch('-*')
         behavior: exclude
 
   academic_subject_descriptors:
