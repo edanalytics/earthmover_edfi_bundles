@@ -1,3 +1,55 @@
+{%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
+  {%- set possible_scores = [
+    [Acc, Level, "Accommodation"], 
+    [Retake, Level, "Retake"]
+  ] -%}
+{%- else -%}
+  {%- set possible_scores = [
+    [Acc, Level, "Accommodation"], 
+    [Retake, Level, "Retake"], 
+    [SoftRS, Integer, "RS"], 
+    [SoftSS, Integer, "SS"], 
+    [SoftDuration, Integer, "Duration"]
+  ] -%}
+{%- endif -%}
+
+{%- set possible_perf_levels = [
+  [CertLevel, "Certificate Level"]
+] -%}
+
+{%- if assessmentIdentifier == 'WIN_Soft_Skills' -%}
+  {%- set _ = possible_perf_levels.append([SoftScore, "Score"]) -%}
+  {%- set _ = possible_perf_levels.append([SoftStatus, "Status"]) -%}
+{%- endif -%}
+
+{% set possible_obj_assess = [
+  ['Math', MathLev, MathRS, MathSS, MathDuration, MathStatus],
+  ['Reading', ReadLev, ReadRS, ReadSS, ReadDuration, ReadStatus],
+  ['Data', DataLev, DataRS, DataSS, DataDuration, DataStatus],
+  ['Info', InfoLev, InfoRS, InfoSS, InfoDuration, InfoStatus]
+] %}
+
+{%- set scores = [] -%}
+  {%- for score in possible_scores -%}
+    {%- if score[0] is not none and score[0] | length -%}
+      {%- set _ = scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+{%- set perf_levels = [] -%}
+  {%- for pl in possible_perf_levels -%}
+    {%- if pl[0] is not none and pl[0] | length -%}
+      {%- set _ = perf_levels.append(pl) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+{% set all_obj_assessment = [] %}
+  {%- for obj in possible_obj_assess -%}
+    {% if obj[1][0] is not none and obj[1][0] | length %}
+      {% set _= all_obj_assessment.append(obj) %}
+    {% endif %}
+  {% endfor %}
+
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -13,19 +65,6 @@
   "administrationDate": "{{TestDate}}",
   "platformTypeDescriptor": "{{platformTypeDescriptor}}",
   "scoreResults": [
-    {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
-    {%- set possible_scores = [[Acc, Level, "Accommodation"], [Retake, Level, "Retake"]] -%}
-    {%- else -%}
-    {%- set possible_scores = [[Acc, Level, "Accommodation"], [Retake, Level, "Retake"], [SoftRS, Integer, "RS"], [SoftSS, Integer, "SS"], [SoftDuration, Integer, "Duration"]] -%}
-    {%- endif -%}
-
-    {%- set scores = [] -%}
-    {%- for score in possible_scores -%}
-      {%- if score[0] is not none and score[0] | length -%}
-        {%- set _ = scores.append(score) -%}
-      {%- endif -%}
-    {%- endfor -%}
-
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
@@ -35,13 +74,6 @@
     {% endfor %}
   ],
   "performanceLevels": [
-    {%- set perf_levels = [[CertLevel, "Certificate Level"]] -%}
-
-    {%- if assessmentIdentifier == 'WIN_Soft_Skills' -%}
-        {%- set _ = perf_levels.append([SoftScore, "Score"]) -%}
-        {%- set _ = perf_levels.append([SoftStatus, "Status"]) -%}
-    {%- endif -%}
-
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
@@ -52,16 +84,6 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
-  {% set possible_obj_assess = [['Math', MathLev, MathRS, MathSS, MathDuration, MathStatus],
-                                ['Reading', ReadLev, ReadRS, ReadSS, ReadDuration, ReadStatus],
-                                ['Data', DataLev, DataRS, DataSS, DataDuration, DataStatus],
-                                ['Info', InfoLev, InfoRS, InfoSS, InfoDuration, InfoStatus]] %}
-  {% set all_obj_assessment = [] %}
-  {%- for obj in possible_obj_assess -%}
-    {% if obj[1][0] is not none and obj[1][0] | length %}
-      {% set _= all_obj_assessment.append(obj) %}
-    {% endif %}
-  {% endfor %}
 
   {%- if assessmentIdentifier == 'WIN_Academic_Skills' and all_obj_assessment | length -%},
   "studentObjectiveAssessments": [
