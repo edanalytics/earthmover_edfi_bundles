@@ -32,6 +32,10 @@ sources:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
 
+  education_organization_association_type_descriptors:
+    file: ./seeds/educationOrganizationAssociationTypeDescriptors.csv
+    header_rows: 1
+
   performance_level_descriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -215,6 +219,12 @@ destinations:
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessment_reporting_method_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  educationOrganizationAssociationTypeDescriptors:
+    source: $sources.education_organization_association_type_descriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
