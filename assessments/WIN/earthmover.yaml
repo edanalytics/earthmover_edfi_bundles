@@ -39,21 +39,88 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
     optional_fields:
-      - MathRS
-      - ReadRS
-      - SoftRS
+      - Acc
+      - compssF
+      - ctr
+      - ctr36F
+      - ctrF
+      - DataFTime
       - DataLev
+      - DataRS
       - DataSS
       - DataStatus
       - DataSTime
-      - DataFTime
-      - DataRS
+      - District
+      - districtact
+      - DistrictID
+      - districtid2
+      - DOB
+      - dob
+      - dobd
+      - dobF
+      - dobm
+      - doby
+      - Email
+      - engssF
+      - FedRaceEth
+      - filler5
+      - FirstName
+      - fname
+      - fnameF
+      - genderF
+      - GR9
+      - Grade
+      - IEP
+      - InfoFTime
       - InfoLev
+      - InfoRS
       - InfoSS
       - InfoStatus
       - InfoSTime
-      - InfoFTime
-      - InfoRS
+      - LastName
+      - LEP
+      - lname
+      - lnameF
+      - MathFTime
+      - MathRS
+      - mathssF
+      - MathStatus
+      - MathSTime
+      - mi
+      - MiddleName
+      - miF
+      - Migrant
+      - mname
+      - Mode
+      - ReadFTime
+      - ReadRS
+      - readssF
+      - ReadStatus
+      - ReadSTime
+      - recsource1
+      - Retake
+      - sasdob
+      - School
+      - schoolact
+      - SchoolID
+      - schoolid
+      - schoolidF
+      - scissF
+      - SoftFTime
+      - SoftRS
+      - SoftScore
+      - SoftSS
+      - SoftStatus
+      - SoftSTime
+      - stateid
+      - StateID
+      - stateidF
+      - StudentID
+      - TestAdmin
+      - TestDate
+      - UID
+      - writssf
+
 
 
 transformations:
@@ -61,9 +128,39 @@ transformations:
     source: $sources.input
     operations: []
 
+  coalesce_column_names:
+      - operation: add_columns
+        columns:
+          SchoolID: "{% raw %}{{ SchoolID or schoolid or schoolidF }}{% endraw %}"
+          DistrictID: "{% raw %}{{ DistrictID or districtid2 }}{% endraw %}"
+          DOB: "{% raw %}{{ DOB or dob or dobd or dobF or dobm or doby }}{% endraw %}"
+          FirstName: "{% raw %}{{ FirstName or fname or fnameF }}{% endraw %}"
+          LastName: "{% raw %}{{ LastName or lname or lnameF }}{% endraw %}"
+          MiddleName: "{% raw %}{{ MiddleName or mi or miF or mname }}{% endraw %}"
+          StateID: "{% raw %}{{ StateID or stateid or stateidF }}{% endraw %}"
+      - operation: drop_columns
+        columns:
+          - schoolid
+          - schoolidF
+          - districtid2
+          - dob
+          - dobd
+          - dobF
+          - dobm
+          - doby
+          - fname
+          - fnameF
+          - lname
+          - lnameF
+          - mi
+          - miF
+          - mname
+          - stateid
+          - stateidF
+
   clean_results:
     debug: True
-    source: $transformations.input
+    source: $transformations.coalesce_column_names
     operations:
       - operation: duplicate_columns
         columns: 
