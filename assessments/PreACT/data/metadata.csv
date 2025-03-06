@@ -1,0 +1,1566 @@
+FieldName,Short Description,Full Description,Target Valid Values,start_index,end_index,field_length,Legacy Valid Values
+Process_Num,Process Number,ACT scoring batch number,Alpha-numeric string; unique per testing cycle,1,8,8,
+School_Attend_Code,Student Attended Site Code,6-digit ACT-SAT code; from School Header if testing at own school; from block L if not testing at own school,6-digit ACT-SAT code,9,14,6,
+State_Code,State Code,Student-provided state code as gridded on the answer folder,2-digit state code assigned by ACT; see State Codes Tab,21,22,2,2-digit state code assigned by ACT; see State Codes on page 9
+Cycle_Code,cycleCode,Proccessing cycle assigned by ACT,3-digit code assigned by ACT,29,31,3,
+Tested_Own_School,Testing at Your Own School,,Yes/No,33,33,1,Y/N
+School_Reported_Code,Test Site Code,6-digit ACT-SAT code; from School Header,6-digit ACT-SAT code,34,39,6,
+L_Name,Student Last Name,,as provided by the student; no commas,44,68,25,
+F_Name,Student First Name,,as provided by the student; no commas,69,84,16,
+M_Initial,Student Middle Initial,,as provided by the student; no commas,85,85,1,
+Doc_Id,Doc ID,Document type assigned by ACT,Numeric code assigned by ACT,107,109,3,
+DOB,Date of Birth,,Student Date of Birth as provided on the Answer Folder. Format YYYYMMDD,110,117,8,yyyymmdd
+Gender,Gender,,"Male, Female, Prefer Not To Respond, Another Gender",118,118,1,"Male, Female, Prefer Not To Respond, Another Gender"
+Ethn_FedValues,Race/Ethnicity,,"Amer Ind/Alaskan Native
+Asian
+Black/African-Amer
+Hispanic/Latino
+Native Hawaiian/Pacific Islander
+White
+Two or more races
+Prefer not to respond",119,119,1,"1 = Black/African American
+2 = American Indian/Alaska Native
+3 = White
+4 = Hispanic/Latino
+5 = Asian
+6 = Native Hawaiian/Other Pacific Islander
+7 = Two or more races
+9 = I prefer not to respond"
+Grade_Reported,Reporting Grade,,"7th Grade
+8th Grade
+9th Grade
+Other",130,131,2,
+Test_Dte,Test Date,,Test Date. Format YYYYMMDD,132,139,8,yyyymmdd
+Grade_School_Header,School Header Grade,,"7th Grade
+8th Grade
+9th Grade
+Other
+Blank",140,141,2,as recorded by test coordinator in Block D of school header
+Grade_Student_Grid,Student Grid Grade,,"7th Grade
+8th Grade
+9th Grade
+Other
+Blank",146,147,2,as recorded by student in Block J of answer folder or PreID
+Eng,English Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",150,151,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Mth,Mathematics Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",152,153,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Rdg,Reading Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",154,155,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Sci,Science Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",156,157,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Composite,Composite Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",158,159,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+STEM,STEM Scale Score,,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",160,161,2,"01-35 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+E_Earn_Prod,Production of Writing Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",162,163,2,"** = test voided by administrator, ""--"" = test not attempted"
+E_Earn_Knlg,Knowledge of Language Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",164,165,2,"** = test voided by administrator, ""--"" = test not attempted"
+E_Earn_Conv,Conventions of Standard English Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",166,167,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Higher,Preparing for Higher Math Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",168,169,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_NumQ,Number & Quantity Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",170,171,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Alg,Algebra Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",172,173,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Func,Functions Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",174,175,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Geom,Geometry Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",176,177,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Stat,Statistics & Probability Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",178,179,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Essen,Integrating Essential Skills Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",180,181,2,"** = test voided by administrator, ""--"" = test not attempted"
+M_Earn_Mod,Modeling Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",182,183,2,"** = test voided by administrator, ""--"" = test not attempted"
+R_Earn_Ideas,Key Ideas & Details Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",184,185,2,"** = test voided by administrator, ""--"" = test not attempted"
+R_Earn_Struc,Craft & Structure Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",186,187,2,"** = test voided by administrator, ""--"" = test not attempted"
+R_Earn_Knlg,Integration of Knowledge & Ideas Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",188,189,2,"** = test voided by administrator, ""--"" = test not attempted"
+S_Earn_Data,Interpretation of Data Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",190,191,2,"** = test voided by administrator, ""--"" = test not attempted"
+S_Earn_Inv,Scientific Investigation Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",192,193,2,"** = test voided by administrator, ""--"" = test not attempted"
+S_Earn_Eval,Evaluation of Models Inferences & Experimental Results Raw Score,,"Number of items correct (** = test voided by administrator, ""--"" = test not attempted)",194,195,2,"** = test voided by administrator, ""--"" = test not attempted"
+Eng_Low,PreACT 8/9 English Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",198,199,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Eng_High,PreACT 8/9 English High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",200,201,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Mth_Low,PreACT 8/9 Math Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",202,203,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Mth_High,PreACT 8/9 Math High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",204,205,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Rdg_Low,PreACT 8/9 Reading Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",206,207,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Rdg_High,PreACT 8/9 Reading High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",208,209,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Sci_Low,PreACT 8/9 Science Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",210,211,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Sci_High,PreACT 8/9 Science High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",212,213,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Composite_Low,PreACT 8/9 Composite Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",214,215,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Composite_High,PreACT 8/9 Composite High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",216,217,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+STEM_Low,PreACT 8/9 STEM Low Scale Score,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",218,219,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+STEM_High,PreACT 8/9 STEM High Scale Score,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",220,221,2,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Eng_Low,Predicted ACT English Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",230,231,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Eng_High,Predicted ACT English High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",232,233,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Mth_Low,Predicted ACT Math Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",234,235,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Mth_High,Predicted ACT Math High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",236,237,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Rdg_Low,Predicted ACT Reading Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",238,239,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Rdg_High,Predicted ACT Reading High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",240,241,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Sci_Low,Predicted ACT Science Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",242,243,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Sci_High,Predicted ACT Science High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",244,245,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Composite_Low,Predicted ACT Composite Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",246,247,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_Composite_High,Predicted ACT Composite High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",248,249,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_STEM_Low,Predicted ACT STEM Low Scale Score,Lower bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",250,251,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+Pred_ACT_STEM_High,Predicted ACT STEM High Scale Score,Upper bound of score range,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)",252,253,2,"01-36 (""**"" = test voided by administrator, ""--"" = test not attempted)"
+USRnk_Sub_Engl,English National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",254,256,3,"001-100 (""--"" = test not attempted)"
+USRnk_Sub_Math,Mathematics National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",257,259,3,"001-100 (""--"" = test not attempted)"
+USRnk_Sub_Rdg,Reading National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",260,262,3,"001-100 (""--"" = test not attempted)"
+USRnk_Sub_Sci,Science National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",263,265,3,"001-100 (""--"" = test not attempted)"
+USRnk_Comp,Composite National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",266,268,3,"001-100 (""--"" = test not attempted)"
+USRnk_STEM ,STEM National Norms,,"001-100 (""---"" = test not attempted, ""***"" = test voided by administrator)",269,271,3,"001-100 (""--"" = test not attempted)"
+C_Readiness,Progress Toward Career Readiness,Progress Toward Career Readiness Indicator,"Unlikely to obtain an NCRC
+Likely to obtain a Bronze-level NCRC
+Likely to obtain a Silver-level NCRC
+Likely to obtain a Gold-level NCRC
+Likely to obtain a Platinum-level NCRC
+Unable to calculate (Student does not have a Composite score)
+Blank if test is voided",272,272,1,"0=Unlikely to obtain an NCRC
+1=Likely to obtain a Bronze-level NCRC
+2=Likely to obtain a Silver-level NCRC
+3=Likely to obtain a Gold-level NCRC
+4=Likely to obtain a Platinum-level NCRC
+(-)=Unable to calculate (Student does not have a
+Composite score)"
+Best_Lan,Best Language,,"English
+A language other than English
+English and another language about the same
+Prefer not to respond
+Blank",280,280,1,"A = English
+B = A language other than English
+C = English and another language about the same
+D = Prefer not to respond"
+Program_Of_Study,High School Study,,"College prep
+Other (career/technical, other)
+Blank",281,281,1,"A = College prep
+B = Other (career/technical, other)"
+EdLevel_Mthr,Highest Ed Level of Mother/Guardian 1,,"Did not complete high school
+High school diploma or equivalent
+Career/technical training such as military, apprenticeship, certificate program, etc.
+Some college, but no degree
+2-year college degree (associate's)
+4-year college degree (bachelor's)
+Some education or degree above a 4-year college degree
+I don't know",282,282,1,"A = Did not complete high school
+B = High school diploma or equivalent
+C = Career/technical training such as military, apprenticeship, certificate program, etc.
+D = Some college, but no degree
+E = 2-year college degree (associate's)
+F = 4-year college degree (bachelor's)
+G = Some education or degree above a 4-year college degree
+H = I don't know"
+EdLevel_Fthr,Highest Ed Level of Father/Guardian 2,,"Did not complete high school
+High school diploma or equivalent
+Career/technical training such as military, apprenticeship, certificate program, etc.
+Some college, but no degree
+2-year college degree (associate's)
+4-year college degree (bachelor's)
+Some education or degree above a 4-year college degree
+I don't know",283,283,1,"A = Did not complete high school
+B = High school diploma or equivalent
+C = Career/technical training such as military, apprenticeship, certificate program, etc.
+D = Some college, but no degree
+E = 2-year college degree (associate's)
+F = 4-year college degree (bachelor's)
+G = Some education or degree above a 4-year college degree
+H = I don't know"
+Partic_InstMus,Instrumental music,,"Yes if selected by student
+blank if not selected by the student",284,284,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_VocMus,Vocal music,,"Yes if selected by student
+blank if not selected by the student",285,285,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Pubs,Publications,,"Yes if selected by student
+blank if not selected by the student",286,286,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Debate,Speech/public speaking/debate,,"Yes if selected by student
+blank if not selected by the student",287,287,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Art,Art-related,,"Yes if selected by student
+blank if not selected by the student",288,288,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Theater,"Dramatics, theater",,"Yes if selected by student
+blank if not selected by the student",289,289,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_VAthl,Varsity athletic,,"Yes if selected by student
+blank if not selected by the student",290,290,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Sci,Science-related,,"Yes if selected by student
+blank if not selected by the student",291,291,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Honors,Academic honors organizations,,"Yes if selected by student
+blank if not selected by the student",292,292,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Cheer,Cheerleading/school spirit,,"Yes if selected by student
+blank if not selected by the student",293,293,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_ServOrg,Community service/involvement,,"Yes if selected by student
+blank if not selected by the student",294,294,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_RacEthOrg,Ethnic organization,,"Yes if selected by student
+blank if not selected by the student",295,295,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_Abroad,Foreign exchange or study abroad,,"Yes if selected by student
+blank if not selected by the student",296,296,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_PolOrg,Political organization,,"Yes if selected by student
+blank if not selected by the student",297,297,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_RadioTV,Radio/TV,,"Yes if selected by student
+blank if not selected by the student",298,298,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_RelOrg,Religious organization,,"Yes if selected by student
+blank if not selected by the student",299,299,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_ROTC,ROTC,,"Yes if selected by student
+blank if not selected by the student",300,300,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_FratSor,Social club or fraternity/sorority,,"Yes if selected by student
+blank if not selected by the student",301,301,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_StuGov,Student government,,"Yes if selected by student
+blank if not selected by the student",302,302,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Partic_NotPartic,Not currently participating in any of these activities,,"Yes if selected by student
+blank if not selected by the student",303,303,1,"1 = selected by examinee
+blank =  not selected by examinee"
+Clg_Outreach,Participation in College Outreach,,"Yes/No
+Blank",304,304,1,Y/N
+WorkHrs,Hours Worked,,"None
+1-5 hours per week
+6-10 hours per week
+11-15 hours per week
+16-20 hours per week
+more than 20 hours per week
+Blank",305,305,1,"A = None
+B = 1-5 hours per week
+C = 6-10 hours per week
+D = 11-15 hours per week
+E = 16-20 hours per week
+F = more than 20 hours per week"
+Highest_ed_exp,Educational Plans after High School,,"Not planning to complete high school
+No education or other training planned for after high school
+Job-related training offered through military service
+Apprenticeship or other on-the-job training
+Career/technical school
+2-year community college or junior college
+4-year college or university
+Graduate or professional studies after a 4-year degree
+Undecided about future educational plans
+Other
+Blank",306,306,1,"A = Not planning to complete high school
+B = No education or other training planned for after high school
+C = Job-related training offered through military service
+D = Apprenticeship or other on-the-job training
+E = Career/technical school
+F = 2-year community college or junior college
+G = 4-year college or university
+H = Graduate or professional studies after a 4-year degree
+I = Undecided about future educational plans
+J = Other"
+Career,Career Area,,See Career Clusters tab,307,307,1,"See Career Clusters and Career Areas, page 10"
+EOS_OptIn,EOS Release,,Yes/No,310,310,1,Y/N
+Results_Void,Test voided code,,Yes/No,311,314,1,1 = test voided by administrator
+Help_EdPlan,Post High School Plans,,"Yes if selected by student
+blank if not selected by the student",315,315,1,"Y/N See Needs Assessment, page 10"
+Help_Writing,Writing,,"Yes if selected by student
+blank if not selected by the student",316,316,1,"Y/N See Needs Assessment, page 10"
+Help_Reading,Reading,,"Yes if selected by student
+blank if not selected by the student",317,317,1,"Y/N See Needs Assessment, page 10"
+Help_StudySk,Study,,"Yes if selected by student
+blank if not selected by the student",318,318,1,"Y/N See Needs Assessment, page 10"
+Help_MathSk,Mathematics,,"Yes if selected by student
+blank if not selected by the student",319,319,1,"Y/N See Needs Assessment, page 10"
+Help_Computer,Computer,,"Yes if selected by student
+blank if not selected by the student",320,320,1,"Y/N See Needs Assessment, page 10"
+Help_Public_Speaking,Public Speaking,,"Yes if selected by student
+blank if not selected by the student",321,321,1,"Y/N See Needs Assessment, page 10"
+IntInv_Responses,UNIACT Interest Inventory Items,,"String of 72 characters with valid values at each position being 1, 2, 3, or space",322,411,90,"1 = Dislike
+2 = Indifferent
+3 = Like"
+IntInv_MapReg1,Career Map Region 1,,"00 to 12; ""--"" if no interpretation possible",412,413,2,0 = Region 99: 1-12
+IntInv_MapReg2,Career Map Region 2,,"00 to 12; ""--"" if no interpretation possible",414,415,2,0 = Region 99: 1-12
+IntInv_MapReg3,Career Map Region 3,,"00 to 12; ""--"" if no interpretation possible",416,417,2,0 = Region 99: 1-12
+IntInv_LikePerc,% Like Responses,,000-100,420,422,3,000-100
+IntInv_IndiffPerc,% Indifferent Responses,,000-100,423,425,3,000-100
+IntInv_DislikePerc,% Dislike Responses,,000-100,426,428,3,000-100
+IntInv_TechSta,Technical Stanines,,reserved for future use,431,431,1,9-Jan
+IntInv_SciSta,Science & Technology Stanines,,reserved for future use,432,432,1,9-Jan
+IntInv_ArtSta,Arts Stanines,,reserved for future use,433,433,1,9-Jan
+IntInv_SocSta,Social Service Stanines,,reserved for future use,434,434,1,9-Jan
+IntInv_BusCSta,Administration & Sales Stanines,,reserved for future use,435,435,1,9-Jan
+IntInv_BusOpSta,Business Operations Stanines,,reserved for future use,436,436,1,9-Jan
+IntInv_TechStd,Technical Standard Scores,,"20-80, blank",437,438,2,20-80
+IntInv_SciStd,Science & Technology Standard Scores,,"20-80, blank",439,440,2,20-80
+IntInv_ArtStd,Arts Standard Scores,,"20-80, blank",441,442,2,20-80
+IntInv_SocStd,Social Service Standard Scores,,"20-80, blank",443,444,2,20-80
+IntInv_BusCStd,Administration & Sales Standard Scores,,"20-80, blank",445,446,2,20-80
+IntInv_BusOpStd,Business Operations Standard Scores,,"20-80, blank",447,448,2,20-80
+IntInv_TechRnk,Technical Percentiles,,"000-100, blank",449,451,3,0-100
+IntInv_SciRnk,Science & Technology Percentiles,,"000-100, blank",452,454,3,0-100
+IntInv_ArtRnk,Arts Percentiles,,"000-100, blank",455,457,3,0-100
+IntInv_SocRnk,Social Service Percentiles,,"000-100, blank",458,460,3,0-100
+IntInv_BusCRnk,Administration& Sales Percentiles,,"000-100, blank",461,463,3,0-100
+IntInv_BusOpRnk,Business Operations Percentiles,,"000-100, blank",464,466,3,0-100
+English_9,English 9,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",467,469,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_10,English 10,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",470,472,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_11,English 11,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",473,475,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_12,English 12,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",476,478,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_Other,Other English,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",479,481,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_Other_2,Other English,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",482,484,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_Other_3,Other English,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",485,487,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+English_Credit,Total Years of English Taken or Planned,,0.0 - 7.0,488,490,3,
+Algebra_1,Algebra 1,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",491,493,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Geometry,Geometry,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",494,496,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Algebra_2,Algebra 2,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",497,499,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Trigonometry,Trigonometry,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",500,502,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Pre_Calc,Pre-Calculus,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",503,505,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Calculus,Calculus,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",506,508,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_Other,Other Advanced Math,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",509,511,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_Other_2,Other Advanced Math,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",512,514,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_College_Prep_9,Integrated Math 9,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",515,517,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_College_Prep_10,Integrated Math 10,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",518,520,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_College_Prep_11,Integrated Math 11,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",521,523,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_College_Prep_12,Integrated Math 12,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",524,526,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Math_Credit,Total Years of Math Taken or Planned,,0.0 - 11.0,527,529,3,
+History_US,US History,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",530,532,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+History_World,World History,stilwelm,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",533,535,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Gvt_Civics,Government/Civics,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",536,538,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Global_Studies,Global Studies,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",539,541,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Geography,Geography,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",542,544,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Economics,Economics,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",545,547,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Psychology,Psychology,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",548,550,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Sociology,Sociology,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",551,553,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Social_Studies_Other,Other Social Science,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",554,556,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Social_Studies_Other_2,Other Social Science,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",557,559,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Social_Studies_Credit,Total Years of Social Studies Taken or Planned,,0.0 - 10.0,560,562,3,
+General_Science,Physical Science,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",563,565,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Biology_1,Biology 1,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",566,568,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Biology_2,Biology 2,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",569,571,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Chemistry_1,Chemistry 1,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",572,574,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Chemistry_2,Chemistry 2,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",575,577,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Physics,Physics,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",578,580,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Anat_Phys,Anatomy/Physiology,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",581,583,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Natural_Science_Other,Other Natural Science,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",584,586,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Natural_Science_Other_2,Other Natural Science,,"For each course listed; if no value, reported as blank.
+Position 1: Credit assigned
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+
+Position 2: grade each for full term
+A; B; C; D; F; blank
+
+Position 3: 
+1 = Honors is true; blank",587,589,3,"For each course listed; if no value, reported as blank.
+1st byte:
+1 = Responded: Completed or currently taking for ½ year
+2 = Responded: Completed or currently taking for 1 year
+3 = Responded: Plan to take for ½ year
+4 = Responded: Plan to take for 1 year
+5 = Assumed: Completed or currently taking for ½ year
+6 = Assumed: Completed or currently taking for 1 year
+7 = Assumed: Plan to take for 1/2 year
+8 = Assumed: Plan to take for 1 year
+0 = No Response
+2nd byte: grade each for full term
+4 = A; 3 = B; 2 = C; 1 = D; 0 = F
+3rd byte: 1 = Honors, AP or IB"
+Natural_Science_Credit,Total Years of Natural Science Taken or Planned,,0.0 - 10.0,590,592,3,
+Spanish_Credit,Spanish,,"1-1.5 years
+2-2.5 years
+3-3.5 years
+4-4.5 years
+5 or more years
+Blank",593,593,1,"1 = 1-1.5 years
+2 = 2-2.5 years
+3 = 3-3.5 years
+4 = 4-4.5 years
+5 = 5 or more years"
+French_Credit,French,,"1-1.5 years
+2-2.5 years
+3-3.5 years
+4-4.5 years
+5 or more years
+Blank",594,594,1,"1 = 1-1.5 years
+2 = 2-2.5 years
+3 = 3-3.5 years
+4 = 4-4.5 years
+5 = 5 or more years"
+German_Credit,German,,"1-1.5 years
+2-2.5 years
+3-3.5 years
+4-4.5 years
+5 or more years
+Blank",595,595,1,"1 = 1-1.5 years
+2 = 2-2.5 years
+3 = 3-3.5 years
+4 = 4-4.5 years
+5 = 5 or more years"
+Lang_Other_Credit,Other Language (not English),,"1-1.5 years
+2-2.5 years
+3-3.5 years
+4-4.5 years
+5 or more years
+Blank",596,596,1,"1 = 1-1.5 years
+2 = 2-2.5 years
+3 = 3-3.5 years
+4 = 4-4.5 years
+5 = 5 or more years"
+IntCareer_Fit,Interest Career Fit,,reserved for future use,597,597,1,
+G_HS_Avg,Calculated HS GPA Overall,,"0.0-4.0, or blank",598,600,3,"0.0-4.0, or blank"
+G_AllEng,Calculated English GPA,,"0.0-4.0, or blank",601,603,3,"0.0-4.0, or blank"
+G_AllMth,Calculated Math GPA,,"0.0-4.0, or blank",604,606,3,"0.0-4.0, or blank"
+G_AllSocSt,Calculated Social Studies GPA,,"0.0-4.0, or blank",607,609,3,"0.0-4.0, or blank"
+G_AllNatSc,Calculated Natural Science GPA,,"0.0-4.0, or blank",610,612,3,"0.0-4.0, or blank"
+Core_Ind,Core Indicator,,"Meets core
+Does not meet core
+Incomplete CGIS Information
+Blank CGIS Information",613,613,1,"1 = Meets core
+2 = Does not meet core
+3 = Incomplete CGIS Information
+0 = Blank CGIS Information"
+Suppl_Local_Itms,Supplemental Local Items,,String of 12 characters. Valid values at each position: A-E; * if double grid; space if left blank,614,625,12,"A-E, locally defined"
+Test_Form,Test Form,,3-character alpha-numeric string,626,628,3,
+Eng_Responses,English Test Item Response String,,String of 40 characters. Valid values at each position: A-J; * if double grid; space if not answered,641,685,45,"1 = A or F
+2 = B or G
+3 = C or H
+4 = D or J
+5 = E or K (math only)
+""*"" = Double Grid"
+Math_Responses,Math Test Item Response String,,String of 35 characters. Valid values at each position: A-K; * if double grid; space if not answered,691,726,36,"1 = A or F
+2 = B or G
+3 = C or H
+4 = D or J
+5 = E or K (math only)
+""*"" = Double Grid"
+Read_Responses,Reading Test Item Response String,,String of 25 characters. Valid values at each position: A-J; * if double grid; space if not answered,731,755,25,"1 = A or F
+2 = B or G
+3 = C or H
+4 = D or J
+5 = E or K (math only)
+""*"" = Double Grid"
+Sci_Responses,Science Test Item Response String,,String of 30 characters. Valid values at each position: A-J; * if double grid; space if not answered,756,785,30,"1 = A or F
+2 = B or G
+3 = C or H
+4 = D or J
+5 = E or K (math only)
+""*"" = Double Grid"
+Eng_Itm_Scores,English 0/1 Score Vector (45 characters),,"String of 40 characters. Valid values at each position: 
+1 = correct response
+0 = incorrect response
+~ = PreTest Item",786,830,45,"1 = correct response
+0 = incorrect response"
+Math_Itm_Scores,Math 0/1 Score Vector (36 characters),,"String of 35 characters. Valid values at each position: 
+1 = correct response
+0 = incorrect response
+~ = PreTest Item",836,871,36,"1 = correct response
+0 = incorrect response"
+Read_Itm_Scores,Reading 0/1 Score Vector (25 characters),,"String of 25 characters. Valid values at each position: 
+1 = correct response
+0 = incorrect response
+~ = PreTest Item",876,900,25,"1 = correct response
+0 = incorrect response"
+Sci_Itm_Scores,Science 0/1 Score Vector (30 characters),,"String of 30 characters. Valid values at each position: 
+1 = correct response
+0 = incorrect response
+~ = PreTest Item",901,930,30,"1 = correct response
+0 = incorrect response"
+Eng_Raw,English Raw Scores,,"00-32, --, **",931,932,2,00-32
+Math_Raw,Math Raw Scores,,"00-32, --, **",933,934,2,00-32
+Read_Raw,Reading Raw Scores,,"00-20, --, **",935,936,2,00-20
+Sci_Raw,Science Raw Scores,,"00-25, --, **",937,938,2,00-25
+Address1,Mailing Address,,as provided by the student; no commas,947,986,40,
+City,City,,as provided by the student; no commas,987,1011,25,
+State,State,,as provided by the student,1012,1013,2,State postal abbreviation
+Zip,ZIP,,as provided by the student,1014,1022,9,ZIP plus 4
+Stu_ID_Num,Student ID Number,,as provided by the student,1050,1064,15,Assigned by school or district
+Preid_Local_Items,PreID Local Items,Replaces User Defined fields,,1065,1109,45,Pass through fields from PreID file
+Pred_PreACT_Eng_Low,English Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1120,1121,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Eng_High,English Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1122,1123,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Mth_Low,Math Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1124,1125,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Mth_High,Math Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1126,1127,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Rdg_Low,Reading Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1128,1129,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Rdg_High,Reading Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1130,1131,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Sci_Low,Science Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1132,1133,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Sci_High,Science Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1134,1135,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Composite_Low,Composite Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1136,1137,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_Composite_High,Composite Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1138,1139,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_STEM_Low,Stem Predicted PreACT Score - Low,Lower bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1140,1141,2,"“**” = test voided by administrator
+“--” = test not attempted"
+Pred_PreACT_STEM_High,Stem Predicted PreACT Score - High,Upper bound of score range,"01-30 (""**"" = test voided by administrator, ""--"" = test not attempted)",1142,1143,2,"“**” = test voided by administrator
+“--” = test not attempted"
