@@ -100,8 +100,8 @@
   , "performanceLevels": [
     {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{perf_level[0]}}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
@@ -120,7 +120,7 @@
         "scoreResults": [
           {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
             {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
               "result": "{{score[2]}}"
             }{% if not loop.last %},{% endif %}
