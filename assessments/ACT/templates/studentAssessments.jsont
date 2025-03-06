@@ -88,7 +88,7 @@
   , "scoreResults": [
     {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
