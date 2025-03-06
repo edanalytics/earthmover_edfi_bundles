@@ -116,9 +116,16 @@
           "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{obj[1]}}",
           "namespace": "{{namespace}}"
-        },
-        "scoreResults": [
-          {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
+        }
+
+        {%- set obj_assessment_scores = [] -%}
+        {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
+          {%- set _ = obj_assessment_scores.append(score) -%}
+        {%- endfor -%}
+
+        {%- if obj_assessment_scores -%}
+        , "scoreResults": [
+          {%- for score in obj_assessment_scores -%}
             {
               "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
@@ -126,6 +133,7 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor %}
         ]
+        {%- endif -%}
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
