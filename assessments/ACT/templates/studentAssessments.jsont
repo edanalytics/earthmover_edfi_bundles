@@ -63,8 +63,17 @@
 
 {%- set all_obj_assessment = [] -%}
 {%- for obj in topline_obj_assess + subscore_obj_assess -%}
-  {% if obj[1] is not none and obj[1] | length %}
-    {% set _ = all_obj_assessment.append(obj) %}
+  {%- if obj[1] is not none and obj[1] | length -%}
+
+    {%- set obj_assessment_subscores = [] -%}
+    {%- for subscore in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
+      {%- set _ = obj_assessment_subscores.append(perf_level) -%}
+    {%- endfor -%}
+
+    {%- if obj_assessment_subscores -%}
+      {%- set _ = all_obj_assessment.append(obj) -%}
+    {%- endif -%}
+
   {% endif %}
 {%- endfor -%}
 
@@ -116,16 +125,10 @@
           "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{obj[1]}}",
           "namespace": "{{namespace}}"
-        }
+        },
 
-        {%- set obj_assessment_scores = [] -%}
-        {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
-          {%- set _ = obj_assessment_scores.append(score) -%}
-        {%- endfor -%}
-
-        {%- if obj_assessment_scores -%}
-        , "scoreResults": [
-          {%- for score in obj_assessment_scores -%}
+        "scoreResults": [
+          {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
             {
               "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
@@ -133,7 +136,6 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor %}
         ]
-        {%- endif -%}
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
