@@ -14,18 +14,16 @@ config:
     TEST_TYPE: ''
   macros: >
       {% macro map_year_to_version(value) -%}
-      {%- if "${API_YEAR}" | int < 2017 -%}2400
-      {%- elif "${API_YEAR}" | int < 2024 -%}1600
+      {%- if administrationDate | date < 2016-03-01 -%}2400
+      {%- elif administrationDate | date < 2024-03-01 -%}1600
       {%- else -%}Adaptive
       {%- endif -%}
       {%- endmacro %}
-
 
 sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
-
 
   assessments:
     file: ./seeds/assessments.csv
