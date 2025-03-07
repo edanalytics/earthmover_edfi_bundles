@@ -12,7 +12,6 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'DISTRICT_STUDENT_ID,STATE_STUDENT_ID,SECONDARY_ID'
     TEST_TYPE: ''
-    date_conversion_necessary: "Y"
   macros: >
       {% macro map_year_to_version(value) -%}
       {%- if administrationDate < '2016-03-01' -%}2400
@@ -148,12 +147,10 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-      {% if "${date_conversion_necessary}" == 'Y' %}
       - operation: date_format
         column: administrationDate
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-      {% endif %}
       - operation: add_columns
         columns:
           schoolYear: ${API_YEAR}
