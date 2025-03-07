@@ -147,12 +147,16 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: date_format
+        column: administrationDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
           schoolYear: ${API_YEAR}
           assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(schoolYear)}}{%endraw%}"
           namespace: "uri://collegeboard.org"
-          assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESAPCE}/AssessmentCategoryDescriptor#College entrance exam"
+          assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESPACE}/AssessmentCategoryDescriptor#College entrance exam"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
       - operation: join
         sources:
@@ -160,10 +164,6 @@ transformations:
         join_type: inner
         left_keys: [grade_when_assessed, assessmentIdentifier]
         right_keys: [psat_sat_grade, assessmentIdentifier]
-      - operation: date_format
-        column: administrationDate
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
