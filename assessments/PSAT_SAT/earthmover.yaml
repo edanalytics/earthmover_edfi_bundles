@@ -14,8 +14,8 @@ config:
     TEST_TYPE: ''
   macros: >
       {% macro map_year_to_version(value) -%}
-      {%- if administrationDate | date < 2016-03-01 -%}2400
-      {%- elif administrationDate | date < 2024-03-01 -%}1600
+      {%- if administrationDate < '2016-03-01' -%}2400
+      {%- elif administrationDate < '2024-03-01' -%}1600
       {%- else -%}Adaptive
       {%- endif -%}
       {%- endmacro %}
