@@ -104,7 +104,7 @@
 
 {% set all_obj_assessments = [] %}
 {% for obj in obj_assessments %}
-  {% if obj[1][0].value != '' and obj[1][0].value is not none and obj[1][0].value | length %}
+  {% if obj[1][0][1] and obj[1][0][1] != '' and obj[1][0][1] is not none and obj[1][0][1] | length %}
     {% set _= all_obj_assessments.append(obj) %}
   {% endif %}
 {% endfor %}
