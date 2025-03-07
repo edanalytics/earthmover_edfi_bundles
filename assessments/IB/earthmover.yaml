@@ -48,6 +48,9 @@ transformations:
   ib_student_results:
     source: $transformations.input
     operations:
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_id
       - operation: snake_case_columns
       - operation: combine_columns
         columns:
@@ -67,9 +70,6 @@ transformations:
           school_year: ${API_YEAR}
           administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
-      - operation: rename_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_id
   
   student_assessments:
     source: $transformations.ib_student_results
