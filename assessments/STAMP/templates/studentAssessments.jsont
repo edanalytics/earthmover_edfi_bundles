@@ -1,138 +1,203 @@
+{%- set possible_scores = [
+    [CompositeScore, "Decimal", "Composite Score"] 
+] -%}
+
+{%- set scores = [] -%}
+  {%- for score in possible_scores -%}
+    {%- if score[0] is not none and score[0] | length -%}
+      {%- set _ = scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+{%- if assessmentIdentifier == 'STAMP 4S' -%}
+  {%- set possible_obj_assess = [
+    ['Reading', Reading_Score, Reading_Level, Reading_Length],
+    ['Writing', "", Writing_Level, Writing_Length],
+    ['Listening', Listening_Score, Listening_Level, Listening_Length],
+    ['Speaking', "", Speaking_Level, Speaking_Length]
+  ] -%}
+{%- elif assessmentIdentifier == 'STAMP WS' -%} 
+  {%- set possible_obj_assess = [
+    ['Writing', "", Writing_Level, Writing_Length],
+    ['Speaking', "", Speaking_Level, Speaking_Length]
+  ] -%}
+{%- elif assessmentIdentifier == 'STAMP Latin' -%} 
+  {%- set possible_obj_assess = [
+    ['Reading', Reading_Score, Reading_Level, Reading_Length]
+  ] -%}
+{%- elif assessmentIdentifier == 'STAMP Monolingual' -%} 
+  {%- set possible_obj_assess = [
+    ['Writing', "", Writing_Level, Writing_Length],
+    ['Speaking', "", Speaking_Level, Speaking_Length]
+  ] -%}
+{%- elif assessmentIdentifier == 'STAMP ASL' -%}
+  {%- set possible_obj_assess = [
+    ['Receptive', "", "", ""],
+    ['Expressive', "", "", ""]
+  ] -%}
+{%- endif -%}
+
+{%- set all_obj_assessment = [] -%}
+  {%- for obj in possible_obj_assess -%}
+    {%- if obj[0] is not none and obj[0] | length -%}
+      {%- set _= all_obj_assessment.append(obj) -%}
+    {%- endif -%}
+  {%- endfor -%}
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
-  },
-  {% if schoolId is not none and schoolId | length %}
-  "reportedSchoolReference": {
-      "schoolId": {{schoolId}}    
-  },{% endif %} 
-  
-  {% if schoolYear is not none and schoolYear | length %}
-  "schoolYearTypeReference": {
-    "schoolYear": {{schoolYear| int}}
-  },{% endif %}
-
-  "studentReference": {
-    "studentUniqueId": "{{studentUniqueId}}"
-  },
-  "administrationDate": "{{administrationDate}}",
-  "administrationEndDate": "{{administrationEndDate}}",
-  "administrationLanguageDescriptor": "{{descriptorNamespace}}/LanguageDescriptor#{{administrationLanguage}}",
-  "whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}",
-  "assessedMinutes": {{assessedMinutes|int}},
-  "eventDescription": "{{eventDescription}}",
-  "serialNumber": "{{serialNumber}}"
-  {% if CompositeScore is not none and CompositeScore | length %}
-  ,
-  "scoreResults": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
-      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Decimal",
-      "result": "{{CompositeScore}}"
-    }
-  ] {% endif %}
-  {% if Reading_Level is not none and Reading_Level | length or Writing_Level is not none and Writing_Level | length or Listening_Level is not none and Listening_Level | length or Speaking_Level is not none and Speaking_Level | length or Reading_Score is not none and Reading_Score | length or Listening_Score is not none and Listening_Score | length %}
-  ,
-  {% set comma = "" %}
-  "studentObjectiveAssessments": [
-   {% if Reading_Score is not none and Reading_Score | length or Reading_Level is not none and Reading_Level | length%}
-   {
-    "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}", 
-      "identificationCode": "Reading",
-      "namespace": "{{namespace}}"
-    }
-    {% if Reading_Score is not none and Reading_Score | length %}
-    ,
-    "scoreResults": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{ Reading_Score }}"
-      }
-    ] {% endif %}
-    {% if Reading_Level is not none and Reading_Level | length %}
-    ,
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Reading_Level}}",
-        "performanceLevelMet": true
-      }
-    ] {% endif %} ,
-    "assessedMinutes": {{Reading_Length|int}}  
-  } 
-  {% set comma = "," %}
-  {% endif %}
-
-  {% if Writing_Level is not none and Writing_Level | length %}
-  {{comma}}
-  {
-    "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "Writing",
-      "namespace": "{{namespace}}"
-    },
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Writing_Level}}",
-        "performanceLevelMet": true
-      }
-    ],
-    "assessedMinutes": {{Writing_Length|int}} 
-  } 
-  {% set comma = "," %}
-  {% endif %}
-
-  {% if Listening_Score is not none and Listening_Score | length or Listening_Level is not none and Listening_Level | length%}
-  {{comma}}
-  {
-    "objectiveAssessmentReference": {
-      "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "Listening",
-      "namespace": "{{namespace}}"
-    }
-    {% if Listening_Score is not none and Listening_Score | length %}
-    ,
-    "scoreResults": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{ Listening_Score }}"
-      }
-    ] {% endif %}
-    {% set comma = "" %}
-    {% if Listening_Level is not none and Listening_Level | length %}
-   ,
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Listening_Level}}",
-        "performanceLevelMet": true
-      }
-    ], {% endif %}
-    "assessedMinutes": {{Listening_Length|int}}
   }
-  {% set comma = "," %}
-  {% endif %}
-  {% if Speaking_Level is not none and Speaking_Level | length %}
-  {{comma}}
+  {%- if schoolId is not none and schoolId | length -%}
+  ,"reportedSchoolReference": {
+      "schoolId": {{schoolId}}    
+  }{%- endif -%} 
+  {%- if schoolYear is not none and schoolYear | length -%}
+  ,"schoolYearTypeReference": {
+    "schoolYear": {{schoolYear| int}}
+  }{%- endif -%}
+  ,"studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  }
+  ,"administrationDate": "{{administrationDate}}"
+  ,"administrationEndDate": "{{administrationEndDate}}"
+  {%- if administrationLanguage is not none and administrationLanguage | length -%}
+  ,"administrationLanguageDescriptor": "{{descriptorNamespace}}/LanguageDescriptor#{{administrationLanguage}}"
+  {%- endif -%}
+  {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
+  {%- endif -%}
+  {%- if assessedMinutes is not none and assessedMinutes | length -%}
+  ,"assessedMinutes": {{assessedMinutes|int}}
+  {%- endif -%}
+  {%- if eventDescription is not none and eventDescription | length -%}
+  ,"eventDescription": "{{eventDescription}}"
+  {%- endif -%}
+  {%- if serialNumber is not none and serialNumber | length -%}
+  ,"serialNumber": "{{serialNumber}}"
+  {%- endif -%}
+  {%- if CompositeScore is not none and CompositeScore | length -%}
+  ,"scoreResults": [
+    {%- for score in scores -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]{%- endif -%} 
+
+  {%- if assessmentIdentifier == 'STAMP 4S' and all_obj_assessment | length -%}
+  ,"studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
   {
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "Speaking",
+      "identificationCode": "{{obj[0]}}",
       "namespace": "{{namespace}}"
-    },
-    "performanceLevels": [
+    }
+    {%- if obj[1] is not none and obj[1] | length -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{obj[1]}}"
+      }
+      ]
+    {%- endif -%}
+    {%- if obj[2] is not none and obj[2] | length -%}
+    ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{Speaking_Level}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
         "performanceLevelMet": true
       }
-    ],
-    "assessedMinutes": {{Speaking_Length|int}}
-  } {% endif %} ] {% endif %}
+    ] {%- endif -%}
+    {%- if (assessedMinutes is not none and assessedMinutes|length) -%}
+    ,"assessedMinutes": {{obj[3]|int}}
+    {%- endif -%}
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ] {%- endif -%}
+
+  {%- if assessmentIdentifier == 'STAMP WS' and all_obj_assessment | length -%}
+  ,"studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    }
+    {%- if obj[2] is not none and obj[2] | length -%}
+    ,"performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelMet": true
+      }
+    ] {%- endif -%}
+    {%- if assessedMinutes is not none and assessedMinutes | length -%}
+    ,"assessedMinutes": {{obj[3]|int}}
+    {%- endif -%}
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ] {%- endif -%}
+
+  {%- if assessmentIdentifier == 'STAMP Monolingual' and all_obj_assessment | length -%}
+  ,"studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    }
+    {%- if obj[2] is not none and obj[2] | length -%}
+    ,"performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelMet": true
+      }
+    ] {%- endif -%}
+    {%- if assessedMinutes is not none and assessedMinutes | length -%}
+    ,"assessedMinutes": {{obj[3]|int}}
+    {%- endif -%}
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ] {%- endif -%}
+
+  {%- if assessmentIdentifier == 'STAMP Latin' and all_obj_assessment | length -%}
+  ,"studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    }
+    {%- if obj[1] is not none and obj[1] | length -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{obj[1]}}"
+      }
+      ] {%- endif -%}
+    {%- if obj[2] is not none and obj[2] | length -%}
+    ,"performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelMet": true
+      }
+    ] {%- endif -%}
+    {%- if assessedMinutes is not none and assessedMinutes | length -%}
+    ,"assessedMinutes": {{obj[3]|int}}
+    {%- endif -%}
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ] {%- endif -%}
 }

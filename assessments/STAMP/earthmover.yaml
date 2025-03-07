@@ -186,12 +186,13 @@ transformations:
       - operation: add_columns
         columns:
           idcode_json: >
-              {%raw-%}
+              {%raw-%} {%- if TestCode is not none and TestCode | length -%}
               {
                 "assessmentIdentificationSystemDescriptor": "{{namespace}}/AssessmentIdentificationSystemDescriptor#Test Contractor",
                 "assigningOrganizationIdentificationCode": "Avant STAMP",
                 "identificationCode": "{{TestCode}}"
-              }
+              } 
+              {%-endif-%}
               {%-endraw%}  
       - operation: modify_columns
         columns:
@@ -218,7 +219,7 @@ transformations:
                 "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
               }
-              {%- endif -%}
+              {%-endif-%}
               {%-endraw%} 
           performanceWS_json: >
               {%raw-%} {%- if codeValue != '9-Advanced-High' and codeValue is not none and codeValue|length -%}
@@ -226,7 +227,7 @@ transformations:
                 "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
                 "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
               }
-              {%- endif -%}
+              {%-endif-%}
               {%-endraw%}  
       - operation: modify_columns
         columns:
@@ -246,10 +247,11 @@ transformations:
         columns:
           joinKey: "Key"
           grade_json: >
-              {%raw-%}  
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
               {
                 "gradeLevelDescriptor": "{{Namespace}}#{{Grade_CodeValue}}"
               }
+              {%-endif-%}
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -275,10 +277,11 @@ transformations:
         columns:
           namespace: ${DESCRIPTOR_NAMESPACE}
           language_json: >
-              {%raw-%}  
+              {%raw-%}  {%- if LanguageCode is not none and LanguageCode | length -%} 
               {
                 "languageDescriptor": "{{namespace}}/LanguageDescriptor#{{LanguageCode}}"
               }
+              {%-endif-%}
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -296,10 +299,11 @@ transformations:
         columns:
           joinKey: "Key"
           period_json: >
-              {%raw-%}  
+              {%raw-%} {%- if codeValue is not none and codeValue | length -%} 
               {
                 "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
               }
+              {%-endif-%}
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -512,21 +516,9 @@ destinations:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/assessmentCategoryDescriptors.jsont
     extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ./templates/academicSubjectDescriptors.jsont
-    extension: jsonl
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
     template: ./templates/assessmentPeriodDescriptors.jsont
-    extension: jsonl
-  languageDescriptors:
-    source: $transformations.prepare_languages
-    template: ./templates/languageDescriptors.jsont
-    extension: jsonl
-  gradeLevelDescriptors:
-    source: $sources.gradeLevelDescriptors
-    template: ./templates/gradeLevelDescriptors.jsont
     extension: jsonl
   assessmentIdentificationSystemDescriptors:
     source: $sources.assessmentIdentificationSystemDescriptors
