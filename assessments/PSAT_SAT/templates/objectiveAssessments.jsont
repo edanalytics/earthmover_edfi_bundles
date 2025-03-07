@@ -8,8 +8,8 @@
     {% if parentObjectiveAssessment != '' %}
     "parentObjectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
-      "identificationCode": "{{parentObjectiveAssessment}}",
-      "namespace": "{{namespace}}"
+      "namespace": "{{namespace}}",
+      "identificationCode": "{{parentObjectiveAssessment}}"
     },
     {% endif %}
     {% if identificationCode in ('Evidence Based Reading and Writing Section', 'Math Section') %}
