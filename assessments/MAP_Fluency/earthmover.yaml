@@ -60,13 +60,17 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
+
+      # TODO: This filter will be removed when we know how to label assessments without AssignedTestType.
       - operation: filter_rows
-        query: (AssignedTestType.notnull() & (AssignedTestType != "")) | (ResultType.notnull() & (ResultType != ""))
+        query: (AssignedTestType.notnull() & (AssignedTestType != ""))
         behavior: include
+
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
-          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ build_test_type(AssignedTestType, ResultType)}}{%endraw%}"
+          # assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ build_test_type(AssignedTestType, ResultType)}}{%endraw%}"
+          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' , '-') }}{%endraw%}"
           namespace: "uri://www.nwea.org/mapFluency/Assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: date_format
