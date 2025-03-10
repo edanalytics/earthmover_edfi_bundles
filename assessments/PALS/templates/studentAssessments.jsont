@@ -1,3 +1,4 @@
+{% if result is not none and result | length %}
 { 
  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -18,8 +19,9 @@
   "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
   "periods": [{"assessmentPeriodDescriptor": "uri://renaissance.com/products/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
   "scoreResults": [{
-    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{codeValue}}",
-    "resultDatatypeTypeDescriptor": "{{namespace}}/ResultDatatypeTypeDescriptor#Integer",
+    "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
+    "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
     "result": "{{ result }}"
     }]
 }
+{%- endif -%}

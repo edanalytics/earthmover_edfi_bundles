@@ -64,7 +64,7 @@ transformations:
           score_json: >  
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "${DESCRIPTOR_NAMESPACE}/AssessmentReportingMethodDescriptor#{{codeValue}}",
+                "assessmentReportingMethodDescriptor": "{{ namespace }}#{{codeValue}}",
                 "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",  
                 "minimumScore":"{{ minimumScore }}",
                 "maximumScore":"{{ maximumScore }}"                
@@ -123,7 +123,7 @@ transformations:
         - assessmentPeriodDescriptor
     
 
-  {% for assessment_name in assessment %}
+{% for assessment_name in assessment %}
 
   student_assessment_{{assessment_name}}:
     source: $transformations.input
@@ -160,12 +160,6 @@ transformations:
         map_file: ./seeds/semester_mapping.csv
       - operation: add_columns
         columns:
-          administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "${DESCRIPTOR_NAMESPACE}/GradeLevelDescriptor#0"
-          schoolYear: "{%raw%}{{YEAR[-4:]}}{%endraw%}"
-          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
-      - operation: add_columns
-        columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  ASSESSDATE) }}{% endraw %}"
       - operation: add_columns
         columns:
@@ -176,7 +170,29 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      
+      - operation: add_columns
+        columns:
+          administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{{ whenAssessedGradeLevelDescriptor }}{%endraw%}"
+          schoolYear: "{%raw%}{{ YEAR[-4:] }}{%endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+      - operation: keep_columns
+        columns:
+            - "studentAssessmentIdentifier"
+            - "assessmentIdentifier"
+            - "schoolId"
+            - "schoolYear"
+            - "studentUniqueId"
+            - "administrationDate"
+            - "descriptorNamespace"
+            - "result"
+            - "namespace"
+            - "codeValue"
+            - "whenAssessedGradeLevelDescriptor"
+            - "assessmentPeriodDescriptor" 
+      - operation: filter_rows
+        query: "result != 'NULL' and result!=''"
+        behavior: include
   {% endfor %}
 
   combined_results:
@@ -216,7 +232,7 @@ destinations:
 
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
 
   studentAssessments:
@@ -236,6 +252,11 @@ destinations:
 
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
-    template: ./templates/assessmentCategoryDescriptors.jsont
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
   
