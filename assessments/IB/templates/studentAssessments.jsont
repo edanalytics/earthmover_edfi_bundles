@@ -41,7 +41,7 @@
   "scoreResults": [
     {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2][:50]}}",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2][:35]}}",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
