@@ -5,7 +5,9 @@
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "academicSubjects": [
+    {"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}
+    ],
   "platformTypes": [{{platform_json}}],
   "scores": [
     {
