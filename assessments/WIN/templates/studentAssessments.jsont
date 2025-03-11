@@ -1,15 +1,17 @@
 {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
   {%- set possible_scores = [
-    [Acc, Level, "Accommodation"], 
-    [Retake, Level, "Retake"]
+    [Acc, "Level", "Accommodation"], 
+    [Retake, "Level", "Retake"],
+    [GR9, "Level", "GR9"]
   ] -%}
 {%- else -%}
   {%- set possible_scores = [
-    [Acc, Level, "Accommodation"], 
-    [Retake, Level, "Retake"], 
-    [SoftRS, Integer, "RS"], 
-    [SoftSS, Integer, "SS"], 
-    [SoftDuration, Integer, "Duration"]
+    [Acc, "Level", "Accommodation"], 
+    [Retake, "Level", "Retake"], 
+    [GR9, "Level", "GR9"],
+    [SoftRS, "Integer", "RS"], 
+    [SoftSS, "Integer", "SS"], 
+    [SoftDuration, "Integer", "Duration"]
   ] -%}
 {%- endif -%}
 
