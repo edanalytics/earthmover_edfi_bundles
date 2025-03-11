@@ -37,6 +37,7 @@ sources:
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
     optional_fields:
       - MathRS
