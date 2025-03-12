@@ -124,6 +124,20 @@ transformations:
         right_keys: 
           - assessmentIdentifier
           - Mode
+      - operation: modify_columns
+        columns:
+          DataLev: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          DataSS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          DataStatus: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          DataSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          DataFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          DataRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoLev: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoSS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoStatus: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          InfoRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
     expect:
       - edfi_ds_version|int != 0
 
@@ -151,7 +165,7 @@ transformations:
         separator: '-'
       - operation: modify_columns
         columns:
-          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
