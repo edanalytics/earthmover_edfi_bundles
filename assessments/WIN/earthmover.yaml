@@ -64,7 +64,6 @@ transformations:
     operations: []
 
   clean_results:
-    debug: True
     source: $transformations.input
     operations:
       - operation: duplicate_columns
