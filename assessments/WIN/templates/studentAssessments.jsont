@@ -113,12 +113,15 @@
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SS",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[3]}}"
-      },
+      }
+      {%- if obj[4] == 0 -%}
+      ,
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Duration",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[4]}}"
       }
+      {%- endif -%}
     ],
     "performanceLevels": [
       {

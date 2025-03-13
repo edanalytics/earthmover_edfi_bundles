@@ -72,18 +72,14 @@ transformations:
           SchoolID: educationOrganizationId
       - operation: modify_columns
         columns:
-          DataLev: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          DataSS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          DataStatus: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           DataSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           DataFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          DataRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          InfoLev: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          InfoSS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          InfoStatus: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           InfoSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           InfoFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          InfoRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}" 
+          MathSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          MathFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          ReadSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          ReadFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
       - operation: add_columns
         columns:
           assessmentIdentifier: WIN_Academic_Skills
