@@ -1,12 +1,12 @@
 {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
   {%- set possible_scores = [
-    [Acc, "Level", "Accommodation"], 
+    [Acc, "Level", "Accommodations"], 
     [Retake, "Level", "Retake"],
     [GR9, "Level", "GR9"]
   ] -%}
 {%- else -%}
   {%- set possible_scores = [
-    [Acc, "Level", "Accommodation"], 
+    [Acc, "Level", "Accommodations"], 
     [Retake, "Level", "Retake"], 
     [GR9, "Level", "GR9"],
     [SoftRS, "Integer", "RS"], 
