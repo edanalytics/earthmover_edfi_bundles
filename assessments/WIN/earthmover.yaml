@@ -80,6 +80,8 @@ transformations:
           MathFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           ReadSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           ReadFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          SoftSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          SoftFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"  
       - operation: add_columns
         columns:
           assessmentIdentifier: WIN_Academic_Skills
