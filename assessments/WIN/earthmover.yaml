@@ -83,7 +83,7 @@ transformations:
           InfoStatus: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           InfoSTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           InfoFTime: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-          InfoRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}"          
+          InfoRS: "{%raw%}{%- if value is none -%}''{%- else -%}{{value}}{%- endif -%}{%endraw%}" 
       - operation: add_columns
         columns:
           assessmentIdentifier: WIN_Academic_Skills
@@ -99,6 +99,7 @@ transformations:
           InfoDuration: "{%raw%}{{(InfoFTime[:-2] | int * 60 + InfoFTime[-2:] | int) - (InfoSTime[:-2] | int * 60 + InfoSTime[-2:] | int)}}{%endraw%}"
           ReadDuration: "{%raw%}{{(ReadFTime[:-2] | int * 60 + ReadFTime[-2:] | int) - (ReadSTime[:-2] | int * 60 + ReadSTime[-2:] | int)}}{%endraw%}"
           SoftDuration: "{%raw%}{{(SoftFTime[:-2] | int * 60 + SoftFTime[-2:] | int) - (SoftSTime[:-2] | int * 60 + SoftSTime[-2:] | int)}}{%endraw%}"
+
       - operation: date_format
         column: TestDate
         from_format: "%Y%m%d"
@@ -156,6 +157,9 @@ transformations:
       - operation: union
         sources:
           - $transformations.clean_results_copy
+      - operation: modify_columns
+        columns:
+          UID: "{%raw%}{%- if value is not none and value | length -%}{{value}}{%- else -%}{{TestAdmin}}{{TestDate}}{{StudentID}}{%- endif -%}{%endraw%}"
       - operation: combine_columns
         columns:
           - UID
