@@ -308,7 +308,7 @@ transformations:
           - "schoolcode"
           - "startdate"
           - "enddate"
-          - "schoolyear"
+          - "datetaken"
           - "administration"
           - "motorscore"
           - "motorpercentile"
@@ -358,7 +358,7 @@ transformations:
           administrationDate: "{%raw%}{{ startdate }}{%endraw%}"
           administrationEndDate: "{%raw%}{{ enddate }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "${DESCRIPTOR_NAMESPACE}/GradeLevelDescriptor#{%raw%}{{ gradeLevelDescriptor }}{%endraw%}"
-          schoolYear: "{%raw%}{{schoolyear}}{%endraw%}"
+          schoolYear: "{%raw%}{{ datetaken[:4] | int + 1 if datetaken[5:7] | int >= 7 else datetaken[:4] | int }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: add_columns
         columns:
