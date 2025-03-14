@@ -34,7 +34,9 @@
 {%- set scores = [] -%}
   {%- for score in possible_scores -%}
     {%- if score[0] is not none and score[0] | length -%}
-      {%- set _ = scores.append(score) -%}
+        {%- if not (score[2] == "Duration" and score[0] == "0") -%}
+          {%- set _ = scores.append(score) -%}
+        {% endif %}
     {%- endif -%}
   {%- endfor -%}
 
@@ -72,7 +74,7 @@
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
         "result": "{{score[0]}}"
-      } {% if not loop.last %},{% endif %}
+      }{% if not loop.last %},{% endif %}
     {% endfor %}
   ],
   "performanceLevels": [
