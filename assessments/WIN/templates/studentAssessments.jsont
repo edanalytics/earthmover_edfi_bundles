@@ -114,7 +114,7 @@
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[3]}}"
       }
-      {%- if obj[4] == 0 -%}
+      {%- if obj[4] != 0 -%}
       ,
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Duration",
