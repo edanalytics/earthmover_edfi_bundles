@@ -1,0 +1,44 @@
+{%- set possible_scores = [
+    [result, "Integer", "AP Score"] 
+] -%}
+
+{%- set scores = [] -%}
+  {%- for score in possible_scores -%}
+    {%- if score[0] is not none and score[0] | length -%}
+      {%- set _ = scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  }
+  {%- if schoolId is not none and schoolId | length -%}
+  ,"reportedSchoolReference": {
+      "schoolId": {{schoolId}}    
+  }{%- endif -%} 
+  {%- if schoolYear is not none and schoolYear | length -%}
+  ,"schoolYearTypeReference": {
+    "schoolYear": {{schoolYear| int}}
+  }{%- endif -%}
+  ,"studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  }
+  ,"administrationDate": "{{administrationDate}}"
+  {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
+  {%- endif -%}
+  {%- if result is not none and result | length -%}
+  ,"scoreResults": [
+    {%- for score in scores -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]{%- endif -%} 
+  
+}

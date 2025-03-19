@@ -1,0 +1,496 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Identifier' #'PS_StudentID,StudentSUNS'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org #uri://ed.sc.gov
+  
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelMapping.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_academic_subject:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  prepare_assessment_identifier:
+    source: $transformations.stage_academic_subject
+    operations:
+      - operation: keep_columns
+        columns:
+          - AP_Exam_Description
+          - AP_Exam_Code
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}AP - {{AP_Exam_Description}}{%endraw%}"
+          assessmentTitle: "{%raw%}Advanced Placement - {{AP_Exam_Description}}{%endraw%}"
+          assessmentFamily: "Advanced Placement"
+          assessmentNamespace: "uri://collegeboard.org"
+          academicSubject:  "{%raw%} {{AP_Exam_Description}}{%endraw%}"
+          assessmentCategoryDescriptor: "uri://collegeboard.org/AssessmentCategoryDescriptor#Advanced Placement"
+          assessmentPeriodDescriptor: "uri://collegeboard.org/AssessmentPeriodDescriptor#Spring"
+          namespace: ${DESCRIPTOR_NAMESPACE}
+          joinKey: "Key"
+
+  stage_assessment_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          CodeValue: Grade_CodeValue 
+
+  {% set ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'] %}
+  {% for id in ids %}
+  exam_{{id}}:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - "Student Identifier"
+          - "Grade Level"
+          - "AI Code"
+          #- "Award Type 1"
+          #- "Award Type 2"
+          #- "Award Type 3"
+          #- "Award Type 4"
+          #- "Award Type 5"
+          #- "Award Type 6"
+          #- "Award Type 7"
+          #- "Award Year 1"
+          #- "Award Year 2"
+          #- "Award Year 3"
+          #- "Award Year 4"
+          #- "Award Year 5"
+          #- "Award Year 6"
+          #- "Award Year 7"
+          - Admin Year {{id}}
+          - Exam Code {{id}}
+          - Exam Grade {{id}}
+          - "Irregularity Code #1 {{id}}"
+          - "Irregularity Code #2 {{id}}"
+      - operation: add_columns
+        columns:
+          Exam_Id:  {{id}}
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+          "Grade Level": GradeLevel
+          "AI Code": SchoolCode
+          Admin Year {{id}}: SchoolYear
+          Exam Code {{id}}: ExamCode
+          Exam Grade {{id}}: Score
+          "Irregularity Code #1 {{id}}": IrregularityCode1
+          "Irregularity Code #2 {{id}}": IrregularityCode2
+      #- operation: filter_rows
+      #  query: StudentUniqueId != ''
+      #  behavior: include
+  {% endfor %}
+
+  stacked_results:
+    source: $transformations.exam_{{ids[0]}}
+    operations:
+      - operation: union
+        sources:
+          {% for id in ids[1:] %}
+          - $transformations.exam_{{id}}
+          {% endfor %}
+  
+ # stage_student_assessments:
+  #  source: $transformations.input
+  #  operations:
+  #    - operation: rename_columns
+  #      columns:
+  #        Student Identifier: StudentUniqueId
+  #        Grade Level: GradeLevel
+  #        AI Code: SchoolCode
+  #        Admin Year 01: Admin_Year_01
+  #        Exam Code 01: Exam_Code_01
+  #        Exam Grade 01: Exam_Score_01
+  #        'Irregularity Code #1 01': Irregularity_Code_#1_01
+  #        'Irregularity Code #2 01': Irregularity_Code_#2_01
+  #        Admin Year 02: Admin_Year_02
+  #        Exam Code 02: Exam_Code_02
+  #        Exam Grade 02: Exam_Score_02
+  #        'Irregularity Code #1 02': Irregularity_Code_#1_02
+  #        'Irregularity Code #2 02': Irregularity_Code_#2_02
+  #        Admin Year 03: Admin_Year_03
+  #        Exam Code 03: Exam_Code_03
+  #        Exam Grade 03: Exam_Score_03
+  #        'Irregularity Code #1 03': Irregularity_Code_#1_03
+  #        'Irregularity Code #2 03': Irregularity_Code_#2_03
+  #        Admin Year 04: Admin_Year_04
+  #        Exam Code 04: Exam_Code_04
+  #        Exam Grade 04: Exam_Score_04
+  #        'Irregularity Code #1 04': Irregularity_Code_#1_04
+  #        'Irregularity Code #2 04': Irregularity_Code_#2_04
+  #        Admin Year 05: Admin_Year_05
+  #        Exam Code 05: Exam_Code_05
+  #        Exam Grade 05: Exam_Score_05
+  #        'Irregularity Code #1 05': Irregularity_Code_#1_05
+  #        'Irregularity Code #2 05': Irregularity_Code_#2_05
+  #        Admin Year 06: Admin_Year_06
+  #        Exam Code 06: Exam_Code_06
+  #        Exam Grade 06: Exam_Score_06
+  #        'Irregularity Code #1 06': Irregularity_Code_#1_06
+  #        'Irregularity Code #2 06': Irregularity_Code_#2_06
+  #        Admin Year 07: Admin_Year_07
+  #        Exam Code 07: Exam_Code_07
+  #        Exam Grade 07: Exam_Score_07
+  #        'Irregularity Code #1 07': Irregularity_Code_#1_07
+  #        'Irregularity Code #2 07': Irregularity_Code_#2_07
+  #        Admin Year 08: Admin_Year_08
+  #        Exam Code 08: Exam_Code_08
+  #        Exam Grade 08: Exam_Score_08
+  #        'Irregularity Code #1 08': Irregularity_Code_#1_08
+  #        'Irregularity Code #2 08': Irregularity_Code_#2_08
+  #        Admin Year 09: Admin_Year_09
+  #        Exam Code 09: Exam_Code_09
+  #        Exam Grade 09: Exam_Score_09
+  #        'Irregularity Code #1 09': Irregularity_Code_#1_09
+  #        'Irregularity Code #2 09': Irregularity_Code_#2_09
+  #        Admin Year 10: Admin_Year_10
+  #        Exam Code 10: Exam_Code_10
+  #        Exam Grade 10: Exam_Score_10
+  #        'Irregularity Code #1 10': Irregularity_Code_#1_10
+  #        'Irregularity Code #2 10': Irregularity_Code_#2_10
+  #        Admin Year 11: Admin_Year_11
+  #        Exam Code 11: Exam_Code_11
+  #        Exam Grade 11: Exam_Score_11
+  #        'Irregularity Code #1 11': Irregularity_Code_#1_11
+  #        'Irregularity Code #2 11': Irregularity_Code_#2_11
+  #        Admin Year 12: Admin_Year_12
+  #        Exam Code 12: Exam_Code_12
+  #        Exam Grade 12: Exam_Score_12
+  #        'Irregularity Code #1 12': Irregularity_Code_#1_12
+  #        'Irregularity Code #2 12': Irregularity_Code_#2_12
+  #        Admin Year 13: Admin_Year_13
+  #        Exam Code 13: Exam_Code_13
+  #        Exam Grade 13: Exam_Score_13
+  #        'Irregularity Code #1 13': Irregularity_Code_#1_13
+  #        'Irregularity Code #2 13': Irregularity_Code_#2_13
+  #        Admin Year 14: Admin_Year_14
+  #        Exam Code 14: Exam_Code_14
+  #        Exam Grade 14: Exam_Score_14
+  #        'Irregularity Code #1 14': Irregularity_Code_#1_14
+  #        'Irregularity Code #2 14': Irregularity_Code_#2_14
+  #        Admin Year 15: Admin_Year_15
+  #        Exam Code 15: Exam_Code_15
+  #        Exam Grade 15: Exam_Score_15
+  #        'Irregularity Code #1 15': Irregularity_Code_#1_15
+  #        'Irregularity Code #2 15': Irregularity_Code_#2_15
+  #        Admin Year 16: Admin_Year_16
+  #        Exam Code 16: Exam_Code_16
+  #        Exam Grade 16: Exam_Score_16
+  #        'Irregularity Code #1 16': Irregularity_Code_#1_16
+  #        'Irregularity Code #2 16': Irregularity_Code_#2_16
+  #        Admin Year 17: Admin_Year_17
+  #        Exam Code 17: Exam_Code_17
+  #        Exam Grade 17: Exam_Score_17
+  #        'Irregularity Code #1 17': Irregularity_Code_#17
+  #        'Irregularity Code #2 17': Irregularity_Code_#2_17
+  #        Admin Year 18: Admin_Year_18
+  #        Exam Code 18: Exam_Code_18
+  #        Exam Grade 18: Exam_Score_18
+  #        'Irregularity Code #1 18': Irregularity_Code_#1_18
+  #        'Irregularity Code #2 18': Irregularity_Code_#2_18
+  #        Admin Year 19: Admin_Year_19
+  #        Exam Code 19: Exam_Code_19
+  #        Exam Grade 19: Exam_Score_19
+  #        'Irregularity Code #1 19': Irregularity_Code_#1_19
+  #        'Irregularity Code #2 19': Irregularity_Code_#2_19
+  #        Admin Year 20: Admin_Year_20
+  #        Exam Code 20: Exam_Code_20
+  #        Exam Grade 20: Exam_Score_20
+  #        'Irregularity Code #1 20': Irregularity_Code_#1_20
+  #        'Irregularity Code #2 20': Irregularity_Code_#2_20
+  #        Admin Year 21: Admin_Year_21
+  #        Exam Code 21: Exam_Code_21
+  #        Exam Grade 21: Exam_Score_21
+  #        'Irregularity Code #1 21': Irregularity_Code_#1_21
+  #        'Irregularity Code #2 21': Irregularity_Code_#2_21
+  #        Admin Year 22: Admin_Year_22
+  #        Exam Code 22: Exam_Code_22
+  #        Exam Grade 22: Exam_Score_22
+  #        'Irregularity Code #1 22': Irregularity_Code_#1_22
+  #        'Irregularity Code #2 22': Irregularity_Code_#2_22
+  #        Admin Year 23: Admin_Year_23
+  #        Exam Code 23: Exam_Code_23
+  #        Exam Grade 23: Exam_Score_23
+  #        'Irregularity Code #1 23': Irregularity_Code_#1_23
+  #        'Irregularity Code #2 23': Irregularity_Code_#2_23
+  #        Admin Year 24: Admin_Year_24
+  #        Exam Code 24: Exam_Code_24
+  #        Exam Grade 24: Exam_Score_24
+  #        'Irregularity Code #1 24': Irregularity_Code_#1_24
+  #        'Irregularity Code #2 24': Irregularity_Code_#2_24
+  #        Admin Year 25: Admin_Year_25
+  #        Exam Code 25: Exam_Code_25
+  #        Exam Grade 25: Exam_Score_25
+  #        'Irregularity Code #1 25': Irregularity_Code_#1_25
+  #        'Irregularity Code #2 25': Irregularity_Code_#2_25
+  #        Admin Year 26: Admin_Year_26
+  #        Exam Code 26: Exam_Code_26
+  #        Exam Grade 26: Exam_Score_26
+  #        'Irregularity Code #1 26': Irregularity_Code_#1_26
+  #        'Irregularity Code #2 26': Irregularity_Code_#2_26
+  #        Admin Year 27: Admin_Year_27
+  #        Exam Code 27: Exam_Code_27
+  #        Exam Grade 27: Exam_Score_27
+  #        'Irregularity Code #1 27': Irregularity_Code_#1_27
+  #        'Irregularity Code #2 27': Irregularity_Code_#2_27
+  #        Admin Year 28: Admin_Year_28
+  #        Exam Code 28: Exam_Code_28
+  #        Exam Grade 28: Exam_Score_28
+  #        'Irregularity Code #1 28': Irregularity_Code_#1_28
+  #        'Irregularity Code #2 28': Irregularity_Code_#2_28
+  #        Admin Year 29: Admin_Year_29
+  #        Exam Code 29: Exam_Code_29
+  #        Exam Grade 29: Exam_Score_29
+  #        'Irregularity Code #1 29': Irregularity_Code_#1_29
+  #        'Irregularity Code #2 29': Irregularity_Code_#2_29
+  #        Admin Year 30: Admin_Year_30
+  #        Exam Code 30: Exam_Code_30
+  #        Exam Grade 30: Exam_Score_30
+  #        'Irregularity Code #1 30': Irregularity_Code_#1_30
+  #        'Irregularity Code #2 30': Irregularity_Code_#2_30     
+
+#  stage_assessment_performance_level:
+#    source: $sources.performanceLevelDescriptors
+#    operations:
+#      - operation: add_columns
+#        columns:
+#          joinKey: "Key"
+#
+#  performance_levels:  
+#    source: $transformations.stage_assessment_performance_level
+#    operations:
+#      - operation: keep_columns
+#        columns:
+#          - joinKey
+#          - codeValue
+#          - namespace
+#      - operation: add_columns
+#        columns:
+#          performanceRL_json: >
+#              {%raw-%} {%- if codeValue != '8-Advanced-Mid/High' and codeValue is not none and codeValue|length -%}
+#              {
+#                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+#                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
+#              }
+#              {%-endif-%}
+#              {%-endraw%} 
+#          performanceWS_json: >
+#              {%raw-%} {%- if codeValue != '9-Advanced-High' and codeValue is not none and codeValue|length -%}
+#              {
+#                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+#                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
+#              }
+#              {%-endif-%}
+#              {%-endraw%}  
+#      - operation: modify_columns
+#        columns:
+#          performanceRL_json: "{%raw%}{{performanceRL_json | replace('\n', '')-}}{%endraw%}"
+#          performanceWS_json: "{%raw%}{{performanceWS_json | replace('\n', '')-}}{%endraw%}"    
+#      - operation: group_by
+#        group_by_columns:
+#          - joinKey
+#        create_columns: 
+#          performanceRL_json: agg(performanceRL_json,,)
+#          performanceWS_json: agg(performanceWS_json,,)
+
+  grade_levels:
+    source: $transformations.stage_assessment_grade_level
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          grade_json: >
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {
+                "gradeLevelDescriptor": "{{Namespace}}#{{Grade_CodeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          grade_json: agg(grade_json,,)
+ 
+  prepare_assessments:
+    source: $transformations.prepare_assessment_identifier
+    operations:
+      - operation: add_columns
+        columns: 
+          academicSubjectDescriptor: "{%raw%}{{namespace}}/AcademicSubjectDescriptor#{{academicSubject}}{%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.grade_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+
+  #stage_student_assessment_grade:
+  #  source: $transformations.stacked_results
+  #  operations:
+  #    - operation: join
+  #      sources:
+  #        - $transformations.stage_assessment_grade_level
+  #      join_type: inner
+  #      left_keys: 
+  #        - Grade
+  #      right_keys: 
+  #        - GradeLevel
+  #      right_keep_columns:
+  #        - Grade_CodeValue
+  #    - operation: map_values
+  #      columns: 
+  #        - ReadingLevel
+  #        - ListeningLevel
+  #      map_file: ./seeds/mappingReadingListening.csv
+  #    - operation: map_values
+  #      columns: 
+  #        - WritingLevel
+  #        - SpeakingLevel
+  #      map_file: ./seeds/mappingWritingSpeaking.csv
+
+  prepare_student_assessments:
+    source: $transformations.stacked_results
+    operations:
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%} {{studentUniqueId | string}} {%endraw%}"
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%}{{'20'~SchoolYear}}{%endraw%}"
+          #school_year_month: "{%raw%}{{StartDate[0:2]}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          administrationDate: "{%raw%} {{'05-01-'~ schoolYear }}{%endraw%}"
+          #administrationEndDate: "{%raw%}{{ FinishDate }}{%endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          #assessedMinutes: "{%raw%}{{TestLength.split()[0]}}{%endraw%}"
+          #eventDescription: "{%raw%}{{Status}}{%endraw%}"
+          #serialNumber: "{%raw%}{{TestingGroup}}{%endraw%}"
+          #districtId: "{%raw%}{{District}}{%endraw%}"
+          schoolId: "{%raw%}{{SchoolCode}}{%endraw%}"
+          #administrationLanguage: "{%raw%}{{LanguageCode}}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_CodeValue}}{%endraw%}"
+      #- operation: add_columns
+      #  columns:
+      #    schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.prepare_assessment_identifier
+        join_type: inner
+        left_key: ExamCode
+        right_key: AP_Exam_Code
+        right_keep_columns:
+          - assessmentNamespace
+          - assessmentIdentifier
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  SchoolYear) }}{%endraw%}" 
+          result:  "{%raw%}{{Score}}{%endraw%}"
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%} {{studentUniqueId | trim}} {%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - studentAssessmentIdentifier
+          - assessmentIdentifier
+          - studentUniqueId
+          - administrationDate
+          - schoolYear
+          - assessmentNamespace
+          - whenAssessedGradeLevelDescriptor
+          - schoolId
+          - descriptorNamespace
+        create_columns: 
+          result: agg(result,)
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  Prepassessments:
+    source: $transformations.stacked_results
+    template: ./templates/Prepassessments.jsont
+    extension: jsonl
+
+  #studentAssessmentEducationOrganizationAssociations:
+  #  source: $transformations.prepare_student_assessments
+  #  template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+  #  extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/assessmentCategoryDescriptors.jsont
+    extension: jsonl
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/assessmentPeriodDescriptors.jsont
+    extension: jsonl
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ./templates/academicSubjectDescriptors.jsont
+    extension: jsonl
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ./templates/gradeLevelDescriptors.jsont
+    extension: jsonl
