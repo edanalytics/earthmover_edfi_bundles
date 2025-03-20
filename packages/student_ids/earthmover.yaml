@@ -229,6 +229,7 @@ transformations:
       - operation: sort_rows
         columns:
           - num_matches
+          - source_column_name
         descending: True
       - operation: add_columns
         columns:
