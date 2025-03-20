@@ -1,0 +1,185 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
+    #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
+    INPUT_FILETYPE: csv
+
+sources:
+  # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+  # See the accompanying bundle_metadata.json for a list of required columns for this file
+  # Or see data/silearn_sample_data.csv
+  input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  studentAssessments:
+    source: $transformations.input
+    operations:
+      # An additional python pre-processing step occurs on ILEARN's col names due to special characters (e.g. "®").
+      - operation: snake_case_columns
+
+      # Retain only IREAD-3 relevant columns
+      - operation: drop_columns
+        columns:
+          - overall_scale_score
+          - overall_proficiency_level
+          - ilearn_reporting_category_1_performance
+          - ilearn_reporting_category_2_performance
+          - ilearn_reporting_category_3_performance
+          - ilearn_reporting_category_4_performance
+          - ilearn_reporting_category_5_performance
+          - ilearn_reported_lexile®_measure
+          - ilearn_reported_quantile®_measure
+          - college_and_career_readiness_indicator
+          - argumentative_organization_purpose
+          - argumentative_evidence_development_elaboration
+          - argumentative_conventions
+          - informative_organization_purpose
+          - informative_evidence_development_elaboration
+          - informative_conventions
+          - narrative_organization_purpose
+          - narrative_evidence_development_elaboration
+          - narrative_conventions
+          - opinion_organization_purpose
+          - opinion_evidence_development_elaboration
+          - opinion_conventions
+          - explanatory_organization_purpose
+          - explanatory_evidence_development_elaboration
+          - explanatory_conventions
+          - ilearn_u_s_government_passing_status
+          - i_am_reporting_category_1_performance
+          - i_am_reporting_category_2_performance
+          - i_am_reporting_category_3_performance
+          - i_am_reporting_category_4_performance
+          - reporting_category_1_percent_correct
+          - reporting_category_2_percent_correct
+          - reporting_category_3_percent_correct
+
+
+
+      # These columns are necessary to imply administration dates, since ILEARN does not provide admin date as a column in their exports.
+        # file_dir: Extracts the directory path where the file was pulled from. Usually follows the format of:
+          # /efs/tmp_storage/{env}/sharefile/{tenant_code}/ILEARN/{api_year}/{ds_nodash}/{ts_nodash}/ilearn_pre_exec/{time_bound_subject}/{file_name}.csv
+        # admin_date: Extracts the {time_bound_subject} from file_dir. The ouput would resemble:
+          # EOY Biology
+        # school_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
+        # subject_descriptor: We need to extract the subject descriptor from the test_name column, which follows the format of: "ILEARN Biology ECA".
+        # generated_test_id: Hash to define a unique identifier for the student assessment record.
+        # namespace: Added namespace to re-use in template file.
+      - operation: add_columns
+        columns:
+          test_admin_date: '1/1/${API_YEAR}'
+          school_year: ${API_YEAR}
+          assessment: "{% raw %}{{ test_name.split(' ')[0]}}{% endraw %}"
+          generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
+          namespace: "uri://doe.in.gov/IREAD3/Assessment"
+      - operation: modify_columns
+        columns:  
+          generated_test_id: "{%raw%}{{ md5(generated_test_id) }}{%endraw%}" 
+
+      # Rename columns for brevity.
+      - operation: rename_columns
+        columns:
+          iread_3_reporting_category_1_performance: rc1_performance
+          iread_3_reporting_category_2_performance: rc2_performance
+          iread_3_reporting_category_3_performance: rc3_performance
+          iread_3_overall_scale_score: scale_score
+          iread_3_grade_2_overall_scale_score: scale_score_grade_2
+          iread_3_passing_status: passing_status
+          iread_3_grade_2_passing_status: passing_status_grade_2
+          iread_3_reported_lexile®_measure: lexile_measure
+          iread_3_grade_2_reported_lexile®_measure: lexile_measure_grade_2
+
+  # Generate grade level json for assessment template based on seeds
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/test.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
