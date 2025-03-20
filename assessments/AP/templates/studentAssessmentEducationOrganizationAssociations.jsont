@@ -1,15 +1,15 @@
 {
-      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Attribution",
+      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
-        "educationOrganizationId": {{ districtId }}
+        "educationOrganizationId": {{schoolId}}
       },
       "schoolYearTypeReference": {
-        "schoolYear": {{schoolYear}}
+        "schoolYear": {{School_Year}}
       },
       "studentAssessmentReference": {
-        "assessmentIdentifier": "{{ assessmentIdentifier }}",
-        "namespace": "{{ namespace }}",
-        "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
-        "studentUniqueId": "{{ studentUniqueId }}"
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "namespace": "{{assessmentNamespace}}",
+        "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+        "studentUniqueId": "{{studentUniqueId|trim}}"
       }
 }

@@ -9,24 +9,31 @@
     {%- endif -%}
   {%- endfor -%}
 
+{%- set possible_perf_levels = [
+    [performanceLevel, "AP Award"] 
+] -%}
+
+{%- set perf_levels = [] -%}
+  {%- for pl in possible_perf_levels -%}
+    {%- if pl[0] is not none and pl[0] | length -%}
+      {%- set _ = perf_levels.append(pl) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{assessmentNamespace}}"
   }
-  {%- if schoolId is not none and schoolId | length -%}
-  ,"reportedSchoolReference": {
-      "schoolId": {{schoolId}}    
-  }{%- endif -%} 
-  {%- if schoolYear is not none and schoolYear | length -%}
+  {%- if School_Year is not none and School_Year | length -%}
   ,"schoolYearTypeReference": {
-    "schoolYear": {{schoolYear| int}}
+    "schoolYear": {{School_Year| int}}
   }{%- endif -%}
   ,"studentReference": {
-    "studentUniqueId": "{{studentUniqueId}}"
+    "studentUniqueId": "{{studentUniqueId|trim}}"
   }
-  ,"administrationDate": "{{administrationDate}}"
+  ,"administrationDate": "{{administrationDate|trim}}"
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
   ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
   {%- endif -%}
@@ -40,5 +47,16 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]{%- endif -%} 
-  
+  {%- if performanceLevel is not none and performanceLevel | length -%}
+  ,"performanceLevels": [
+    {% for perf_level in perf_levels %}
+    {%- if perf_level[0] is not none and perf_level[0] | length -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}"
+        ,"performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        ,"performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {%- endif -%}
+    {% endfor %}
+  ]{%- endif -%}
 }
