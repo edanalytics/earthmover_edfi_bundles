@@ -405,9 +405,9 @@ destinations:
     extension: csv
     linearize: True
 
-  student_id_best_match:
+  student_best_id_match:
     source: $transformations.best_id_match
-    template: ./best_match.txtt
+    template: ./best_id_match.txtt
     extension: txt
     linearize: False
 
