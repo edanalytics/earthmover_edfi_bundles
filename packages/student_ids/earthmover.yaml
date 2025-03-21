@@ -262,16 +262,6 @@ transformations:
   best_id_match:
     source: $transformations.student_id_match_rates
     operations:
-      - operation: add_columns
-        columns:
-          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
-      - operation: filter_rows
-        query:  'meets_filter_criteria=="Yes"'
-        behavior: include
-      - operation: drop_columns
-        columns:
-          - meets_filter_criteria
-      # this should (hopefully) result in zero or one rows
       - operation: rename_columns
         columns:
           # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
@@ -287,8 +277,16 @@ transformations:
       # ensure there's not more than 1 row:
       - operation: limit_rows
         count: 1
-    expect:
-      - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
+
+  best_id_match__raise_error:
+    source: $transformations.best_id_match
+    operations:
+      - operation: add_columns
+        columns:
+          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
     # ensure there's not 0 rows:
     require_rows: True
     require_rows_exit_code: 17
@@ -411,6 +409,14 @@ destinations:
     template: ./best_match.txtt
     extension: txt
     linearize: False
+
+  # A destination is required to avoid dropping the node that checks for successful matches.
+  # This node needs to be run separately to ensure the no-match student file is always output.
+  __successful_match:
+    source: $transformations.best_id_match__raise_error
+    template: ./verbatim.csvt
+    extension: csv
+    linearize: True
 
   {% if compute_match_rates %}
   student_id_match_rates:
