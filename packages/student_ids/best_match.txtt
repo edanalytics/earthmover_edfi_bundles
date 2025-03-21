@@ -1,0 +1,20 @@
+Each ID in the source file was compared to IDs populated in Ed-Fi, and the ID with the highest match rate was chosen.
+The CSV file outputted alongside this one contains raw records for students whose IDs could not be matched in this process.
+
+Please use the information below to correct the student IDs in the CSV file before attemping reprocessing.  
+
+Column in CSV file: {{ __source_column_name }}
+ID type in Ed-Fi: {{ __edfi_column_name }}
+Percent records matched: {{ __match_rate }}
+
+
+
+This information can also be found in Stadium! Run the following query to view the best ID-match for any attempted run:
+
+SELECT *
+FROM raw.data_integration.student_id_match_rates
+WHERE tenant_code = '${SNOWFLAKE_TENANT_CODE}'
+    AND api_year = ${SNOWFLAKE_API_YEAR}
+    AND assessment_name = '${ASSESSMENT_BUNDLE}'
+ORDER BY match_rate desc, edfi_column_name desc, source_column_name desc
+LIMIT 1;
