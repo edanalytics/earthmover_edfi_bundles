@@ -278,19 +278,6 @@ transformations:
       - operation: limit_rows
         count: 1
 
-  best_id_match__raise_error:
-    source: $transformations.best_id_match
-    operations:
-      - operation: add_columns
-        columns:
-          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
-      - operation: filter_rows
-        query:  'meets_filter_criteria=="Yes"'
-        behavior: include
-    # ensure there's not 0 rows:
-    require_rows: True
-    require_rows_exit_code: 17
-
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
     operations:
@@ -364,7 +351,6 @@ transformations:
           - __edfi_column_name
           - __num_matches
           - __num_rows
-          - __match_rate
 
   input_no_student_id_match:
     source: $transformations.input_base
@@ -391,6 +377,21 @@ transformations:
         columns:
           __edfi_studentUniqueId: edFi_studentUniqueID
 
+      # This filter needs to be run at the end to ensure the no-match student file is always output before exiting.
+      - operation: add_columns
+        columns:
+          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
+      - operation: drop_columns
+        columns:
+        - __match_rate
+        - meets_filter_criteria
+    # ensure there's not 0 rows:
+    require_rows: True
+    require_rows_exit_code: 17
+
 destinations:
   input_no_student_id_match:
     source: $transformations.input_no_student_id_match
@@ -409,14 +410,6 @@ destinations:
     template: ./best_match.txtt
     extension: txt
     linearize: False
-
-  # A destination is required to avoid dropping the node that checks for successful matches.
-  # This node needs to be run separately to ensure the no-match student file is always output.
-  __successful_match:
-    source: $transformations.best_id_match__raise_error
-    template: ./verbatim.csvt
-    extension: csv
-    linearize: True
 
   {% if compute_match_rates %}
   student_id_match_rates:
