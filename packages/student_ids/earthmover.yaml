@@ -406,6 +406,12 @@ destinations:
     extension: csv
     linearize: True
 
+  student_id_best_match:
+    source: $transformations.best_id_match
+    template: ./best_match.txtt
+    extension: txt
+    linearize: False
+
   {% if compute_match_rates %}
   student_id_match_rates:
     source: $transformations.id_match_rates
@@ -415,10 +421,4 @@ destinations:
 
     extension: csv
     linearize: True
-
-  student_id_best_match:
-    source: $transformations.best_id_match
-    template: ./best_match.txtt
-    extension: txt
-    linearize: False
   {% endif %}
