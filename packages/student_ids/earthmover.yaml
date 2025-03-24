@@ -108,6 +108,11 @@ sources:
     query: >
       ${MATCH_RATES_SNOWFLAKE_QUERY}
   {% endif %}
+
+  # Set up a no-match CSV line to add to match-rates table.
+  no_match:
+    file: no_match.csv
+    header_rows: 1
     
 
 {% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
@@ -254,24 +259,19 @@ transformations:
   student_id_match_rates:
     {% if compute_match_rates %}
     source: $transformations.id_match_rates
+    operations:
+      # Union the zero-match-rate values to ensure this table is always populated.
+      - operation: union
+        sources:
+          - $sources.no_match
     {% else %}
     source: $sources.student_id_match_rates
-    {% endif %}
     operations: []
+    {% endif %}
 
   best_id_match:
     source: $transformations.student_id_match_rates
     operations:
-      - operation: add_columns
-        columns:
-          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
-      - operation: filter_rows
-        query:  'meets_filter_criteria=="Yes"'
-        behavior: include
-      - operation: drop_columns
-        columns:
-          - meets_filter_criteria
-      # this should (hopefully) result in zero or one rows
       - operation: rename_columns
         columns:
           # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
@@ -301,6 +301,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: "__no_match__"
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -330,6 +331,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: "__no_match__"
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -386,7 +388,19 @@ transformations:
       - operation: rename_columns
         columns:
           __edfi_studentUniqueId: edFi_studentUniqueID
-    # This file will use the best ID match. If it is empty, then no match was found.
+      # This file will use the best ID match. If it is empty, then no match was found.
+      - operation: add_columns
+        columns:
+          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - __no_match
+          - __match_rate
+          - meets_filter_criteria
+      # this should (hopefully) result in zero or one rows
     require_rows: True
     require_rows_exit_code: 17
 
