@@ -408,6 +408,16 @@ destinations:
   student_best_id_match:
     source: $transformations.best_id_match
     template: ./best_id_match.txtt
+    header: |
+      Each ID in the source file was compared to IDs populated in Ed-Fi, and the ID with the highest match rate was chosen.
+      The CSV file outputted alongside this one contains raw records for students whose IDs could not be matched in this process.
+
+      Source file ID columns checked: ${POSSIBLE_STUDENT_ID_COLUMNS}
+      Ed-Fi ID types compared against: ${EDFI_STUDENT_ID_TYPES}
+
+      Please use the information below to correct the student IDs in the CSV file before attemping reprocessing.
+      (Note that this file was generated dynamically. If there is no information below, it means that no ID column reached the required match rate of ${REQUIRED_ID_MATCH_RATE}%.)
+
     extension: txt
     linearize: False
 
