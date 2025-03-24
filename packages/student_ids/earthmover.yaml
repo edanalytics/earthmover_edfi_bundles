@@ -264,7 +264,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
       - operation: filter_rows
         query:  'meets_filter_criteria=="Yes"'
         behavior: include
