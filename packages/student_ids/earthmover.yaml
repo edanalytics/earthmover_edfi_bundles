@@ -231,10 +231,6 @@ transformations:
       - operation: modify_columns
         columns:
           num_matches: "{%raw%}{{value|string}}{%endraw%}"
-      - operation: sort_rows
-        columns:
-          - num_matches
-        descending: True
       - operation: add_columns
         columns:
           __join_id: "1"
@@ -259,16 +255,12 @@ transformations:
   student_id_match_rates:
     {% if compute_match_rates %}
     source: $transformations.id_match_rates
-    operations:
-      # Union the zero-match-rate values to ensure this table is always populated.
-      - operation: union
-        sources:
-          - $sources.no_match
     {% else %}
     source: $sources.student_id_match_rates
-    operations: []
     {% endif %}
+    operations: []
 
+  # Filter the match rates to either the best above the threshold, or to none.
   best_id_match:
     source: $transformations.student_id_match_rates
     operations:
@@ -281,10 +273,26 @@ transformations:
           num_matches: __num_matches
           num_rows: __num_rows
           match_rate: __match_rate
+      # Filter table to records that meet required match rate.
       - operation: add_columns
         columns:
           __join_id: "1"
-      # ensure there's not more than 1 row:
+          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - meets_filter_criteria
+      # Union the zero-match-rate values to ensure this table is always populated.
+      - operation: union
+        sources:
+          - $sources.no_match
+      # Ensure the row selected is the highest match.
+      - operation: sort_rows
+        columns:
+          - __num_matches
+        descending: True
       - operation: limit_rows
         count: 1
 
@@ -402,9 +410,6 @@ transformations:
           - __no_match__
           - __match_rate
           - meets_filter_criteria
-      # this should (hopefully) result in zero or one rows
-    require_rows: True
-    require_rows_exit_code: 17
 
 destinations:
   input_no_student_id_match:
