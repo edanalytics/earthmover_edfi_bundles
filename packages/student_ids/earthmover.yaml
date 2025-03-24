@@ -373,6 +373,8 @@ transformations:
           - __edfi_column_name
           - __num_matches
           - __num_rows
+          - __match_rate
+          - __no_match__
 
   input_no_student_id_match:
     source: $transformations.input_base
@@ -386,8 +388,6 @@ transformations:
           - __edfi_edOrgId
           - __edfi_edOrgType
           - __edfi_studentUniqueId
-          - __match_rate
-          - __no_match__
 
   input_xwalked:
     # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
@@ -400,18 +400,6 @@ transformations:
       - operation: rename_columns
         columns:
           __edfi_studentUniqueId: edFi_studentUniqueID
-      # This file will use the best ID match. If it is empty, then no match was found.
-      - operation: add_columns
-        columns:
-          meets_filter_criteria: '{%raw%}{%if __match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
-      - operation: filter_rows
-        query:  'meets_filter_criteria=="Yes"'
-        behavior: include
-      - operation: drop_columns
-        columns:
-          - __no_match__
-          - __match_rate
-          - meets_filter_criteria
 
 destinations:
   input_no_student_id_match:
