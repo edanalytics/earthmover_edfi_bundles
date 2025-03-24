@@ -412,9 +412,11 @@ destinations:
       Source file ID columns checked: ${POSSIBLE_STUDENT_ID_COLUMNS}
       Ed-Fi ID types compared against: ${EDFI_STUDENT_ID_TYPES}
 
+
+
       The CSV file outputted alongside this one contains raw records for students whose IDs could not be matched in this process.
       Please use the information below to correct the student IDs in the CSV file before attemping reprocessing.
-      (Note that this file was generated dynamically. If there is no information below, it means that no ID column reached the required decimal match rate of ${REQUIRED_ID_MATCH_RATE}.)
+      (Note that this file was generated dynamically. If there is no information below, it means that no ID column reached the required match rate of ${REQUIRED_ID_MATCH_RATE}.)
 
     extension: txt
     linearize: False
