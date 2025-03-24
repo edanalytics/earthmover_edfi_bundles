@@ -6,6 +6,7 @@ Each ID in the source file was compared to IDs populated in Ed-Fi, and the ID wi
 
 The CSV file outputted alongside this one contains raw records for students whose IDs could not be matched in this process.
 Please use the information below to correct the student IDs in the CSV file before attemping reprocessing.
+Note that if the information below is labelled '__no_match__', then no ID hit the required match rate of ${REQUIRED_ID_MATCH_RATE}.
 
     Best match column in CSV file: {{ __source_column_name }}
     Matched ID type in Ed-Fi: {{ __edfi_column_name }}
