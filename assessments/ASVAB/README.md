@@ -20,7 +20,7 @@ The ASVAB results file does not include student IDs. This bundle expects a colum
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the ASVAB .csv file you want to transform
-- API_YEAR: The API year that the output of this template will be sent to
+- SCHOOL_YEAR: The school year associated with the results file
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is `student_unique_id`, which must be added to the file
 
 ### Examples
@@ -41,5 +41,5 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_BASE_URL": "yourURL",
 "EDFI_API_CLIENT_ID": "yourID",
 "EDFI_API_CLIENT_SECRET": "yourSecret",
-"EDFI_API_YEAR": yourAPIYear }'
+"API_YEAR": yourAPIYear }'
 ```
