@@ -397,7 +397,7 @@ transformations:
         behavior: include
       - operation: drop_columns
         columns:
-          - __no_match
+          - __no_match__
           - __match_rate
           - meets_filter_criteria
       # this should (hopefully) result in zero or one rows
