@@ -59,8 +59,8 @@ transformations:
           - ilearn_reporting_category_3_performance
           - ilearn_reporting_category_4_performance
           - ilearn_reporting_category_5_performance
-          - ilearn_reported_lexile®_measure
-          - ilearn_reported_quantile®_measure
+          - ilearn_reported_lexile_measure
+          - ilearn_reported_quantile_measure
           - ilearn_u_s_government_passing_status
           - i_am_reporting_category_1_performance
           - i_am_reporting_category_2_performance
@@ -88,9 +88,9 @@ transformations:
           - explanatory_evidence_development_elaboration
           - explanatory_conventions          
 
-      # These columns are necessary to imply administration dates, since ILEARN does not provide admin date as a column in their exports.
-        # school_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
-        # subject_descriptor: We need to extract the subject descriptor from the test_name column, which follows the format of: "ILEARN Biology ECA".
+
+        # school_year: Extracts year from the test+start_date column 
+        # assessmentIdentifier: We need to extract the assessment name from the test_name column
         # generated_test_id: Hash to define a unique identifier for the student assessment record.
         # namespace: Added namespace to re-use in template file.
       - operation: add_columns
