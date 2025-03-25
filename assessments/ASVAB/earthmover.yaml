@@ -78,27 +78,11 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
-      - operation: add_columns
-        columns:
-          grade_json: >
-            {%raw-%}  
-            {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
-            },
-            {%-endraw%}
-      - operation: modify_columns
-        columns:
-          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
-      # group and aggregate:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns: 
-          grade_json: agg(grade_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+        create_columns:
+          grade_descriptors: agg(gradeLevelDescriptor,;)
 
   assessments:
     source: $sources.assessments
@@ -109,6 +93,8 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+
+
 
 destinations:
   assessments:
