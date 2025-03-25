@@ -53,6 +53,7 @@ transformations:
         columns:
           - overall_scale_score
           - overall_proficiency_level
+          - college_and_career_readiness_indicator
           - ilearn_reporting_category_1_performance
           - ilearn_reporting_category_2_performance
           - ilearn_reporting_category_3_performance
@@ -60,22 +61,6 @@ transformations:
           - ilearn_reporting_category_5_performance
           - ilearn_reported_lexile®_measure
           - ilearn_reported_quantile®_measure
-          - college_and_career_readiness_indicator
-          - argumentative_organization_purpose
-          - argumentative_evidence_development_elaboration
-          - argumentative_conventions
-          - informative_organization_purpose
-          - informative_evidence_development_elaboration
-          - informative_conventions
-          - narrative_organization_purpose
-          - narrative_evidence_development_elaboration
-          - narrative_conventions
-          - opinion_organization_purpose
-          - opinion_evidence_development_elaboration
-          - opinion_conventions
-          - explanatory_organization_purpose
-          - explanatory_evidence_development_elaboration
-          - explanatory_conventions
           - ilearn_u_s_government_passing_status
           - i_am_reporting_category_1_performance
           - i_am_reporting_category_2_performance
@@ -84,28 +69,40 @@ transformations:
           - reporting_category_1_percent_correct
           - reporting_category_2_percent_correct
           - reporting_category_3_percent_correct
-
-
+          - argumentative_evidence_elaboration
+          - argumentative_organization
+          - argumentative_conventions
+          - informative_organization
+          - informative_evidence_elaboration
+          - informative_conventions
+          - narrative_organization
+          - narrative_evidence_elaboration
+          - narrative_conventions         
+          - informative_organization
+          - informative_evidence_elaboration
+          - informative_conventions
+          - persuasive_organization
+          - persuasive_evidence_elaboration
+          - persuasive_conventions
+          - explanatory_organization_purpose
+          - explanatory_evidence_development_elaboration
+          - explanatory_conventions          
 
       # These columns are necessary to imply administration dates, since ILEARN does not provide admin date as a column in their exports.
-        # file_dir: Extracts the directory path where the file was pulled from. Usually follows the format of:
-          # /efs/tmp_storage/{env}/sharefile/{tenant_code}/ILEARN/{api_year}/{ds_nodash}/{ts_nodash}/ilearn_pre_exec/{time_bound_subject}/{file_name}.csv
-        # admin_date: Extracts the {time_bound_subject} from file_dir. The ouput would resemble:
-          # EOY Biology
         # school_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
         # subject_descriptor: We need to extract the subject descriptor from the test_name column, which follows the format of: "ILEARN Biology ECA".
         # generated_test_id: Hash to define a unique identifier for the student assessment record.
         # namespace: Added namespace to re-use in template file.
       - operation: add_columns
         columns:
-          test_admin_date: '1/1/${API_YEAR}'
-          school_year: ${API_YEAR}
-          assessment: "{% raw %}{{ test_name.split(' ')[0]}}{% endraw %}"
+          school_year: "{% raw%} {{ test_start_date.split('/')[2].split(' ')[0]}} {%endraw%}"
+          assessmentIdentifier: "{% raw %}{{ test_name.split(' ')[0]}}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/IREAD3/Assessment"
+
       - operation: modify_columns
-        columns:  
-          generated_test_id: "{%raw%}{{ md5(generated_test_id) }}{%endraw%}" 
+        columns:
+          test_start_date: "{% raw %} {{ test_start_date.split(' ')[0]}} {%endraw%}"
 
       # Rename columns for brevity.
       - operation: rename_columns
@@ -119,6 +116,7 @@ transformations:
           iread_3_grade_2_passing_status: passing_status_grade_2
           iread_3_reported_lexile®_measure: lexile_measure
           iread_3_grade_2_reported_lexile®_measure: lexile_measure_grade_2
+      
 
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
@@ -160,7 +158,7 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
-    template: ./templates/test.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
