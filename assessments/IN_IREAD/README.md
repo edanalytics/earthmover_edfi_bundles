@@ -24,8 +24,7 @@ Using an ID column from the assessment file:
 earthmover run -c ./earthmover.yaml -f -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "./data/Spring 2025 2nd Grade iREAD.csv",
-"API_YEAR": "2024"
+"INPUT_FILE": "./data/Spring 2025 2nd Grade iREAD.csv"
 }'
 ```
 
