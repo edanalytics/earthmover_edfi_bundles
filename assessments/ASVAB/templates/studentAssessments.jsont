@@ -1,3 +1,19 @@
+{%- set possible_scores = 
+  [
+    [afqt, "AFQT Score", "Integer"],
+    [session_number, "Session Number", "Integer"],
+    [test_version, "Test Version", "Level"],
+    [career_intent, "Career Intent", "Level"],
+    [release_option, "Release Option", "Level"]
+  ] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
 {% set possible_obj_assess = 
   [
     ['Verbal Expression - VE', ve_verbal_expression_],
@@ -34,13 +50,17 @@
   },
   "administrationDate": "{{test_date}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {% if scores | length %}
   "scoreResults": [
+    {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AFQT Score",
-        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",
-        "result": "{{afqt}}"
-      }
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
   ],
+  {% endif %}
   {% if all_obj_assessment | length %}
   "studentObjectiveAssessments": [
   {%- for obj in all_obj_assessment -%}
