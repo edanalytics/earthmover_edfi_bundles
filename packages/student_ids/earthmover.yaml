@@ -273,6 +273,17 @@ transformations:
       - operation: drop_columns
         columns:
           - meets_filter_criteria
+      # Union the zero-match-rate values to ensure this table is always populated.
+      - operation: union
+        sources:
+          - $sources.no_match
+      # Ensure the row selected is the highest match.
+      - operation: sort_rows
+        columns:
+          - num_matches
+        descending: True
+      - operation: limit_rows
+        count: 1
       # this should (hopefully) result in zero or one rows
       - operation: rename_columns
         columns:
@@ -286,17 +297,6 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
-      # Union the zero-match-rate values to ensure this table is always populated.
-      - operation: union
-        sources:
-          - $sources.no_match
-      # Ensure the row selected is the highest match.
-      - operation: sort_rows
-        columns:
-          - __num_matches
-        descending: True
-      - operation: limit_rows
-        count: 1
 
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
