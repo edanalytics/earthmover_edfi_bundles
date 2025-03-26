@@ -243,9 +243,6 @@ transformations:
       - operation: add_columns
         columns:
           match_rate: "{%raw%}{{num_matches|float / num_rows|float}}{%endraw%}"
-      - operation: modify_columns
-        columns:
-          num_matches: "{%raw%}{{value|int}}{%endraw%}"
       - operation: drop_columns
         columns:
           - __join_id
@@ -286,6 +283,9 @@ transformations:
         sources:
           - $sources.no_match
       # Ensure the row selected is the highest match.
+      - operation: modify_columns
+        columns:
+          num_matches: "{%raw%}{{value|int}}{%endraw%}"
       - operation: sort_rows
         columns:
           - num_matches
