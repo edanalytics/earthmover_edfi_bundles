@@ -35,8 +35,20 @@ transformations:
   input:
     source: $sources.input
     operations: []
+
+  reporting_methods:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: limit_rows
+        count: 1
+
+  grade_levels:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: limit_rows
+        count: 1
   
-  grade_level_descriptors:
+  assessment_grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
       - operation: add_columns
@@ -44,7 +56,7 @@ transformations:
           grade_json: >
               {%raw-%}  
               {
-                "gradeLevelDescriptor": "${DESCRIPTOR_NAMESPACE}#{{codeValue}}"
+                "gradeLevelDescriptor": "{{ namespace }}#{{codeValue}}"
               }
               {%-endraw%}
       - operation: modify_columns
@@ -79,32 +91,35 @@ transformations:
         create_columns: 
           score_json: agg(score_json,,)
 
- 
-      
-
   {% set assessment = ['NAMEWRI','ALPHA_UC','ALPHA_LC', 'LETTERSND', 'BEGSOUND', 'PRNTWORD', 'RHYME', 'NURRHYME'] %}
   
   {% for assessment_name in assessment %}
   period_{{assessment_name}}:
-    source: $transformations.input
+    source: $sources.assessmentPeriodDescriptors
     operations:
-      - operation: keep_columns
-        columns:
-          - {{assessment_name}}
-          - "SEMESTER"
       - operation: add_columns
         columns:
           assessmentIdentifier: "PALS_{{assessment_name}}" 
-      - operation: duplicate_columns
-        columns: 
-          SEMESTER: assessmentPeriodDescriptor
-      - operation: map_values
-        column: assessmentPeriodDescriptor
-        map_file: ./seeds/semester_mapping.csv
+      - operation: add_columns
+        columns:
+          period_json: >  
+              {%raw-%}  
+              {
+                "assessmentPeriodDescriptor": "{{ namespace }}#{{codeValue}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{period_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          period_json: agg(period_json,,)
       - operation: keep_columns 
         columns:
           - assessmentIdentifier
-          - assessmentPeriodDescriptor
+          - period_json 
          
       
   {% endfor %}
@@ -120,7 +135,7 @@ transformations:
     - operation: distinct_rows
       columns: 
         - assessmentIdentifier
-        - assessmentPeriodDescriptor
+        - period_json 
     
 
 {% for assessment_name in assessment %}
@@ -166,6 +181,15 @@ transformations:
           result: "{%raw-%}{{ Score }}{%-endraw%}"
       - operation: join
         sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          namespace: assessmentNamespace
+      - operation: join
+        sources:
           - $sources.assessmentReportingMethodDescriptors
         join_type: inner
         left_key: assessmentIdentifier
@@ -190,6 +214,7 @@ transformations:
             - "codeValue"
             - "whenAssessedGradeLevelDescriptor"
             - "assessmentPeriodDescriptor" 
+            - "assessmentNamespace"
       - operation: filter_rows
         query: "result != 'NULL' and result!=''"
         behavior: include
@@ -209,7 +234,7 @@ transformations:
     operations:
       - operation: join
         sources:
-          - $transformations.grade_level_descriptors
+          - $transformations.assessment_grade_level_descriptors
           - $transformations.scores
         join_type: inner
         left_key: assessmentIdentifier
@@ -231,9 +256,11 @@ destinations:
     extension: jsonl
 
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    #source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.reporting_methods
     template: ./templates/descriptors.jsont
     extension: jsonl
+    
 
   studentAssessments:
     source: $transformations.combined_results
@@ -256,7 +283,8 @@ destinations:
     extension: jsonl
 
   gradeLevelDescriptors:
-    source: $sources.gradeLevelDescriptors
+    #source: $sources.gradeLevelDescriptors
+    source: $transformations.grade_levels
     template: ./templates/descriptors.jsont
     extension: jsonl
   
