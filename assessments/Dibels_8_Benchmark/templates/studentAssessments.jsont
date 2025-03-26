@@ -41,26 +41,26 @@
   "scoreResults": [
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_score}}"
     },
     {% if composite_national_norm_percentile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite National Norm Percentile",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{composite_national_norm_percentile}}"
     },
     {% endif %}
     {% if dibels_composite_score_lexile != '' %}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score Lexile",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
       "result": "{{dibels_composite_score_lexile}}"
     },
     {% endif %} 
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
       "result": "{{benchmark_period}}"
     }
   ],
@@ -119,21 +119,21 @@
         {% if obj[2] is defined and obj[2][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[2][1]}}"
         }
           {% if obj[3] is defined and obj[3][1] != '' %}
           ,
           {
             "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
             "result": "{{obj[3][1]}}"
           }
           {% endif %}
         {% elif obj[3] is defined and obj[3][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[3][1]}}"
         }
         {% endif %}
