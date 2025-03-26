@@ -255,10 +255,18 @@ transformations:
   student_id_match_rates:
     {% if compute_match_rates %}
     source: $transformations.id_match_rates
+    operations: []
     {% else %}
     source: $sources.student_id_match_rates
+    operations:
+      - operation: keep_columns
+        columns:
+          - source_column_name
+          - edfi_column_name
+          - num_matches
+          - num_rows
+          - match_rate
     {% endif %}
-    operations: []
 
   # Filter the match rates to either the best above the threshold, or to none.
   best_id_match:
