@@ -10,6 +10,7 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID),Student ID (District ID),Student ID (State ID)'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
@@ -59,6 +60,7 @@ transformations:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}{%endraw%}"
           assessmentIdentifier: "Dibels-Next"
           namespace: "uri://dibels.uoregon.edu/assessment/dibels"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: modify_columns
         columns:
           school_year: *year_mapping
