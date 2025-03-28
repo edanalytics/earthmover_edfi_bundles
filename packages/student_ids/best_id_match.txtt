@@ -1,12 +1,20 @@
-Each ID in the source file was compared to IDs populated in Ed-Fi, and the ID with the highest match rate was chosen.
+Each ID in the source file is compared to the ID types populated in Ed-Fi, and the combination with the highest match rate is selected.
+Note that the selected combination can differ by assessment and school year!
 
     Source file ID columns checked: ${POSSIBLE_STUDENT_ID_COLUMNS}
     Ed-Fi ID types compared against: ${EDFI_STUDENT_ID_TYPES}
 
 
+{% if __source_column_name == '${NO_MATCH_VALUE}' -%}
+
+No ID-combination met the required match rate of ${REQUIRED_ID_MATCH_RATE}!
+Any ID column in the source file can be updated for the next attempt, but only the column with the highest match will be selected.
+
+{%- else -%}
+
+
 The CSV file outputted alongside this one contains raw records for students whose IDs could not be matched in this process.
 Please use the information below to correct the student IDs in the CSV file before attemping reprocessing.
-Note that if the information below is labelled '__no_match__', then no ID hit the required match rate of ${REQUIRED_ID_MATCH_RATE}.
 
     Best match column in CSV file: {{ __source_column_name }}
     Matched ID type in Ed-Fi: {{ __edfi_column_name }}
@@ -22,3 +30,5 @@ This information can also be found in Stadium! Run the following query to view t
         AND assessment_name = '${ASSESSMENT_BUNDLE}'
     ORDER BY match_rate desc, edfi_column_name desc, source_column_name desc
     LIMIT 1;
+
+{%- endif -%}
