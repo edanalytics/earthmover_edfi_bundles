@@ -7,8 +7,8 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Test Taker ID' #'PS_StudentID,StudentSUNS'
-    DESCRIPTOR_NAMESPACE: uri://ed-fi.org #uri://ed.sc.gov
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Test Taker ID'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 sources:
   input:
@@ -42,9 +42,6 @@ sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
-  assessmentIdentificationSystemDescriptors:
-    file: ./seeds/assessmentIdentificationSystemDescriptors.csv
-    header_rows: 1
 
 transformations:
   input:
@@ -58,22 +55,6 @@ transformations:
         columns:
           joinKey: "Key"
 
-  prepare_languages:
-    source: $transformations.stage_assessment_language
-    operations:
-      - operation: keep_columns
-        columns:
-          - LanguageCode
-          - description
-          - shortDescription
-          - namespace
-      - operation: distinct_rows
-        columns:
-          - LanguageCode
-          - description
-          - shortDescription
-          - namespace
-
   stage_assessment_grade_level:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -83,7 +64,8 @@ transformations:
       - operation: rename_columns
         columns:
           Grade: GradeLevel
-          CodeValue: Grade_CodeValue 
+          CodeValue: Grade_CodeValue
+          Namespace: Grade_Namespace 
 
   stage_student_assessments:
     source: $transformations.input
@@ -128,7 +110,8 @@ transformations:
         left_key: Language
         right_key: STAMPLanguage
         right_keep_columns:
-          - LanguageCode 
+          - LanguageCode
+          - namespace 
 
   stage_objective_assessments:
     source: $sources.objectiveAssessments
@@ -154,55 +137,6 @@ transformations:
         columns:
           joinKey: "Key"
 
-  stage_identification_code:
-    source: $transformations.stage_student_assessments
-    operations:
-      - operation: add_columns
-        columns:
-          namespace: ${DESCRIPTOR_NAMESPACE}
-      - operation: keep_columns
-        columns:
-          - assessmentIdentifier
-          - TestCode
-          - namespace
-      - operation: distinct_rows
-        columns:
-          - assessmentIdentifier
-          - TestCode
-          - namespace
-
-  identification_codes:  
-    source: $transformations.stage_identification_code
-    operations:
-      - operation: keep_columns
-        columns:
-          - assessmentIdentifier
-          - TestCode
-          - namespace
-      - operation: distinct_rows
-        columns:
-          - assessmentIdentifier
-          - TestCode
-      - operation: add_columns
-        columns:
-          idcode_json: >
-              {%raw-%} {%- if TestCode is not none and TestCode | length -%}
-              {
-                "assessmentIdentificationSystemDescriptor": "{{namespace}}/AssessmentIdentificationSystemDescriptor#Test Contractor",
-                "assigningOrganizationIdentificationCode": "Avant STAMP",
-                "identificationCode": "{{TestCode}}"
-              } 
-              {%-endif-%}
-              {%-endraw%}  
-      - operation: modify_columns
-        columns:
-          idcode_json: "{%raw%}{{idcode_json | replace('\n', '')-}}{%endraw%}"    
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns: 
-          idcode_json: agg(idcode_json,,)
-
   performance_levels:  
     source: $transformations.stage_assessment_performance_level
     operations:
@@ -211,34 +145,24 @@ transformations:
           - joinKey
           - codeValue
           - namespace
+          - reportingMethod
       - operation: add_columns
         columns:
-          performanceRL_json: >
-              {%raw-%} {%- if codeValue != '8-Advanced-Mid/High' and codeValue is not none and codeValue|length -%}
+          performancejson: >
+              {%raw-%}
               {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}#Performance Level",
+                "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
               }
-              {%-endif-%}
-              {%-endraw%} 
-          performanceWS_json: >
-              {%raw-%} {%- if codeValue != '9-Advanced-High' and codeValue is not none and codeValue|length -%}
-              {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-                "performanceLevelDescriptor": "{{ namespace }}/PerformanceLevelDescriptor#{{ codeValue }}"
-              }
-              {%-endif-%}
               {%-endraw%}  
       - operation: modify_columns
         columns:
-          performanceRL_json: "{%raw%}{{performanceRL_json | replace('\n', '')-}}{%endraw%}"
-          performanceWS_json: "{%raw%}{{performanceWS_json | replace('\n', '')-}}{%endraw%}"    
+          performancejson: "{%raw%}{{performancejson | replace('\n', '')-}}{%endraw%}"  
       - operation: group_by
         group_by_columns:
           - joinKey
         create_columns: 
-          performanceRL_json: agg(performanceRL_json,,)
-          performanceWS_json: agg(performanceWS_json,,)
+          performancejson: agg(performancejson,,)
 
   grade_levels:
     source: $transformations.stage_assessment_grade_level
@@ -249,7 +173,7 @@ transformations:
           grade_json: >
               {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
               {
-                "gradeLevelDescriptor": "{{Namespace}}#{{Grade_CodeValue}}"
+                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
               }
               {%-endif-%}
               {%-endraw%}
@@ -269,13 +193,14 @@ transformations:
         columns:
           - assessmentIdentifier
           - LanguageCode
+          - namespace
       - operation: distinct_rows
         columns:
           - assessmentIdentifier
           - LanguageCode
+          - namespace
       - operation: add_columns
         columns:
-          namespace: ${DESCRIPTOR_NAMESPACE}
           language_json: >
               {%raw-%}  {%- if LanguageCode is not none and LanguageCode | length -%} 
               {
@@ -350,17 +275,6 @@ transformations:
         left_key: joinKey
         right_key: joinKey
 
-      - operation: join
-        sources:
-          - $transformations.identification_codes
-        join_type: left
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-
-      - operation: add_columns
-        columns:         
-          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
-
   prepare_objective_assessments:
     source: $transformations.stage_objective_assessments
     operations:
@@ -378,9 +292,7 @@ transformations:
         right_key: subject
         right_keep_columns:
           - code
-      - operation: add_columns
-        columns:
-          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+          - academicsubjectNamespace
 
   stage_student_assessment_grade:
     source: $transformations.stage_student_assessments
@@ -395,16 +307,7 @@ transformations:
           - GradeLevel
         right_keep_columns:
           - Grade_CodeValue
-      - operation: map_values
-        columns: 
-          - ReadingLevel
-          - ListeningLevel
-        map_file: ./seeds/mappingReadingListening.csv
-      - operation: map_values
-        columns: 
-          - WritingLevel
-          - SpeakingLevel
-        map_file: ./seeds/mappingWritingSpeaking.csv
+          - Grade_Namespace
 
   prepare_student_assessments:
     source: $transformations.stage_student_assessment_grade
@@ -427,7 +330,7 @@ transformations:
           districtId: "{%raw%}{{District}}{%endraw%}"
           schoolId: "{%raw%}{{School}}{%endraw%}"
           administrationLanguage: "{%raw%}{{LanguageCode}}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_CodeValue}}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
       - operation: add_columns
         columns:
           schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
@@ -438,7 +341,7 @@ transformations:
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
         right_keep_columns:
-          - namespace
+          - assessmentNamespace
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  StartDate) }}{% endraw %}" 
@@ -465,6 +368,7 @@ transformations:
           - school_year
           - school_year_month
           - schoolYear
+          - assessmentNamespace
           - namespace
           - whenAssessedGradeLevelDescriptor
           - CompositeScore
@@ -518,9 +422,5 @@ destinations:
     extension: jsonl
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-  assessmentIdentificationSystemDescriptors:
-    source: $sources.assessmentIdentificationSystemDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl

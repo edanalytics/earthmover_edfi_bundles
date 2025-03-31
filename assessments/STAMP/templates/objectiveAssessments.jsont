@@ -5,15 +5,7 @@
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}"
     },
-    "academicSubjectDescriptor": "{{descriptorNamespace}}/AcademicSubjectDescriptor#{{code}}",
+    "academicSubjectDescriptor": "{{academicsubjectNamespace}}#{{code}}",
     "description": "{{description}}",
-    "performanceLevels": [
-      {% if identificationCode =='Reading' or identificationCode =='Listening' or identificationCode =='Receptive' %}
-        {{ performanceRL_json | replace(',,', ',') }}
-      {% endif %}
-
-      {% if identificationCode =='Writing' or identificationCode =='Speaking' or identificationCode =='Expressive' %}
-        {{ performanceWS_json | replace(',,', ',') }} 
-      {% endif %}
-    ]
+    "performanceLevels": [{{performancejson}}]
 }

@@ -2,12 +2,11 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",  
   "assessmentFamily": "{{assessmentFamily}}",
-  "namespace": "{{namespace}}",
+  "namespace": "{{assessmentNamespace}}",
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "assessedGradeLevels": [{{grade_json}}],
   "adaptiveAssessment": {{adaptiveAssessment}}, 
   "languages": [{{language_json}}],
-  "periods": [{{period_json}}],
-  "identificationCodes": [{{idcode_json}}]
+  "periods": [{{period_json}}]
 }

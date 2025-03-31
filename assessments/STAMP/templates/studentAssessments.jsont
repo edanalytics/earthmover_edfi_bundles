@@ -44,29 +44,24 @@
     {%- endif -%}
   {%- endfor -%}
 {
-  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
-  "assessmentReference": {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}"
+  ,"assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
-    "namespace": "{{namespace}}"
+    "namespace": "{{assessmentNamespace}}"
   }
-  {%- if schoolId is not none and schoolId | length -%}
-  ,"reportedSchoolReference": {
-      "schoolId": {{schoolId}}    
-  }{%- endif -%} 
-  {%- if schoolYear is not none and schoolYear | length -%}
   ,"schoolYearTypeReference": {
     "schoolYear": {{schoolYear| int}}
-  }{%- endif -%}
+  }
   ,"studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   }
   ,"administrationDate": "{{administrationDate}}"
   ,"administrationEndDate": "{{administrationEndDate}}"
   {%- if administrationLanguage is not none and administrationLanguage | length -%}
-  ,"administrationLanguageDescriptor": "{{descriptorNamespace}}/LanguageDescriptor#{{administrationLanguage}}"
+  ,"administrationLanguageDescriptor": "{{namespace}}#{{administrationLanguage}}"
   {%- endif -%}
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
-  ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
   {%- endif -%}
   {%- if assessedMinutes is not none and assessedMinutes | length -%}
   ,"assessedMinutes": {{assessedMinutes|int}}
@@ -81,8 +76,8 @@
   ,"scoreResults": [
     {%- for score in scores -%}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
@@ -95,13 +90,13 @@
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
+      "namespace": "{{assessmentNamespace}}"
     }
     {%- if obj[1] is not none and obj[1] | length -%}
     ,"scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[1]}}"
       }
       ]
@@ -109,8 +104,8 @@
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -128,13 +123,13 @@
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
+      "namespace": "{{assessmentNamespace}}"
     }
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -152,13 +147,13 @@
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
+      "namespace": "{{assessmentNamespace}}"
     }
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -176,21 +171,21 @@
     "objectiveAssessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "{{obj[0]}}",
-      "namespace": "{{namespace}}"
+      "namespace": "{{assessmentNamespace}}"
     }
     {%- if obj[1] is not none and obj[1] | length -%}
     ,"scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[1]}}"
       }
       ] {%- endif -%}
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}

@@ -1,14 +1,14 @@
 {
-      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Attribution",
+      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
-        "educationOrganizationId": {{ districtId }}
+        "educationOrganizationId": {{ schoolId }}
       },
       "schoolYearTypeReference": {
         "schoolYear": {{schoolYear}}
       },
       "studentAssessmentReference": {
         "assessmentIdentifier": "{{ assessmentIdentifier }}",
-        "namespace": "{{ namespace }}",
+        "namespace": "{{ assessmentNamespace }}",
         "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
         "studentUniqueId": "{{ studentUniqueId }}"
       }
