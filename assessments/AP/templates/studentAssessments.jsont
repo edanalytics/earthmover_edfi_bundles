@@ -26,16 +26,18 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{assessmentNamespace}}"
   }
-  {%- if School_Year is not none and School_Year | length -%}
   ,"schoolYearTypeReference": {
     "schoolYear": {{School_Year| int}}
-  }{%- endif -%}
+  }
   ,"studentReference": {
     "studentUniqueId": "{{studentUniqueId|trim}}"
   }
   ,"administrationDate": "{{administrationDate|trim}}"
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
   ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
+  {%- endif -%}
+  {%- if eventDescription is not none and eventDescription | length -%}
+  ,"eventDescription": "{{eventDescription}}"
   {%- endif -%}
   {%- if result is not none and result | length -%}
   ,"scoreResults": [
