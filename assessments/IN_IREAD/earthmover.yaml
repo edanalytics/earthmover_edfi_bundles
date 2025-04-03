@@ -49,41 +49,41 @@ transformations:
       - operation: snake_case_columns
 
       # Retain only IREAD-3 relevant columns
-      - operation: drop_columns
-        columns:
-          - overall_scale_score
-          - overall_proficiency_level
-          - college_and_career_readiness_indicator
-          - ilearn_reporting_category_1_performance
-          - ilearn_reporting_category_2_performance
-          - ilearn_reporting_category_3_performance
-          - ilearn_reporting_category_4_performance
-          - ilearn_reporting_category_5_performance
-          - ilearn_reported_lexile_measure
-          - ilearn_reported_quantile_measure
-          - ilearn_u_s_government_passing_status
-          - i_am_reporting_category_1_performance
-          - i_am_reporting_category_2_performance
-          - i_am_reporting_category_3_performance
-          - i_am_reporting_category_4_performance
-          - reporting_category_1_percent_correct
-          - reporting_category_2_percent_correct
-          - reporting_category_3_percent_correct
-          - argumentative_organization_purpose
-          - argumentative_evidence_development_elaboration
-          - argumentative_conventions
-          - informative_organization_purpose
-          - informative_evidence_development_elaboration
-          - informative_conventions
-          - narrative_organization_purpose
-          - narrative_evidence_development_elaboration
-          - narrative_conventions         
-          - opinion_organization_purpose
-          - opinion_evidence_development_elaboration
-          - opinion_conventions
-          - explanatory_organization_purpose
-          - explanatory_evidence_development_elaboration
-          - explanatory_conventions          
+      # - operation: drop_columns
+      #   columns:
+      #     - overall_scale_score
+      #     - overall_proficiency_level
+      #     - college_and_career_readiness_indicator
+      #     - ilearn_reporting_category_1_performance
+      #     - ilearn_reporting_category_2_performance
+      #     - ilearn_reporting_category_3_performance
+      #     - ilearn_reporting_category_4_performance
+      #     - ilearn_reporting_category_5_performance
+      #     - ilearn_reported_lexile_measure
+      #     - ilearn_reported_quantile_measure
+      #     - ilearn_u_s_government_passing_status
+      #     - i_am_reporting_category_1_performance
+      #     - i_am_reporting_category_2_performance
+      #     - i_am_reporting_category_3_performance
+      #     - i_am_reporting_category_4_performance
+      #     - reporting_category_1_percent_correct
+      #     - reporting_category_2_percent_correct
+      #     - reporting_category_3_percent_correct
+      #     - argumentative_organization_purpose
+      #     - argumentative_evidence_development_elaboration
+      #     - argumentative_conventions
+      #     - informative_organization_purpose
+      #     - informative_evidence_development_elaboration
+      #     - informative_conventions
+      #     - narrative_organization_purpose
+      #     - narrative_evidence_development_elaboration
+      #     - narrative_conventions         
+      #     - opinion_organization_purpose
+      #     - opinion_evidence_development_elaboration
+      #     - opinion_conventions
+      #     - explanatory_organization_purpose
+      #     - explanatory_evidence_development_elaboration
+      #     - explanatory_conventions          
 
 
         # school_year: Extracts year from the test+start_date column 
