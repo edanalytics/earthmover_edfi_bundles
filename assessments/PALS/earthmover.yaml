@@ -36,27 +36,41 @@ transformations:
     source: $sources.input
     operations: []
 
-  reporting_methods:
+  stage_reporting_method:
     source: $sources.assessmentReportingMethodDescriptors
     operations:
-      - operation: limit_rows
-        count: 1
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
 
-  grade_levels:
-    source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: limit_rows
-        count: 1
-  
-  assessment_grade_level_descriptors:
+  stage_grade_level:
     source: $sources.gradeLevelDescriptors
     operations:
       - operation: add_columns
         columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          codeValue: Grade_CodeValue
+          namespace: Grade_Namespace
+
+  stage_period:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+  
+  assessment_grade_level_descriptors:
+    source: $transformations.stage_grade_level
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
           grade_json: >
               {%raw-%}  
               {
-                "gradeLevelDescriptor": "{{ namespace }}#{{codeValue}}"
+                "gradeLevelDescriptor": "{{ Grade_Namespace }}#{{Grade_CodeValue}}"
               }
               {%-endraw%}
       - operation: modify_columns
@@ -64,22 +78,21 @@ transformations:
           grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - joinKey
         create_columns: 
           grade_json: agg(grade_json,,)
 
-  scores:
-    source: $sources.assessmentReportingMethodDescriptors
+  assessment_reporting_method:
+    source: $transformations.stage_reporting_method
     operations:
       - operation: add_columns
         columns:
+          joinKey: "Key"
           score_json: >  
               {%raw-%}  
               {
                 "assessmentReportingMethodDescriptor": "{{ namespace }}#{{codeValue}}",
-                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",  
-                "minimumScore":"{{ minimumScore }}",
-                "maximumScore":"{{ maximumScore }}"                
+                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"  
               }
               {%-endraw%}
       - operation: modify_columns
@@ -87,25 +100,20 @@ transformations:
           score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - joinKey
         create_columns: 
           score_json: agg(score_json,,)
 
-  {% set assessment = ['NAMEWRI','ALPHA_UC','ALPHA_LC', 'LETTERSND', 'BEGSOUND', 'PRNTWORD', 'RHYME', 'NURRHYME'] %}
-  
-  {% for assessment_name in assessment %}
-  period_{{assessment_name}}:
-    source: $sources.assessmentPeriodDescriptors
+  assessment_periods:
+    source: $transformations.stage_period
     operations:
       - operation: add_columns
         columns:
-          assessmentIdentifier: "PALS_{{assessment_name}}" 
-      - operation: add_columns
-        columns:
-          period_json: >  
-              {%raw-%}  
+          joinKey: "Key"
+          period_json: >
+              {%raw-%}
               {
-                "assessmentPeriodDescriptor": "{{ namespace }}#{{codeValue}}"
+                "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
               }
               {%-endraw%}
       - operation: modify_columns
@@ -113,31 +121,12 @@ transformations:
           period_json: "{%raw%}{{period_json | replace('\n', '')-}}{%endraw%}"
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - joinKey
         create_columns: 
           period_json: agg(period_json,,)
-      - operation: keep_columns 
-        columns:
-          - assessmentIdentifier
-          - period_json 
-         
-      
-  {% endfor %}
 
-  combined_period_results:
-    source: $transformations.period_{{ assessment[0] }}
-    operations:
-    - operation: union
-      sources:
-{% for assessment_name in assessment[1:] %}
-        - $transformations.period_{{ assessment_name }}
-{% endfor %}
-    - operation: distinct_rows
-      columns: 
-        - assessmentIdentifier
-        - period_json 
-    
-
+  {% set assessment = ['NAMEWRI','ALPHA_UC','ALPHA_LC', 'LETTERSND', 'BEGSOUND', 'PRNTWORD', 'RHYME', 'NURRHYME'] %}
+  
 {% for assessment_name in assessment %}
 
   student_assessment_{{assessment_name}}:
@@ -157,7 +146,8 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "PALS_{{assessment_name}}" 
+          assessmentIdentifier: "{{assessment_name}}"
+          joinKey: "Key"  
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
@@ -190,14 +180,20 @@ transformations:
           namespace: assessmentNamespace
       - operation: join
         sources:
-          - $sources.assessmentReportingMethodDescriptors
+          - $transformations.stage_reporting_method
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.stage_grade_level
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
       - operation: add_columns
         columns:
           administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{{ whenAssessedGradeLevelDescriptor }}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
           schoolYear: "{%raw%}{{ YEAR[-4:] }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: keep_columns
@@ -232,19 +228,22 @@ transformations:
   prepare_assessments:
     source: $sources.assessments
     operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
       - operation: join
         sources:
           - $transformations.assessment_grade_level_descriptors
-          - $transformations.scores
+          - $transformations.assessment_reporting_method
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: joinKey
+        right_key: joinKey
       - operation: join
         sources:
-          - $transformations.combined_period_results
+          - $transformations.assessment_periods
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: joinKey
+        right_key: joinKey
       - operation: add_columns
         columns:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
@@ -256,12 +255,10 @@ destinations:
     extension: jsonl
 
   assessmentReportingMethodDescriptors:
-    #source: $sources.assessmentReportingMethodDescriptors
-    source: $transformations.reporting_methods
+    source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     
-
   studentAssessments:
     source: $transformations.combined_results
     template: ./templates/studentAssessments.jsont
@@ -281,10 +278,3 @@ destinations:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-
-  gradeLevelDescriptors:
-    #source: $sources.gradeLevelDescriptors
-    source: $transformations.grade_levels
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-  
