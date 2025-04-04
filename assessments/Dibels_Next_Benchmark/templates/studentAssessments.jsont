@@ -38,12 +38,12 @@
   "scoreResults": [
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
       "result": "{{assessment_measure_composite_score_score}}"
     },
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
       "result": "{{benchmark_period}}"
     }
   ],
@@ -91,7 +91,7 @@
       "scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{obj[2][1]}}"
         }
       ]
