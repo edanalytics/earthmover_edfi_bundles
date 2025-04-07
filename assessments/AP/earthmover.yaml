@@ -7,8 +7,8 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Identifier' #'PS_StudentID,StudentSUNS'
-    DESCRIPTOR_NAMESPACE: uri://ed-fi.org #uri://ed.sc.gov
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Identifier' 
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 sources:
   input:
@@ -54,19 +54,21 @@ transformations:
           - AP_Exam_Description
           - AP_Exam_Code
           - namespace
+          - codeValue
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}AP - {{AP_Exam_Code}}{%endraw%}"
           assessmentTitle: "{%raw%}Advanced Placement - {{AP_Exam_Description}}{%endraw%}"
           assessmentFamily: "Advanced Placement"
           assessmentNamespace: "uri://collegeboard.org"
-          academicSubject:  "{%raw%} {{AP_Exam_Description}}{%endraw%}"
+          academicSubjectDescriptor:  "{%raw%} {{namespace}}#{{codeValue}} {%endraw%}"
           assessmentCategoryDescriptor: "uri://collegeboard.org/AssessmentCategoryDescriptor#Advanced Placement"
           assessmentPeriodDescriptor: "uri://collegeboard.org/AssessmentPeriodDescriptor#Spring"
+          assessment_ReportingMethod: "uri://collegeboard.org/AssessmentReportingMethodDescriptor#AP Score"
+          assessment_resultDatatype: "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+          maximumScore: "5"
+          minimumScore: "1"
           joinKey: "Key"
-      - operation: rename_columns
-        columns:
-          namespace: academicSubjectNamespace
 
   stage_assessment_grade_level:
     source: $sources.gradeLevelDescriptors
@@ -77,6 +79,7 @@ transformations:
       - operation: rename_columns
         columns:
           CodeValue: Grade_CodeValue 
+          Namespace: Grade_Namespace
 
   {% set ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'] %}
   {% for id in ids %}
@@ -182,9 +185,6 @@ transformations:
         right_keep_columns:
           - AwardType
           - AwardYear
-      - operation: modify_columns
-        columns:
-          AwardType: "{%raw%}{{value if value != 'nan' else ''}}{%endraw%}"
   
   stage_assessment_performance_level:
     source: $sources.performanceLevelDescriptors
@@ -208,7 +208,7 @@ transformations:
               {%raw-%} 
               {
                 "assessmentReportingMethodDescriptor": "{{reportingMethod}}#AP Award",
-                "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
               }
               {%-endraw%} 
       - operation: modify_columns
@@ -229,7 +229,7 @@ transformations:
           grade_json: >
               {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
               {
-                "gradeLevelDescriptor": "{{Namespace}}#{{Grade_CodeValue}}"
+                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
               }
               {%-endif-%}
               {%-endraw%}
@@ -245,9 +245,6 @@ transformations:
   prepare_assessments:
     source: $transformations.stage_assessments
     operations:
-      - operation: add_columns
-        columns: 
-          academicSubjectDescriptor: "{%raw%}{{academicSubjectNamespace}}#{{academicSubject}}{%endraw%}"
       - operation: join
         sources:
           - $transformations.grade_levels
@@ -274,20 +271,21 @@ transformations:
   prepare_student_assessments:
     source: $transformations.stage_student_assessment
     operations:
-      - operation: add_columns
+      - operation: rename_columns
         columns:
-          administrationDate: "{%raw%} {{'05-01-'~ School_Year }}{%endraw%}"
-          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
-          #eventDescription: "{%raw%}{{IrregularityCode1}}{%endraw%}"
-          schoolId: "{%raw%}{{SchoolCode}}{%endraw%}"
-          performanceLevel: "{%raw%}{{AwardType if not none else ''}}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_CodeValue}}{%endraw%}"
-      - operation: combine_columns
-        columns:
-          - IrregularityCode1
-          - IrregularityCode2
-        new_column: eventDescription
-        separator: ","
+          SchoolCode: schoolId
+          Score: result
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_grade_level
+        join_type: left
+        left_keys: 
+          - GradeLevel
+        right_keys: 
+          - APGrade
+        right_keep_columns:
+          - Grade_CodeValue
+          - Grade_Namespace
       - operation: join
         sources:
           - $transformations.stage_assessments
@@ -300,7 +298,10 @@ transformations:
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  SchoolYear) }}{%endraw%}" 
-          result:  "{%raw%}{{Score}}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{%-endraw%}"
+          administrationDate: "{%raw-%} {{'05-01-'~ School_Year }}{%-endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          performanceLevel: "{%raw-%} {%- if AwardType != 'nan'-%} {{AwardType}} {%-endif-%} {%-endraw%}"
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
@@ -313,6 +314,8 @@ transformations:
           - schoolId
           - descriptorNamespace
           - performanceLevel
+          - IrregularityCode1
+          - IrregularityCode2
         create_columns: 
           result: agg(result,)
 
@@ -328,10 +331,6 @@ destinations:
   studentAssessments:
     source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessments.jsont
-    extension: jsonl
-  awards:
-    source: $transformations.stage_student_assessment
-    template: ./templates/awards.jsont
     extension: jsonl
   
   assessmentReportingMethodDescriptors:
@@ -349,12 +348,4 @@ destinations:
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
     template: ./templates/descriptors.jsont
-    extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ./templates/academicSubjectDescriptors.jsont
-    extension: jsonl
-  gradeLevelDescriptors:
-    source: $sources.gradeLevelDescriptors
-    template: ./templates/gradeLevelDescriptors.jsont
     extension: jsonl

@@ -7,5 +7,13 @@
   "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
   "assessedGradeLevels": [{{grade_json}}],
   "performanceLevels": [{{performance_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{assessment_ReportingMethod}}",
+      "resultDatatypeTypeDescriptor": "{{assessment_resultDatatype}}",
+      "maximumScore": "{{maximumScore}}",
+      "minimumScore": "{{minimumScore}}"
+    }
+  ],
   "periods": [ {"assessmentPeriodDescriptor":"{{assessmentPeriodDescriptor}}"}]
 }

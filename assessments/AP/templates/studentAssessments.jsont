@@ -1,5 +1,7 @@
 {%- set possible_scores = [
-    [result, "Integer", "AP Score"] 
+    [result, "Integer", "AP Score"],
+    [IrregularityCode1, "Level", "AP Irregularity Code"], 
+    [IrregularityCode2, "Level", "AP Irregularity Code"]
 ] -%}
 
 {%- set scores = [] -%}
@@ -32,12 +34,9 @@
   ,"studentReference": {
     "studentUniqueId": "{{studentUniqueId|trim}}"
   }
-  ,"administrationDate": "{{administrationDate|trim}}"
+  ,"administrationDate": "{{administrationDate}}"
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
-  ,"whenAssessedGradeLevelDescriptor": "{{descriptorNamespace}}/GradeLevelDescriptor#{{whenAssessedGradeLevelDescriptor}}"
-  {%- endif -%}
-  {%- if eventDescription is not none and eventDescription | length -%}
-  ,"eventDescription": "{{eventDescription}}"
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
   {%- endif -%}
   {%- if result is not none and result | length -%}
   ,"scoreResults": [
@@ -49,16 +48,14 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]{%- endif -%} 
-  {%- if performanceLevel is not none and performanceLevel | length -%}
+  {%- if performanceLevel is not none and performanceLevel | length and performanceLevel != 'nan' -%}
   ,"performanceLevels": [
     {% for perf_level in perf_levels %}
-    {%- if perf_level[0] is not none and perf_level[0] | length -%}
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}"
         ,"performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
         ,"performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
-    {%- endif -%}
     {% endfor %}
   ]{%- endif -%}
 }
