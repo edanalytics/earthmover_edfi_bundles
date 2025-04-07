@@ -59,10 +59,10 @@
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+  ]
   {% endif %}
   {% if all_obj_assessment | length %}
-  "studentObjectiveAssessments": [
+  , "studentObjectiveAssessments": [
   {%- for obj in all_obj_assessment -%}
   {
     "objectiveAssessmentReference": {
