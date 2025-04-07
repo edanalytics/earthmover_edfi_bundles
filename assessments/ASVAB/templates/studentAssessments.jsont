@@ -49,7 +49,9 @@
     "studentUniqueId": "{{student_id}}"
   },
   "administrationDate": "{{test_date}}",
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {% endif %}  
   {% if scores | length %}
   "scoreResults": [
     {% for score in scores %}
