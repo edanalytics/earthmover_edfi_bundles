@@ -4,12 +4,12 @@
 ## Assessments Identifiers
 - Each ACTWorkKeys assessment component is mapped to a unique Assessment file.
 - Assessment Identifiers:
-  - Workkeys_AM: Applied Mathematics
-  - Workkeys_LI: Locating Information
-  - Workkeys_RI: Reading for Information
+  - WorkKeys Applied Math
+  - WorkKeys Graphic Literacy
+  - WorkKeys Workplace Documents
 
 ## Assessment Family
-ACT
+ACTWorkKeys
 
 ## Assessments Score Method Descriptors
 For each assessment there will be two score method descriptors:
@@ -25,27 +25,25 @@ The ACT WorkKeys Assessment is administered to measure foundational career readi
 
 This assessment supports instructional and accountability goals by providing reliable, standardized data that informs educational planning, workforce alignment, and credentialing decisions. The results can be used to help students identify career pathways, assist educators in tailoring instruction, and help employers evaluate workforce preparedness.
 
-This bundle processes ACT WorkKeys assessment data, transforming it into Ed-Fi compatible assessment and student assessment records. The bundle handles multiple ACTWorkKeys assessments including Applied Mathematics, Locating Information, and Reading for Information. (There are differences between the name of the assessments on the ACT website and the documentation provided. The website displays 3 types of assessments with these names: Applied Math, Workplace Documents and Graphic Literacy. Which are the correct ones?)
+This bundle processes ACT WorkKeys assessment data, transforming it into Ed-Fi compatible assessment and student assessment records. The bundle handles multiple ACTWorkKeys assessments including Applied Math, Workplace Documents and Graphic Literacy.
 
 # Data Sources
 
 ## Input Requirements
 - Primary source file containing student ACTWorkKeys assessment data with the following required columns:
-  - stateid: student unique identifier.
-  - testdate: Assessment administration date
-  - Assessment scores:
-    - mathlevc: Applied Mathematics Level Score 
-    - mathssc: Applied Mathematics Scale Score
-    - infolevc: Locating Information Level Score
-    - infossc: Locating Information Scale Score
-    - readlevc: Reading for Information Level Score
-    - readssc: Reading for Information Scale Score
+  - Examinee ID: student unique identifier.
+  - Test Date: assessment administration date
+  - Manifest Name: assessment identifier
+  - For each assessment, there are two columns with the scores:
+    - Level Score 
+    - Scale Score
 
 ## Bundle Seeds
+- academicSubjectDescriptors.csv: Contains academic subject descriptors
 - assessments.csv: Contains assessment metadata
 - assessmentReportingMethodDescriptors.csv: Contains assessment reporting methods
 - assessmentCategoryDescriptors.csv: Contains category descriptors
-- gradeLevelDescriptors.csv: Contains grade level descriptors
+- gradeLevelMapping.csv: Contains grade level descriptors
 
 # Ed-Fi Mapping
 This bundle produces the following Ed-Fi resources:
@@ -58,20 +56,19 @@ This bundle produces the following Ed-Fi resources:
 - studentReference: Mapped from stateid
 - scoreResults:
   - assessmentReportingMethodDescriptor: Mapped from descriptor source
-  - resultDatatypeTypeDescriptor: Set to "Integer"
+  - resultDatatypeTypeDescriptor: Set to "Integer" for scale scores, and "Level" for level score
   - result: Mapped from corresponding assessment score column
 
 ## Summary of Descriptor Fields and Mappings
 
 ### academicSubjectDescriptor:
-- Mathematics: **Namespace**: `uri://ed.sc.gov/AcademicSubjectDescriptor#Mathematics`
-- Graphic Literacy: **Namespace**:   ???
-- Language Arts: **Namespace**: `uri://ed.sc.gov/AcademicSubjectDescriptor#Language Arts`
+- Mathematics: **Namespace**: `uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics`
+- Literacy: **Namespace**: `uri://ed-fi.org/AcademicSubjectDescriptor#Literacy` (To be added?)
+- Documents: **Namespace**: `uri://ed-fi.org/AcademicSubjectDescriptor#Documents` (To be added?)
 
 ### gradeLevelDescriptor: 
-The documentation has 2 columns regarding education level. edlevP if source is WKPP
-edlevO if sourse is WKIV with these possible vales:
-- edlevP, level of education when testing method is WKPP. Should be one of them: 
+The documentation has 2 columns regarding education level, depending of the value of "WorkKeys Source" there will be these possible values:
+- When testing method is WKPP (WorkKeys Paper and Pencil). Should be one of them: 
   - 1 = 7th Grade
   - 2 = 8th Grade   
   - 3 = 9th Grade   
@@ -88,8 +85,7 @@ edlevO if sourse is WKIV with these possible vales:
   - 14 = 5th Year or Higher Post.
   - 15 = Other Postsecondary
   
-  
-- edlevO, level of education when testing method is WKIV. Should be one of them: 
+- When testing method is WKIV (WorkKeys Internet Version (Online)). Should be one of them: 
   - 8th Grade or below
   - 9th Grade
   - 10th Grade
@@ -105,40 +101,25 @@ edlevO if sourse is WKIV with these possible vales:
   - Postsecondary-4-Year Institutions: Senior
   - Postsecondary-4-Year Institutions: Postgraduate
 
-It will need a crosswalk file to map them.
-
 
 ### assessmentCategoryDescriptor:
-- **Namespace**: `uri://ed.sc.gov/AssessmentCategoryDescriptor#HS_CAREER_COLLEGE`
+- **Namespace**: `uri://act.org/AssessmentCategoryDescriptor#HS_CAREER_COLLEGE`
 
 ### assessmentReportingMethodDescriptor:
-- **Namespace**: `uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Scale Score`
-- **Namespace**: `uri://ed.sc.gov/AssessmentReportingMethodDescriptor#Level Score`
+- **Namespace**: `uri://act.org/AssessmentReportingMethodDescriptor#Scale Score`
+- **Namespace**: `uri://act.org/AssessmentReportingMethodDescriptor#Level Score`
 
 ### resultDatatypeTypeDescriptor:
 - **Namespace**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
+- **Namespace**: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level`
 
+### assessmentPlatformTypeDescriptors:
+- **Namespace**: `uri://act.org/PlatformTypeDescriptor#WKPP`
+- **Namespace**: `uri://act.org/PlatformTypeDescriptor#WKIV`
 
-# Transformations
-
-## Assessments:
-Prepares assessment metadata by joining assessment information with grade level and reporting method descriptors.
-
-## Students Assessments:
-Three parallel transformations, one for each ACTWorkkeys assessment component:
-- student_assessment_am
-- student_assessment_li
-- student_assessment_ri
-
-Each transformation:
-1. Adds specific assessmentIdentifier
-2. Maps student identifiers
-3. Adds assessment administration metadata
-4. Generates unique studentAssessmentIdentifier
-5. Joins with reporting method descriptors
-6. Creates score JSON structure
-
-All of them combined in one output file.
+### accommodationDescriptors:
+There are cases where the "Manifest Name" (assessment) has the text " - Text To Speech" next to the assessment's name.
+- **Namespace**: `uri://act.org/accommodationDescriptors#Test administration accommodation`
 
 # Output Files
 
@@ -147,13 +128,12 @@ All of them combined in one output file.
 - assessments.jsonl
 - studentAssessmentEducationOrganizationAssociations.jsonl
 - student_assessments.jsonl
+- assessmentPlatformTypeDescriptors.jsonl
 
 # Dependencies
 - Requires Earthmover version 0.3.8 or higher
 - Requires template files:
   - ./templates/assessments.jsont
-  - ./templates/assessmentReportingMethodDescriptors.jsont
-  - ./templates/assessmentCategoryDescriptors.jsont
   - ./templates/descriptors.jsont
   - ./templates/studentAssessments.jsont
   - ./templates/studentAssessmentEducationOrganizationAssociations.jsont
