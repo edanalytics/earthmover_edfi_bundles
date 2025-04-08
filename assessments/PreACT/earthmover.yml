@@ -60,7 +60,7 @@ transformations:
           
       - operation: add_columns
         columns:
-          schoolYear: "{% raw %}{{ Test_Dte[:4] if (Test_Dte[4:6]|int < 6) else (Test_Dte[:4]|int + 1) }}{% endraw %}"
+          schoolYear: "{% raw %}{{ Test_Dte[:4] if (Test_Dte[4:6]|int < 7) else (Test_Dte[:4]|int + 1) }}{% endraw %}"
           assessmentIdentifier: "PreACT"
           namespace: "uri://act.org/Assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
