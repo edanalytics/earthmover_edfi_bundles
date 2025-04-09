@@ -67,8 +67,8 @@ This bundle produces the following Ed-Fi resources:
 - Documents: **Namespace**: `uri://ed-fi.org/AcademicSubjectDescriptor#Documents` (To be added?)
 
 ### gradeLevelDescriptor: 
-The documentation has 2 columns regarding education level, depending of the value of "WorkKeys Source" there will be these possible values:
-- When testing method is WKPP (WorkKeys Paper and Pencil). Should be one of them: 
+The documentation has 2 columns regarding education level, depending on the value of "WorkKeys Source" there will be these possible values:
+- If testing method is WKPP (WorkKeys Paper and Pencil), they should be one of them: 
   - 1 = 7th Grade
   - 2 = 8th Grade   
   - 3 = 9th Grade   
@@ -85,7 +85,7 @@ The documentation has 2 columns regarding education level, depending of the valu
   - 14 = 5th Year or Higher Post.
   - 15 = Other Postsecondary
   
-- When testing method is WKIV (WorkKeys Internet Version (Online)). Should be one of them: 
+- If testing method is WKIV (WorkKeys Internet Version (Online)), they should be one of them: 
   - 8th Grade or below
   - 9th Grade
   - 10th Grade
