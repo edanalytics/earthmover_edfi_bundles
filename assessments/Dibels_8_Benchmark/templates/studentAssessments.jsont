@@ -2,7 +2,8 @@
     ["Composite Score", composite_score, "Integer"],
     ["Composite National Norm Percentile", composite_national_norm_percentile, "Integer"],
     ["Composite Score Lexile", dibels_composite_score_lexile, "Level"],
-    ["Benchmark Period", benchmark_period, "Level"]
+    ["Benchmark Period", benchmark_period, "Level"],
+    ["Enrolled Grade Level", gradeLevelDescriptor, "Level"]
 ] -%}
 
 {%- set scores = [] -%}
@@ -139,6 +140,5 @@
       ]
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
-  ],
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  ]
 }
