@@ -20,8 +20,8 @@
 			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
 		}
 	],
-		{%- set passing_status_perf_desc = ["Did Not Pass", "Pass", "At Risk", "On Track"] -%}
-		{%- set reporting_cat_perf_desc = ["Below", "At/Near", "Above"] -%}
+		{%- set passing_status_perf_desc = ["Did Not Pass", "Pass", "At Risk", "On Track", "Invalidated", "Insufficient to Score", "UND"] -%}
+		{%- set reporting_cat_perf_desc = ["Below", "At/Near", "Above",  "Invalidated", "Insufficient to Score", "UND"] -%}
 
 	"performanceLevels": [
 		{%- for desc in passing_status_perf_desc -%}
