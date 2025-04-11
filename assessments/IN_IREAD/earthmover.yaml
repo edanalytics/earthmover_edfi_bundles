@@ -113,7 +113,11 @@ transformations:
           iread_3_grade_2_passing_status: passing_status_grade_2
           iread_3_reported_lexile_measure: lexile_measure
           iread_3_grade_2_reported_lexile_measure: lexile_measure_grade_2
-      
+
+      - operation: modify_columns
+        columns:
+          scale_score: "{%raw%}{%if scale_score|int != 0 %}{{scale_score}}{%else%}null{%endif%}{%endraw%}"
+          scale_score_grade_2: "{%raw%}{%if scale_score_grade_2|int != 0 %}{{scale_score_grade_2}}{%else%}null{%endif%}{%endraw%}"
 
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
