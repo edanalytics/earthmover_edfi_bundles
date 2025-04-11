@@ -12,7 +12,7 @@
 	},
 	"administrationDate": "{{test_start_date | trim}}",
 
-	"scores": [
+	"scoreResults": [
 		{%- set possible_scores = [
 			[scale_score, "Overall scale score", "Integer"],
 			[scale_score_grade_2, "Overall scale score", "Integer"],
