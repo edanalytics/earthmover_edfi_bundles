@@ -95,7 +95,7 @@ transformations:
           school_year: "{% raw%} {{ test_start_date.split('/')[2].split(' ')[0]}} {%endraw%}"
           assessmentIdentifier: "{% raw %}{{ test_name.split(' ')[0]}}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
-          namespace: "uri://doe.in.gov/IREAD3/Assessment"
+          namespace: "uri://doe.in.gov/IREAD-3/Assessment"
 
       - operation: modify_columns
         columns:
