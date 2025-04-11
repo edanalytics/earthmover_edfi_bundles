@@ -27,7 +27,6 @@
 		{%- endif -%}
 		{%- endfor -%}		
 		
-		{% if scores | length > 0 %},{% endif %}
 		{%- for score in scores %}
 		{
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
