@@ -166,6 +166,7 @@
     "-1": "Test not included in the Battery"
   } %}
   {#-----------------------------------------------------------------------------------------------------------#}
+  "serialNumber": "{{serialNumber}}",
   "studentObjectiveAssessments": [
     {% for idx, identification_code in objectives_dictionary.items() %}
       {

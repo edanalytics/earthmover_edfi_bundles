@@ -203,13 +203,11 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-          - Battery
-          - Form
-          - Level
           - Class_Grade_Descriptor
       - operation: distinct_rows
       - operation: add_columns
         columns:
+          join_key: "1"
           grade_json: >
             {%raw-%}
             {
@@ -222,9 +220,7 @@ transformations:
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - Battery
-          - Form
-          - Level
+          - join_key
         create_columns:
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
@@ -233,9 +229,7 @@ transformations:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
       - operation: keep_columns
         columns:
-          - Battery
-          - Form
-          - Level
+          - join_key
           - grade_json
 
   scores_json:
@@ -276,7 +270,7 @@ transformations:
           - join_key
           - scores_json
   
-  assessments:
+  assessments_source_modified:
     source: $sources.assessments
     operations:
       - operation: modify_columns
@@ -288,6 +282,21 @@ transformations:
         columns:
           join_key: "1"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      
+  assessments:
+    source: $transformations.assessments_source_modified
+    operations:
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - namespace
+          - assessmentFamily
+          - assessmentTitle
+          - assessmentCategoryDescriptor
+          - academicSubjectDescriptor
+          - join_key
+          - descriptor_namespace_override
+      - operation: distinct_rows 
       - operation: join
         sources: 
           - $transformations.scores_json
@@ -299,21 +308,25 @@ transformations:
           - $transformations.grades_json
         join_type: inner
         left_keys: 
-          - Battery
-          - Form
-          - Level 
+          - join_key
         right_keys: 
-          - Battery
-          - Form
-          - Level  
+          - join_key
   
   # <<<<< Prepare assessments <<<<<
 
   # >>>>> Prepare objective-assessments >>>>>
 
   objectiveAssessments:
-    source: $transformations.assessments
+    source: $transformations.assessments_source_modified
     operations:
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - namespace
+          - academicSubjectDescriptor
+          - Level
+          - join_key
+          - descriptor_namespace_override      
       - operation: join
         sources:
           - $transformations.appendix_a
@@ -343,6 +356,20 @@ transformations:
         behavior: exclude
       {% endif %}
     {% endfor %}
+      - operation: add_columns
+        columns:
+          rowsOrder: 1
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - namespace
+          - academicSubjectDescriptor
+          - identificationCode
+          - objective_assessment_description
+          - rowsOrder
+          - join_key
+          - descriptor_namespace_override
+      - operation: distinct_rows
 
   # <<<<< Prepare objective-assessments <<<<<
 
@@ -353,7 +380,7 @@ transformations:
     operations:
       - operation: join
         sources:
-          - $transformations.assessments
+          - $transformations.assessments_source_modified
         join_type: left
         left_keys: 
           - Battery
@@ -369,6 +396,8 @@ transformations:
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          # Information regarding Form and Level for the assessment
+          serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
 
   # <<<<< Prepare student-assessments <<<<<
 
