@@ -69,7 +69,6 @@ transformations:
       source: $sources.input
       operations: []
 
-
   # modify input for basic mappings
   cleaned_input:
     source: $transformations.input
@@ -78,10 +77,17 @@ transformations:
         columns:
           join_key: 1
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+
       # map grades
+      {% if "${DESCRIPTOR_NAMESPACE_OVERRIDE}" == "uri://ed-fi.org" %}
       - operation: map_values
         column: GradeLevel
         map_file: ./seeds/mapping_grade.csv
+      {% else %}
+      - operation: modify_columns
+        columns:
+          GradeLevel: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{value}}{%endraw%}"
+      {% endif %}
       # map genres
       - operation: map_values
         column: Genre
@@ -97,9 +103,6 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
   
-
-
-
   # >>>>> Modify seed files for namespace override >>>>>
 
   transformations_seed_file_assessmentReportingMethodDescriptors:
@@ -144,6 +147,14 @@ transformations:
           - assessmentCategoryCodeValue
           - assessmentCategoryNamespace
           - assessmentCategoryDescription
+      - operation: rename_columns
+        columns:
+          assessmentCategoryCodeValue: codeValue
+          assessmentCategoryNamespace: namespace
+          assessmentCategoryDescription: description
+      - operation: duplicate_columns
+        columns:
+          description: shortDescription
       - operation: distinct_rows
 
     # Get reporting method  score descriptors
@@ -161,31 +172,6 @@ transformations:
           - shortDescription
           - datatype
 
-    # Get reporting method non score descriptors
-  assessment_reporting_method_non_score_descriptors:
-    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
-    operations:
-      - operation: filter_rows
-        query: isScoreMetric == "-1"
-        behavior: include
-      - operation: keep_columns
-        columns:
-          - codeValue
-          - namespace
-          - description
-          - shortDescription
-          - datatype
-
-
-  # >>>>> Prepare assessment reporting method descriptors final >>>>>
-  assessmentReportingMethodDescriptorsFinal:
-    source: $transformations.assessment_reporting_method_score_descriptors
-    operations:
-      - operation: union
-        sources:
-          - $transformations.assessment_reporting_method_non_score_descriptors
-
-
   # >>>>> Prepare assessments >>>>>
 
   # Get distinct grade levels
@@ -199,10 +185,6 @@ transformations:
       - operation: add_columns
         columns:
           join_key: 1
-
-
-
-
 
   # Get distinct assessment identifiers
   assessment_identifiers:
@@ -239,7 +221,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{GradeLevel}}"
+              "gradeLevelDescriptor": "{{GradeLevel}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -455,8 +437,6 @@ transformations:
         columns: 
           - assessmentIdentifier
           - namespace
-          - scores_json
-          - performance_levels_json
       - operation: add_columns
         columns:
           join_key: 1
@@ -464,19 +444,25 @@ transformations:
   objective_assessments:
     source: $transformations.transformations_seed_file_objectiveAssessments
     operations:
-      - operation: add_columns
-        columns:
-          join_key: 1
       - operation: join
         sources:
           - $transformations.assessments_base
         join_type: inner
         left_keys: [assessmentIdentifier, namespace]
-        right_keys: [assessmentIdentifier, namespace]
-      
-      
-
-
+        right_keys: [assessmentIdentifier, namespace]      
+      - operation: add_columns
+        columns:
+          join_key: 1
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - namespace
+          - identificationCode
+          - AcademicSubjectDescriptor
+          - descriptor_namespace_override
+          - join_key
+ 
   # <<<<< Prepare objective-assessments <<<<<
 
   # >>>>> Prepare student-assessments >>>>>
@@ -486,15 +472,17 @@ transformations:
     operations:
       - operation: join
         sources:
-          - $transformations.assessment_identifiers
+          - $transformations.objective_assessments
         join_type: inner
         left_key: join_key
         right_key: join_key
       - operation: add_columns
         columns:
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
           SchoolYear: ${SCHOOL_YEAR}
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DistrictCode}}-{{SchoolCode}}-{{SchoolYear}}-{{assessmentIdentifier}}{%endraw%}"  
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+
   # <<<<< Prepare student-assessments <<<<<
 
 destinations:
@@ -511,17 +499,17 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
-    source: $transformations.assessmentReportingMethodDescriptorsFinal
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    source: $transformations.transformations_seed_file_assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentCategoryDescriptors:
     source: $transformations.assessmentCategoryDescriptors
-    template: ./templates/assessmentCategoryDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
     source: $transformations.transformations_seed_file_performanceLevelDescriptors
-    template: ./templates/performanceLevelDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True

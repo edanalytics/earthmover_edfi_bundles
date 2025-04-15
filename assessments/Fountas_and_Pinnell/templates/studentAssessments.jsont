@@ -2,7 +2,7 @@
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
-    "namespace": "{{assessmentIdentifier_namespace}}"
+    "namespace": "{{namespace}}"
   },
   "reportedSchoolReference": {
     "schoolId": {{SchoolCode}}
@@ -16,94 +16,80 @@
  
   {#-----------------------------------------------------------------------------------------------------------#}
 
-  {% set objective_names = [
-    'Fiction',
-    'Nonfiction',
-    'Generic'
-    ] %}
-
-  {% set reportingMethods = {
-      '01' :	'Words Per Minute',
-      '02' :	'Self Correction Rate',
-      '03' :	'Fluency Level',
-      '04' :	'Lexile Level',
-      '05' :	'Text Reading Accuracy',
-      '06' :	'Text Reading Accuracy 2',
-      '07' :	'Comprehension 2',
-      '08' :	'Comprehension',
-      '09' :	'Text Reading',
-      '11' :  'Meaning',
-      '12' :  'Visual',
-      '13' :  'Early Literacy Behaviors',
-      '14' :  'Letter Recognition',
-      '15' :  'Initial Sounds',
-      '16' :  'High Frequency Words',
-      '17' :  'Word Writing',
-      '18' :  'Rhyming Assessment'
+  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
+  {% set textReadingObjectiveScores = {
+    'TextReadingAccuracy' : ('Text Reading Accuracy', 'Percentile'),
+    'TextReading' : ('Text Reading Level', 'String'),
+    'FluencyLevel' : ('Fluency Level', 'Float'),
+    'WordsPerMinute' : ('Words Per Minute', 'Integer'),
+    'SelfCorrectionRate': ('Self Correction Rate', 'Float'),
+    'EarlyLiteracyBehaviors': ('Early Literacy Behaviors', 'Integer'),
+    'LetterRecognition': ('Letter Recognition', 'Integer'),
+    'InitialSounds': ('Initial Sounds', 'Integer'),
+    'HighFrequencyWords': ('High Frequency Words', 'Integer'),
+    'RhymingAssessment': ('Rhyming Assessment', 'Integer')
     } %}
 
-  {% set reportingMethod_datatypes_dictionary = {
-      '01' : 'Integer',   
-      '02' : 'Float',
-      '03' : 'Float',
-      '04' : 'String',
-      '05' : 'Percentile',   
-      '06' : 'Percentile',   
-      '07' : 'Percentile',   
-      '08' : 'Percentile',   
-      '09' : 'String',
-      '10' : 'Integer',
-      '11' : 'Integer',    
-      '12' : 'Integer',
-      '13' : 'Integer',
-      '14' : 'Integer',
-      '15' : 'Integer',
-      '16' : 'Integer',
-      '17' : 'Integer',
-      '18' : 'Integer'
-    } %}
+  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
+  {% set comprehensionObjectiveScores = {
+  'Comprehension' : ('Comprehension Accuracy', 'Percentile'),
+  'Meaning': ('Meaning', 'Integer'),
+  'Visual': ('Visual', 'Integer'),
+  'WordWriting': ('Word Writing', 'Integer')
+  } %}
 
-  
+  {# identificationCode : <Dictionaries defined above> #}
+  {% set objective_dict_mappings = {
+    'Text Reading': textReadingObjectiveScores,
+    'Comprehension' : comprehensionObjectiveScores
+  } %}
+
+
   "studentObjectiveAssessments": [ 
-
       {
-
         "administrationEndDate": "{{DateTaken}}",
         "objectiveAssessmentReference": {
             "assessmentIdentifier": "{{assessmentIdentifier}}",
-            "identificationCode": "{{Genre}}",
-            "namespace": "{{descriptor_namespace_override}}/FountasAndPinnell//Reading/{{Genre}}"
+            "identificationCode": "{{identificationCode}}",
+            "namespace": "{{namespace}}"
         },
         "performanceLevels": [
+          {% if identificationCode == "Comprehension" %}
+            {% if ComprehensionLevel == "NULL" or ComprehensionLevel|length == 0 %}
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#N/A",
+              "performanceLevelIndicatorName": "N/A"
+            }
+            {% else %}
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{ComprehensionLevel}}",
+              "performanceLevelIndicatorName": "{{ComprehensionLevel}}"
+            }
+            {% endif %}
+          {% else %}
           {
-            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
-            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{ComprehensionLevel}}",
-            "performanceLevelIndicatorName": "{{ComprehensionLevel}}"
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{LexileLevel}}",
+            "performanceLevelIndicatorName": "{{LexileLevel}}"
           }
+          {% endif %}
         ],
-        
         "scoreResults": [
-          {% set i = 0 %} 
-          {% for k, v in reportingMethods.items() %}                
-            {% set reportingKey = k %}
-            {% set objectiveDataTypeName = reportingMethod_datatypes_dictionary[reportingKey] %}
-            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
-            {% set objectiveName = reportingMethods[reportingKey] %}                
-            {% set objectiveColumnName = (objectiveName).replace(' ', '') %}
-            {% set objectiveColumnValue = __row_data__[objectiveColumnName] %}
-            {% if objectiveColumnValue !=  "NULL" %}
-              {% if objectiveColumnValue %}                           
-                {%- if not loop.first %}, {%- endif %}
-                {
-                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#{{objectiveName}}",
-                    "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
-                    "result": "{{objectiveColumnValue}}"
-                }     
-              {% endif %}
-            {% endif %} 
-          {% endfor %}            
+          {% set mapping_dictionary = objective_dict_mappings[identificationCode] %}
+          {% for (colName,colValue) in mapping_dictionary.items() %}
+            {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#{{colValue[0]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{colValue[1]}}",
+            "result": "{{__row_data__[colName]}}"
+            }
+            {% if loop.index < loop.length %}
+              ,
+            {% endif %}
+          {% endfor %}
         ]
       }    
   ],
-  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace_override}}/GradeLevelDescriptor#{{GradeLevel}}" 
+  "whenAssessedGradeLevelDescriptor": "{{GradeLevel}}" 
 }

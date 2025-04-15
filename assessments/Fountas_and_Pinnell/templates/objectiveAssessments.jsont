@@ -5,6 +5,166 @@
     "namespace": "{{ namespace }}"
   },
   "academicSubjectDescriptor": "{{ AcademicSubjectDescriptor }}",
-  "performanceLevels": [{{ performance_levels_json }}],
-  "scores": [{{ scores_json }}]
+  "performanceLevels": [
+    {% if identificationCode == "Text Reading" %}
+    {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Approaching Proficiency",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Approaching Proficiency"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Limited Proficiency",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Limited Proficiency"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Proficient",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Proficient"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Satisfactory",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Satisfactory"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Excellent",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Excellent"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Limited",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Limited"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#Unsatisfactory",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Unsatisfactory"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#N/A",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "N/A"
+      }
+    {% else %}
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#BR-25",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "BR-25"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#26-199",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "26-199"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#200-299",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "200-299"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#300-499",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "300-499"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#500-699",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "500-699"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#700-749",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "700-749"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#750-949",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "750-949"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#950-Up",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "950-Up"
+      }
+    {% endif %}
+  ],
+  "scores": [
+    {% if identificationCode == "Text Reading" %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Fluency Level",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Float"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Self Correction Rate",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Float"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Words Per Minute",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Text Reading Accuracy",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Text Reading Level",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#String"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Early Literacy Behaviors",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Letter Recognition",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Initial Sounds",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#High Frequency Words",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Rhyming Assessment",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {% else %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Meaning",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Visual",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Word Writing",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Accuracy",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    }
+    {% endif %}
+  ]
 }
