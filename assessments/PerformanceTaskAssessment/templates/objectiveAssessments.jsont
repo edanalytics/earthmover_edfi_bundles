@@ -4,6 +4,69 @@
     "assessmentIdentifier": "{{ assessmentIdentifier }}",
     "namespace": "{{ namespace }}"
   },
-  "academicSubjectDescriptor": "{{ AcademicSubjectDescriptor }}",
-  "scores": [{{ scores_json }}]
+  "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
+  "performanceLevels": [
+      {% if identificationCode == "Verbal" %}
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}//PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/PerformanceLevelDescriptor#V",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Qualified Verbal"
+      },
+      {% else %}
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}//PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/PerformanceLevelDescriptor#NV",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Qualified Non-Verbal"
+      },
+      {% endif %}
+      {
+        "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}//PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#PerformanceLevel",
+        "performanceLevelDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/PerformanceLevelDescriptor#BOTH",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "performanceLevelIndicatorName": "Qualified Both"
+      }
+    ],
+  "scores": [
+    {% if identificationCode == "Verbal" %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingTotal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingVerbal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Verbal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Reading",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {% else %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingTotal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingNonVerbal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#QualifyingQuantitave",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#NonVerbal",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/PerformanceTaskAssessment/AssessmentReportingMethodDescriptor#Math",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {% endif %}
+    ]
 }

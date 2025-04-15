@@ -10,8 +10,5 @@
   "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
   "assessmentFamily": "{{ assessmentFamily }}",
   "assessmentTitle": "{{ assessmentTitle }}",
-  {% if assessmentIdentifier == "MAP" %}
-  "periods": [{{ assessment_periods_json }}],
-  {% endif %}
   "scores": [{{scores_json}}]
 }
