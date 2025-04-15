@@ -116,8 +116,8 @@ transformations:
 
       - operation: modify_columns
         columns:
-          scale_score: "{%raw%}{%if scale_score|int != 0 %}{{scale_score}}{%else%}null{%endif%}{%endraw%}"
-          scale_score_grade_2: "{%raw%}{%if scale_score_grade_2|int != 0 %}{{scale_score_grade_2}}{%else%}null{%endif%}{%endraw%}"
+          scale_score: "{%raw%}{%if scale_score|int != 0 %}{{scale_score}}{%else%}{%endif%}{%endraw%}"
+          scale_score_grade_2: "{%raw%}{%if scale_score_grade_2|int != 0 %}{{scale_score_grade_2}}{%else%}{%endif%}{%endraw%}"
 
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
