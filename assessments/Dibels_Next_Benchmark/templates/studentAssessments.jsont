@@ -1,3 +1,29 @@
+{%- set possible_scores = [
+    ["Assessment Measure Score", assessment_measure_composite_score_score, "Integer"],
+    ["Benchmark Period", benchmark_period, "Integer"],
+    ["Enrolled Grade Level", gradeLevelDescriptor, "Level"]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% set possible_pls = [
+  ["Pathway Achieved", pathway_achieved_composite_score],
+  ["Pathway Set", pathway_set_composite_score],
+  ["Assessment Measure Level", assessment_measure_composite_score_levels],
+] %}
+
+{%- set pls = [] -%}
+{%- for pl in possible_pls -%}
+  {%- if pl[1] is not none and pl[1] | length -%}
+    {%- set _ = pls.append(pl) -%}
+  {%- endif -%}
+{%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
@@ -12,19 +38,6 @@
   },
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
-
-    {% set possible_pls = [
-      ["Pathway Achieved", pathway_achieved_composite_score],
-      ["Pathway Set", pathway_set_composite_score],
-      ["Assessment Measure Level", assessment_measure_composite_score_levels],
-    ] %}
-
-    {%- set pls = [] -%}
-    {%- for pl in possible_pls -%}
-      {%- if pl[1] is not none and pl[1] | length -%}
-        {%- set _ = pls.append(pl) -%}
-      {%- endif -%}
-    {%- endfor -%}
   
     {%- for pl in pls -%}
     {
@@ -36,16 +49,14 @@
     {%- else %}{% endif %}{%- endfor -%}
   ],
   "scoreResults": [
+    {%- for score in scores -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Score",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{assessment_measure_composite_score_score}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{benchmark_period}}"
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[1]}}"
     }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
   ],
   "studentObjectiveAssessments": [
     {% set possible_obj_assess = [['Dibels-Next-FSF', ['Assessment Measure Level', assessment_measure_fsf_levels], ['Assessment Measure Score', assessment_measure_fsf_score]],
