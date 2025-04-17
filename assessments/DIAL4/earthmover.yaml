@@ -21,9 +21,6 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  objectiveAssessmentReportingMethodDescriptors:
-    file: ./seeds/objectiveAssessmentReportingMethodDescriptors.csv
-    header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
@@ -130,83 +127,6 @@ transformations:
           - assessmentIdentifier
           - score_json
   
-  # objectiveAssessmentScores:
-  #   source: $sources.assessmentReportingMethodDescriptors
-  #   operations:
-  #     - operation: filter_rows
-  #       query: codeValue not in ["DIAL_TOTAL_INT", "DIAL_TOTAL_PER"]
-  #       behavior: include
-  #     - operation: add_columns
-  #       columns:
-  #         score_json: >
-  #           {%raw%}
-  #           {
-  #             "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
-  #             "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}",
-  #             "minimumScore": "{{minimumScore}}",
-  #             "maximumScore": "{{maximumScore}}"
-  #           }
-  #           {%endraw%}
-  #     - operation: modify_columns
-  #       columns:
-  #         score_json: "{%raw%}{{score_json | replace('\n', '')}}{%endraw%}"
-  #     - operation: group_by
-  #       group_by_columns:
-  #         - assessmentIdentifier
-  #       create_columns:
-  #         score_json: agg(score_json,,)
-  #     - operation: keep_columns
-  #       columns:
-  #         - assessmentIdentifier
-  #         - score_json
-  objectiveAssessmentScores:
-    source: $sources.objectiveAssessmentReportingMethodDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          score_json: >
-            {% raw %}
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}",
-              "minimumScore": "{{minimumScore}}",
-              "maximumScore": "{{maximumScore}}"
-            }
-            {% endraw %}
-      - operation: modify_columns
-        columns:
-          score_json: "{% raw %}{{score_json | replace('\n', '')}}{% endraw %}"
-      - operation: group_by
-        group_by_columns:
-          - objectiveIdentificationCode
-        create_columns:
-          scores: agg(score_json,,)
-      - operation: keep_columns
-        columns:
-          - objectiveIdentificationCode
-          - scores
-
-  prepare_objective_assessments:
-    source: $sources.objectiveAssessments
-    operations:
-      - operation: join
-        sources:
-          - $transformations.objectiveAssessmentScores
-        join_type: left
-        left_key: identificationCode
-        right_key: objectiveIdentificationCode      
-      - operation: add_columns
-        columns:
-          scores: "{% raw %}{{scores}}{% endraw %}"  # Add the scores array
-      - operation: keep_columns
-        columns:
-          - identificationCode
-          - namespace 
-          - description
-          - scores
-          - assessmentIdentifier
-  
-
   prepare_period:
     source: $transformations.input
     operations:
@@ -362,7 +282,7 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
-    source: $transformations.prepare_objective_assessments
+    source: $sources.objectiveAssessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl  
   assessments:
