@@ -146,7 +146,7 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{{assessment_name}}"
+          assessmentIdentifier: "PALS_{{assessment_name}}"
           joinKey: "Key"  
       - operation: duplicate_columns
         columns: 
