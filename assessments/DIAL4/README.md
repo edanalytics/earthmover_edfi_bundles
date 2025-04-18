@@ -1,7 +1,7 @@
 * **Title**:  Developmental Indicators for the Assessment of Learning (DIAL3_4) - API 3.X
-* **Description**: This template includes the DIAL3_4 assessment, designed to identify young children who need further testing or who need help with
-academic skills. The DIAL3_4 tests a child’s motor skills (skipping, jumping, cutting, writing), conceptual skills (knowledge
-of colors, counting), and language skills (knowledge of letters and words, ability to solve problems).
+* **Description**: This template includes the DIAL3_4 assessment, designed to identify young children who need further testing or who need help with academic skills. The DIAL3_4 tests a child’s motor skills (skipping, jumping, cutting, writing), conceptual skills (knowledge of colors, counting), and language skills (knowledge of letters and words, ability to solve problems). 
+⚠️ Important: This bundle is specifically configured to work with a custom South Carolina Enrich data structure. It relies on a very specific file format and field layout used in that implementation, and is not broadly applicable to other versions of DIAL3_4 or generic DIAL assessment exports.
+
 * **API version**: 5.3
 * **Submitter name**: Mariela Suárez
 * **Submitter organization**: CrocusLLC
