@@ -1,7 +1,6 @@
 {%- set possible_scores = [
     ["Assessment Measure Score", assessment_measure_composite_score_score, "Integer"],
-    ["Benchmark Period", benchmark_period, "Integer"],
-    ["Enrolled Grade Level", gradeLevelDescriptor, "Level"]
+    ["Benchmark Period", benchmark_period, "Integer"]
 ] -%}
 
 {%- set scores = [] -%}
