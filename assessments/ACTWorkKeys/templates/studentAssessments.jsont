@@ -1,0 +1,109 @@
+ {%- set total_possible_scores = [
+    [CompositeScore, "String", "ACCTWK_NCRC Credential"],
+] -%}
+
+{%- set total_scores = [] -%}
+{%- for score in total_possible_scores -%}
+  {%- if score[0] is not none and score[0] | string | lower != 'none' and score[0] | string | length > 0 -%}
+    {%- set _ = total_scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if assessmentIdentifier == 'ACTWorkKeys2022' -%}
+  {%- set score_map = {
+  "Applied Math": [
+    [MathLevelScore, "String", "Level Score"],
+    [MathScaleScore, "Integer", "Scale Score"]
+  ],
+  "Workplace Documents": [
+    [DocumentsLevelScore, "String", "Level Score"],
+    [DocumentsScaleScore, "Integer", "Scale Score"]
+  ],
+  "Graphic Literacy": [
+    [GraphLevelScore, "String", "Level Score"],
+    [GraphScaleScore, "Integer", "Scale Score"]
+  ]
+} -%}
+
+{%- elif assessmentIdentifier == 'ACTWorkKeys2017' -%} 
+{%- set score_map = {
+  "Applied Mathematics": [
+    [MathLevelScore, "String", "Level Score"],
+    [MathScaleScore, "Integer", "Scale Score"]
+  ],
+  "Locating Information": [
+    [InfoLevelScore, "String", "Level Score"],
+    [InfoScaleScore, "Integer", "Scale Score"]
+  ],
+  "Reading for Information": [
+    [ReadLevelScore, "String", "Level Score"],
+    [ReadScaleScore, "Integer", "Scale Score"]
+  ]
+} -%}
+{%- endif -%}
+ 
+ {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}"
+  
+  {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
+  {% endif %}
+  {%- if platformTypeDescriptor is not none and platformTypeDescriptor | length -%}
+  ,"platformTypeDescriptor": "{{platformTypeDescriptor}}"
+  {%- endif -%}
+  
+  {%- if accommodationsFlag == "true" and accommodationDescriptorUri is not none and accommodationDescriptorUri | length > 0 %}
+,"accommodations": [
+  {
+    "accommodationDescriptor": "{{accommodationDescriptorUri}}"
+  }
+]
+{%- endif %}
+
+  
+  {%- if total_scores | length > 0 -%}
+  ,"scoreResults": [
+    {%- for score in total_scores -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+  {%- if score_map | length > 0 -%}
+  ,"studentObjectiveAssessments": [
+    {%- for domain, score_list in score_map.items() -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{domain}}",
+        "namespace": "{{assessmentNamespace}}"
+      },
+      "scoreResults": [
+        {%- for score in score_list if score[0] is not none and score[0] | string | lower != 'none' and score[0] | string | length -%}
+        {
+          "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+          "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+          "result": "{{score[0]}}"
+        }{% if not loop.last %},{% endif %}
+        {%- endfor -%}
+      ]
+    }{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  
+    ]
+    {%- endif -%}
+}

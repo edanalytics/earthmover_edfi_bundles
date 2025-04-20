@@ -1,0 +1,406 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    SCHOOL_YEAR : "2022"
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Examinee ID,stateid' #Examinee ID for ACTWorkKeys2022 and stateid for ACTWorkKeys2017
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+  
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelMapping.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentPlatformTypeDescriptors:
+    file: ./seeds/assessmentPlatformTypeDescriptors.csv
+    header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_assessment_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: modify_columns
+        columns:
+          EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+      - operation: rename_columns
+        columns:
+          EducationLevel: GradeLevel
+          codeValue: Grade_CodeValue
+          namespace: Grade_Namespace
+      
+   
+  
+  stage_assessment_platform_type:
+    source: $sources.assessmentPlatformTypeDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      
+  
+  stage_accommodation:
+    source: $sources.accommodationDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          accommodationDescriptorUri: "{% raw %}{{namespace}}#{{codeValue}}{% endraw %}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          accommodationDescriptorUri: agg(accommodationDescriptorUri,,)
+  
+  stage_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+ 
+ {% if "${SCHOOL_YEAR}" == "2022" %}
+  stage_student_assessments:
+    source: $transformations.input
+    operations:
+      - operation: rename_columns
+        columns:
+          Realm ID: schoolId
+          Test Date: administrationDate
+          Manifest Name: objective
+          Education Level: EducationLevel
+          Level Score: LevelScore
+          Scale Score: ScaleScore
+          WorkKeys Source: platformTypeDescriptor
+          Certificate Level: CompositeScore
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        columns:
+          accommodationsFlag: "{% raw %}{{ 'true' if 'Speech' in objective else 'false' }}{% endraw %}"
+          MathLevelScore: > 
+            {% raw %}
+            {{ LevelScore if objective and 'Applied Math' in objective else none }}
+            {% endraw %}
+          MathScaleScore: > 
+            {% raw %}
+            {{ ScaleScore if objective and 'Applied Math' in objective else none }}
+            {% endraw %}
+          GraphLevelScore: > 
+            {% raw %}
+            {{ LevelScore if objective and 'Graphic Literacy' in objective else none }}
+            {% endraw %}
+          GraphScaleScore: > 
+            {% raw %}
+            {{ ScaleScore if objective and 'Graphic Literacy' in objective else none }}
+            {% endraw %}
+          DocumentsLevelScore: > 
+            {% raw %}
+            {{ LevelScore if objective and 'Workplace Documents' in objective else none }}
+            {% endraw %}
+          DocumentsScaleScore: > 
+            {% raw %}
+            {{ ScaleScore if objective and 'Workplace Documents' in objective else none }}
+            {% endraw %}
+      - operation: modify_columns
+        columns:
+          MathLevelScore: "{%raw%}{{MathLevelScore | replace('\n', '')-}}{%endraw%}"
+          MathScaleScore: "{%raw%}{{MathScaleScore | replace('\n', '')-}}{%endraw%}"
+          GraphLevelScore: "{%raw%}{{GraphLevelScore | replace('\n', '')-}}{%endraw%}"
+          GraphScaleScore: "{%raw%}{{GraphScaleScore | replace('\n', '')-}}{%endraw%}"
+          DocumentsLevelScore: "{%raw%}{{DocumentsLevelScore | replace('\n', '')-}}{%endraw%}"
+          DocumentsScaleScore: "{%raw%}{{DocumentsScaleScore | replace('\n', '')-}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "ACTWorkKeys2022"
+          studentKey: "{% raw %}{{ studentUniqueId  }}{% endraw %}"
+          joinKey: "Key"
+          EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+      - operation: group_by
+        group_by_columns:
+          - studentKey
+        create_columns:   
+          MathLevelScore: str_min(MathLevelScore)
+          MathScaleScore: str_min(MathScaleScore)
+          GraphLevelScore: str_min(GraphLevelScore)
+          GraphScaleScore: str_min(GraphScaleScore)
+          DocumentsLevelScore: str_min(DocumentsLevelScore)
+          DocumentsScaleScore: str_min(DocumentsScaleScore)
+          studentUniqueId: str_min(studentUniqueId)
+          schoolId: str_min(schoolId)
+          accommodationsFlag: str_min(accommodationsFlag)
+          EducationLevel: str_min(EducationLevel)
+          platformTypeDescriptor: str_min(platformTypeDescriptor)
+          CompositeScore: str_min(CompositeScore)
+          administrationDate: str_min(administrationDate)
+          assessmentIdentifier: str_min(assessmentIdentifier)
+          joinKey: str_min(joinKey)
+          schoolYear: str_min(administrationDate[:4])
+
+  
+
+    {% endif %} 
+
+  {% if "${SCHOOL_YEAR}" != "2022" %}
+  stage_student_assessments:
+    source: $transformations.input
+    operations:
+      - operation: rename_columns
+        columns:
+          realmid: schoolId
+          testdate: administrationDate
+          edlevP: EducationLevelP #if source is WKPP
+          edlevO: EducationLevelO #if source is WKIV
+          mathlev: MathLevelScore
+          mathss: MathScaleScore
+          infolev: InfoLevelScore
+          infoss: InfoScaleScore
+          readlev: ReadLevelScore
+          readss: ReadScaleScore
+          source: platformTypeDescriptor
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "ACTWorkKeys2017"
+          joinKey: "Key"
+          EducationLevel: > 
+            {% raw %}
+            {{ EducationLevelP if platformTypeDescriptor == 'WKPP' else EducationLevelO }}
+            {% endraw %}
+      - operation: modify_columns
+        columns:
+          EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+      - operation: duplicate_columns
+        columns: 
+          cert: CompositeScore
+      - operation: map_values
+        column: CompositeScore
+        map_file: ./seeds/certificateLevelMapping.csv
+    {% endif %}      
+
+  stage_student_assessment_grade:
+    source: $transformations.stage_student_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_grade_level
+        join_type: left
+        left_keys: 
+          - EducationLevel
+        right_keys: 
+          - GradeLevel
+        right_keep_columns:
+          - Grade_CodeValue
+          - Grade_Namespace
+      - operation: join
+        sources:
+          - $transformations.stage_accommodation
+        join_type: left
+        left_key: joinKey
+        right_key: joinKey
+        right_keep_columns:
+          - accommodationDescriptorUri
+
+
+  grade_levels:
+    source: $transformations.stage_assessment_grade_level
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          grade_json: >
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {
+                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          grade_json: agg(grade_json,,)
+
+  assessment_platform_types:
+    source: $transformations.stage_assessment_platform_type
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          platform_type_json: >
+              {%raw-%} {%- if codeValue is not none and codeValue | length -%} 
+              {
+                "platformTypeDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          platform_type_json: "{%raw%}{{platform_type_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          platform_type_json: agg(platform_type_json,,)
+  
+  objectiveAssessmentScores:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          score_json: >
+            {% raw %}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}"
+            }
+            {% endraw %}
+      - operation: modify_columns
+        columns:
+          score_json: "{% raw %}{{score_json | replace('\n', '')}}{% endraw %}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          scores: agg(score_json,,)
+      - operation: keep_columns
+        columns:
+          - joinKey
+          - scores
+
+  prepare_objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: keep_columns
+        columns:
+          - identificationCode
+          - namespace 
+          - description
+          - assessmentIdentifier
+
+  prepare_assessments:
+    source: $transformations.stage_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+
+      - operation: join
+        sources:
+          - $transformations.assessment_platform_types
+        join_type: left
+        left_key: joinKey
+        right_key: joinKey
+
+  prepare_student_assessments:
+    source: $transformations.stage_student_assessment_grade
+    operations:
+      - operation: add_columns
+        columns:
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if Grade_CodeValue is not none and Grade_CodeValue|string != 'nan' and Grade_Namespace is not none and Grade_Namespace|string != 'nan' -%} {{Grade_Namespace}}#{{Grade_CodeValue}}{% endif %}{%endraw%}"
+      - operation: modify_columns
+        columns:
+            administrationDate: "{% raw %}{{ administrationDate | string }}{% endraw %}"
+      - operation: date_format
+        column: administrationDate
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%}{% if administrationDate and '-' in administrationDate %}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{% endif %}{%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.prepare_assessments
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - assessmentNamespace
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}" 
+     
+     
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentPlatformTypeDescriptors:
+    source: $sources.assessmentPlatformTypeDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+
+  assessmentGradelevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.prepare_objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
