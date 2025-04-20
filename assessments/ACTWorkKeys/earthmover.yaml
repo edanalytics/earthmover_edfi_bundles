@@ -33,9 +33,6 @@ sources:
   accommodationDescriptors:
     file: ./seeds/accommodationDescriptors.csv
     header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
-    header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
@@ -191,7 +188,7 @@ transformations:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
-          assessmentIdentifier: "ACTWorkKeys2017"
+          assessmentIdentifier: "ACTWorkKeysPre2022"
           joinKey: "Key"
           EducationLevel: > 
             {% raw %}

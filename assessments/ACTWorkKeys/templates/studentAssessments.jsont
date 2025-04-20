@@ -9,7 +9,7 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- if assessmentIdentifier == 'ACTWorkKeys2022' -%}
+{%- if schoolYear == '2022' -%}
   {%- set score_map = {
   "Applied Math": [
     [MathLevelScore, "String", "Level Score"],
@@ -25,7 +25,7 @@
   ]
 } -%}
 
-{%- elif assessmentIdentifier == 'ACTWorkKeys2017' -%} 
+{%- else -%} 
 {%- set score_map = {
   "Applied Mathematics": [
     [MathLevelScore, "String", "Level Score"],
