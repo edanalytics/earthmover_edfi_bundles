@@ -129,7 +129,6 @@ This bundle produces the following Ed-Fi resources:
 
 # Output Files
 
-- accommodationDescriptors.jsonl
 - assessmentReportingMethodDescriptors.jsonl
 - assessmentCategoryMethodDescriptors.jsonl
 - assessments.jsonl
@@ -137,7 +136,6 @@ This bundle produces the following Ed-Fi resources:
 - studentAssessmentEducationOrganizationAssociations.jsonl
 - studentAssessments.jsonl
 - assessmentPlatformTypeDescriptors.jsonl
-- assessmentGradelevelDescriptors.jsonl
 
 # Dependencies
 - Requires Earthmover version 0.3.8 or higher

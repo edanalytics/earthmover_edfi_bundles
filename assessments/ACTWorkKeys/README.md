@@ -16,10 +16,12 @@ For details about the mapping look at the [mapping document](./mapping.md) found
 - **OUTPUT_DIR**: Where output files will be written.
 - **INPUT_FILE**: The assessment file to be mapped
 - **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be this column in the assessment file: `Examinee ID` or `stateid` when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID`. 
-- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file (e.g., `Examinee ID` for 2022 and `stateid` for previous years). 
+- **SCHOOL_YEAR**: The school year of the assessment file (structure of '2022' or '2017', etc).
+
 ### Optional
 - **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor. The default value is: uri://ed-fi.org.
-- **SCHOOL_YEAR**: The school year of the assessment file (structure of '2022' or '2017', etc).
+- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file (e.g., `Examinee ID` for 2022 and `stateid` for previous years). 
+
 
 ### Examples
 
