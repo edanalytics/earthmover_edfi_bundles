@@ -388,15 +388,6 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
 
-  accommodationDescriptors:
-    source: $sources.accommodationDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-
-  assessmentGradelevelDescriptors:
-    source: $sources.gradeLevelDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
   objectiveAssessments:
     source: $transformations.prepare_objective_assessments
     template: ./templates/objectiveAssessments.jsont
