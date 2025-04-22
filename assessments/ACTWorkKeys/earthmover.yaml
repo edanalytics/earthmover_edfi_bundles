@@ -174,7 +174,7 @@ transformations:
     operations:
       - operation: rename_columns
         columns:
-          realmid: schoolId
+          schoolid: schoolId
           testdate: administrationDate
           edlevP: EducationLevelP #if source is WKPP
           edlevO: EducationLevelO #if source is WKIV
