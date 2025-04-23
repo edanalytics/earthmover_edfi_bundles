@@ -11,7 +11,9 @@
   {% endfor %}
   ],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "academicSubjects": [
+    {"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}
+    ],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AFQT Score",
