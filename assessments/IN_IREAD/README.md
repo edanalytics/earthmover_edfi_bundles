@@ -1,14 +1,14 @@
 This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
-* **Title**: Indiana ILearn - API 3.X
-* **Description**: This template includes ILEARN subjects ELA, Math, Social Studies, Science, Biology, US Government.
+* **Title**: Indiana IREAD-3 - API 3.X
+* **Description**: This template includes IREAD-3 subjects ELA, Math, Social Studies, Science, Biology, US Government.
 * **API version**: 7.1
-* **Submitter name**: Matt Criscenzo
+* **Submitter name**: Na Nguyen
 * **Submitter organization**: Education Analytics
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
-<summary><code>data/ilearn.csv</code></summary>
-This bundle currently works with ILEARN scores as exported from CRS, as of SY 2024.  It has not yet been updated for the new Checkpoints format that is being piloted for SY 2025.  
+<summary><code>data/IREAD-3.csv</code></summary>
+This bundle currently works with IREAD-3 scores as exported from CRS, as of SY 2024.  It has not yet been updated for the new Checkpoints format that is being piloted for SY 2025.  
 
 </details>
 
@@ -24,7 +24,7 @@ Using an ID column from the assessment file:
 earthmover run -c ./earthmover.yaml -f -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "./data/Spring 2025 2nd Grade iREAD.csv"
+"INPUT_FILE": "./data/sample_anonymized_file.csv"
 }'
 ```
 
@@ -62,43 +62,16 @@ Here is a complete list of columns provided by the export
 - Test_name
 - Overall_scale_score
 - Overall_proficiency_level
-- ILEARN_Reported_Lexile_Measure
-- ILEARN_Reported_Quantile_Measure
-- College_and_Career_Readiness_Indicator
+- IREAD-3_Reported_Lexile_Measure
+- IREAD-3_Reported_Quantile_Measure
 - IREAD-3_Passing_Status
 - IREAD-3_Grade_2_Passing_Status
 - IREAD-3_Overall_scale_score
 - IREAD-3_Grade_2_Overall_scale_score
 - IREAD-3_Reported_Lexile_Measure
 - IREAD-3_Grade_2_Reported_Lexile_Measure
-- ILEARN_US_Government_Passing_Status
-- ILEARN_Reporting_Category_1_Performance
-- I_AM_Reporting_Category_1_Performance
 - IREAD-3_Reporting_Category_1_Performance
-- Reporting_Category_1_Percent_Correct
-- ILEARN_Reporting_Category_2_Performance
-- I_AM_Reporting_Category_2_Performance
 - IREAD-3_Reporting_Category_2_Performance
-- Reporting_Category_2_Percent_Correct
-- ILEARN_Reporting_Category_3_Performance
-- I_AM_Reporting_Category_3_Performance
 - IREAD-3_Reporting_Category_3_Performance
-- Reporting_Category_3_Percent_Correct
-- ILEARN_Reporting_Category_4_Performance
-- I_AM_Reporting_Category_4_Performance
-- ILEARN_Reporting_Category_5_Performance
-- Argumentative_Organization_Purpose
-- Argumentative_Evidence_Development_Elaboration
-- Argumentative_Conventions
-- Informative_Organization_Purpose
-- Informative_Evidence_Development_Elaboration
-- Informative_Conventions
-- Narrative_Organization_Purpose
-- Narrative_Evidence_Development_Elaboration
-- Narrative_Conventions
-- Opinion_Organization_Purpose
-- Opinion_Evidence_Development_Elaboration
-- Opinion_Conventions
-- Explanatory_Organization_Purpose
-- Explanatory_Evidence_Development_Elaboration
-- Explanatory_Conventions
+- Test Start Date
+- Test Completion Date
