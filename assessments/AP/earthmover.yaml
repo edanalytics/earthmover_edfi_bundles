@@ -88,7 +88,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-          - "Student Identifier"
+          - ${STUDENT_ID_NAME}
           - "Grade Level"
           - "AI Code"
           - Admin Year {{id}}
@@ -130,7 +130,7 @@ transformations:
     operations:
       - operation: keep_columns
         columns:
-          - "Student Identifier"
+          - ${STUDENT_ID_NAME}
           - "Grade Level"
           - "AI Code"
           - Award Type {{award}}
