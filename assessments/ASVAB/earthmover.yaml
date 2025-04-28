@@ -105,6 +105,10 @@ destinations:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ./templates/objectiveAssessments.jsont
