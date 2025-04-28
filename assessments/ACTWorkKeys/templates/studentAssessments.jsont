@@ -9,7 +9,7 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- if schoolYear == '2022' -%}
+{%- if schoolYear >= '2022' -%}
   {%- set score_map = {
   "Applied Math": [
     [MathLevelScore, "String", "Level Score"],
