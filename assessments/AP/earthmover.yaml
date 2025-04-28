@@ -299,7 +299,7 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  SchoolYear) }}{%endraw%}" 
           whenAssessedGradeLevelDescriptor: "{%raw-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{%-endraw%}"
-          administrationDate: "{%raw-%} {{'05-01-'~ School_Year }}{%-endraw%}"
+          administrationDate: "{%raw-%} {{'05/01/'~ School_Year }}{%-endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
           performanceLevel: "{%raw-%} {%- if AwardType != 'nan'-%} {{AwardType}} {%-endif-%} {%-endraw%}"
       - operation: group_by
