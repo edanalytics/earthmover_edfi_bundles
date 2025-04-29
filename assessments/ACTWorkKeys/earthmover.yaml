@@ -8,7 +8,7 @@ config:
   parameter_defaults:
     SCHOOL_YEAR : "2022"
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Examinee ID,stateid' #Examinee ID for ACTWorkKeys2022 and stateid for ACTWorkKeys2017
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Examinee ID,stateid' #Examinee ID for ACTWorkKeys and stateid for ACTWorkKeys2017
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 sources:
@@ -139,7 +139,7 @@ transformations:
           DocumentsScaleScore: "{%raw%}{{DocumentsScaleScore | replace('\n', '')-}}{%endraw%}"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "ACTWorkKeys2022"
+          assessmentIdentifier: "ACTWorkKeys"
           studentKey: "{% raw %}{{ studentUniqueId  }}{% endraw %}"
           joinKey: "Key"
           EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
