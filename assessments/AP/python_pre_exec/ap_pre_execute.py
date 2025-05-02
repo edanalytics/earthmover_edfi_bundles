@@ -110,13 +110,11 @@ def ap_pre_execute(input_file, output_file):
             how='left',
             suffixes=('_exam', '_award')
         )
-    
+    joined_data["AwardYear"]=joined_data['School_Year']
     
     # ---------- Save the results ----------
-    stacked_results.to_csv(output_file + '_exams.csv', index=False)
-    stacked_awards.to_csv(output_file + '_awards.csv', index=False)
+
     joined_data.to_csv(output_file, index=False)
     
     print(f"Processed joined data saved to {output_file}")
-    print(f"Exam data saved to {output_file}_exams.csv")
-    print(f"Award data saved to {output_file}_awards.csv")
+
