@@ -256,7 +256,6 @@ transformations:
         join_type: inner
         left_key: AP_Exam_Code
         right_key: ExamCode
-
       - operation: join
         sources:
           - $transformations.performance_levels
