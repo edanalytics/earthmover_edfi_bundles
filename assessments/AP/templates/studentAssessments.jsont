@@ -38,7 +38,7 @@
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
   ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
   {%- endif -%}
-  {%- if result is not none and result | length -%}
+  {%- if result is not none or IrregularityCode1 is not none and result | length or IrregularityCode1 | length -%}
   ,"scoreResults": [
     {%- for score in scores -%}
       {
