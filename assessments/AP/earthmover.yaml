@@ -184,7 +184,6 @@ transformations:
           - GradeLevel
         right_keep_columns:
           - AwardType
-          - AwardYear
   
   stage_assessment_performance_level:
     source: $sources.performanceLevelDescriptors
@@ -257,8 +256,7 @@ transformations:
         join_type: inner
         left_key: AP_Exam_Code
         right_key: ExamCode
-        right_keep_columns:
-          - AwardYear
+
       - operation: join
         sources:
           - $transformations.performance_levels
