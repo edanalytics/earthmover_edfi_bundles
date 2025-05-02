@@ -8,7 +8,6 @@ To run this bundle, please add your own source file<code>data/ACTWorkKeys_sample
 
 This bundle works with ACTWorkKeys files in the format provided by the assessment vendor. Please note that the structure of these files may vary depending on the year. For example, the 2022 ACT WorkKeys files follow a different format than those used in previous years. This bundle includes support for both formats and adjusts its processing logic based on the test year.
 
-For details about the mapping look at the [mapping document](./mapping.md) found here.
 
 ## CLI Parameters
 
