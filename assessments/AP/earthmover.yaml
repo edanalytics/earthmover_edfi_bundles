@@ -136,6 +136,17 @@ transformations:
         create_columns: 
           grade_json: agg(grade_json,,)
 
+  stage_distinct_assessments:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - ExamCode
+          - AwardYear
+      - operation: distinct_rows
+        columns:
+          - ExamCode
+          - AwardYear
   prepare_assessments:
     source: $transformations.stage_assessments
     operations:
@@ -147,7 +158,7 @@ transformations:
         right_key: joinKey
       - operation: join
         sources:
-          - $transformations.input
+          - $transformations.stage_distinct_assessments
         join_type: inner
         left_key: AP_Exam_Code
         right_key: ExamCode

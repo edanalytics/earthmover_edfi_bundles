@@ -40,7 +40,6 @@ def ap_pre_execute(input_file, output_file):
             subset = subset[subset['studentUniqueId'].astype(str) != '']
             subset['studentUniqueId'] = subset['studentUniqueId'].astype(str)
             subset['ExamCode'] = subset['ExamCode'].astype(str)
-            subset['ExamCodeValue'] = subset['ExamCode']
             unpivoted_exams.append(subset)
     
     if unpivoted_exams:
@@ -99,12 +98,15 @@ def ap_pre_execute(input_file, output_file):
     if stacked_results.empty or stacked_awards.empty:
         joined_data = stacked_results if not stacked_results.empty else stacked_awards if not stacked_awards.empty else pd.DataFrame()
     else:
-        join_keys = ['studentUniqueId', 'AwardYear', 'SchoolCode', 'GradeLevel']
-
-        stacked_results = stacked_results.rename(columns={'SchoolYear': 'AwardYear'})
+        left_join_keys = ['studentUniqueId', 'School_Year', 'SchoolCode', 'GradeLevel']
+        right_join_keys = ['studentUniqueId', 'AwardYear', 'SchoolCode', 'GradeLevel']
+        
+      
+       
         joined_data = stacked_results.merge(
             stacked_awards,
-            on=join_keys,
+            left_on=left_join_keys,
+            right_on=right_join_keys,
             how='left',
             suffixes=('_exam', '_award')
         )
