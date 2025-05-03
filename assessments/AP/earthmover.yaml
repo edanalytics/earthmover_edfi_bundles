@@ -7,7 +7,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Identifier' 
+    POSSIBLE_STUDENT_ID_COLUMNS: 'studentId' 
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org 
 sources:
   input:
@@ -177,6 +177,7 @@ transformations:
         columns:
           SchoolCode: schoolId
           Score: result
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: join
         sources:
           - $transformations.stage_assessment_grade_level

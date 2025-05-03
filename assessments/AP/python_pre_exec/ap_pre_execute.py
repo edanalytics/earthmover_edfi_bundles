@@ -32,12 +32,12 @@ def ap_pre_execute(input_file, output_file):
             rename_dict = {v: k for k, v in columns.items() if v in subset.columns}
             subset.rename(columns=rename_dict, inplace=True)
             subset.rename(columns={
-                'Student Identifier': 'studentUniqueId',
+                'Student Identifier': 'studentId',
                 'Grade Level': 'GradeLevel',
                 'AI Code': 'SchoolCode'
             }, inplace=True)
-            subset = subset[subset['studentUniqueId'].astype(str) != '']
-            subset['studentUniqueId'] = subset['studentUniqueId'].astype(str)
+            subset = subset[subset['studentId'].astype(str) != '']
+            subset['studentId'] = subset['studentId'].astype(str)
             subset['ExamCode'] = subset['ExamCode'].astype(str)
             unpivoted_exams.append(subset)
     
@@ -54,7 +54,7 @@ def ap_pre_execute(input_file, output_file):
             lambda x: '20' + str(x) if pd.notna(x) else ''
         )
     else:
-        stacked_results = pd.DataFrame(columns=['studentUniqueId', 'GradeLevel', 'SchoolCode', 
+        stacked_results = pd.DataFrame(columns=['studentId', 'GradeLevel', 'SchoolCode', 
                                                 'SchoolYear', 'ExamCode', 'Score', 
                                                 'IrregularityCode1', 'IrregularityCode2', 
                                                 'Exam_Id', 'ExamCodeValue', 'School_Year'])
@@ -73,12 +73,12 @@ def ap_pre_execute(input_file, output_file):
             rename_dict = {v: k for k, v in cols.items() if v in subset.columns}
             subset.rename(columns=rename_dict, inplace=True)
             subset.rename(columns={
-                'Student Identifier': 'studentUniqueId',
+                'Student Identifier': 'studentId',
                 'Grade Level': 'GradeLevel',
                 'AI Code': 'SchoolCode'
             }, inplace=True)
-            subset = subset[subset['studentUniqueId'].astype(str) != '']
-            subset['studentUniqueId'] = subset['studentUniqueId'].astype(str)
+            subset = subset[subset['studentId'].astype(str) != '']
+            subset['studentId'] = subset['studentId'].astype(str)
             subset['AwardType'] = subset['AwardType'].astype(str)
             subset['AwardYear'] = subset['AwardYear'].astype(str)
             unpivoted_awards.append(subset)
@@ -92,15 +92,15 @@ def ap_pre_execute(input_file, output_file):
             ~(stacked_awards['AwardType'].isna() | stacked_awards['AwardYear'].isna())
         ]
     else:
-        stacked_awards = pd.DataFrame(columns=['studentUniqueId', 'GradeLevel', 'SchoolCode', 
+        stacked_awards = pd.DataFrame(columns=['studentId', 'GradeLevel', 'SchoolCode', 
                                                'AwardType', 'AwardYear', 'AwardType_Id'])
     
     # ---------- Join Awards with Exams ----------
     if stacked_results.empty or stacked_awards.empty:
         joined_data = stacked_results if not stacked_results.empty else stacked_awards if not stacked_awards.empty else pd.DataFrame()
     else:
-        left_join_keys = ['studentUniqueId', 'SchoolYear', 'SchoolCode', 'GradeLevel']
-        right_join_keys = ['studentUniqueId', 'AwardYear', 'SchoolCode', 'GradeLevel']
+        left_join_keys = ['studentId', 'SchoolYear', 'SchoolCode', 'GradeLevel']
+        right_join_keys = ['studentId', 'AwardYear', 'SchoolCode', 'GradeLevel']
         
       
        
