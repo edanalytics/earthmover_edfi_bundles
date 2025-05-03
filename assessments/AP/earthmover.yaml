@@ -142,11 +142,10 @@ transformations:
       - operation: keep_columns
         columns:
           - ExamCode
-          - AwardYear
       - operation: distinct_rows
         columns:
           - ExamCode
-          - AwardYear
+
   prepare_assessments:
     source: $transformations.stage_assessments
     operations:
@@ -162,8 +161,6 @@ transformations:
         join_type: inner
         left_key: AP_Exam_Code
         right_key: ExamCode
-        right_keep_columns:
-          - AwardYear
       - operation: join
         sources:
           - $transformations.performance_levels

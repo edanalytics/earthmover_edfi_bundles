@@ -31,7 +31,6 @@ def ap_pre_execute(input_file, output_file):
             subset = df_copy[id_columns + available_cols].copy()
             rename_dict = {v: k for k, v in columns.items() if v in subset.columns}
             subset.rename(columns=rename_dict, inplace=True)
-            subset['Exam_Id'] = exam_id
             subset.rename(columns={
                 'Student Identifier': 'studentUniqueId',
                 'Grade Level': 'GradeLevel',
@@ -45,6 +44,8 @@ def ap_pre_execute(input_file, output_file):
     if unpivoted_exams:
 
         stacked_results = pd.concat(unpivoted_exams, ignore_index=True)
+        # Filter out rows where both ExamCode and Score are NaN
+         # Replace non-standard missing values (e.g., 'nan', empty strings, or whitespace) with NaN
         stacked_results['ExamCode'] = stacked_results['ExamCode'].replace(['nan', ''], pd.NA, regex=False)
         stacked_results = stacked_results[
             ~(stacked_results['ExamCode'].isna() )
@@ -71,7 +72,6 @@ def ap_pre_execute(input_file, output_file):
             subset = df_copy[id_columns + available_cols].copy()
             rename_dict = {v: k for k, v in cols.items() if v in subset.columns}
             subset.rename(columns=rename_dict, inplace=True)
-            subset['AwardType_Id'] = award_id
             subset.rename(columns={
                 'Student Identifier': 'studentUniqueId',
                 'Grade Level': 'GradeLevel',
@@ -87,6 +87,7 @@ def ap_pre_execute(input_file, output_file):
         stacked_awards = pd.concat(unpivoted_awards, ignore_index=True)
         # Replace non-standard missing values (e.g., 'nan', empty strings, or whitespace) with NaN
         stacked_awards['AwardType'] = stacked_awards['AwardType'].replace(['nan', ''], pd.NA, regex=False)
+        # Apply the filter
         stacked_awards = stacked_awards[
             ~(stacked_awards['AwardType'].isna() | stacked_awards['AwardYear'].isna())
         ]
@@ -110,11 +111,6 @@ def ap_pre_execute(input_file, output_file):
             how='left',
             suffixes=('_exam', '_award')
         )
-    #set award year to NAN when AwardType is NaN else set it to School_Year
-    joined_data['AwardYear'] = joined_data.apply(
-        lambda x: pd.NA if pd.isna(x['AwardType']) else x['School_Year'], axis=1
-    )
-
     # ---------- Save the results ----------
     joined_data.to_csv(output_file, index=False)
     
