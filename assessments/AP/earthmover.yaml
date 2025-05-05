@@ -170,14 +170,18 @@ transformations:
         right_keep_columns:
           - performance_json
 
-  prepare_student_assessments:
-    source: $transformations.input
-    operations:
+  stage_student_assessments:
+   source: $transformations.input
+   operations:
       - operation: rename_columns
         columns:
           SchoolCode: schoolId
           Score: result
           ${STUDENT_ID_NAME}: studentUniqueId
+
+  prepare_student_assessments:
+    source: $transformations.stage_student_assessments
+    operations:
       - operation: join
         sources:
           - $transformations.stage_assessment_grade_level
