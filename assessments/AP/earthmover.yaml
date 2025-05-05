@@ -220,7 +220,7 @@ transformations:
           - IrregularityCode1
           - IrregularityCode2
         create_columns: 
-          result: agg(result,)
+          result: max(result)
 
 destinations:
   assessments:
