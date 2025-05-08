@@ -8,34 +8,40 @@ Dominie
 Dominie
 
 ## Objective Assessments
- - Phonemes
- - Spelling
- - Letter Knowledge
- - Phoneme Segmentation
- - Phoneme Deletion
- - Spelling Inventory
- - Benchmark or Bridge Level
- - Equated Level
- - Accuracy %
- - Comprehension %
- - Fluency Rubric
- - Words Correct Per Minute
- - Name Writing
- - Show Me a Book Fiction
- - Show Me a Book Nonfiction
- - Core Reading
- - Core Writing Vocabulary
- - Onsets
- - Rimes
- - Writing Conventions
- - Writing Message
+ - General - Show Me Book
+ - General - Name Writing
+ - General - Letter Know
+ - General - Phoneme Segmentation
+ - General - Phoneme Deletion
+ - General - Core Rdg.
+ - General - Core Wtg Vocab
+ - General - Non. Fic. Show Me Book
+ - Sentence Writing & Spelling - Phonemes
+ - Sentence Writing & Spelling - Spelling
+ - Dominie Text Reading - Benchmark or Bridge Level
+ - Dominie Text Reading - Equated Level
+ - Dominie Text Reading - ACC%
+ - Dominie Text Reading - Self Correction Rate
+ - Dominie Text Reading - WCPM
+ - Dominie Text Reading - Fluency Rubric
+ - Dominie Text Reading - COMP%
+ - Dominie Text Reading - % Meaning
+ - Dominie Text Reading - % Visual
+ - Phonics / Forms A & B - Onsets
+ - Phonics / Forms A & B - Rimes
+ - Story Writing - Conventions
+ - Story Writing - Message
+ - Spelling Inventory - Spelling Inventory
+
 
 ## Assessments Score Method Descriptors
 Each ObjectiveAssessment corresponds to a particular literacy skill. When multiple scoring methods are available for the same skill, such as a raw score and a stanine score, they are represented as separate score entries under the same ObjectiveAssessment.
+
+This assessment has the following Reporting Method Descriptors:
  - Raw Score: string
  - Percent: decimal
  - Stanine: Standard nine-point scale scores for norm-referenced interpretation (integer)
- - Rubric?: decimal
+ - Rubric: decimal
 
 # Hierarchy
 ![alt text](hierarchy.png)
@@ -88,7 +94,7 @@ This bundle produces the following Ed-Fi resources:
  - Raw Score: `uri://pearson.com/AssessmentReportingMethodDescriptor#Raw Score`
  - Percent: `uri://pearson.com/AssessmentReportingMethodDescriptor#Percent`
  - Stanine: `uri://pearson.com/AssessmentReportingMethodDescriptor#Stanine`
- - Rubric: `uri://pearson.com/AssessmentReportingMethodDescriptor#Rubric` ???
+ - Rubric: `uri://pearson.com/AssessmentReportingMethodDescriptor#Rubric`
 
 
 # Output Files
