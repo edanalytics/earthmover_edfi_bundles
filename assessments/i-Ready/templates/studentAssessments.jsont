@@ -152,6 +152,8 @@
         "identificationCode": "{{ obj_assess[3] }}",
         "namespace": "{{namespace}}"
       },
+
+      {%- if obj_assess[1] and obj_assess[1] != '' -%}
       "performanceLevels": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
@@ -165,6 +167,8 @@
         }
         {%- endif -%}
       ],
+      {%- endif -%}
+
       "scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
