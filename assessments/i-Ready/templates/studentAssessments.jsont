@@ -1,3 +1,13 @@
+{%- set perf_levels = [] -%}
+{%- if overall_placement -%}
+  {%- set _= perf_levels.append([overall_placement, "Overall Placement"]) -%}
+{%- endif -%}
+
+{%- if overall_relative_placement -%}
+  {%- set _= perf_levels.append([overall_relative_placement, "Overall Relative Placement"]) -%}
+{%- endif -%}
+
+
 {
   "studentAssessmentIdentifier": "{{ student_assessment_id }}",
   "assessmentReference": {
@@ -11,17 +21,9 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{administration_date}}",
+
+  {%- if perf_levels -%}
   "performanceLevels": [
-
-    {%- set perf_levels = [] -%}
-    {%- if overall_placement -%}
-      {%- set _= perf_levels.append([overall_placement, "Overall Placement"]) -%}
-    {%- endif -%}
-
-    {%- if overall_relative_placement -%}
-      {%- set _= perf_levels.append([overall_relative_placement, "Overall Relative Placement"]) -%}
-    {%- endif -%}
-
     {%- for perf_level in perf_levels -%}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
@@ -30,7 +32,9 @@
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
   ],
-   "scoreResults": [
+  {%- endif -%}
+
+  "scoreResults": [
     {%- set all_scores = [] -%}
 
     {%- if overall_scale_score and overall_scale_score != "NA" -%}
