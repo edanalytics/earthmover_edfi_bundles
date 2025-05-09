@@ -44,38 +44,28 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
+      - operation: snake_case_columns
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
       - operation: add_columns
         columns:
-          courseLevel: "{%raw%}{{ qualification.split(' ')[0] }}{%endraw%}"
-          assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ subjectcode }}{%- endif -%}{%endraw%}"
+          courseLevel1: "{%raw%}{{ qualification.split(' ')[0] }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ syllabus }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
           schoolYear: ${SCHOOL_YEAR}
-          testYear: "{%raw%}{{ session.split(' ')[0] }}{%endraw%}"
-          testMonth: "{%raw%}{{ session.split(' ')[1] }}{%endraw%}"
-          administrationDate: "{%raw%}20{{ testYear }}-{%- if testMonth == 'Jun' -%}06{%- else -%}11{%- endif -%}-01{%endraw%}"
 
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
         columns:
-          - student_id
-          - session
-          - subjectcode
+          - student_state_id
+          - series
+          - syllabus
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
-      - operation: join
-        sources:
-          - $sources.gradeLevelDescriptors
-        join_type: left
-        left_keys: 
-          - currentgrade
-        right_keys: 
-          - originalGrade
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
