@@ -1,11 +1,54 @@
-{%- set perf_levels = [] -%}
-{%- if overall_placement -%}
-  {%- set _= perf_levels.append([overall_placement, "Overall Placement"]) -%}
-{%- endif -%}
+{%- set all_performance_levels = [
+  [overall_placement, "Overall Placement"],
+  [overall_relative_placement, "Overall Relative Placement"],
+] -%}
 
-{%- if overall_relative_placement -%}
-  {%- set _= perf_levels.append([overall_relative_placement, "Overall Relative Placement"]) -%}
-{%- endif -%}
+{%- set performance_levels = [] -%}
+{%- for perf_level in all_performance_levels if perf_level[0] and perf_level[0] != 'NA' -%}
+  {%- set _ = performance_levels.append(perf_level) -%}
+{%- endfor -%}
+
+
+{%- set all_score_results = [
+  [overall_scale_score, "Overall Scale Score", "Integer"],
+  [lexile_measure, "Lexile Measure", "Level"],
+  [lexile_range, "Lexile Range", "Level"],
+  [quantile_measure, "Quantile Measure", "Level"],
+  [quantile_range, "Quantile Range", "Level"],
+  [annual_typical_growth_measure, "Annual Typical Growth Measure", "Integer"],
+  [annual_stretch_growth_measure, "Annual Stretch Growth Measure", "Integer"],
+  [percent_progress_to_annual_typical_growth, "Percent Progress to Annual Typical Growth (%)", "Percentile"],
+  [percent_progress_to_annual_stretch_growth, "Percent Progress to Annual Stretch Growth (%)", "Percentile"],
+  [mid_on_grade_level_scale_score, "Mid On Grade Level Scale Score", "Integer"],
+  [percentile, "Percentile", "Integer"],
+  [grouping, "Grouping", "Integer"],
+  [diagnostic_gain, "Diagnostic Gain", "Integer"],
+] -%}
+
+{%- set score_results = [] -%}
+{%- for score in score_results if score[0] and score[0] != 'NA' -%}
+  {%- set _ = score_results.append(score) -%}
+{%- endfor -%}
+
+
+{%- set all_objective_assessments = [
+  [phonological_awareness_scale_score, phonological_awareness_placement, phonological_awareness_relative_placement, "Phonological Awareness"],
+  [phonics_scale_score, phonics_placement, phonics_relative_placement, "Phonics"],
+  [highfrequency_words_scale_score, highfrequency_words_placement, highfrequency_words_relative_placement, "High-Frequency Words"],
+  [vocabulary_scale_score, vocabulary_placement, vocabulary_relative_placement, "Vocabulary"],
+  [comprehension_overall_scale_score, comprehension_overall_placement, comprehension_overall_relative_placement, "Comprehension: Overall"],
+  [comprehension_literature_scale_score, comprehension_literature_placement, comprehension_literature_relative_placement, "Comprehension: Literature"],
+  [comprehension_informational_text_scale_score, comprehension_informational_text_placement, comprehension_informational_text_relative_placement, "Comprehension: Informational"],
+  [number_and_operations_scale_score, number_and_operations_placement, number_and_operations_relative_placement, "Number and Operations"],
+  [algebra_and_algebraic_thinking_scale_score, algebra_and_algebraic_thinking_placement, algebra_and_algebraic_thinking_relative_placement, "Algebra and Algebraic Thinking"],
+  [measurement_and_data_scale_score, measurement_and_data_placement, measurement_and_data_relative_placement, "Measurement and Data"],
+  [geometry_scale_score, geometry_placement, geometry_relative_placement, "Geometry"],
+] -%}
+
+{%- set objective_assessments = [] -%}
+{%- for obj_assess in all_objective_assessments if obj_assess[0] | int and obj_assess[0] != "NA" and obj_assess[0] != "0" -%}
+  {%- set _ = objective_assessments.append(obj_assess) -%}
+{%- endfor -%}
 
 
 {
@@ -20,132 +63,35 @@
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationDate": "{{administration_date}}",
+  "administrationDate": "{{administration_date}}"
 
-  {%- if perf_levels -%}
-  "performanceLevels": [
-    {%- for perf_level in perf_levels -%}
+  {%- if performance_levels -%}
+  , "performanceLevels": [
+    {%- for perf_level in performance_levels -%}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ perf_level[0]}}",
       "performanceLevelMet": true
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
-  ],
+  ]
   {%- endif -%}
 
-  "scoreResults": [
-    {%- set all_scores = [] -%}
-
-    {%- if overall_scale_score and overall_scale_score != "NA" -%}
-        {%- set _ = all_scores.append([overall_scale_score, "Overall Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if lexile_measure and lexile_measure != "NA" -%}
-        {%- set _ = all_scores.append([lexile_measure, "Lexile Measure", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if lexile_range and lexile_range != "NA" -%}
-        {%- set _ = all_scores.append([lexile_range, "Lexile Range", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if quantile_measure and quantile_measure != "NA" -%}
-        {%- set _ = all_scores.append([quantile_measure, "Quantile Measure", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if quantile_range and quantile_range != "NA" -%}
-        {%- set _ = all_scores.append([quantile_range, "Quantile Range", "Level"]) -%}
-    {%- endif -%}
-
-    {%- if annual_typical_growth_measure and annual_stretch_growth_measure != "NA" -%}
-        {%- set _ = all_scores.append([annual_typical_growth_measure, "Annual Typical Growth Measure", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if annual_stretch_growth_measure and annual_stretch_growth_measure != "NA" -%}
-        {%- set _ = all_scores.append([annual_stretch_growth_measure, "Annual Stretch Growth Measure", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if percent_progress_to_annual_typical_growth and percent_progress_to_annual_typical_growth != "NA" -%}
-        {%- set _ = all_scores.append([percent_progress_to_annual_typical_growth, "Percent Progress to Annual Typical Growth (%)", "Percentile"]) -%}
-    {%- endif -%}
-
-    {%- if percent_progress_to_annual_stretch_growth and percent_progress_to_annual_stretch_growth != "NA" -%}
-        {%- set _ = all_scores.append([percent_progress_to_annual_stretch_growth, "Percent Progress to Annual Stretch Growth (%)", "Percentile"]) -%}
-    {%- endif -%}
-
-    {%- if mid_on_grade_level_scale_score and mid_on_grade_level_scale_score != "NA" -%}
-        {%- set _ = all_scores.append([mid_on_grade_level_scale_score, "Mid On Grade Level Scale Score", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if percentile and percentile != "NA" -%}
-        {%- set _ = all_scores.append([percentile, "Percentile", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if grouping and grouping != "NA" -%}
-        {%- set _ = all_scores.append([grouping, "Grouping", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- if diagnostic_gain and diagnostic_gain != "NA" -%}
-        {%- set _ = all_scores.append([diagnostic_gain, "Diagnostic Gain", "Integer"]) -%}
-    {%- endif -%}
-
-    {%- for score in all_scores -%}
+  {%- if score_results -%}
+  , "scoreResults": [
+    {%- for score in score_results -%}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
-  ],
-  "studentObjectiveAssessments": [
+  ]
+  {%- endif -%}
 
-    {%- set all_obj_assess = [] -%}
-
-    {%- if (phonological_awareness_scale_score | int and phonological_awareness_scale_score != "NA" and phonological_awareness_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([phonological_awareness_scale_score,phonological_awareness_placement,phonological_awareness_relative_placement,"Phonological Awareness"]) -%}
-    {%- endif -%}
-
-    {%- if (phonics_scale_score | int and phonics_scale_score != "NA" and phonics_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([phonics_scale_score,phonics_placement,phonics_relative_placement,"Phonics"]) -%}
-    {%- endif -%}
-	
-    {%- if (highfrequency_words_scale_score | int and highfrequency_words_scale_score != "NA" and highfrequency_words_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([highfrequency_words_scale_score,highfrequency_words_placement,highfrequency_words_relative_placement,"High-Frequency Words"]) -%}
-    {%- endif -%}
-	
-	  {%- if (vocabulary_scale_score | int and vocabulary_scale_score != "NA" and vocabulary_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([vocabulary_scale_score,vocabulary_placement,vocabulary_relative_placement,"Vocabulary"]) -%}
-    {%- endif -%}
-	
-	  {%- if (comprehension_overall_scale_score | int and comprehension_overall_scale_score != "NA" and comprehension_overall_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([comprehension_overall_scale_score,comprehension_overall_placement,comprehension_overall_relative_placement,"Comprehension: Overall"]) -%}
-    {%- endif -%}
-
-    {%- if (comprehension_literature_scale_score | int and comprehension_literature_scale_score != "NA" and comprehension_literature_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([comprehension_literature_scale_score,comprehension_literature_placement,comprehension_literature_relative_placement,"Comprehension: Literature"]) -%}
-    {%- endif -%}
-
-    {%- if (comprehension_informational_text_scale_score | int and comprehension_informational_text_scale_score != "NA" and comprehension_informational_text_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([comprehension_informational_text_scale_score,comprehension_informational_text_placement,comprehension_informational_text_relative_placement,"Comprehension: Informational"]) -%}
-    {%- endif -%}
-
-    {%- if (number_and_operations_scale_score | int and comprehension_informational_text_scale_score != "NA" and comprehension_informational_text_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([number_and_operations_scale_score,number_and_operations_placement,number_and_operations_relative_placement,"Number and Operations"]) -%}
-    {%- endif -%}
-
-    {%- if (algebra_and_algebraic_thinking_scale_score | int and algebra_and_algebraic_thinking_scale_score != "NA" and algebra_and_algebraic_thinking_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([algebra_and_algebraic_thinking_scale_score,algebra_and_algebraic_thinking_placement,algebra_and_algebraic_thinking_relative_placement,"Algebra and Algebraic Thinking"]) -%}
-    {%- endif -%}
-
-    {%- if (measurement_and_data_scale_score | int and measurement_and_data_scale_score != "NA" and measurement_and_data_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([measurement_and_data_scale_score,measurement_and_data_placement,measurement_and_data_relative_placement,"Measurement and Data"]) -%}
-    {%- endif -%}
-
-    {%- if (geometry_scale_score | int and geometry_scale_score != "NA" and geometry_scale_score != "0") -%}
-    {%- set _= all_obj_assess.append([geometry_scale_score,geometry_placement,geometry_relative_placement,"Geometry"]) -%}
-    {%- endif -%}
-
-    {%- for obj_assess in all_obj_assess -%}
+  {%- if objective_assessments -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj_assess in objective_assessments -%}
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -153,13 +99,13 @@
         "namespace": "{{namespace}}"
       },
 
-      {%- if obj_assess[1] and obj_assess[1] != '' -%}
+      {%- if obj_assess[1] and obj_assess[1] != 'NA' -%}
       "performanceLevels": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
-        }{%- if obj_assess[2] != ''-%},
+        }{%- if obj_assess[2] and obj_assess[2] != 'NA' -%},
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
@@ -180,8 +126,9 @@
 
     {%- endfor -%}
   ]
+  {%- endif -%}
 
-  {% if gradeLevelDescriptor is not none and gradeLevelDescriptor != "" and gradeLevelDescriptor != "NA" %}
+  {% if gradeLevelDescriptor and gradeLevelDescriptor != "NA" %}
   , "whenAssessedGradeLevel": "{{ gradeLevelDescriptor }}"
   {% endif %}
 }
