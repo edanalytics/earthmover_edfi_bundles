@@ -3,7 +3,6 @@
 {%- if assessmentIdentifier != 'cambridge_aice_diploma' -%}
   {%- set _ = possible_scores.append([grade, "grade", "Level"]) -%}
   {%- set _ = possible_scores.append([series, "series", "Integer"]) -%}
-  {%- set _ = possible_scores.append([qualification, "Qualification", "Level"]) -%}
   {%- set _ = possible_scores.append([level_entered, "Level Entered", "Level"]) -%}
   {%- set _ = possible_scores.append([level_achieved, "Level Achieved", "Level"]) -%}
   {%- set _ = possible_scores.append([syllabus, "Syllabus", "Level"]) -%}
@@ -48,7 +47,7 @@
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AICE Diploma Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{result}}"
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{grade}}"
       {%- if edfi_ds_version|int < 4 -%}
         ,"performanceLevelMet": true
       {% endif %}
