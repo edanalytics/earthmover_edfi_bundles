@@ -1,11 +1,13 @@
 {%- set possible_scores = [[qualification, "Qualification", "Level"]] -%}
 
 {%- if assessmentIdentifier != 'cambridge_aice_diploma' -%}
-  {%- set _ = possible_scores.append([result, "Result", "Level"]) -%}
-  {%- set _ = possible_scores.append([endorsement, "Endorsement", "Level"]) -%}
-  {%- set _ = possible_scores.append([endorsementgrade, "Endorsement Grade", "Level"]) -%}
-  {%- set _ = possible_scores.append([subjectcode, "Subject Code", "Integer"]) -%}
-  {%- set _ = possible_scores.append([subjectname, "Subject Name", "Level"]) -%}
+  {%- set _ = possible_scores.append([grade, "grade", "Level"]) -%}
+  {%- set _ = possible_scores.append([series, "series", "Integer"]) -%}
+  {%- set _ = possible_scores.append([qualification, "Qualification", "Level"]) -%}
+  {%- set _ = possible_scores.append([level_entered, "Level Entered", "Level"]) -%}
+  {%- set _ = possible_scores.append([level_achieved, "Level Achieved", "Level"]) -%}
+  {%- set _ = possible_scores.append([syllabus, "Syllabus", "Level"]) -%}
+  {%- set _ = possible_scores.append([syllabus_name, "Syllabus Name", "Level"]) -%}
 {%- endif -%}
 
 {%- set scores = [] -%}
