@@ -11,7 +11,7 @@
 
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
-  {%- if score[0] is not none and score[0] | length -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != '-' -%}
     {%- set _ = scores.append(score) -%}
   {%- endif -%}
 {%- endfor -%}
