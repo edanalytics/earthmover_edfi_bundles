@@ -50,6 +50,7 @@ transformations:
           ${STUDENT_ID_NAME}: student_id
       - operation: add_columns
         columns:
+          # How to handle AS & A ?
           courseLevel1: "{%raw%}{{ qualification.split(' ')[0] }}{%endraw%}"
           assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ syllabus }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
