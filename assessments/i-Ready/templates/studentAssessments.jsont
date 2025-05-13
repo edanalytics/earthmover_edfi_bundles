@@ -32,17 +32,17 @@
 
 
 {%- set all_objective_assessments = [
-  [phonological_awareness_scale_score, phonological_awareness_placement, phonological_awareness_relative_placement, "Phonological Awareness"],
-  [phonics_scale_score, phonics_placement, phonics_relative_placement, "Phonics"],
-  [highfrequency_words_scale_score, highfrequency_words_placement, highfrequency_words_relative_placement, "High-Frequency Words"],
-  [vocabulary_scale_score, vocabulary_placement, vocabulary_relative_placement, "Vocabulary"],
-  [comprehension_overall_scale_score, comprehension_overall_placement, comprehension_overall_relative_placement, "Comprehension: Overall"],
-  [comprehension_literature_scale_score, comprehension_literature_placement, comprehension_literature_relative_placement, "Comprehension: Literature"],
-  [comprehension_informational_text_scale_score, comprehension_informational_text_placement, comprehension_informational_text_relative_placement, "Comprehension: Informational"],
-  [number_and_operations_scale_score, number_and_operations_placement, number_and_operations_relative_placement, "Number and Operations"],
-  [algebra_and_algebraic_thinking_scale_score, algebra_and_algebraic_thinking_placement, algebra_and_algebraic_thinking_relative_placement, "Algebra and Algebraic Thinking"],
-  [measurement_and_data_scale_score, measurement_and_data_placement, measurement_and_data_relative_placement, "Measurement and Data"],
-  [geometry_scale_score, geometry_placement, geometry_relative_placement, "Geometry"],
+  [phonological_awareness_scale_score, phonological_awareness_placement, phonological_awareness_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-PHONOLOGICAL-AWARENESS"],
+  [phonics_scale_score, phonics_placement, phonics_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-PHONICS"],
+  [highfrequency_words_scale_score, highfrequency_words_placement, highfrequency_words_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-HIGH-FREQUENCY-WORDS"],
+  [vocabulary_scale_score, vocabulary_placement, vocabulary_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-VOCABULARY"],
+  [comprehension_overall_scale_score, comprehension_overall_placement, comprehension_overall_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-OVERALL"],
+  [comprehension_literature_scale_score, comprehension_literature_placement, comprehension_literature_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-LITERATURE"],
+  [comprehension_informational_text_scale_score, comprehension_informational_text_placement, comprehension_informational_text_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-INFORMATION-TEXT"],
+  [number_and_operations_scale_score, number_and_operations_placement, number_and_operations_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-NUMBER-AND-OPERATIONS"],
+  [algebra_and_algebraic_thinking_scale_score, algebra_and_algebraic_thinking_placement, algebra_and_algebraic_thinking_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-ALGEBRA"],
+  [measurement_and_data_scale_score, measurement_and_data_placement, measurement_and_data_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-MEASUREMENT-AND-DATA"],
+  [geometry_scale_score, geometry_placement, geometry_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-GEOMETRY"],
 ] -%}
 
 {%- set objective_assessments = [] -%}
