@@ -60,6 +60,7 @@ transformations:
       - operation: combine_columns
         columns:
           - student_state_id
+          - series
           - syllabus
         new_column: studentAssessmentIdentifier
         separator: '-'
