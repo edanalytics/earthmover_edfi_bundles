@@ -33,9 +33,9 @@ Using an ID column from the assessment file and running earthmover on the pre pr
 
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/mstacked_format_output.csv",
+  "INPUT_FILE": "path/to/stacked_format_output.csv",
   "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "Student Id"
+  "STUDENT_ID_NAME": "StudentId"
 }'
 ```
 

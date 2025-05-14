@@ -45,6 +45,9 @@ transformations:
       - operation: filter_rows
         query: Score != ''
         behavior: include
+      - operation : modify_columns
+        columns:
+           AssessmentIdentifier: "{%raw%}{{'myIGDIs_' ~ value}}{%endraw%}"
       - operation: add_columns
         columns:
           namespace: uri://renaissance.com/products/myigdis-for-preschool
