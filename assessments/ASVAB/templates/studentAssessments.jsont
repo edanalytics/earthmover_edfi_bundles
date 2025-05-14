@@ -64,7 +64,8 @@
   ]
   {% endif %}
   {% if all_obj_assessment | length %}
-  , "studentObjectiveAssessments": [
+    {% if scores | length %},{% endif %}
+    "studentObjectiveAssessments": [
   {%- for obj in all_obj_assessment -%}
   {
     "objectiveAssessmentReference": {
