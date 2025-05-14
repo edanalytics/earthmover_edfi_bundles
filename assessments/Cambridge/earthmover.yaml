@@ -55,6 +55,9 @@ transformations:
           assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ syllabus }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
           schoolYear: ${SCHOOL_YEAR}
+          testYear: "{%raw%}{{ series[3:5] }}{%endraw%}"
+          testMonth: "{%raw%}{{ series[:3] }}{%endraw%}"
+          administrationDate: "{%raw%}20{{ testYear }}-{%- if testMonth == 'Jun' -%}06{%- else -%}11{%- endif -%}-01{%endraw%}"
 
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
