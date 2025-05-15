@@ -60,7 +60,7 @@
   ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
   {% endif %}
   {%- if platformTypeDescriptor is not none and platformTypeDescriptor | length -%}
-  ,"platformTypeDescriptor": "{{platformTypeDescriptor}}"
+  ,"platformTypeDescriptor": "{{assessmentNamespace}}/PlatformTypeDescriptor#{{platformTypeDescriptor}}"
   {%- endif -%}
   
   {%- if accommodationsFlag == "true" and accommodationDescriptorUri is not none and accommodationDescriptorUri | length > 0 %}
