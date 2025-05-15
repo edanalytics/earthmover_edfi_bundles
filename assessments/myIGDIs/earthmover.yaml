@@ -80,7 +80,7 @@ transformations:
           performance_json: >
               {%raw-%}  
               {
-                "assessmentReportingMethodDescriptor": "{{namespace.split('/')[:-1] | join('/')}}/AssessmentReportingMethodDescriptor#Proficiency level",
+                "assessmentReportingMethodDescriptor": "{{namespace.split('/')[:-1] | join('/')}}/AssessmentReportingMethodDescriptor#PerformanceLevel",
                 "performanceLevelDescriptor": "{{ namespace }}#{{ codeValue }}"
               }
               {%-endraw%}  
