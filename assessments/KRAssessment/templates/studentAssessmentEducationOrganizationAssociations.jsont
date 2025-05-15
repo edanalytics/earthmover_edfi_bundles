@@ -1,4 +1,4 @@
-{% if districtId is not none and districtId | length %}
+{% if districtId is not none and districtId | length and studentUniqueId is not none and studentUniqueId | length %}
  {
       "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration",
       "educationOrganizationReference": {
