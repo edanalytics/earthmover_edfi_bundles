@@ -258,7 +258,7 @@ transformations:
           PerformanceLevel_MAScore: agg(PerformanceLevel_MAScore,)
           PerformanceLevel_PDScore: agg(PerformanceLevel_PDScore,)
       - operation: filter_rows
-        query: "OverallScore != 'NULL'"
+        query: "OverallScore != '' and studentUniqueId != ''"
         behavior: include
      
 destinations:
