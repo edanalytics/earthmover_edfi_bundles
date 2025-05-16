@@ -14,6 +14,9 @@ config:
 sources:
   input:
     file: ${INPUT_FILE}
+    optional_fields:
+      - stateid
+      - Examinee ID
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
@@ -354,6 +357,12 @@ transformations:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}" 
      
      
+  prepare_student_assessment_valid_school:
+    source: $transformations.prepare_student_assessments
+    operations:
+      - operation: filter_rows
+        query: schoolId != "" and schoolId != None
+        behavior: include
 
 destinations:
   assessments:
@@ -361,28 +370,25 @@ destinations:
     template: ./templates/assessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.prepare_student_assessment_valid_school
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-  
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-  assessmentPlatformTypeDescriptors:
+  platformTypeDescriptors:
     source: $sources.assessmentPlatformTypeDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-
   objectiveAssessments:
     source: $transformations.prepare_objective_assessments
     template: ./templates/objectiveAssessments.jsont
