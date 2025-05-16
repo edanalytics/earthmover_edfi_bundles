@@ -84,26 +84,37 @@
   ]
   {%- endif -%}
   {%- if score_map | length > 0 -%}
-  ,"studentObjectiveAssessments": [
-    {%- for domain, score_list in score_map.items() -%}
-    {
-      "objectiveAssessmentReference": {
-        "assessmentIdentifier": "{{assessmentIdentifier}}",
-        "identificationCode": "{{domain}}",
-        "namespace": "{{assessmentNamespace}}"
-      },
-      "scoreResults": [
-        {%- for score in score_list if score[0] is not none and score[0] | string | lower != 'none' and score[0] | string | length -%}
-        {
-          "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
-          "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
-          "result": "{{score[0]}}"
-        }{% if not loop.last %},{% endif %}
-        {%- endfor -%}
-      ]
-    }{% if not loop.last %},{% endif %}
-    {%- endfor -%}
-  
-    ]
-    {%- endif -%}
+,"studentObjectiveAssessments": [
+  {%- set ns = namespace(first=true) -%}
+  {%- for domain, score_list in score_map.items() %}
+    {%- set ns.valid_scores = [] %}
+    {%- for score in score_list %}
+      {%- if score[0] != None and score[0] | string != 'none' and score[0] | string | trim != '' %}
+        {%- set ns.valid_scores = ns.valid_scores + [score] %}
+      {%- endif %}
+    {%- endfor %}
+    {%- if ns.valid_scores | length > 0 %}
+      {%- if not ns.first %},{% endif -%}
+      {%- set ns.first = false %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{domain}}",
+          "namespace": "{{assessmentNamespace}}"
+        },
+        "scoreResults": [
+          {%- for score in ns.valid_scores %}
+          {
+            "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+            "result": "{{score[0]}}"
+          }{% if not loop.last %},{% endif %}
+          {%- endfor %}
+        ]
+      }
+    {%- endif %}
+  {%- endfor %}
+]
+{%- endif %}
+
 }
