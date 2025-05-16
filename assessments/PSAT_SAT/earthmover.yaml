@@ -24,6 +24,29 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    optional_fields:
+      - LATEST_{{test}}_READING
+      - LATEST_{{test}}_WRIT_LANG
+      - LATEST_{{test}}_WORDS_CONTEXT
+      - LATEST_{{test}}_COMM_EVIDENCE
+      - LATEST_{{test}}_EXPR_IDEAS
+      - LATEST_{{test}}_ENG_CONVENT
+      - LATEST_{{test}}_MATH_SECTION
+      - LATEST_{{test}}_MATH_TEST
+      - LATEST_{{test}}_HEART_ALGEBRA
+      - LATEST_{{test}}_PROBSLV_DATA
+      - LATEST_{{test}}_SCI_CROSS
+      - LATEST_{{test}}_HIST_SOCST_CROSS
+
+      {% if "${TEST_TYPE}" in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
+      - LATEST_{{test}}_ADV_MATH
+      {% endif %}
+
+      {% if "${TEST_TYPE}" == "SAT" %}
+      - LATEST_SAT_ESSAY_READING
+      - LATEST_SAT_ESSAY_ANALYSIS
+      - LATEST_SAT_ESSAY_WRITING
+      {% endif %}
 
   assessments:
     file: ./seeds/assessments.csv
