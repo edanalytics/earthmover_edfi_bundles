@@ -1,0 +1,233 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    SCHOOL_YEAR : "2022"
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'student_number,suns'
+    DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
+  
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelMapping.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_assessment_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          codeValue: Grade_CodeValue
+          namespace: Grade_Namespace
+      
+   
+  
+  stage_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+ 
+ 
+
+  stage_student_assessments:
+    source: $transformations.input
+    operations:
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+          schoolcode: schoolId
+          datetaken: administrationDate
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "Dominie"
+          joinKey: "Key"
+
+  stage_student_assessment_grade:
+    source: $transformations.stage_student_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_grade_level
+        join_type: left
+        left_keys: 
+          - gradelevel
+        right_keys: 
+          - GradeLevel
+        right_keep_columns:
+          - Grade_CodeValue
+          - Grade_Namespace
+
+
+  grade_levels:
+    source: $transformations.stage_assessment_grade_level
+    operations:
+      - operation: distinct_rows
+        columns:
+        - Grade_CodeValue
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          grade_json: >
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {
+                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          grade_json: agg(grade_json,,)
+      
+      
+
+  
+  objectiveAssessmentScores:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          score_json: >
+            {% raw %}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{dataType}}"
+            }
+            {% endraw %}
+      - operation: modify_columns
+        columns:
+          score_json: "{% raw %}{{score_json | replace('\n', '')}}{% endraw %}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          scores: agg(score_json,,)
+      - operation: keep_columns
+        columns:
+          - joinKey
+          - scores
+
+  prepare_objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: keep_columns
+        columns:
+          - identificationCode
+          - namespace 
+          - description
+          - assessmentIdentifier
+
+  prepare_assessments:
+    source: $transformations.stage_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+
+
+  prepare_student_assessments:
+    source: $transformations.stage_student_assessment_grade
+    operations:
+      - operation: add_columns
+        columns:
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if Grade_CodeValue is not none and Grade_CodeValue|string != 'nan' and Grade_Namespace is not none and Grade_Namespace|string != 'nan' -%} {{Grade_Namespace}}#{{Grade_CodeValue}}{% endif %}{%endraw%}"
+      - operation: modify_columns
+        columns:
+            administrationDate: "{% raw %}{{ administrationDate | string }}{% endraw %}"
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%}{% if administrationDate and '-' in administrationDate %}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{% endif %}{%endraw%}"
+      - operation: join
+        sources:
+          - $transformations.prepare_assessments
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - assessmentNamespace
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}" 
+  
+  prepare_student_assessment_valid_school:
+    source: $transformations.prepare_student_assessments
+    operations:
+      - operation: distinct_rows
+        columns:
+        - schoolYear
+        - studentUniqueId
+        - schoolId
+      - operation: filter_rows
+        query: schoolId != "" and schoolId != None
+        behavior: include   
+     
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment_valid_school
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  
+  objectiveAssessments:
+    source: $transformations.prepare_objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl

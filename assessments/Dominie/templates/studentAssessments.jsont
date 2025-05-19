@@ -1,0 +1,142 @@
+ 
+  {%- set score_map = {
+  "General - Show Me Book": [
+    [showmebook, "Decimal", "Raw Score"],
+    [showmebookstanine, "Integer", "Stanine"]
+  ],
+  "General - Name Writing": [
+    [namewriting, "Integer", "Raw Score"]
+  ],
+  "General - Letter Know": [
+    [letterknow, "Decimal", "Raw Score"],
+    [letterknowstanine, "Integer", "Stanine"]
+  ],
+  "General - Phoneme Segmentation": [
+    [phonseg, "Decimal", "Raw Score"],
+    [phonsegstanine , "Integer", "Stanine"]
+  ],
+  "General - Phoneme Deletion": [
+    [phondel, "Decimal", "Raw Score"],
+    [phondelstanine , "Integer", "Stanine"]
+  ],
+  "General - Core Rdg.": [
+    [corerdg, "Decimal", "Raw Score"],
+    [corerdgstanine , "Integer", "Stanine"]
+  ],
+  "General - Core Wtg. Vocab.": [
+    [corewtgvocab, "Decimal", "Raw Score"],
+    [corewtgvocabstanine , "Integer", "Stanine"]
+  ],
+  "General - Non. Fic. Show Me Book": [
+    [nonficshowmebook, "Decimal", "Raw Score"]
+  ],
+  "Sentence Writing & Spelling - Phonemes": [
+    [phon, "Integer", "Raw Score"],
+    [phonstanines , "Integer", "Stanine"]
+  ],
+  "Sentence Writing & Spelling - Spelling": [
+    [spell, "Integer", "Raw Score"],
+    [spellingstanine, "Integer", "Stanine"]
+  ],
+  "Dominie Text Reading - Benchmark or Bridge Level": [
+    [benchmarkorbridgelevel, "String", "Raw Score"]
+  ],
+  "Dominie Text Reading - Equated Level": [
+    [equatedlevel, "String", "Raw Score"]
+  ],
+  "Dominie Text Reading - ACC%": [
+    [acc, "Decimal", "Percent"]
+  ],
+  "Dominie Text Reading - Self Correction Rate": [
+    [selfcorrectionrate, "Decimal", "Raw Score"]
+  ],
+  "Dominie Text Reading - WCPM": [
+    [wcpm, "Decimal", "Raw Score"]
+  ],
+  "Dominie Text Reading - Fluency Rubric": [
+    [fluencyrubric, "Decimal", "Rubric"]
+  ],
+  "Dominie Text Reading - COMP%": [
+    [comp, "Decimal", "Percent"]
+  ],
+  "Dominie Text Reading - % Meaning": [
+    [meaning, "Decimal", "Percent"]
+  ],
+  "Dominie Text Reading - % Visual": [
+    [visual, "Decimal", "Percent"]
+  ],
+  "Phonics / Forms A & B - Onsets": [
+    [onsets, "Integer", "Raw Score"],
+    [onsetsstanine, "Integer", "Stanine"]
+  ],
+  "Phonics / Forms A & B - Rimes": [
+    [rimes, "Integer", "Raw Score"],
+    [rimesstanine, "Integer", "Stanine"]
+  ],
+  "Story Writing - Conventions": [
+    [conventions, "Integer", "Raw Score"]
+  ],
+  "Story Writing - Message": [
+    [message, "Integer", "Raw Score"]
+  ],
+  "Spelling Inventory - Spelling Inventory": [
+    [spellinginventory, "Integer", "Raw Score"],
+    [spellinginventorystanines, "Integer", "Stanine"]
+  ]
+} -%}
+
+ 
+ {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}"
+  
+  {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
+  {% endif %}
+ 
+ 
+ {%- if score_map | length > 0 -%}
+,"studentObjectiveAssessments": [
+  {%- set ns = namespace(first=true) -%}
+  {%- for domain, score_list in score_map.items() %}
+    {%- set ns.valid_scores = [] %}
+    {%- for score in score_list %}
+      {%- if score[0] != None and score[0] | string != 'none' and score[0] | string | trim != '' %}
+        {%- set ns.valid_scores = ns.valid_scores + [score] %}
+      {%- endif %}
+    {%- endfor %}
+    {%- if ns.valid_scores | length > 0 %}
+      {%- if not ns.first %},{% endif -%}
+      {%- set ns.first = false %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{domain}}",
+          "namespace": "{{assessmentNamespace}}"
+        },
+        "scoreResults": [
+          {%- for score in ns.valid_scores %}
+          {
+            "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+            "result": "{{score[0]}}"
+          }{% if not loop.last %},{% endif %}
+          {%- endfor %}
+        ]
+      }
+    {%- endif %}
+  {%- endfor %}
+]
+{%- endif %}
+
+}
