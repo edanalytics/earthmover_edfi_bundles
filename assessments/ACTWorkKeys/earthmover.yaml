@@ -230,6 +230,9 @@ transformations:
   grade_levels:
     source: $transformations.stage_assessment_grade_level
     operations:
+      - operation: distinct_rows
+        columns:
+        - Grade_CodeValue
       - operation: add_columns
         columns:
           joinKey: "Key"
