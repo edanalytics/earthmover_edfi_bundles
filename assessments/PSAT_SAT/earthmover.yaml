@@ -20,6 +20,12 @@ config:
       {%- endif -%}
       {%- endmacro %}
 
+{% if "${TEST_TYPE}" == "SAT" %}
+  {% set test = "SAT" %}
+{% else %}
+  {% set test = "PSAT" %}
+{% endif %}
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -72,12 +78,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
-
-  {% if "${TEST_TYPE}" == "SAT" %}
-    {% set test = "SAT" %}
-  {% else %}
-    {% set test = "PSAT" %}
-  {% endif %}
+  
   psat_sat_student_assessment:
     source: $transformations.input
     operations:
