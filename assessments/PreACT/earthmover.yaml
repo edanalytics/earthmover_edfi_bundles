@@ -35,6 +35,10 @@ sources:
     header_rows: 1
 
   input:
+    {% if "${INPUT_FILE}".endswith('.csv') %}
+    file: ${INPUT_FILE}
+    header_rows: 1
+    {% else %}
     file: ${INPUT_FILE}
     colspec_file: ./fwf_to_csv_xwalks/colspecs.csv   # required
     colspec_headers:
@@ -44,6 +48,7 @@ sources:
       width: field_length                 # required if `start` or `end` is not provided
     type: fixedwidth               # required if `file` does not end with '.txt'
     header_rows: 0
+    {% endif %}
 
 transformations:
   input:
