@@ -56,7 +56,7 @@ transformations:
       - operation: duplicate_columns
         columns:
          Test_Dte: administrationDate
-         Stu_ID_Num: studentUniqueId
+         ${STUDENT_ID_NAME}: studentUniqueId
           
       - operation: add_columns
         columns:
