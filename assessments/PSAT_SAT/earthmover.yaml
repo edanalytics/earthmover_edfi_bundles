@@ -213,10 +213,11 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: date_format
-        column: administrationDate
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
+      ### Original date format sourced from custom file spec.
+      # - operation: date_format
+      #   column: administrationDate
+      #   from_format: "%m/%d/%Y"
+      #   to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
           schoolYear: ${API_YEAR}
