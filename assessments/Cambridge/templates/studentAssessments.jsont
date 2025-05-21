@@ -1,12 +1,12 @@
 {%- set possible_scores = [[qualification, "Qualification", "Level"]] -%}
 
 {%- if assessmentIdentifier != 'cambridge_aice_diploma' -%}
-  {%- set _ = possible_scores.append([grade, "grade", "Level"]) -%}
-  {%- set _ = possible_scores.append([series, "series", "Integer"]) -%}
-  {%- set _ = possible_scores.append([level_entered, "Level Entered", "Level"]) -%}
-  {%- set _ = possible_scores.append([level_achieved, "Level Achieved", "Level"]) -%}
-  {%- set _ = possible_scores.append([syllabus, "Syllabus", "Level"]) -%}
-  {%- set _ = possible_scores.append([syllabus_name, "Syllabus Name", "Level"]) -%}
+  {%- set _ = possible_scores.append([GRADE, "grade", "Level"]) -%}
+  {%- set _ = possible_scores.append([SERIES, "series", "Integer"]) -%}
+  {%- set _ = possible_scores.append([LEVEL_ENTERED, "Level Entered", "Level"]) -%}
+  {%- set _ = possible_scores.append([LEVEL_ACHIEVED, "Level Achieved", "Level"]) -%}
+  {%- set _ = possible_scores.append([SYLLABUS, "Syllabus", "Level"]) -%}
+  {%- set _ = possible_scores.append([SYLLABUS_NAME, "Syllabus Name", "Level"]) -%}
 {%- endif -%}
 
 {%- set scores = [] -%}
@@ -47,7 +47,7 @@
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AICE Diploma Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{grade}}"
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{GRADE}}"
       {%- if edfi_ds_version|int < 4 -%}
         ,"performanceLevelMet": true
       {% endif %}

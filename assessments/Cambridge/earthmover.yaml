@@ -44,7 +44,6 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
-      - operation: snake_case_columns
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
