@@ -2,7 +2,8 @@
   {%- set possible_scores = [
     [Acc, "Level", "Accommodations"], 
     [Retake, "Level", "Retake"],
-    [GR9, "Level", "GR9"]
+    [GR9, "Level", "GR9"],
+    [TestAdmin, "Level", "TestAdmin"],
   ] -%}
 {%- else -%}
   {%- set possible_scores = [
@@ -11,7 +12,8 @@
     [GR9, "Level", "GR9"],
     [SoftRS, "Integer", "RS"], 
     [SoftSS, "Integer", "SS"], 
-    [SoftDuration, "Integer", "Duration"]
+    [SoftDuration, "Integer", "Duration"],
+    [TestAdmin, "Level", "TestAdmin"],
   ] -%}
 {%- endif -%}
 
