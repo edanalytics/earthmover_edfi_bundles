@@ -78,7 +78,7 @@ transformations:
                 {{ schoolYear | int - 1 }}
               {%- endif -%}
             {%endraw%}  
-          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ series[:2] }}{%endraw%}"
+          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ SERIES[:2] }}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
         columns:
