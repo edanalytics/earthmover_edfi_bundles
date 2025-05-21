@@ -50,23 +50,23 @@ transformations:
       - operation: add_columns
         columns:
           # How to handle AS & A ?
-          courseLevel: "{%raw%}{{ qualification.split(' ')[0] }}{%endraw%}"
-          assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ syllabus }}{%- endif -%}{%endraw%}"
+          courseLevel: "{%raw%}{{ QUALIFICATION.split(' ')[0] }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ SYLLABUS }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
           schoolYear: ${SCHOOL_YEAR}
           testMonth:  >
             {%raw%}
-              {%- if series[3:] == 'Apr' -%}
+              {%- if SERIES[3:] == 'Apr' -%}
                 04
-              {%- elif series[3:] == 'May' -%}
+              {%- elif SERIES[3:] == 'May' -%}
                 05
-              {%- elif series[3:] == 'Jun' -%}
+              {%- elif SERIES[3:] == 'Jun' -%}
                 06
-              {%- elif series[3:] == 'Sep' -%}
+              {%- elif SERIES[3:] == 'Sep' -%}
                 09
-              {%- elif series[3:] == 'Oct' -%}
+              {%- elif SERIES[3:] == 'Oct' -%}
                 10
-              {%- elif series[3:] == 'Nov' -%}
+              {%- elif SERIES[3:] == 'Nov' -%}
                 11
               {%- endif -%}
             {%endraw%}
@@ -82,9 +82,9 @@ transformations:
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
         columns:
-          - student_state_id
+          - student_id
           - administrationDate
-          - syllabus
+          - SYLLABUS
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
