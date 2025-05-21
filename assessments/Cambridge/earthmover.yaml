@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: INFO
+  log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -48,6 +48,7 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
+        debug: True
       - operation: add_columns
         columns:
           # How to handle AS & A ?
@@ -55,15 +56,36 @@ transformations:
           assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ syllabus }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
           schoolYear: ${SCHOOL_YEAR}
-          testYear: "{%raw%}{{ series[3:5] }}{%endraw%}"
-          testMonth: "{%raw%}{{ series[:3] }}{%endraw%}"
-          administrationDate: "{%raw%}20{{ testYear }}-{%- if testMonth == 'Jun' -%}06{%- else -%}11{%- endif -%}-01{%endraw%}"
-
+          testMonth:  >
+            {%raw%}
+              {%- if series[3:] == 'Apr' -%}
+                04
+              {%- elif series[3:] == 'May' -%}
+                05
+              {%- elif series[3:] == 'Jun' -%}
+                06
+              {%- elif series[3:] == 'Sep' -%}
+                09
+              {%- elif series[3:] == 'Oct' -%}
+                10
+              {%- elif series[3:] == 'Nov' -%}
+                11
+              {%- endif -%}
+            {%endraw%}
+          testYear: > 
+            {%raw%}
+              {%- if testMonth|int < 7 -%}
+                {{ schoolYear }}
+              {%- else -%}
+                {{ schoolYear | int - 1 }}
+              {%- endif -%}
+            {%endraw%}  
+          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ series[:2] }}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
         columns:
           - student_state_id
-          - series
+          - administrationDate
           - syllabus
         new_column: studentAssessmentIdentifier
         separator: '-'
