@@ -48,7 +48,6 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
-        debug: True
       - operation: add_columns
         columns:
           # How to handle AS & A ?
