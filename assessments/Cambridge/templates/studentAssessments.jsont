@@ -1,8 +1,8 @@
 {%- set possible_scores = [[qualification, "Qualification", "Level"]] -%}
 
 {%- if assessmentIdentifier != 'cambridge_aice_diploma' -%}
-  {%- set _ = possible_scores.append([GRADE, "grade", "Level"]) -%}
-  {%- set _ = possible_scores.append([SERIES, "series", "Integer"]) -%}
+  {%- set _ = possible_scores.append([GRADE, "Grade", "Level"]) -%}
+  {%- set _ = possible_scores.append([SERIES, "Series", "Integer"]) -%}
   {%- set _ = possible_scores.append([LEVEL_ENTERED, "Level Entered", "Level"]) -%}
   {%- set _ = possible_scores.append([LEVEL_ACHIEVED, "Level Achieved", "Level"]) -%}
   {%- set _ = possible_scores.append([SYLLABUS, "Syllabus", "Level"]) -%}
