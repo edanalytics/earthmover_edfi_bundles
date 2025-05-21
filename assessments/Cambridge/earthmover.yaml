@@ -10,7 +10,7 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'student_state_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STUDENT_STATE_ID' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
