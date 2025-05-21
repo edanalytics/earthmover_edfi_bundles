@@ -204,7 +204,7 @@ transformations:
           language_json: >
               {%raw-%}  {%- if LanguageCode is not none and LanguageCode | length -%} 
               {
-                "languageDescriptor": "{{namespace}}/LanguageDescriptor#{{LanguageCode}}"
+                "languageDescriptor": "{{namespace}}#{{LanguageCode}}"
               }
               {%-endif-%}
               {%-endraw%}
