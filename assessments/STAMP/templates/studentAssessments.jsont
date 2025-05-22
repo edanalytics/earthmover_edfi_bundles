@@ -12,14 +12,14 @@
 {%- if assessmentIdentifier == 'STAMP 4S' -%}
   {%- set possible_obj_assess = [
     ['Reading', Reading_Score, Reading_Level, Reading_Length],
-    ['Writing', "", Writing_Level, Writing_Length],
+    ['Writing', 'Not Applicable', Writing_Level, Writing_Length],
     ['Listening', Listening_Score, Listening_Level, Listening_Length],
-    ['Speaking', "", Speaking_Level, Speaking_Length]
+    ['Speaking', 'Not Applicable', Speaking_Level, Speaking_Length]
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP WS' -%} 
   {%- set possible_obj_assess = [
-    ['Writing', "", Writing_Level, Writing_Length],
-    ['Speaking', "", Speaking_Level, Speaking_Length]
+    ['Writing', 'Not Applicable', Writing_Level, Writing_Length],
+    ['Speaking', 'Not Applicable', Speaking_Level, Speaking_Length]
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP Latin' -%} 
   {%- set possible_obj_assess = [
@@ -27,13 +27,13 @@
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP Monolingual' -%} 
   {%- set possible_obj_assess = [
-    ['Writing', "", Writing_Level, Writing_Length],
-    ['Speaking', "", Speaking_Level, Speaking_Length]
+    ['Writing', 'Not Applicable', Writing_Level, Writing_Length],
+    ['Speaking', 'Not Applicable', Speaking_Level, Speaking_Length]
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP ASL' -%}
   {%- set possible_obj_assess = [
-    ['Receptive', "", "", ""],
-    ['Expressive', "", "", ""]
+    ['Receptive', 'Not Applicable', "", ""],
+    ['Expressive', 'Not Applicable', "", ""]
   ] -%}
 {%- endif -%}
 
@@ -125,6 +125,15 @@
       "identificationCode": "{{obj[0]}}",
       "namespace": "{{assessmentNamespace}}"
     }
+    {%- if obj[1] is not none and obj[1] | length -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{obj[1]}}"
+      }
+      ]
+    {%- endif -%}
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
@@ -149,6 +158,15 @@
       "identificationCode": "{{obj[0]}}",
       "namespace": "{{assessmentNamespace}}"
     }
+    {%- if obj[1] is not none and obj[1] | length -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{obj[1]}}"
+      }
+      ]
+    {%- endif -%}
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
