@@ -20,6 +20,9 @@ sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -31,6 +34,12 @@ sources:
     header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  objectivePerformanceLevel:
+    file: ./seeds/objectivePerformanceLevel.csv
+    header_rows: 1
+  objectiveScores:
+    file: ./seeds/objectiveScores.csv
     header_rows: 1
 
   input:
@@ -47,6 +56,205 @@ transformations:
   stage_student_assessment:
     source: $transformations.input
     operations:
+      - operation: keep_columns
+        columns: 
+        -  State Student ID
+        -  Actual Grade
+        -  English Test Administration Date
+        -  English Scale Score
+        -  English ACT Readiness Benchmark
+        -  English Readiness Level
+        -  English Projected one-year ACT Aspire Score Range Lower
+        -  English Projected one-year ACT Aspire Score Range Upper
+        -  English Projected two-year ACT Aspire Score Range Lower
+        -  English Projected two-year ACT Aspire Score Range Upper
+        -  English Projected ACT Score Range Lower
+        -  English Projected ACT Score Range Upper
+        -  English Growth Percentile
+        -  English Growth Category
+        -  Production of Writing Earned Points
+        -  Production of Writing Total Points
+        -  Production of Writing Percent Correct
+        -  Production of Writing ACT Readiness Range
+        -  Knowledge of Language Earned Points
+        -  Knowledge of Language Total Points
+        -  Knowledge of Language Percent Correct
+        -  Knowledge of Language ACT Readiness Range
+        -  Conventions of Standard English Earned Points
+        -  Conventions of Standard English Total Points
+        -  Conventions of Standard English Percent Correct
+        -  Conventions of Standard English ACT Readiness Range
+        -  English Irregularity
+        -  Mathematics Test Administration Date
+        -  Mathematics Scale Score
+        -  Mathematics ACT Readiness Benchmark
+        -  Mathematics Readiness Level
+        -  Mathematics Projected one-year ACT Aspire Score Range Lower
+        -  Mathematics Projected one-year ACT Aspire Score Range Upper
+        -  Mathematics Projected two-year ACT Aspire Score Range Lower
+        -  Mathematics Projected two-year ACT Aspire Score Range Upper
+        -  Mathematics Projected ACT Score Range Lower
+        -  Mathematics Projected ACT Score Range Upper
+        -  Mathematics Growth Percentile
+        -  Mathematics Growth Category
+        -  Grade Level Progress Earned Points
+        -  Grade Level Progress Total Points
+        -  Grade Level Progress Percent Correct
+        -  Grade Level Progress ACT Readiness Range
+        -  Foundation Earned Points
+        -  Foundation Total Points
+        -  Foundation Percent Correct
+        -  Foundation ACT Readiness Range
+        -  Justification and Explanation Earned Points
+        -  Justification and Explanation Total Points
+        -  Justification and Explanation Percent Correct
+        -  Justification and Explanation ACT Readiness Range
+        -  Modeling Earned Points
+        -  Modeling Total Points
+        -  Modeling Percent Correct
+        -  Modeling ACT Readiness Range
+        -  Number and Operations - Fractions Earned Points
+        -  Number and Operations - Fractions Total Points
+        -  Number and Operations - Fractions Percent Correct
+        -  Number and Operations - Fractions ACT Readiness Range
+        -  Number and Operations in Base 10 Earned Points
+        -  Number and Operations in Base 10 Total Points
+        -  Number and Operations in Base 10 Percent Correct
+        -  Number and Operations in Base 10 ACT Readiness Range
+        -  The Number System Earned Points
+        -  The Number System Total Points
+        -  The Number System Percent Correct
+        -  The Number System ACT Readiness Range
+        -  Number and Quantity Earned Points
+        -  Number and Quantity Total Points
+        -  Number and Quantity Percent Correct
+        -  Number and Quantity ACT Readiness Range
+        -  Operations and Algebraic Thinking Earned Points
+        -  Operations and Algebraic Thinking Total Points
+        -  Operations and Algebraic Thinking Percent Correct
+        -  Operations and Algebraic Thinking ACT Readiness Range
+        -  Expressions & Equations Earned Points
+        -  Expressions & Equations Total Points
+        -  Expressions & Equations Percent Correct
+        -  Expressions & Equations ACT Readiness Range
+        -  Ratios and Proportional Relationships Earned Points
+        -  Ratios and Proportional Relationships Total Points
+        -  Ratios and Proportional Relationships Percent Correct
+        -  Ratios and Proportional Relationships ACT Readiness Range
+        -  Algebra Earned Points
+        -  Algebra Total Points
+        -  Algebra Percent Correct
+        -  Algebra ACT Readiness Range
+        -  Functions Earned Points
+        -  Functions Total Points
+        -  Functions Percent Correct
+        -  Functions ACT Readiness Range
+        -  Geometry Earned Points
+        -  Geometry Total Points
+        -  Geometry Percent Correct
+        -  Geometry ACT Readiness Range
+        -  Measurement and Data Earned Points
+        -  Measurement and Data Total Points
+        -  Measurement and Data Percent Correct
+        -  Measurement and Data ACT Readiness Range
+        -  Statistics and Probability Earned Points
+        -  Statistics and Probability Total Points
+        -  Statistics and Probability Percent Correct
+        -  Statistics and Probability ACT Readiness Range
+        -  Mathematics Irregularity
+        -  Reading Test Administration Date
+        -  Reading Scale Score
+        -  Reading ACT Readiness Benchmark
+        -  Reading Readiness Level
+        -  Reading Projected one-year ACT Aspire Score Range Lower
+        -  Reading Projected one-year ACT Aspire Score Range Upper
+        -  Reading Projected two-year ACT Aspire Score Range Lower
+        -  Reading Projected two-year ACT Aspire Score Range Upper
+        -  Reading Projected ACT Score Range Lower
+        -  Reading Projected ACT Score Range Upper
+        -  Reading Growth Percentile
+        -  Reading Growth Category
+        -  Key Ideas and Details Earned Points
+        -  Key Ideas and Details Total Points
+        -  Key Ideas and Details Percent Correct
+        -  Key Ideas and Details ACT Readiness Range
+        -  Craft and Structure Earned Points
+        -  Craft and Structure Total Points
+        -  Craft and Structure Percent Correct
+        -  Craft and Structure ACT Readiness Range
+        -  Integration of Knowledge and Ideas Earned Points
+        -  Integration of Knowledge and Ideas Total Points
+        -  Integration of Knowledge and Ideas Percent Correct
+        -  Integration of Knowledge and Ideas ACT Readiness Range
+        -  Reading Irregularity
+        -  Science Test Administration Date
+        -  Science Scale Score
+        -  Science ACT Readiness Benchmark
+        -  Science Readiness Level
+        -  Science Projected one-year ACT Aspire Score Range Lower
+        -  Science Projected one-year ACT Aspire Score Range Upper
+        -  Science Projected two-year ACT Aspire Score Range Lower
+        -  Science Projected two-year ACT Aspire Score Range Upper
+        -  Science Projected ACT Score Range Lower
+        -  Science Projected ACT Score Range Upper
+        -  Science Growth Percentile
+        -  Science Growth Category
+        -  Interpretation of Data Earned Points
+        -  Interpretation of Data Total Points
+        -  Interpretation of Data Percent Correct
+        -  Interpretation of Data ACT Readiness Range
+        -  Scientific Investigation Earned Points
+        -  Scientific Investigation Total Points
+        -  Scientific Investigation Percent Correct
+        -  Scientific Investigation ACT Readiness Range
+        -  Evaluation of Models, Inferences, and Experimental Results Earned Points
+        -  Evaluation of Models, Inferences, and Experimental Results Total Points
+        -  Evaluation of Models, Inferences, and Experimental Results Percent Correct
+        -  Evaluation of Models, Inferences, and Experimental Results ACT Readiness Range
+        -  Science Irregularity
+        -  Writing Test Administration Date
+        -  Writing Scale Score
+        -  Writing ACT Readiness Benchmark
+        -  Writing Readiness Level
+        -  Writing Projected one-year ACT Aspire Score Range Lower
+        -  Writing Projected one-year ACT Aspire Score Range Upper
+        -  Writing Projected two-year ACT Aspire Score Range Lower
+        -  Writing Projected two-year ACT Aspire Score Range Upper
+        -  Writing Projected ACT Score Range Lower
+        -  Writing Projected ACT Score Range Upper
+        -  Writing Growth Percentile
+        -  Writing Growth Category
+        -  Ideas and Analysis Earned Points
+        -  Ideas and Analysis Total Points
+        -  Ideas and Analysis Percent Correct
+        -  Ideas and Analysis ACT Readiness Range
+        -  Development and Support Earned Points
+        -  Development and Support Total Points
+        -  Development and Support Percent Correct
+        -  Development and Support ACT Readiness Range
+        -  Organization Earned Points
+        -  Organization Total Points
+        -  Organization Percent Correct
+        -  Organization ACT Readiness Range
+        -  Language Use and Conventions Earned Points
+        -  Language Use and Conventions Total Points
+        -  Language Use and Conventions Percent Correct
+        -  Language Use and Conventions ACT Readiness Range
+        -  Writing Irregularity
+        -  ACT Aspire Composite Score
+        -  The ACT Predicted Composite Score Range Low
+        -  The ACT Predicted Composite Score Range High
+        -  English National Percentile Rank
+        -  Reading National Percentile Rank
+        -  Science National Percentile Rank
+        -  Writing National Percentile Rank
+        -  Mathematics National Percentile Rank
+        -  ELA Score
+        -  ELA Readiness
+        -  Progress with Text Complexity
+        -  STEM Score
+        -  STEM Readiness
+        -  Progress Toward Career Readiness
       - operation: rename_columns
         columns: 
           State Student ID: State_Student_ID
@@ -246,53 +454,29 @@ transformations:
           STEM Score: STEM_Score
           STEM Readiness: STEM_Readiness
           Progress Toward Career Readiness: Progress_Toward_Career_Readiness
-
   
   prepare_student_assessment:
     source: $transformations.stage_student_assessment
+    #debug: true
     operations:
-      #- operation: duplicate_columns
-      #  columns: 
-      #    ${STUDENT_ID_NAME}: studentUniqueId
-      #    Test_Dte: administrationDate
       - operation: add_columns
         columns:
           TestDate: >
             {%raw-%}
-            {%- if English_Test_Date is not none and English_Test_Date | length -%} English_Test_Date
-            {%- elif Mathematics_Test_Date is not none and Mathematics_Test_Date | length -%} Mathematics_Test_Date
-            {%- elif Reading_Test_Date is not none and Reading_Test_Date | length -%} Reading_Test_Date
-            {%- elif Writing_Test_Date is not none and Writing_Test_Date | length -%} Writing_Test_Date
-            {%- elif Science_Test_Date is not none and Science_Test_Date | length -%} Science_Test_Date
+            {%- if English_Test_Date is not none and English_Test_Date | length -%} {{English_Test_Date}}
+            {%- elif Mathematics_Test_Date is not none and Mathematics_Test_Date | length -%} {{Mathematics_Test_Date}}
+            {%- elif Reading_Test_Date is not none and Reading_Test_Date | length -%} {{Reading_Test_Date}}
+            {%- elif Writing_Test_Date is not none and Writing_Test_Date | length -%} {{Writing_Test_Date}}
+            {%- elif Science_Test_Date is not none and Science_Test_Date | length -%} {{Science_Test_Date}}
             {%- endif -%}
             {%-endraw%}
           assessmentIdentifier: "ACT Aspire"
           assessmentNamespace: "uri://act.org"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-      - operation: duplicate_columns
-        columns: 
-          TestDate: administrationDate
-          TestDate: schoolYear
-          TestDate: schoolYearMonth
-          State_Student_ID: studentUniqueId
-      - operation: combine_columns
-        columns:
-          - State_Student_ID
-          - TestDate
-        new_column: studentAssessmentIdentifier
-        separator: '-'
-      - operation: modify_columns
-        columns:
-          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
-          schoolYear: "{%raw%}{{schoolYear[-4:]}}{%endraw%}"
-          schoolYearMonth: "{%raw%}{{schoolYearMonth[0:2]}}{%endraw%}"
-          # we get date as '05192015', and need to convert this to '01032023' to represent 'March 1st 2023'
-          #administrationDate: '{%raw%}01{{ "{:06d}".format(administrationDate| int) }}{%endraw%}'
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
-        # change this to match the grade from the file
+        join_type: left
         left_keys: 
           - Actual_Grade
           - assessmentIdentifier
@@ -302,59 +486,22 @@ transformations:
         right_keep_columns:
           - Grade_CodeValue
           - Grade_Namespace
-      #- operation: join
-      #  sources:
-      #    - $sources.performanceLevelDescriptors
-      #  join_type: left
-      #  # change this to match the perf level from the file
-      #  left_keys: 
-      #    - C_Readiness
-      #  right_keys: 
-      #    - rawValue
-      #  right_keep_columns:
-      #    - codeValue
       - operation: add_columns
         columns:
-          school_Year: "{%raw%} {% if schoolYear is not none and schoolYearMonth|int not in (7,8,9,10,11,12) %} {{schoolYear|int}} {% else %} {{schoolYear|int + 1}} {% endif %} {%endraw%}"
-          gradeLevelDescriptor: "{{Grade_Namespace}}#{{Grade_CodeValue}}"
-      #- operation: rename_columns
-      #  columns:
-      #    codeValue: performanceLevelDescriptor
+          school_year: "{%raw%}{{TestDate[-4:]}}{%endraw%}"
+          school_year_month: "{%raw%}{{TestDate[0:2]}}{%endraw%}"
+          gradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
+          administrationDate: "{%raw%}{{TestDate}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{md5(State_Student_ID ~ TestDate)}}{%endraw%}"
+          studentUniqueId: "{%raw%}{{State_Student_ID}}{%endraw%}"
       - operation: date_format
         column: administrationDate
-        from_format: "%d%m%Y"
+        from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
-      #- operation: filter_rows
-      #  query: Composite.str.fullmatch('-*') & StRnk_Comp.str.fullmatch('-*') & USRnk_Comp.str.fullmatch('-*') & Sup_Composite.str.fullmatch('-*') & Sum_Scale.str.fullmatch('-*') & Sup_Sum_Scale.str.fullmatch('-*')
-      #  behavior: exclude
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
 
-  #academic_subject_descriptors:
-  #  source: $sources.academicSubjectDescriptors
-  #  operations:
-  #    - operation: add_columns
-  #      columns:
-  #        subject_json: >
-  #            {%raw-%}  
-  #            {
-  #              "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
-  #            },
-  #            {%-endraw%}
-  #    - operation: modify_columns
-  #      columns:
-  #        subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
-  #      # group and aggregate:
-  #    - operation: group_by
-  #      group_by_columns:
-  #        - assessmentIdentifier
-  #      create_columns: 
-  #        subject_json: agg(subject_json,)
-  #    # there will be a trailing comma, want to get rid of that
-  #    - operation: modify_columns
-  #      columns:
-  #        subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-
-  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
-  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -362,20 +509,17 @@ transformations:
         columns:
           grade_json: >
             {%raw-%}  
-            {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            {"gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
             },
             {%-endraw%}
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
-      # group and aggregate:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
         create_columns: 
           grade_json: agg(grade_json,)
-      # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
@@ -389,30 +533,99 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      #- operation: join
-      #  sources:
-      #    - $transformations.academic_subject_descriptors
-      #  join_type: inner
-      #  left_key: assessmentIdentifier
-      #  right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
-  objective_assessments:
-    source: $sources.objectiveAssessments
+  performance_levels:  
+    source: $sources.objectivePerformanceLevel
+    operations:
+      - operation: join
+        sources:
+          - $sources.performanceLevelDescriptors
+        join_type: inner
+        left_keys: 
+        - reportingMethod
+        right_keys: 
+        - reportingMethod
+        right_keep_columns:
+        - namespace
+        - codeValue
+      - operation: add_columns
+        columns:
+          performancejson: >
+              {%raw-%}
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          performancejson: "{%raw%}{{performancejson | replace('\n', '')-}}{%endraw%}"  
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns: 
+          performancejson: agg(performancejson,,)
+
+  objective_scores:  
+    source: $sources.objectiveScores
     operations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          scorejson: >
+              {%raw-%}
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
+                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}#{{resultDataType}}"
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          scorejson: "{%raw%}{{scorejson | replace('\n', '')-}}{%endraw%}"  
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns: 
+          scorejson: agg(scorejson,,)
+
+  prepare_objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+        join_type: left
+        left_keys: 
+        - identificationCode
+        right_keys: 
+        - identificationCode
+        right_keep_columns:
+        - performancejson
+      - operation: join
+        sources:
+          - $transformations.objective_scores
+        join_type: left
+        left_keys: 
+        - identificationCode
+        right_keys: 
+        - identificationCode
+        right_keep_columns:
+        - scorejson
 
 destinations:
   assessments:
-    source: $transformations.assessments
+    source: $transformations.prepare_assessments
     template: ./templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
@@ -420,10 +633,18 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
-    source: $transformations.objective_assessments
+    source: $transformations.prepare_objective_assessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.prepare_student_assessment
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  #gradeLevelDescriptors:
+  #  source: $sources.gradeLevelDescriptors
+  #  template: ./templates/descriptors.jsont
+  #  extension: jsonl

@@ -13,27 +13,6 @@
     },
     {% endif %}
     "academicSubjectDescriptor": "{{academicSubjectDescriptor}}",
-    "scores": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
-      }
-    ],
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Lower than Average",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Average",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Higher than Average",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      }
-    ]
+    "scores": [{{scorejson}}],
+    "performanceLevels": [{{performancejson}}]
   }
