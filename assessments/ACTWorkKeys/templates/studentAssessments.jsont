@@ -1,14 +1,3 @@
- {%- set total_possible_scores = [
-    [CompositeScore, "String", "ACCTWK_NCRC Credential"],
-] -%}
-
-{%- set total_scores = [] -%}
-{%- for score in total_possible_scores -%}
-  {%- if score[0] is not none and score[0] | string | lower != 'none' and score[0] | string | length > 0 -%}
-    {%- set _ = total_scores.append(score) -%}
-  {%- endif -%}
-{%- endfor -%}
-
 {%- if schoolYear >= '2022' -%}
   {%- set score_map = {
   "Applied Math": [
@@ -72,15 +61,12 @@
 {%- endif %}
 
   
-  {%- if total_scores | length > 0 -%}
-  ,"scoreResults": [
-    {%- for score in total_scores -%}
+ {%- if Performance_CodeValue is not none and Performance_CodeValue | length -%}
+  ,"performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
-        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
-        "result": "{{score[0]}}"
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
+        "assessmentReportingMethodDescriptor": "{{Performance_ReportingMethod}}",
+        "performanceLevelDescriptor": "{{Performance_Namespace}}#{{Performance_CodeValue}}"
+      } 
   ]
   {%- endif -%}
   {%- if score_map | length > 0 -%}
@@ -89,7 +75,7 @@
   {%- for domain, score_list in score_map.items() %}
     {%- set ns.valid_scores = [] %}
     {%- for score in score_list %}
-      {%- if score[0] != None and score[0] | string != 'none' and score[0] | string | trim != '' %}
+      {%- if score[0] != None and score[0] | string != 'None' and score[0] | string != 'none' and score[0] | string | trim != '' %}
         {%- set ns.valid_scores = ns.valid_scores + [score] %}
       {%- endif %}
     {%- endfor %}

@@ -39,6 +39,9 @@ sources:
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -59,9 +62,19 @@ transformations:
           EducationLevel: GradeLevel
           codeValue: Grade_CodeValue
           namespace: Grade_Namespace
-      
+
+  stage_performance_level:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          codeValue: Performance_CodeValue
+          namespace: Performance_Namespace
+          reportingMethod: Performance_ReportingMethod   
    
-  
   stage_assessment_platform_type:
     source: $sources.assessmentPlatformTypeDescriptors
     operations:
@@ -69,7 +82,6 @@ transformations:
         columns:
           joinKey: "Key"
       
-  
   stage_accommodation:
     source: $sources.accommodationDescriptors
     operations:
@@ -82,7 +94,7 @@ transformations:
           - joinKey
         create_columns:
           accommodationDescriptorUri: agg(accommodationDescriptorUri,,)
-  
+
   stage_assessments:
     source: $sources.assessments
     operations:
@@ -103,7 +115,7 @@ transformations:
           Level Score: LevelScore
           Scale Score: ScaleScore
           WorkKeys Source: platformTypeDescriptor
-          Certificate Level: CompositeScore
+          Certificate Level: CertificateLevel
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
@@ -161,7 +173,7 @@ transformations:
           accommodationsFlag: str_min(accommodationsFlag)
           EducationLevel: str_min(EducationLevel)
           platformTypeDescriptor: str_min(platformTypeDescriptor)
-          CompositeScore: str_min(CompositeScore)
+          CertificateLevel: str_min(CertificateLevel)
           administrationDate: str_min(administrationDate)
           assessmentIdentifier: str_min(assessmentIdentifier)
           joinKey: str_min(joinKey)
@@ -188,7 +200,7 @@ transformations:
           readlev: ReadLevelScore
           readss: ReadScaleScore
           source: platformTypeDescriptor
-          cert: CompositeScore
+          cert: CertificateLevel
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
@@ -201,6 +213,9 @@ transformations:
       - operation: modify_columns
         columns:
           EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+      - operation: map_values
+        column: CertificateLevel
+        map_file: ./seeds/certificateLevelMapping.csv
     {% endif %}      
 
   stage_student_assessment_grade:
@@ -216,7 +231,7 @@ transformations:
           - GradeLevel
         right_keep_columns:
           - Grade_CodeValue
-          - Grade_Namespace
+          - Grade_Namespace   
       - operation: join
         sources:
           - $transformations.stage_accommodation
@@ -225,7 +240,16 @@ transformations:
         right_key: joinKey
         right_keep_columns:
           - accommodationDescriptorUri
-
+      - operation: join
+        sources:
+          - $transformations.stage_performance_level
+        join_type: left
+        left_key: CertificateLevel
+        right_key: CertificateLevel
+        right_keep_columns:
+          - Performance_CodeValue
+          - Performance_Namespace
+          - Performance_ReportingMethod
 
   grade_levels:
     source: $transformations.stage_assessment_grade_level
@@ -359,7 +383,6 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}" 
      
-     
   prepare_student_assessment_valid_school:
     source: $transformations.prepare_student_assessments
     operations:
@@ -390,6 +413,10 @@ destinations:
     extension: jsonl
   platformTypeDescriptors:
     source: $sources.assessmentPlatformTypeDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
