@@ -10,6 +10,7 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'Examinee ID,stateid' #Examinee ID for ACTWorkKeys and stateid for ACTWorkKeys2017
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    OVERRIDE_TO_2022_LOGIC: False # Set to True if the logic for 2022 and later should be used regardless of SCHOOL_YEAR
   
 sources:
   input:
@@ -102,7 +103,7 @@ transformations:
         columns:
           joinKey: "Key"
  
- {% if "${SCHOOL_YEAR}" >= "2022" %}
+ {% if "${SCHOOL_YEAR}" >= "2022" or "${OVERRIDE_TO_2022_LOGIC}" %}
   stage_student_assessments:
     source: $transformations.input
     operations:
@@ -183,7 +184,7 @@ transformations:
 
     {% endif %} 
 
-  {% if "${SCHOOL_YEAR}" < "2022" %}
+  {% if "${SCHOOL_YEAR}" < "2022" and not "${OVERRIDE_TO_2022_LOGIC}" %}
   stage_student_assessments:
     source: $transformations.input
     operations:
