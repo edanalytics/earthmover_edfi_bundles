@@ -60,11 +60,13 @@
       }
     ],
     "performanceLevels": [
+      {% if PerformanceLevel_SFScore is not none and PerformanceLevel_SFScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_SFScore}}",
         "performanceLevelMet": true
       }
+      {% endif %}
     ] 
   },
     {
@@ -81,11 +83,13 @@
       }
     ],
     "performanceLevels": [
+      {% if PerformanceLevel_LLScore is not none and PerformanceLevel_LLScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_LLScore}}",
         "performanceLevelMet": true
       }
+      {% endif %}
     ] 
   },
     {
@@ -102,11 +106,13 @@
       }
     ],
     "performanceLevels": [
+      {% if PerformanceLevel_MAScore is not none and PerformanceLevel_MAScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_MAScore}}",
         "performanceLevelMet": true
       }
+      {% endif %}
     ] 
   },
     {
@@ -123,11 +129,13 @@
       }
     ],
     "performanceLevels": [
+      {% if PerformanceLevel_PDScore is not none and PerformanceLevel_PDScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_PDScore}}",
         "performanceLevelMet": true
       }
+      {% endif %}
     ] 
   }  ]
 }
