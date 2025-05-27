@@ -58,16 +58,18 @@
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ SFScore }}"
       }
-    ],
+    ]
+     {% if PerformanceLevel_SFScore is not none and PerformanceLevel_SFScore | length %}
+    ,
     "performanceLevels": [
-      {% if PerformanceLevel_SFScore is not none and PerformanceLevel_SFScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_SFScore}}",
         "performanceLevelMet": true
       }
-      {% endif %}
+      
     ] 
+    {% endif %}
   },
     {
     "objectiveAssessmentReference": {
@@ -81,16 +83,19 @@
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ LLScore }}"
       }
-    ],
-    "performanceLevels": [
+    ]
       {% if PerformanceLevel_LLScore is not none and PerformanceLevel_LLScore | length %}
+      ,
+    "performanceLevels": [
+    
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_LLScore}}",
         "performanceLevelMet": true
       }
-      {% endif %}
+      
     ] 
+    {% endif %}
   },
     {
     "objectiveAssessmentReference": {
@@ -104,16 +109,19 @@
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ MAScore }}"
       }
-    ],
+    ]
+     {% if PerformanceLevel_MAScore is not none and PerformanceLevel_MAScore | length %}
+     ,
     "performanceLevels": [
-      {% if PerformanceLevel_MAScore is not none and PerformanceLevel_MAScore | length %}
+     
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_MAScore}}",
         "performanceLevelMet": true
       }
-      {% endif %}
+      
     ] 
+    {% endif %}
   },
     {
     "objectiveAssessmentReference": {
@@ -127,16 +135,19 @@
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{ PDScore }}"
       }
-    ],
+    ]
+     {% if PerformanceLevel_PDScore is not none and PerformanceLevel_PDScore | length %}
+     
+    ,
     "performanceLevels": [
-      {% if PerformanceLevel_PDScore is not none and PerformanceLevel_PDScore | length %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_PDScore}}",
         "performanceLevelMet": true
       }
-      {% endif %}
+      
     ] 
+    {% endif %}
   }  ]
 }
 {% endif %}
