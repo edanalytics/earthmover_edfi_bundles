@@ -100,7 +100,7 @@
   , "scoreResults": [
     {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
@@ -112,8 +112,8 @@
   , "performanceLevels": [
     {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
@@ -133,7 +133,7 @@
         "scoreResults": [
           {%- for score in obj[2] if score[2] is not none and score[2] | length -%}
             {
-              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
               "result": "{{score[2]}}"
             }{% if not loop.last %},{% endif %}
@@ -142,8 +142,8 @@
         "performanceLevels": [
           {%- for perf_level in obj[3] if perf_level[1] is not none and perf_level[1] | length -%}
             {
-              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{perf_level[0]}}",
-              "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{perf_level[1]}}",
+              "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[0]}}",
+              "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[1]}}",
               "performanceLevelMet": true
             }{% if not loop.last %},{% endif %}
           {%- endfor %}

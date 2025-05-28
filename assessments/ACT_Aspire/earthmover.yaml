@@ -59,6 +59,7 @@ transformations:
       - operation: keep_columns
         columns: 
         -  State Student ID
+        -  State School Code
         -  Actual Grade
         -  English Test Administration Date
         -  English Scale Score
@@ -258,6 +259,7 @@ transformations:
       - operation: rename_columns
         columns: 
           State Student ID: State_Student_ID
+          State School Code: School_Code
           Actual Grade: Actual_Grade
           English Test Administration Date: English_Test_Date
           English Scale Score: English_Scale_Score
@@ -471,7 +473,7 @@ transformations:
             {%- endif -%}
             {%-endraw%}
           assessmentIdentifier: "ACT Aspire"
-          assessmentNamespace: "uri://act.org"
+          assessmentNamespace: "uri://act.org/Assessments/ACTAspire"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: join
         sources:
@@ -500,7 +502,7 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
+          schoolYear: "{%raw%}{% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %}{{school_year|int}}{% else %}{{school_year|int + 1}}{% endif %}{%endraw%}"
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -639,6 +641,10 @@ destinations:
   studentAssessments:
     source: $transformations.prepare_student_assessment
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
