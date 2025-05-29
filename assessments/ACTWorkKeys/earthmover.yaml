@@ -103,7 +103,7 @@ transformations:
         columns:
           joinKey: "Key"
  
- {% if "${SCHOOL_YEAR}" >= "2022" or "${OVERRIDE_TO_2022_LOGIC}" %}
+ {% if "${SCHOOL_YEAR}" >= "2022" or ${OVERRIDE_TO_2022_LOGIC} %}
   stage_student_assessments:
     source: $transformations.input
     operations:
@@ -184,7 +184,7 @@ transformations:
 
     {% endif %} 
 
-  {% if "${SCHOOL_YEAR}" < "2022" and not "${OVERRIDE_TO_2022_LOGIC}" %}
+  {% if "${SCHOOL_YEAR}" < "2022" and not ${OVERRIDE_TO_2022_LOGIC} %}
   stage_student_assessments:
     source: $transformations.input
     operations:
