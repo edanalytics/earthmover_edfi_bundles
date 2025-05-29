@@ -277,6 +277,29 @@ transformations:
         create_columns: 
           grade_json: agg(grade_json,,)
 
+  performance_levels:
+    source: $transformations.stage_performance_level
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          performance_json: >
+              {%raw-%} {%- if Performance_CodeValue is not none and Performance_CodeValue | length -%} 
+              {
+                 "assessmentReportingMethodDescriptor": "{{Performance_ReportingMethod}}",
+                 "performanceLevelDescriptor": "{{Performance_Namespace}}#{{Performance_CodeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          performance_json: agg(performance_json,,)
+
   assessment_platform_types:
     source: $transformations.stage_assessment_platform_type
     operations:
@@ -347,10 +370,15 @@ transformations:
         join_type: inner
         left_key: joinKey
         right_key: joinKey
-
       - operation: join
         sources:
           - $transformations.assessment_platform_types
+        join_type: left
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.performance_levels
         join_type: left
         left_key: joinKey
         right_key: joinKey
