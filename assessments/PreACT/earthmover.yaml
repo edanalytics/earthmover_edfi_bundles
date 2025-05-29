@@ -111,7 +111,15 @@ transformations:
         column: administrationDate
         from_format: "%Y%m%d"
         to_format: "%Y-%m-%d"
-
+  clean_results_student_education_organization_associations:
+    source: $transformations.clean_results
+    operations:
+      - operation: modify_columns
+        columns:
+          School_Attend_Code: "{%raw%}{{ value | replace(' ', '') }}{%endraw%}"
+      - operation: filter_rows
+        query: "School_Attend_Code != ''"
+        behavior: include
 
 
 
@@ -219,6 +227,6 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.clean_results
+    source: $transformations.clean_results_student_education_organization_associations
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
