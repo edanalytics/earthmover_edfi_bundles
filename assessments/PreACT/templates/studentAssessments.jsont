@@ -26,7 +26,7 @@
 {%- endfor -%}
 
 {%- set obj_assessment = [
-  ['PRE_ACT_Eng', [
+  ['PreACT_Eng', [
     ('Scale Score', 'Integer', Eng),
     ('National Norms Score', 'Percentile', USRnk_Sub_Engl),
     ('Low Scale Score', 'Integer', Eng_Low),
@@ -35,7 +35,7 @@
     ('High Predicted Score', 'Integer', Pred_ACT_Eng_High),
     ('Raw Score','Integer',Eng_Raw)
   ]],
-  ['PRE_ACT_Mat', [
+  ['PreACT_Mat', [
     ('Scale Score', 'Integer', Mth),
     ('National Norms Score', 'Percentile', USRnk_Sub_Math),
     ('Low Scale Score', 'Integer', Mth_Low),
@@ -44,7 +44,7 @@
     ('High Predicted Score', 'Integer', Pred_ACT_Mth_High),
     ('Raw Score','Integer',Math_Raw)
   ]],
-  ['PRE_ACT_Rdg', [
+  ['PreACT_Rdg', [
     ('Scale Score', 'Integer', Rdg),
     ('National Norms Score', 'Percentile', USRnk_Sub_Rdg),
     ('Low Scale Score', 'Integer', Rdg_Low),
@@ -53,7 +53,7 @@
     ('High Predicted Score', 'Integer', Pred_ACT_Rdg_High),
     ('Raw Score','Integer',Read_Raw)
   ]],
-  ['PRE_ACT_Sci', [
+  ['PreACT_Sci', [
     ('Scale Score', 'Integer', Sci),
     ('National Norms Score', 'Percentile', USRnk_Sub_Sci),
     ('Low Scale Score', 'Integer', Sci_Low),
@@ -62,23 +62,23 @@
     ('High Predicted Score', 'Integer', Pred_ACT_Sci_High),
     ('Raw Score','Integer',Sci_Raw)
   ]],
-  ['PRE_ACT_E_Earn_Prod', [('Raw Score', 'Integer', E_Earn_Prod)]],
-  ['PRE_ACT_E_Earn_Knlg', [('Raw Score', 'Integer', E_Earn_Knlg)]],
-  ['PRE_ACT_E_Earn_Conv', [('Raw Score', 'Integer', E_Earn_Conv)]],
-  ['PRE_ACT_M_Earn_Higher', [('Raw Score', 'Integer', M_Earn_Higher)]],
-  ['PRE_ACT_M_Earn_NumQ', [('Raw Score', 'Integer', M_Earn_NumQ)]],
-  ['PRE_ACT_M_Earn_Alg', [('Raw Score', 'Integer', M_Earn_Alg)]],
-  ['PRE_ACT_M_Earn_Func', [('Raw Score', 'Integer', M_Earn_Func)]],
-  ['PRE_ACT_M_Earn_Geom', [('Raw Score', 'Integer', M_Earn_Geom)]],
-  ['PRE_ACT_M_Earn_Stat', [('Raw Score', 'Integer', M_Earn_Stat)]],
-  ['PRE_ACT_M_Earn_Essen', [('Raw Score', 'Integer', M_Earn_Essen)]],
-  ['PRE_ACT_M_Earn_Mod', [('Raw Score', 'Integer', M_Earn_Mod)]],
-  ['PRE_ACT_R_Earn_Ideas', [('Raw Score', 'Integer', R_Earn_Ideas)]],
-  ['PRE_ACT_R_Earn_Struc', [('Raw Score', 'Integer', R_Earn_Struc)]],
-  ['PRE_ACT_R_Earn_Knlg', [('Raw Score', 'Integer', R_Earn_Knlg)]],
-  ['PRE_ACT_S_Earn_Data', [('Raw Score', 'Integer', S_Earn_Data)]],
-  ['PRE_ACT_S_Earn_Inv', [('Raw Score', 'Integer', S_Earn_Inv)]],
-  ['PRE_ACT_S_Earn_Eval', [('Raw Score', 'Integer', S_Earn_Eval)]]
+  ['PreACT_E_Earn_Prod', [('Raw Score', 'Integer', E_Earn_Prod)]],
+  ['PreACT_E_Earn_Knlg', [('Raw Score', 'Integer', E_Earn_Knlg)]],
+  ['PreACT_E_Earn_Conv', [('Raw Score', 'Integer', E_Earn_Conv)]],
+  ['PreACT_M_Earn_Higher', [('Raw Score', 'Integer', M_Earn_Higher)]],
+  ['PreACT_M_Earn_NumQ', [('Raw Score', 'Integer', M_Earn_NumQ)]],
+  ['PreACT_M_Earn_Alg', [('Raw Score', 'Integer', M_Earn_Alg)]],
+  ['PreACT_M_Earn_Func', [('Raw Score', 'Integer', M_Earn_Func)]],
+  ['PreACT_M_Earn_Geom', [('Raw Score', 'Integer', M_Earn_Geom)]],
+  ['PreACT_M_Earn_Stat', [('Raw Score', 'Integer', M_Earn_Stat)]],
+  ['PreACT_M_Earn_Essen', [('Raw Score', 'Integer', M_Earn_Essen)]],
+  ['PreACT_M_Earn_Mod', [('Raw Score', 'Integer', M_Earn_Mod)]],
+  ['PreACT_R_Earn_Ideas', [('Raw Score', 'Integer', R_Earn_Ideas)]],
+  ['PreACT_R_Earn_Struc', [('Raw Score', 'Integer', R_Earn_Struc)]],
+  ['PreACT_R_Earn_Knlg', [('Raw Score', 'Integer', R_Earn_Knlg)]],
+  ['PreACT_S_Earn_Data', [('Raw Score', 'Integer', S_Earn_Data)]],
+  ['PreACT_S_Earn_Inv', [('Raw Score', 'Integer', S_Earn_Inv)]],
+  ['PreACT_S_Earn_Eval', [('Raw Score', 'Integer', S_Earn_Eval)]]
 ] -%}
 
 {%- set filtered_obj_assessment = [] -%}
