@@ -1,6 +1,6 @@
 {% if School_Attend_Code is not none and School_Attend_Code | length %}
  {
-      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration",
+      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
         "educationOrganizationId": {{ School_Attend_Code }}
       },
