@@ -81,6 +81,19 @@
   ['PRE_ACT_S_Earn_Eval', [('Raw Score', 'Integer', S_Earn_Eval)]]
 ] -%}
 
+{%- set filtered_obj_assessment = [] -%}
+{%- for obj in obj_assessment -%}
+  {%- set valid_scores = [] -%}
+  {%- for score in obj[1] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---'] -%}
+      {%- set _ = valid_scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if valid_scores -%}
+    {%- set _ = filtered_obj_assessment.append([obj[0], valid_scores]) -%}
+  {%- endif -%}
+{%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -120,33 +133,18 @@
   ]
   {%- endif -%}
 
- , "studentObjectiveAssessments": [
-    {%- for obj in obj_assessment -%}
-      {%- set valid_scores = [] -%}
-      {%- for score in obj[1] -%}
-        {%- if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
-          {%- set _ = valid_scores.append(score) -%}
-        {%- endif -%}
-      {%- endfor -%}
-      
-      {%- if valid_scores -%}
+  {%- if filtered_obj_assessment -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj in filtered_obj_assessment -%}
       {
-        "objectiveAssessmentReference": {
-          "assessmentIdentifier": "{{assessmentIdentifier}}",
-          "identificationCode": "{{obj[0]}}",
-          "namespace": "{{namespace}}"
-        },
+        "objectiveAssessmentReference": {"assessmentIdentifier": "{{assessmentIdentifier}}", "identificationCode": "{{obj[0]}}", "namespace": "{{namespace}}"},
         "scoreResults": [
-          {%- for score in valid_scores -%}
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
-              "result": "{{score[2]}}"
-            }{% if not loop.last %},{% endif %}
-          {%- endfor %}
+          {%- for score in obj[1] -%}
+            { "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}", "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}", "result": "{{score[2]}}" }{% if not loop.last %},{% endif %}
+          {%- endfor -%}
         ]
-      } {% if not loop.last %},{% endif %}
-      {%- endif -%}
+      }{% if not loop.last %},{% endif %}
     {%- endfor -%}
   ]
+  {%- endif -%}
 }
