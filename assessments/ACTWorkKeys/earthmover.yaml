@@ -325,6 +325,9 @@ transformations:
   objectiveAssessmentScores:
     source: $sources.assessmentReportingMethodDescriptors
     operations:
+      - operation: filter_rows
+        query: 'codeValue != "ACCTWK_NCRC Credential"'
+        behavior: include
       - operation: add_columns
         columns:
           joinKey: "Key"
@@ -354,12 +357,19 @@ transformations:
       - operation: add_columns
         columns:
           joinKey: "Key"
+      - operation: join
+        sources:
+          - $transformations.objectiveAssessmentScores
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
       - operation: keep_columns
         columns:
           - identificationCode
           - namespace 
           - description
           - assessmentIdentifier
+          - scores
 
   prepare_assessments:
     source: $transformations.stage_assessments
