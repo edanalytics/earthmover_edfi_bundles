@@ -50,7 +50,7 @@
   },
   "administrationDate": "{{test_date}}",
   {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"{% if scores | length or all_obj_assessment | length %},{% endif %}
   {% endif %}  
   {% if scores | length %}
   "scoreResults": [
