@@ -193,7 +193,6 @@ transformations:
         right_key: joinKey
       - operation: add_columns
         columns:
-          # administrationDate: "{%raw%}{{ ASSESSDATE }}{%endraw%}"
           administrationDate: >
               {%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}
               {% elif SEMESTER | lower == 's' %}05-01-{{ YEAR[-4:]}}
