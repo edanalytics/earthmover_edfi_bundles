@@ -70,6 +70,9 @@ transformations:
       - operation: add_columns
         columns:
           joinKey: "Key"
+      - operation: modify_columns
+        columns:    
+          CertificateLevel: "{% raw %}{{ CertificateLevel.strip().lower() }}{% endraw %}"
       - operation: rename_columns
         columns:
           codeValue: Performance_CodeValue
@@ -159,6 +162,7 @@ transformations:
           studentKey: "{% raw %}{{ studentUniqueId  }}{% endraw %}"
           joinKey: "Key"
           EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+          CertificateLevel: "{% raw %}{{ CertificateLevel.strip().lower() }}{% endraw %}"
       - operation: group_by
         group_by_columns:
           - studentKey
@@ -211,12 +215,14 @@ transformations:
             {% raw %}
             {{ EducationLevelP if platformTypeDescriptor == 'WKPP' else EducationLevelO }}
             {% endraw %}
-      - operation: modify_columns
-        columns:
-          EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
       - operation: map_values
         column: CertificateLevel
         map_file: ./seeds/certificateLevelMapping.csv
+      - operation: modify_columns
+        columns:
+          EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
+          CertificateLevel: "{% raw %}{{ CertificateLevel.strip().lower() }}{% endraw %}"
+      
     {% endif %}      
 
   stage_student_assessment_grade:
