@@ -26,7 +26,7 @@
 ] -%}
 
 {%- set score_results = [] -%}
-{%- for score in score_results if score[0] and score[0] != 'NA' -%}
+{%- for score in all_score_results if score[0] and score[0] != 'NA' -%}
   {%- set _ = score_results.append(score) -%}
 {%- endfor -%}
 
