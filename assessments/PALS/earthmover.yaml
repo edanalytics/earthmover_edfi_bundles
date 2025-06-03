@@ -166,9 +166,6 @@ transformations:
         map_file: ./seeds/semester_mapping.csv
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  ASSESSDATE) }}{% endraw %}"
-      - operation: add_columns
-        columns:
           result: "{%raw-%}{{ Score }}{%-endraw%}"
       - operation: join
         sources:
@@ -193,14 +190,10 @@ transformations:
         right_key: joinKey
       - operation: add_columns
         columns:
-          administrationDate: >
-              {%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}
-              {% elif SEMESTER | lower == 's' %}05-01-{{ YEAR[-4:]}}
-              {% elif SEMESTER | lower == 'm' %}02-01-{{ YEAR[-4:]}}
-              {% elif SEMESTER | lower == 'f' %}09-01-{{ YEAR[-4:]}}
-              {% endif %}{%endraw%}
+          administrationDate: "{%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}{% elif SEMESTER | lower == 's' %}{{YEAR[-4:]}}-05-01{% elif SEMESTER | lower == 'm' %}{{YEAR[-4:]}}-02-01{% elif SEMESTER | lower == 'f' %}{{YEAR[:4]}}-09-01{% endif %}{%endraw%}"
+          schoolYear: "{%raw%}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{%endraw%}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
           whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
-          schoolYear: "{%raw%}{{ YEAR[-4:] }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: keep_columns
         columns:
