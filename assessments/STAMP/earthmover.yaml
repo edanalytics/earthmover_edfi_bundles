@@ -326,8 +326,6 @@ transformations:
           Writing_Length: "{%raw%}{{WritingLengthOfTime.split()[0]}}{%endraw%}"
           Listening_Length: "{%raw%}{{ListeningLengthOfTime.split()[0]}}{%endraw%}"
           Speaking_Length: "{%raw%}{{SpeakingLengthOfTime.split()[0]}}{%endraw%}"
-          #Reading_Score: "{%raw%}{% if ReadingScaledScore is not none and ReadingScaledScore|length %}{{ReadingScaledScore}}{% else %} No Score {% endif %}{%endraw%}"
-          #Listening_Score: "{%raw%}{% if ListeningScaledScore is not none and ListeningScaledScore|length %}{{ListeningScaledScore}}{% else %} No Score {% endif %}{%endraw%}"
       - operation: rename_columns
         columns:
           StartDate: administrationDate
