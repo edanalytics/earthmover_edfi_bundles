@@ -51,7 +51,7 @@ transformations:
       - operation: add_columns
         columns:
           namespace: uri://renaissance.com/products/myigdis-for-preschool
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~ administrationDate) }}{% endraw %}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(AssessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~ AdministrationDate) }}{% endraw %}"
           assessmentFamily: "{{ assessment_name }}"
           schoolYearFormatted: "{% raw %}{{ SchoolYear.split('-')[1] | int }}{% endraw %}"
       - operation: add_columns
@@ -62,6 +62,11 @@ transformations:
         columns:
           AssessmentIdentifier: assessmentIdentifier
           AdministrationDate: administrationDate
+      - operation: distinct_rows
+        columns:
+          - studentUniqueId
+          - assessmentIdentifier
+          - administrationDate
       
   performance_levels:
     
