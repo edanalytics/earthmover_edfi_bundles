@@ -218,6 +218,16 @@ transformations:
       #   column: administrationDate
       #   from_format: "%m/%d/%Y"
       #   to_format: "%Y-%m-%d"
+      - operation: modify_columns
+        columns:
+         administrationDate: "{%raw%}
+                              {%- if '/' in administrationDate -%}
+                                {%- set date_split = administrationDate.split('/') -%}
+                                {{date_split[2]}}-{{date_split[0]}}-{{date_split[1]}}
+                              {%- else -%}
+                                {{administrationDate}}
+                              {%- endif -%}
+                              {%endraw%}"
       - operation: add_columns
         columns:
           schoolYear: ${API_YEAR}
