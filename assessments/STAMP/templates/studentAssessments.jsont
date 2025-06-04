@@ -100,6 +100,14 @@
         "result": "{{obj[1]}}"
       }
       ]
+    {%- else -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "No Score"
+      }
+      ]
     {%- endif -%}
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
@@ -198,7 +206,16 @@
         "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
         "result": "{{obj[1]}}"
       }
-      ] {%- endif -%}
+      ] 
+      {%- else -%}
+    ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "No Score"
+      }
+      ]
+      {%- endif -%}
     {%- if obj[2] is not none and obj[2] | length -%}
     ,"performanceLevels": [
       {
