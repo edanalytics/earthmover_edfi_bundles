@@ -10,6 +10,8 @@
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "assessmentTitle": "{{assessmentTitle}}",
+  
+  {# Should I to remove performanceLevel from this template? They included perfomranceLevels per objective #}
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
@@ -41,5 +43,6 @@
       "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#Spring"
     }
   ],
+  {# I think I should apply the same logic as studentAssessment template and include the overall scores instead the complete scores (they have included scores per objective here) #}
   "scores": [{{scores_json}}]
 }

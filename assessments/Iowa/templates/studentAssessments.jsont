@@ -70,6 +70,8 @@
   "period": {
     "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#{{Semester}}"
   },
+
+  {# Here is the array for overall scores. Write if there is at least one value. We should add this validation. Should I add only this array to assessment.jsont? Currently they have included all the possibles scores. #}
   "scoreResults": [
     {% for score_name in scores_without_objective_dictionary %}
       {% set ReportingMethod, SlotLength, DataType = scores_without_objective_dictionary[score_name] %}
@@ -171,13 +173,17 @@
     {% for idx, identification_code in objectives_dictionary.items() %}
       {
         {% set idx = idx|int %}
+        "criteriaDebug": "{{__row_data__['Completion_Criteria']}}",
+        "idx": {{idx}},
+        "charAtIdx": "{{__row_data__['Completion_Criteria'][idx]}}",
         "administrationDate": "{{Date_Tested}}",
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{identification_code}}",
           "namespace": "{{namespace}}"
         },
-        {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] %}
+        {# idx starting from 1, so I think the Completion Criteria needs to be decremented by 1. Originally: set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] #}
+        {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx-1] %}
         {# Performance levels 0, 1 or blank #}
         {% set performanceLevelCodeValue = performanceLevelCodeValue if performanceLevelCodeValue|trim != "" else '-1' %}        
         {% set performanceLevelIndicatorName = performanceLevelDictionary[performanceLevelCodeValue] %}
@@ -188,6 +194,7 @@
             "performanceLevelIndicatorName": "{{performanceLevelIndicatorName}}"
           }
         ],
+        {# Don't write if the Test is not included in the Battery #}
         "scoreResults": [
           {% set vars = {'is_first_item': True} %} 
           {% for score_name in scores_names %}
@@ -204,7 +211,7 @@
               {% set ReportingMethod = "National Stanine based on 2005 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
               {% set ReportingMethod = "National Stanine based on 2011 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
 
-              {% set scoreValue = score_string[idx*SlotLength-SlotLength:idx*SlotLength] if idx*SlotLength <= score_string|length else "" %}
+              {% set scoreValue = score_string[idx*SlotLength-SlotLength:idx*SlotLength] if idx*SlotLength <= score_string|length else "" %} {# This extracts each objective’s score from a compact multi-objective string.#}
               {% set scoreValue = scoreValue|trim %}
               {% if scoreValue|length > 0 %}
                 {% if not vars.is_first_item %}
