@@ -5,12 +5,21 @@
 		"namespace": "{{namespace}}"
 	},
 	"schoolYearTypeReference": {
+		{%- if school_year is not none and school_year | length -%}
 		"schoolYear": {{school_year}}
+		{%- else -%}
+		"schoolYear": {{api_year}}
+		{%- endif -%}
 	},
 	"studentReference": {
 		"studentUniqueId": "{{stn}}"
-	},
-	"administrationDate": "{{admin_date}}",
+	},		
+	{%- if test_completion_date is not none and test_completion_date | length -%}
+		{% set administrationDate_var = test_completion_date %}
+	{%- else -%}
+		{% set administrationDate_var = admin_date_from_file_dir %}
+	{%- endif -%}
+	"administrationDate": "{{administrationDate_var}}",
 
 	"scoreResults": [
 		{%- set possible_scores = [
@@ -79,6 +88,9 @@
 			[op_org, "op_org", "Essay Score"],
 			[op_evid, "op_evid", "Essay Score"],
 			[op_conv, "op_conv", "Essay Score"],
+			[pers_org, "pers_org", "Essay Score"],
+			[pers_evid, "pers_evid", "Essay Score"],
+			[pers_conv, "pers_conv", "Essay Score"],
 			[expl_org, "expl_org", "Essay Score"],
 			[expl_evid, "expl_evid", "Essay Score"],
 			[expl_conv, "expl_conv", "Essay Score"]
