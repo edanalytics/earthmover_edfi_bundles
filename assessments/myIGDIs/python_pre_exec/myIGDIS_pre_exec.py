@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from itertools import product
 
 def myIGDIs_pre_exec(input_file, output_file):
     # Define assessment and window mappings
@@ -61,25 +62,24 @@ def myIGDIs_pre_exec(input_file, output_file):
     # Load the dataset
     df = pd.read_csv(input_file)
     
-    # Function to parse and group headers
+   
     def parse_header(column):
+
+        # Use itertools.product to efficiently check all assessment combinations
         for assess_key, objectives in assessment.items():
-            for objective in objectives:
-                if objective in column:
-                    for window in assessment_window[assess_key]:
-                        if window in column:
-                            base = f"{assess_key}/{objective}/{window}"
-                            if column.startswith(base):
-                                metric_type = column[len(base) + 1:]  # Extract part after base and '/'
-                                if metric_type == 'Scaled Score' and assess_key == 'Early Literacy+':
-                                    metric_type = 'Score'  # Normalize Scaled Score to Score
-                                return {
-                                    'Assessment': assess_key,
-                                    'Objective': objective,
-                                    'Window': window.replace(' ', ''),
-                                    'MetricType': metric_type,
-                                    'Base': base
-                                }
+            windows = assessment_window[assess_key]
+            # Use product to generate all combinations of objectives and windows for this assessment
+            for objective, window in product(objectives, windows):
+                if objective in column and window in column:
+                    base = f"{assess_key}/{objective}/{window}"
+                    if column.startswith(base):
+                        metric_type = column[len(base) + 1:]  # Extract part after base and '/'
+                        if metric_type == 'Scaled Score' and assess_key == 'Early Literacy+':
+                            metric_type = 'Score'  # Normalize Scaled Score to Score
+                        return {
+                            'MetricType': metric_type,
+                            'Base': base
+                        }
         return None
     
     # Parse headers and group columns by their prefixes
@@ -94,10 +94,6 @@ def myIGDIs_pre_exec(input_file, output_file):
     
     # Prepare stacked data
     stacked_data = []
-    group_cols = [
-        "School Year", "State Name", "District Name", "School Name",
-        "Classroom Name", "Init District Id", "Student's First Name", "Student's Last Name", "Student Id"
-    ]
     
     for base, metrics in grouped_columns.items():
         for _, row in df.iterrows():
