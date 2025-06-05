@@ -121,5 +121,10 @@ def myIGDIs_pre_exec(input_file, output_file):
     
     # Convert stacked data to DataFrame and save to output file
     stacked_df = pd.DataFrame(stacked_data)
+    
+     # Keep the first occurrence if duplicates are found
+    if not stacked_df.empty:
+        stacked_df.drop_duplicates(subset=['StudentId', 'AssessmentIdentifier', 'AdministrationDate'], keep='first', inplace=True)
+    
     stacked_df.to_csv(output_file, index=False)
     return output_file
