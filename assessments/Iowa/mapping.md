@@ -110,22 +110,10 @@ The following scores are tied to an objective, so they are objectives scores
 # Data Sources
 
 ## Input Requirements
-- Primary source file containing student ACTWorkKeys assessment data with the following required columns:
-  - Student unique identifier.
-  - Assessment administration date
-  - Objective assessment identifier
-  - Level Score and Scale Score, one pair per objective.
-  - Certificate Level, used for the composite score.
+
 
 ## Bundle Seeds
-- `assessments.csv`: Contains assessment metadata
-- `assessmentReportingMethodDescriptors.csv`: Contains assessment reporting methods
-- `assessmentCategoryDescriptors.csv`: Contains category descriptors
-- `assessmentPlatformTypeDescriptors.csv`: Platform descriptors (WKPP/WKIV)
-- `gradeLevelMapping.csv`: Grade level values by testing type
-- `certificateLevelMapping.csv`: Maps NCRC levels (Bronze, Silver, etc.)
-- `accommodationDescriptors.csv`: Identifies accommodations like Text-to-Speech
-- `objectiveAssessments.csv`: Defines assessment objectives
+
 
 
 # Ed-Fi Mapping
@@ -133,69 +121,23 @@ This bundle produces the following Ed-Fi resources:
 
 
 ## StudentAssessments
-- studentAssessmentIdentifier: Generated using MD5 hash of assessmentIdentifier, studentUniqueId, and assessment date
-- administrationDate: Mapped from testdate ? Test Date
-- schoolYear: Mapped from testdate
-- studentReference: Mapped from stateid / Examinee ID
-- scoreResults:
-  - assessmentReportingMethodDescriptor: Mapped from descriptor source
-  - resultDatatypeTypeDescriptor: Set to "Integer" for scale scores, and "String" for level score
-  - result: Mapped from corresponding assessment score column
+
 
 ## Summary of Descriptor Fields and Mappings
 
 
 ### gradeLevelDescriptor:
 - Namespace: `uri://ed-fi.org/GradeLevelDescriptor`
-- If "WorkKeys Source" = WKPP:
-  - 1 = 7th Grade → Seventh Grade
-  - 2 = 8th Grade → Eighth Grade
-  - 3 = 9th Grade → Ninth Grade
-  - 4 = 10th Grade → Tenth Grade
-  - 5 = 11th Grade → Eleventh Grade
-  - 6 = 12th Grade → Twelfth Grade
-  - 7 = H.S. Grad. → Postsecondary
-  - 8 = GED → Postsecondary
-  - 9 = Other Secondary → Postsecondary
-  - 10 = 1st Year Postsecondary → Postsecondary
-  - 11 = 2nd Year Postsecondary → Postsecondary
-  - 12 = 3rd Year Postsecondary → Postsecondary
-  - 13 = 4th Year Postsecondary → Postsecondary
-  - 14 = 5th Year or Higher Post. → Postsecondary
-  - 15 = Other Postsecondary → Postsecondary
-
-- If "WorkKeys Source" = WKIV:
-  - 8th Grade or below → Eighth Grade
-  - 9th Grade → Ninth Grade
-  - 10th Grade → Tenth Grade
-  - 11th Grade → Eleventh Grade
-  - 12th Grade → Twelfth Grade
-  - Dual enrollment-11th grade & college → Eleventh Grade
-  - Dual enrollment-12th grade & college → Twelfth Grade
-  - Trade/Proprietary school → Postsecondary
-  - Community College → Postsecondary
-  - Postsecondary-4-Year Institutions: Freshman → Postsecondary
-  - Postsecondary -4-Year Institutions: Sophomore → Postsecondary
-  - Postsecondary-4-Year Institutions: Junior → Postsecondary
-  - Postsecondary-4-Year Institutions: Senior → Postsecondary
-  - Postsecondary-4-Year Institutions: Postgraduate → Postsecondary
 
 
 ### assessmentCategoryDescriptor:
-- `uri://act.org/AssessmentCategoryDescriptor#HS_CAREER_COLLEGE`
+
 
 ### assessmentReportingMethodDescriptor:
-- Level Score: `uri://act.org/AssessmentReportingMethodDescriptor#Level Score`
-- Scale Score: `uri://act.org/AssessmentReportingMethodDescriptor#Scale Score`
-- NCRC Credential: `uri://act.org/AssessmentReportingMethodDescriptor#ACCTWK_NCRC Credential`
 
 ### resultDatatypeTypeDescriptor:
-- Scale Score: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer`
-- Level Score: `uri://ed-fi.org/ResultDatatypeTypeDescriptor#String`
 
 ### assessmentPlatformTypeDescriptors:
-- WKPP: `uri://act.org/PlatformTypeDescriptor#WKPP`
-- WKIV: `uri://act.org/PlatformTypeDescriptor#WKIV`
 
 ### accommodationDescriptors:
   - Online desktop or laptop
@@ -210,20 +152,9 @@ This bundle produces the following Ed-Fi resources:
 
 # Output Files
 
-- assessmentReportingMethodDescriptors.jsonl
-- assessmentCategoryMethodDescriptors.jsonl
-- assessments.jsonl
-- objectiveAssessments.jsonl
-- studentAssessmentEducationOrganizationAssociations.jsonl
-- studentAssessments.jsonl
-- assessmentPlatformTypeDescriptors.jsonl
+
 
 # Dependencies
 - Requires Earthmover version 0.3.8 or higher
 - Requires template files:
-  - ./templates/assessments.jsont
-  - ./templates/objectiveAssessments.jsont
-  - ./templates/descriptors.jsont
-  - ./templates/studentAssessments.jsont
-  - ./templates/studentAssessmentEducationOrganizationAssociations.jsont
 

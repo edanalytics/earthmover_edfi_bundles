@@ -173,9 +173,6 @@
     {% for idx, identification_code in objectives_dictionary.items() %}
       {
         {% set idx = idx|int %}
-        "criteriaDebug": "{{__row_data__['Completion_Criteria']}}",
-        "idx": {{idx}},
-        "charAtIdx": "{{__row_data__['Completion_Criteria'][idx]}}",
         "administrationDate": "{{Date_Tested}}",
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessmentIdentifier}}",

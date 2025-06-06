@@ -11,7 +11,7 @@ To run this bundle, please add your own source file(s) and column(s):
 This template will work with vendor layout file structure. See the sample anonymized file.
 </details>
 
-Sample file: `data/sample_anonymized_file_IOWA.csv`)
+Sample file: `data/IOWA_deidentified_sample_file.csv`)
 
 ### CLI Parameters
 
@@ -27,13 +27,13 @@ Sample file: `data/sample_anonymized_file_IOWA.csv`)
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/sample_anonymized_file_IOWA.csv",
+"INPUT_FILE": "data/IOWA_deidentified_sample_file.csv",
 "STATE_FILE": "./tmp/runs.csv",
 "OUTPUT_DIR": "output/",
-"STUDENT_ID_NAME": "StateID",
-"SCHOOL_YEAR": "2024",
-"DESCRIPTOR_NAMESPACE_OVERRIDE":"uri://ed.sc.gov"}'
+"STUDENT_ID_NAME": "Student_Id",
+"SCHOOL_YEAR": "2024"}'
 ```
+# ,"DESCRIPTOR_NAMESPACE_OVERRIDE":"uri://ed.sc.gov"
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash
