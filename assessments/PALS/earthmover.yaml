@@ -152,6 +152,9 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns:
+          studentUniqueId: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: rename_columns
         columns:
           SCH_NO: schoolId
