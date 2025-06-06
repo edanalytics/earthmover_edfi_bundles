@@ -41,6 +41,10 @@ sources:
       - Informative Evidence/Development & Elaboration
       - Narrative Organization/Purpose
       - Narrative Evidence/Development & Elaboration
+      - ILEARN Checkpoints State Percentile Rank
+      - ILEARN Checkpoints State Percentile Ranking
+      - ILEARN Checkpoints Corporation Percentile Ranking
+      - ILEARN Corporation Percentile Ranking
 
   assessments:
     file: ./seeds/assessments.csv
@@ -146,6 +150,10 @@ transformations:
           persuasive_organization: pers_org
           persuasive_evidence_elaboration: pers_evid
           persuasive_conventions: pers_conv
+          ilearn_checkpoints_state_percentile_rank: check_state_perc_rank
+          ilearn_checkpoints_state_percentile_ranking: check_state_perc_ranking
+          ilearn_checkpoints_corporation_percentile_ranking: check_corp_perc_ranking
+          ilearn_corporation_percentile_ranking: corp_perc_ranking
           
       # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
       - operation: duplicate_columns
@@ -181,7 +189,7 @@ transformations:
           - assessmentTitle
 
     expect: 
-      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' 
+      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
       - api_year|int != 0
       - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
 
