@@ -14,8 +14,8 @@ config:
     TEST_TYPE: ''
   macros: >
       {% macro map_year_to_version(value) -%}
-      {%- if administrationDate < '2016-03-01' -%}2400
-      {%- elif administrationDate < '2024-03-01' -%}1600
+      {%- if value < '2016-03-01' -%}2400
+      {%- elif value < '2024-03-01' -%}1600
       {%- else -%}Adaptive
       {%- endif -%}
       {%- endmacro %}
@@ -228,7 +228,7 @@ transformations:
       - operation: add_columns
         columns:
           schoolYear: ${API_YEAR}
-          assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(schoolYear)}}{%endraw%}"
+          assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(administrationDate)}}{%endraw%}"
           namespace: "uri://collegeboard.org"
           assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESPACE}/AssessmentCategoryDescriptor#College entrance exam"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
