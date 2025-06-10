@@ -13,23 +13,20 @@
 	},
 	"studentReference": {
 		"studentUniqueId": "{{stn}}"
-	},		
-	{%- if test_completion_date is not none and test_completion_date | length -%}
-		{% set administrationDate_var = test_completion_date %}
+	},
+	{%- if test_start_date is not none and test_start_date | length -%}
+		{% set administrationDate_var = test_start_date %}
 	{%- else -%}
-		{% set administrationDate_var = admin_date_from_file_dir %}
+		{% set administrationDate_var = default_test_start_date %}
 	{%- endif -%}
 	"administrationDate": "{{administrationDate_var}}",
 
 	"scoreResults": [
 		{%- set possible_scores = [
-			[overall_scale_score, "Scale Score", "Integer"],
+			[scale_score, "Overall scale score", "Integer"],
+			[scale_score_grade_2, "Overall scale score", "Integer"],
 			[lexile_measure, "Lexile Measure", "Level"],
-			[quantile_measure, "Quantile Measure", "Level"],
-			[check_state_perc_rank, "State Percentile Rank", "Level"],
-			[check_state_perc_ranking, "State Percentile Rank", "Level"],
-			[check_corp_perc_ranking, "Corporation Percentile Rank", "Level"],
-			[corp_perc_ranking, "Corporation Percentile Rank", "Level"]
+			[lexile_measure_grade_2, "Lexile Measure", "Level"]
 		] -%}
 
 		{%- set scores = [] -%}
@@ -38,11 +35,7 @@
 			{%- set _ = scores.append(score) -%}
 		{%- endif -%}
 		{%- endfor -%}		
-		{
-			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
-			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-			"result": "{{subject_descriptor}}"
-		}{% if scores | length > 0 %},{% endif %}
+		
 		{%- for score in scores %}
 		{
 			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
@@ -54,8 +47,8 @@
 
 	"performanceLevels": [
 		{%- set possible_perf_levels = [
-			[overall_proficiency_level, "Proficiency level"],
-			[cc_readiness_indicator, "College and Career Readiness Indicator"]
+			[passing_status, "Passing Status", "Level"],
+			[passing_status_grade_2, "Passing Status", "Level"],
 		] -%}
 
 		{%- set perf_levels = [] -%}
@@ -77,36 +70,7 @@
 		{% set possible_obj_assess = [
 			[rc1_performance, "rc1_performance", "Reporting Category Performance Level"],
 			[rc2_performance, "rc2_performance", "Reporting Category Performance Level"],
-			[rc3_performance, "rc3_performance", "Reporting Category Performance Level"],
-			[rc4_performance, "rc4_performance", "Reporting Category Performance Level"],
-			[rc5_performance, "rc5_performance", "Reporting Category Performance Level"],
-			[check_rc1_performance, "check_rc1_performance", "Reporting Category Performance Level"],
-			[check_rc2_performance, "check_rc2_performance", "Reporting Category Performance Level"],
-			[check_rc3_performance, "check_rc3_performance", "Reporting Category Performance Level"],
-			[arg_org, "arg_org", "Essay Score"],
-			[arg_evid, "arg_evid", "Essay Score"],
-			[arg_conv, "arg_conv", "Essay Score"],
-			[arg_org_ext, "arg_org_ext", "Essay Score"],
-			[arg_evid_ext, "arg_evid_ext", "Essay Score"],
-			[inf_org, "inf_org", "Essay Score"],
-			[inf_evid, "inf_evid", "Essay Score"],
-			[inf_conv, "inf_conv", "Essay Score"],
-			[inf_org_ext, "inf_org_ext", "Essay Score"],
-			[inf_evid_ext, "inf_evid_ext", "Essay Score"],
-			[nar_org, "nar_org", "Essay Score"],
-			[nar_evid, "nar_evid", "Essay Score"],
-			[nar_conv, "nar_conv", "Essay Score"],
-			[nar_org_ext, "nar_org_ext", "Essay Score"],
-			[nar_evid_ext, "nar_evid_ext", "Essay Score"],
-			[op_org, "op_org", "Essay Score"],
-			[op_evid, "op_evid", "Essay Score"],
-			[op_conv, "op_conv", "Essay Score"],
-			[pers_org, "pers_org", "Essay Score"],
-			[pers_evid, "pers_evid", "Essay Score"],
-			[pers_conv, "pers_conv", "Essay Score"],
-			[expl_org, "expl_org", "Essay Score"],
-			[expl_evid, "expl_evid", "Essay Score"],
-			[expl_conv, "expl_conv", "Essay Score"]
+			[rc3_performance, "rc3_performance", "Reporting Category Performance Level"]
 		] %}
 		{% set all_obj_assessment = [] %}
 		{%- for obj in possible_obj_assess -%}

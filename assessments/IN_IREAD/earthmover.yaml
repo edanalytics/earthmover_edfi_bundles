@@ -1,0 +1,168 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
+    #INPUT_FILE: ./data/sample_anonymized_file.csv # Sample input file with plausible made-up data
+    INPUT_FILETYPE: csv
+    DESCRIPTOR_NAMESPACE: 'uri://doe.in.gov/IREAD/Assessment'
+
+sources:
+  # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+  # See the accompanying bundle_metadata.json for a list of required columns for this file
+  # Or see data/sample_anonymized_file.csv
+  input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    optional_fields:
+      - Test Start Date
+      - Test Completion Date
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  studentAssessments:
+    source: $transformations.input
+    operations:
+      # An additional python pre-processing step occurs on IREAD's col names due to special characters (e.g. "®").
+      - operation: snake_case_columns
+
+        # school_year: Extracts year from the test+start_date column 
+        # assessmentIdentifier: We need to extract the assessment name from the test_name column
+        # generated_test_id: Hash to define a unique identifier for the student assessment record.
+        # namespace: Added namespace to re-use in template file.
+      - operation: add_columns
+        columns: 
+          # legacy formats of this assessment don't have a test_start_date column, so we need to add a default value.
+          default_test_start_date: "${API_YEAR}-03-01 00:00:00"
+          api_year: ${API_YEAR}
+          assessmentIdentifier: IREAD
+          generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
+          namespace: ${DESCRIPTOR_NAMESPACE}
+      
+      - operation: date_format
+        column: test_start_date
+        from_formats: 
+          - "%m/%d/%Y %H:%M"
+          - "%m/%d/%Y %H:%M:%S %p"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+      
+      - operation: duplicate_columns
+        columns: 
+          test_start_date: school_year
+
+      - operation: date_format
+        column: school_year
+        from_format: "%Y-%m-%d %H:%M:%S.%f"
+        to_format: "%Y"
+        exact_match: False
+        ignore_errors: True
+
+      # Rename columns for brevity.
+      - operation: rename_columns
+        columns:
+          iread_3_reporting_category_1_performance: rc1_performance
+          iread_3_reporting_category_2_performance: rc2_performance
+          iread_3_reporting_category_3_performance: rc3_performance
+          iread_3_overall_scale_score: scale_score
+          iread_3_grade_2_overall_scale_score: scale_score_grade_2
+          iread_3_passing_status: passing_status
+          iread_3_grade_2_passing_status: passing_status_grade_2
+          iread_3_reported_lexile_measure: lexile_measure
+          iread_3_grade_2_reported_lexile_measure: lexile_measure_grade_2
+
+      - operation: modify_columns
+        columns:
+          scale_score: "{%raw%}{%if scale_score|int != 0 %}{{scale_score}}{%else%}{%endif%}{%endraw%}"
+          scale_score_grade_2: "{%raw%}{%if scale_score_grade_2|int != 0 %}{{scale_score_grade_2}}{%else%}{%endif%}{%endraw%}"
+
+  # Generate grade level json for assessment template based on seeds
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True
