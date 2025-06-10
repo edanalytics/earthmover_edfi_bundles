@@ -21,6 +21,9 @@ sources:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     header_rows: 1
+    optional_fields:
+      - Test Start Date
+      - Test Completion Date
 
   assessments:
     file: ./seeds/assessments.csv
@@ -54,15 +57,33 @@ transformations:
         # generated_test_id: Hash to define a unique identifier for the student assessment record.
         # namespace: Added namespace to re-use in template file.
       - operation: add_columns
-        columns:
-          school_year: "{% raw%} {{ test_start_date.split('/')[2].split(' ')[0]}} {%endraw%}"
+        columns: 
+          # legacy formats of this assessment don't have a test_start_date column, so we need to add a default value.
+          default_test_start_date: "${API_YEAR}-03-01 00:00:00"
+          api_year: ${API_YEAR}
           assessmentIdentifier: IREAD
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: ${DESCRIPTOR_NAMESPACE}
+      
+      - operation: date_format
+        column: test_start_date
+        from_formats: 
+          - "%m/%d/%Y %H:%M"
+          - "%m/%d/%Y %H:%M:%S %p"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+      
+      - operation: duplicate_columns
+        columns: 
+          test_start_date: school_year
 
-      - operation: modify_columns
-        columns:
-          test_start_date: "{% raw %} {{ test_start_date.split(' ')[0]}} {%endraw%}"
+      - operation: date_format
+        column: school_year
+        from_format: "%Y-%m-%d %H:%M:%S.%f"
+        to_format: "%Y"
+        exact_match: False
+        ignore_errors: True
 
       # Rename columns for brevity.
       - operation: rename_columns

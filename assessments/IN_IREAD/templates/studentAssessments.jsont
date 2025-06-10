@@ -5,12 +5,21 @@
 		"namespace": "{{namespace}}"
 	},
 	"schoolYearTypeReference": {
+		{%- if school_year is not none and school_year | length -%}
 		"schoolYear": {{school_year}}
+		{%- else -%}
+		"schoolYear": {{api_year}}
+		{%- endif -%}
 	},
 	"studentReference": {
 		"studentUniqueId": "{{stn}}"
 	},
-	"administrationDate": "{{test_start_date | trim}}",
+	{%- if test_start_date is not none and test_start_date | length -%}
+		{% set administrationDate_var = test_start_date %}
+	{%- else -%}
+		{% set administrationDate_var = default_test_start_date %}
+	{%- endif -%}
+	"administrationDate": "{{administrationDate_var}}",
 
 	"scoreResults": [
 		{%- set possible_scores = [
