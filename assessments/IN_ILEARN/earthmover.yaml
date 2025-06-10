@@ -45,7 +45,9 @@ sources:
       - ILEARN Checkpoints State Percentile Ranking
       - ILEARN Checkpoints Corporation Percentile Ranking
       - ILEARN Corporation Percentile Ranking
-
+      - ILEARN Checkpoints Reporting Category 1 Performance
+      - ILEARN Checkpoints Reporting Category 2 Performance
+      - ILEARN Checkpoints Reporting Category 3 Performance
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -92,6 +94,7 @@ transformations:
           admin_date_from_file_dir: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
           api_year: ${API_YEAR}
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
+          is_checkpoint: "{% raw %}{{ 'Checkpoint' in test_name }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
 
@@ -154,6 +157,16 @@ transformations:
           ilearn_checkpoints_state_percentile_ranking: check_state_perc_ranking
           ilearn_checkpoints_corporation_percentile_ranking: check_corp_perc_ranking
           ilearn_corporation_percentile_ranking: corp_perc_ranking
+          ilearn_checkpoints_reporting_category_1_performance: check_rc1_performance
+          ilearn_checkpoints_reporting_category_2_performance: check_rc2_performance
+          ilearn_checkpoints_reporting_category_3_performance: check_rc3_performance
+      
+      - operation: modify_columns
+        columns:
+          check_state_perc_rank: "{% raw %}{{ check_state_perc_rank.split('%')[0] }}{% endraw %}"
+          check_state_perc_ranking: "{% raw %}{{ check_state_perc_ranking.split('%')[0] }}{% endraw %}"
+          check_corp_perc_ranking: "{% raw %}{{ check_corp_perc_ranking.split('%')[0] }}{% endraw %}"
+          corp_perc_ranking: "{% raw %}{{ corp_perc_ranking.split('%')[0] }}{% endraw %}"
           
       # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
       - operation: duplicate_columns
@@ -182,8 +195,10 @@ transformations:
         join_type: inner
         left_keys:
           - subject_descriptor
+          - is_checkpoint
         right_keys: 
           - academicSubject
+          - isCheckpoint
         right_keep_columns:
           - assessmentIdentifier
           - assessmentTitle
