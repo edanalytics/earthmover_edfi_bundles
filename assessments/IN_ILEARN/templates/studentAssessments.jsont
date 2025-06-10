@@ -25,7 +25,11 @@
 		{%- set possible_scores = [
 			[overall_scale_score, "Scale Score", "Integer"],
 			[lexile_measure, "Lexile Measure", "Level"],
-			[quantile_measure, "Quantile Measure", "Level"]
+			[quantile_measure, "Quantile Measure", "Level"],
+			[check_state_perc_rank, "State Percentile Rank", "Level"],,
+			[check_state_perc_ranking, "State Percentile Rank", "Level"],
+			[check_corp_perc_ranking, "Corporation Percentile Rank", "Level"],
+			[corp_perc_ranking, "Corporation Percentile Rank", "Level"]
 		] -%}
 
 		{%- set scores = [] -%}
@@ -76,6 +80,9 @@
 			[rc3_performance, "rc3_performance", "Reporting Category Performance Level"],
 			[rc4_performance, "rc4_performance", "Reporting Category Performance Level"],
 			[rc5_performance, "rc5_performance", "Reporting Category Performance Level"],
+			[check_rc1_performance, "check_rc1_performance", "Reporting Category Performance Level"],
+			[check_rc2_performance, "check_rc2_performance", "Reporting Category Performance Level"],
+			[check_rc3_performance, "check_rc3_performance", "Reporting Category Performance Level"],
 			[arg_org, "arg_org", "Essay Score"],
 			[arg_evid, "arg_evid", "Essay Score"],
 			[arg_conv, "arg_conv", "Essay Score"],
