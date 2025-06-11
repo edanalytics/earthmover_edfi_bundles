@@ -64,26 +64,6 @@ transformations:
           assessmentIdentifier: IREAD
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: ${DESCRIPTOR_NAMESPACE}
-      
-      - operation: date_format
-        column: test_start_date
-        from_formats: 
-          - "%m/%d/%Y %H:%M"
-          - "%m/%d/%Y %H:%M:%S %p"
-        to_format: "%Y-%m-%d %H:%M:%S.%f"
-        exact_match: False
-        ignore_errors: True
-      
-      - operation: duplicate_columns
-        columns: 
-          test_start_date: school_year
-
-      - operation: date_format
-        column: school_year
-        from_format: "%Y-%m-%d %H:%M:%S.%f"
-        to_format: "%Y"
-        exact_match: False
-        ignore_errors: True
 
       # Rename columns for brevity.
       - operation: rename_columns
@@ -102,6 +82,42 @@ transformations:
         columns:
           scale_score: "{%raw%}{%if scale_score|int != 0 %}{{scale_score}}{%else%}{%endif%}{%endraw%}"
           scale_score_grade_2: "{%raw%}{%if scale_score_grade_2|int != 0 %}{{scale_score_grade_2}}{%else%}{%endif%}{%endraw%}"
+
+
+  # Some exports in the new format have timestamps, so we need to format them here to match the format of the other admin_date columns.
+  # We don't want to include the rows without timestamps, otherwise we will attempt to transform nulls into date formats, and that's expensive and can make runtime slow.
+  studentAssessments_with_full_timestamps:
+      source: $transformations.studentAssessments
+      operations:
+        # Pick out rows with timestamps.
+        - operation: filter_rows
+          query: test_start_date != ''
+          behavior: include
+
+        # Format the timestamps.
+        - operation: date_format
+          column: test_start_date
+          from_format: "%m/%d/%Y %H:%M"
+          to_format: "%Y-%m-%d %H:%M:%S.%f"
+          exact_match: False
+          ignore_errors: true
+
+  # Some exports in the old format do not have timestamps, so we need to pick out those rows here.
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
+  # We need to stack the two tables together to get a complete student assessments table.
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
 
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
@@ -140,9 +156,12 @@ transformations:
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
 
+
+
+
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.studentAssessments_stacked
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
