@@ -117,7 +117,7 @@ transformations:
 
       - operation: date_format
         column: test_start_date
-        from_formats: "%m/%d/%Y %H:%M"
+        from_format: "%m/%d/%Y %H:%M"
         to_format: "%Y-%m-%d %H:%M:%S.%f"
         exact_match: False
         ignore_errors: True
