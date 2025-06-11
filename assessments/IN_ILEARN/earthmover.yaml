@@ -1,13 +1,13 @@
 version: 2
 
 config:
-  log_level: DEBUG
-  output_dir: /home/alastra/code/earthmover_edfi_bundles/assessments/IN_ILEARN/output
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'STN'
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
@@ -17,8 +17,8 @@ sources:
   # See the accompanying bundle_metadata.json for a list of required columns for this file
   # Or see data/silearn_sample_data.csv
   input:
-    file: /home/alastra/code/earthmover_edfi_bundles/assessments/IN_ILEARN/data/cleaned/cleaned_data_4th_ela.csv
-    type: csv
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
     optional_fields:
       - Persuasive Organization
@@ -193,10 +193,10 @@ transformations:
           - assessmentIdentifier
           - assessmentTitle
 
-    # expect: 
-    #   - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
-    #   - api_year|int != 0
-    #   - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+    expect: 
+      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
+      - api_year|int != 0
+      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
 
 
 
