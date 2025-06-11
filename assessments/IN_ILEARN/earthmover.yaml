@@ -1,7 +1,7 @@
 version: 2
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   show_graph: False
@@ -48,6 +48,7 @@ sources:
       - ILEARN Checkpoints Reporting Category 1 Performance
       - ILEARN Checkpoints Reporting Category 2 Performance
       - ILEARN Checkpoints Reporting Category 3 Performance
+      - ILEARN Checkpoints Reporting Category 3 Performance
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -69,6 +70,7 @@ transformations:
     source: $sources.input
     operations: []
 
+  # This transformation is used to generate the base student assessments table.
   studentAssessments:
     source: $transformations.input
     operations:
@@ -97,26 +99,6 @@ transformations:
           is_checkpoint: "{% raw %}{{ 'Checkpoint' in test_name }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
-
-      - operation: date_format
-        column: test_completion_date
-        from_formats: 
-          - "%m/%d/%Y %H:%M:%S %p"
-          - "%m/%d/%Y %H:%M"
-        to_format: "%Y-%m-%d %H:%M:%S.%f"
-        exact_match: False
-        ignore_errors: True
-
-      - operation: duplicate_columns
-        columns: 
-          test_completion_date: school_year
-
-      - operation: date_format
-        column: school_year
-        from_format: "%Y-%m-%d %H:%M:%S.%f"
-        to_format: "%Y"
-        exact_match: False
-        ignore_errors: True
 
       # Rename columns for brevity.
       - operation: rename_columns
@@ -160,7 +142,7 @@ transformations:
           ilearn_checkpoints_reporting_category_1_performance: check_rc1_performance
           ilearn_checkpoints_reporting_category_2_performance: check_rc2_performance
           ilearn_checkpoints_reporting_category_3_performance: check_rc3_performance
-      
+          
       - operation: modify_columns
         columns:
           check_state_perc_rank: "{% raw %}{{ check_state_perc_rank.split('%')[0] }}{% endraw %}"
@@ -178,7 +160,15 @@ transformations:
         column: admin_date_from_file_dir
         map_file: ./seeds/administrationDate.csv
 
-      # Map scale scores to remove "UND", which is not a data type accepted by EdFi in the scores payload.
+      # Format admin_date_from_file_dir to match the format of the other admin_date columns.
+      - operation: date_format
+        column: admin_date_from_file_dir
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+
+      # Map scale scores to remove "UND"/"Insufficient to score", which is not a data type accepted by EdFi in the scores payload.
       - operation: map_values
         columns:
           - overall_scale_score
@@ -186,9 +176,11 @@ transformations:
           - quantile_measure   
         mapping:
           UND: null  
+          Insufficient to score: null
 
       # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
       # (specified in academicSubjectDescriptor seed table)
+      # We use a checkpoint flag since the subjects for checkpoints are the same as the subjects for the other assessments, however, they have different assessment identifiers.
       - operation: join
         sources:
           - $sources.assessments
@@ -208,6 +200,40 @@ transformations:
       - api_year|int != 0
       - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
 
+
+  # Some exports in the new format have timestamps, so we need to format them here to match the format of the other admin_date columns.
+  # We don't want to include the rows without timestamps, otherwise we will attempt to transform nulls into date formats, and that's expensive and can make runtime slow.
+  studentAssessments_with_full_timestamps:
+      source: $transformations.studentAssessments
+      operations:
+        # Pick out rows with timestamps.
+        - operation: filter_rows
+          query: test_start_date != ''
+          behavior: include
+
+        # Format the timestamps.
+        - operation: date_format
+          column: test_start_date
+          from_format: "%m/%d/%Y %H:%M"
+          to_format: "%Y-%m-%d %H:%M:%S.%f"
+          exact_match: False
+          ignore_errors: true
+
+  # Some exports in the old format do not have timestamps, so we need to pick out those rows here.
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
+  # We need to stack the two tables together to get a complete student assessments table.
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
 
 
   # Generate grade level json for assessment template based on seeds
@@ -253,7 +279,7 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
-    template: ./templates/studentAssessments.jsont
+    source: $transformations.studentAssessments_stacked
     extension: jsonl
     linearize: True
   assessments:
