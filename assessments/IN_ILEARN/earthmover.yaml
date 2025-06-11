@@ -279,7 +279,7 @@ transformations:
 destinations:
   studentAssessments:
     source: $transformations.studentAssessments
-    source: $transformations.studentAssessments_stacked
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
   assessments:
