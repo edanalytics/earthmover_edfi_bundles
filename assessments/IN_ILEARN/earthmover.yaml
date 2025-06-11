@@ -195,10 +195,11 @@ transformations:
           - assessmentIdentifier
           - assessmentTitle
 
-    expect: 
-      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
-      - api_year|int != 0
-      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+    # These are intentionally off because it consumes too much memory to compute the expectation for each row, making runtime slow.
+    # expect: 
+    #   - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
+    #   - api_year|int != 0
+    #   - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
 
 
   # Some exports in the new format have timestamps, so we need to format them here to match the format of the other admin_date columns.
@@ -228,12 +229,14 @@ transformations:
         behavior: include
 
   # We need to stack the two tables together to get a complete student assessments table.
-  studentAssessments_without_timestamps:
-    source: $transformations.studentAssessments
+  studentAssessments_stacked:
+    source: $transformations.studentAssessments_with_full_timestamps
     operations:
-      - operation: filter_rows
-        query: test_start_date == ''
-        behavior: include
+      - operation: union
+        sources:
+        - $transformations.studentAssessments_without_timestamps
+        fill_missing_columns: False
+
 
 
   # Generate grade level json for assessment template based on seeds
@@ -278,7 +281,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.studentAssessments_stacked
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
