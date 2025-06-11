@@ -52,7 +52,6 @@ transformations:
       # An additional python pre-processing step occurs on IREAD's col names due to special characters (e.g. "®").
       - operation: snake_case_columns
 
-        # school_year: Extracts year from the test+start_date column 
         # assessmentIdentifier: We need to extract the assessment name from the test_name column
         # generated_test_id: Hash to define a unique identifier for the student assessment record.
         # namespace: Added namespace to re-use in template file.
@@ -71,17 +70,6 @@ transformations:
           - "%m/%d/%Y %H:%M"
           - "%m/%d/%Y %H:%M:%S %p"
         to_format: "%Y-%m-%d %H:%M:%S.%f"
-        exact_match: False
-        ignore_errors: True
-      
-      - operation: duplicate_columns
-        columns: 
-          test_start_date: school_year
-
-      - operation: date_format
-        column: school_year
-        from_format: "%Y-%m-%d %H:%M:%S.%f"
-        to_format: "%Y"
         exact_match: False
         ignore_errors: True
 

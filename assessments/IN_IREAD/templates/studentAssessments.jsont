@@ -5,11 +5,7 @@
 		"namespace": "{{namespace}}"
 	},
 	"schoolYearTypeReference": {
-		{%- if school_year is not none and school_year | length -%}
-		"schoolYear": {{school_year}}
-		{%- else -%}
 		"schoolYear": {{api_year}}
-		{%- endif -%}
 	},
 	"studentReference": {
 		"studentUniqueId": "{{stn}}"

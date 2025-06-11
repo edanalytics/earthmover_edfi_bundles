@@ -5,17 +5,13 @@
 		"namespace": "{{namespace}}"
 	},
 	"schoolYearTypeReference": {
-		{%- if school_year is not none and school_year | length -%}
-		"schoolYear": {{school_year}}
-		{%- else -%}
 		"schoolYear": {{api_year}}
-		{%- endif -%}
 	},
 	"studentReference": {
 		"studentUniqueId": "{{stn}}"
 	},		
-	{%- if test_completion_date is not none and test_completion_date | length -%}
-		{% set administrationDate_var = test_completion_date %}
+	{%- if test_start_date is not none and test_start_date | length -%}
+		{% set administrationDate_var = test_start_date %}
 	{%- else -%}
 		{% set administrationDate_var = admin_date_from_file_dir %}
 	{%- endif -%}

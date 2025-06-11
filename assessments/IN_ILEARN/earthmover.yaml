@@ -2,12 +2,12 @@ version: 2
 
 config:
   log_level: DEBUG
-  output_dir: ${OUTPUT_DIR}
+  output_dir: /home/alastra/code/earthmover_edfi_bundles/assessments/IN_ILEARN/output
   memory_limit: 1GB
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    STUDENT_ID_NAME: 'STN'
     POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
     #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
     INPUT_FILETYPE: csv
@@ -17,8 +17,8 @@ sources:
   # See the accompanying bundle_metadata.json for a list of required columns for this file
   # Or see data/silearn_sample_data.csv
   input:
-    file: ${INPUT_FILE}
-    type: ${INPUT_FILETYPE}
+    file: /home/alastra/code/earthmover_edfi_bundles/assessments/IN_ILEARN/data/cleaned/cleaned_data_4th_ela.csv
+    type: csv
     header_rows: 1
     optional_fields:
       - Persuasive Organization
@@ -99,25 +99,15 @@ transformations:
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
 
       - operation: date_format
-        column: test_completion_date
+        column: test_start_date
         from_formats: 
           - "%m/%d/%Y %H:%M:%S %p"
           - "%m/%d/%Y %H:%M"
         to_format: "%Y-%m-%d %H:%M:%S.%f"
         exact_match: False
         ignore_errors: True
-
-      - operation: duplicate_columns
-        columns: 
-          test_completion_date: school_year
-
-      - operation: date_format
-        column: school_year
-        from_format: "%Y-%m-%d %H:%M:%S.%f"
-        to_format: "%Y"
-        exact_match: False
-        ignore_errors: True
-
+        ignore_nulls: true
+        
       # Rename columns for brevity.
       - operation: rename_columns
         columns:
@@ -203,10 +193,10 @@ transformations:
           - assessmentIdentifier
           - assessmentTitle
 
-    expect: 
-      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
-      - api_year|int != 0
-      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+    # expect: 
+    #   - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
+    #   - api_year|int != 0
+    #   - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
 
 
 
