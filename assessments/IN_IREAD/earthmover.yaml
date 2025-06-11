@@ -63,15 +63,6 @@ transformations:
           assessmentIdentifier: IREAD
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: ${DESCRIPTOR_NAMESPACE}
-      
-      - operation: date_format
-        column: test_start_date
-        from_formats: 
-          - "%m/%d/%Y %H:%M"
-          - "%m/%d/%Y %H:%M:%S %p"
-        to_format: "%Y-%m-%d %H:%M:%S.%f"
-        exact_match: False
-        ignore_errors: True
 
       # Rename columns for brevity.
       - operation: rename_columns
@@ -117,6 +108,38 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  studentAssessments_with_full_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date != ''
+        behavior: include
+
+      - operation: date_format
+        column: test_start_date
+        from_formats: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+
+      - operation: filter_rows
+        query: test_start_date != ''
+        behavior: include
+
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
+  studentAssessments_stacked:
+    source: $transformations.studentAssessments_with_full_timestamps
+    operations:
+      - operation: union
+        sources:
+        - $transformations.studentAssessments_without_timestamps
+        fill_missing_columns: False
 
   assessments:
     source: $sources.assessments
@@ -130,7 +153,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.studentAssessments_stacked
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
