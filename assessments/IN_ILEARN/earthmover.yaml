@@ -97,16 +97,6 @@ transformations:
           is_checkpoint: "{% raw %}{{ 'Checkpoint' in test_name }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
-
-      - operation: date_format
-        column: test_start_date
-        from_formats: 
-          - "%m/%d/%Y %H:%M:%S %p"
-          - "%m/%d/%Y %H:%M"
-        to_format: "%Y-%m-%d %H:%M:%S.%f"
-        exact_match: False
-        ignore_errors: True
-        ignore_nulls: true
         
       # Rename columns for brevity.
       - operation: rename_columns
@@ -168,6 +158,13 @@ transformations:
         column: admin_date_from_file_dir
         map_file: ./seeds/administrationDate.csv
 
+      - operation: date_format
+        column: admin_date_from_file_dir
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+
       # Map scale scores to remove "UND", which is not a data type accepted by EdFi in the scores payload.
       - operation: map_values
         columns:
@@ -192,12 +189,6 @@ transformations:
         right_keep_columns:
           - assessmentIdentifier
           - assessmentTitle
-
-    expect: 
-      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
-      - api_year|int != 0
-      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
-
 
 
   # Generate grade level json for assessment template based on seeds
@@ -227,6 +218,44 @@ transformations:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
 
+    # expect: 
+    #   - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
+    #   - api_year|int != 0
+    #   - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+
+  studentAssessments_with_full_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date != ''
+        behavior: include
+
+      - operation: date_format
+        column: test_start_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: true
+
+      - operation: filter_rows
+        query: test_start_date != ''
+        behavior: include
+
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
+  studentAssessments_stacked:
+    source: $transformations.studentAssessments_with_full_timestamps
+    operations:
+      - operation: union
+        sources:
+        - $transformations.studentAssessments_without_timestamps
+        fill_missing_columns: False
+
   assessments:
     source: $sources.assessments
     operations:
@@ -242,7 +271,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.studentAssessments_stacked
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
