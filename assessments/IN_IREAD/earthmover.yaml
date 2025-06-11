@@ -111,12 +111,13 @@ transformations:
         behavior: include
 
   # We need to stack the two tables together to get a complete student assessments table.
-  studentAssessments_without_timestamps:
-    source: $transformations.studentAssessments
+  studentAssessments_stacked:
+    source: $transformations.studentAssessments_with_full_timestamps
     operations:
-      - operation: filter_rows
-        query: test_start_date == ''
-        behavior: include
+      - operation: union
+        sources:
+        - $transformations.studentAssessments_without_timestamps
+        fill_missing_columns: False
 
 
   # Generate grade level json for assessment template based on seeds
