@@ -45,6 +45,7 @@ config:
           -- and api_year=${SNOWFLAKE_API_YEAR}
           -- and assessment='${ASSESSMENT_BUNDLE}'
       )
+    NO_MATCH_VALUE: __no_match__
     # and SNOWFLAKE_CONNECTION, SNOWFLAKE_TENANT_CODE, and SNOWFLAKE_API_YEAR (as above)
     # ----------------------------------------------------
 
@@ -108,6 +109,11 @@ sources:
     query: >
       ${MATCH_RATES_SNOWFLAKE_QUERY}
   {% endif %}
+
+  # Set up a no-match CSV line to add to match-rates table.
+  no_match:
+    file: no_match.csv
+    header_rows: 1
     
 
 {% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
@@ -226,10 +232,6 @@ transformations:
       - operation: modify_columns
         columns:
           num_matches: "{%raw%}{{value|string}}{%endraw%}"
-      - operation: sort_rows
-        columns:
-          - num_matches
-        descending: True
       - operation: add_columns
         columns:
           __join_id: "1"
@@ -242,9 +244,6 @@ transformations:
       - operation: add_columns
         columns:
           match_rate: "{%raw%}{{num_matches|float / num_rows|float}}{%endraw%}"
-      - operation: modify_columns
-        columns:
-          num_matches: "{%raw%}{{value|int}}{%endraw%}"
       - operation: drop_columns
         columns:
           - __join_id
@@ -254,11 +253,20 @@ transformations:
   student_id_match_rates:
     {% if compute_match_rates %}
     source: $transformations.id_match_rates
+    operations: []
     {% else %}
     source: $sources.student_id_match_rates
+    operations:
+      - operation: keep_columns
+        columns:
+          - source_column_name
+          - edfi_column_name
+          - num_matches
+          - num_rows
+          - match_rate
     {% endif %}
-    operations: []
 
+  # Filter the match rates to either the best above the threshold, or to none.
   best_id_match:
     source: $transformations.student_id_match_rates
     operations:
@@ -271,6 +279,20 @@ transformations:
       - operation: drop_columns
         columns:
           - meets_filter_criteria
+      # Union the zero-match-rate values to ensure this table is always populated.
+      - operation: union
+        sources:
+          - $sources.no_match
+      # Ensure the row selected is the highest match.
+      - operation: modify_columns
+        columns:
+          num_matches: "{%raw%}{{value|int}}{%endraw%}"
+      - operation: sort_rows
+        columns:
+          - num_matches
+        descending: True
+      - operation: limit_rows
+        count: 1
       # this should (hopefully) result in zero or one rows
       - operation: rename_columns
         columns:
@@ -284,13 +306,6 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
-      # ensure there's not more than 1 row:
-      - operation: limit_rows
-        count: 1
-    expect:
-      - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
-    # ensure there's not 0 rows:
-    require_rows: True
 
   edfi_roster:
     source: $transformations.unpacked_edfi_roster
@@ -305,6 +320,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: "${NO_MATCH_VALUE}"
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -334,6 +350,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: ""
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -366,6 +383,7 @@ transformations:
           - __num_matches
           - __num_rows
           - __match_rate
+          - __no_match__
 
   input_no_student_id_match:
     source: $transformations.input_base
@@ -404,6 +422,12 @@ destinations:
 
     extension: csv
     linearize: True
+
+  student_best_id_match:
+    source: $transformations.best_id_match
+    template: ./best_id_match.txtt
+    extension: txt
+    linearize: False
 
   {% if compute_match_rates %}
   student_id_match_rates:
