@@ -2,40 +2,37 @@
 
 # Assessments
 ## Assessments Identifiers
-Dominie
+ - Dominie_General_Show Me Book
+ - Dominie_General_Name Writing
+ - Dominie_General_Letter Know
+ - Dominie_General_Phoneme Segmentation
+ - Dominie_General_Phoneme Deletion
+ - Dominie_General_Core Rdg.
+ - Dominie_General_Core Wtg. Vocab.
+ - Dominie_General_Non. Fic. Show Me Book
+ - Dominie_Sentence Writing & Spelling_Phonemes
+ - Dominie_Sentence Writing & Spelling_Spelling
+ - Dominie_Text Reading_Benchmark or Bridge Level
+ - Dominie_Text Reading_Equated Level
+ - Dominie_Text Reading_ACC%
+ - Dominie_Text Reading_Self Correction Rate
+ - Dominie_Text Reading_WCPM
+ - Dominie_Text Reading_Fluency Rubric
+ - Dominie_Text Reading_COMP%
+ - Dominie_Text Reading_% Meaning
+ - Dominie_Text Reading_% Visual
+ - Dominie_Phonics / Forms A & B_Onsets
+ - Dominie_Phonics / Forms A & B_Rimes
+ - Dominie_Story Writing_Conventions
+ - Dominie_Story Writing_Message
+ - Dominie_Spelling Inventory_Spelling Inventory
+
 
 ## Assessment Family
 Dominie
 
-## Objective Assessments
- - General - Show Me Book
- - General - Name Writing
- - General - Letter Know
- - General - Phoneme Segmentation
- - General - Phoneme Deletion
- - General - Core Rdg.
- - General - Core Wtg Vocab
- - General - Non. Fic. Show Me Book
- - Sentence Writing & Spelling - Phonemes
- - Sentence Writing & Spelling - Spelling
- - Dominie Text Reading - Benchmark or Bridge Level
- - Dominie Text Reading - Equated Level
- - Dominie Text Reading - ACC%
- - Dominie Text Reading - Self Correction Rate
- - Dominie Text Reading - WCPM
- - Dominie Text Reading - Fluency Rubric
- - Dominie Text Reading - COMP%
- - Dominie Text Reading - % Meaning
- - Dominie Text Reading - % Visual
- - Phonics / Forms A & B - Onsets
- - Phonics / Forms A & B - Rimes
- - Story Writing - Conventions
- - Story Writing - Message
- - Spelling Inventory - Spelling Inventory
-
-
 ## Assessments Score Method Descriptors
-Each ObjectiveAssessment corresponds to a particular literacy skill. When multiple scoring methods are available for the same skill, such as a raw score and a stanine score, they are represented as separate score entries under the same ObjectiveAssessment.
+Each assessment corresponds to a particular literacy skill. When multiple scoring methods are available for the same skill, such as a raw score and a stanine score, they are represented as separate score entries under the same assessment.
 
 This assessment has the following Reporting Method Descriptors:
  - Raw Score: string
@@ -55,8 +52,8 @@ The Dominie Reading and Writing Assessment is designed to provide a comprehensiv
 - Primary source file containing student Dominie assessment data with the following required columns:
   - Student unique identifier.
   - Assessment administration date
-  - Objective assessment identifier
-  - Score per objective.
+  - Assessment identifier
+  - Scores.
 
 
 ## Bundle Seeds
@@ -64,7 +61,6 @@ The Dominie Reading and Writing Assessment is designed to provide a comprehensiv
 - `assessmentReportingMethodDescriptors.csv`: Contains assessment reporting methods
 - `assessmentCategoryDescriptors.csv`: Contains category descriptors
 - `gradeLevelMapping.csv`: Grade level values by testing type
-- `objectiveAssessments.csv`: Defines assessment objectives
 
 
 # Ed-Fi Mapping
@@ -101,7 +97,7 @@ This bundle produces the following Ed-Fi resources:
 
 - assessmentReportingMethodDescriptors.jsonl
 - assessments.jsonl
-- objectiveAssessments.jsonl
+- assessmentCategoryDescriptors.jsonl
 - studentAssessmentEducationOrganizationAssociations.jsonl
 - studentAssessments.jsonl
 
@@ -109,7 +105,6 @@ This bundle produces the following Ed-Fi resources:
 - Requires Earthmover version 0.3.8 or higher
 - Requires template files:
   - ./templates/assessments.jsont
-  - ./templates/objectiveAssessments.jsont
   - ./templates/descriptors.jsont
   - ./templates/studentAssessments.jsont
   - ./templates/studentAssessmentEducationOrganizationAssociations.jsont
