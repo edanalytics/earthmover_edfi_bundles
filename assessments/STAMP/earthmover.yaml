@@ -344,6 +344,42 @@ transformations:
       - operation: add_columns
         columns:
           schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
+          #Reading_Level_Agg: >
+          #  {%raw-%}
+          #  {%- if Reading_Level == 'NR' -%} 0
+          #  {%- elif Reading_Level == 'SP' -%} -1
+          #  {%- elif Reading_Level == 'IP' -%} -2
+          #  {%- elif Reading_Level == 'NS' -%} -3
+          #  {%- else -%} Reading_Level
+          #  {%- endif -%}
+          #  {%-endraw%}
+          #Writing_Level_Agg: >
+          #  {%raw-%}
+          #  {%- if Writing_Level == 'NR' -%} 0
+          #  {%- elif Writing_Level == 'SP' -%} -1
+          #  {%- elif Writing_Level == 'IP' -%} -2
+          #  {%- elif Writing_Level == 'NS' -%} -3
+          #  {%- else -%} Writing_Level
+          #  {%- endif -%}
+          #  {%-endraw%}
+          #Listening_Level_Agg: >
+          #  {%raw-%}
+          #  {%- if Listening_Level == 'NR' -%} 0
+          #  {%- elif Listening_Level == 'SP' -%} -1
+          #  {%- elif Listening_Level == 'IP' -%} -2
+          #  {%- elif Listening_Level == 'NS' -%} -3
+          #  {%- else -%} Listening_Level
+          #  {%- endif -%}
+          #  {%-endraw%}
+          #Speaking_Level_Agg: >
+          #  {%raw-%}
+          #  {%- if Speaking_Level == 'NR' -%} 0
+          #  {%- elif Speaking_Level == 'SP' -%} -1
+          #  {%- elif Speaking_Level == 'IP' -%} -2
+          #  {%- elif Speaking_Level == 'NS' -%} -3
+          #  {%- else -%} Speaking_Level
+          #  {%- endif -%}
+          #  {%-endraw%}
       - operation: join
         sources:
           - $transformations.prepare_assessments
@@ -354,7 +390,13 @@ transformations:
           - assessmentNamespace
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  StartDate) }}{% endraw %}" 
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ administrationLanguage) }}{% endraw %}" 
+      - operation: modify_columns
+        columns:
+          Reading_Level: "{%raw%}{{Reading_Level|string}}{%endraw%}"
+          Writing_Level: "{%raw%}{{Writing_Level|string}}{%endraw%}"
+          Listening_Level: "{%raw%}{{Listening_Level|string}}{%endraw%}"
+          Speaking_Level: "{%raw%}{{Speaking_Level|string}}{%endraw%}"
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
@@ -369,24 +411,29 @@ transformations:
           - assessmentNamespace
           - namespace
           - whenAssessedGradeLevelDescriptor
-          - CompositeScore
+          #- CompositeScore
           - assessedMinutes
           - eventDescription
           - districtId
           - schoolId
           - serialNumber
-          - Reading_Level
+          #- Reading_Level
           - Reading_Length
-          - Writing_Level
+          #- Writing_Level
           - Writing_Length
-          - Listening_Level
+          #- Listening_Level
           - Listening_Length
-          - Speaking_Level
+          #- Speaking_Level
           - Speaking_Length
           - descriptorNamespace
         create_columns: 
+          CompositeScore: max(CompositeScore,)
           Reading_Score: max(Reading_Score,)
           Listening_Score: max(Listening_Score,)
+          Reading_Level: max(Reading_Level,)
+          Writing_Level:  max(Writing_Level,)
+          Listening_Level: max(Listening_Level,)
+          Speaking_Level: max(Speaking_Level,)
 
 destinations:
   assessments:
