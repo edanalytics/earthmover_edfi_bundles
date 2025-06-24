@@ -56,7 +56,9 @@
     "studentUniqueId": "{{studentUniqueId}}"
   }
   ,"administrationDate": "{{administrationDate}}"
+  {%- if administrationEndDate is not none and administrationEndDate | length -%}
   ,"administrationEndDate": "{{administrationEndDate}}"
+   {%- endif -%}
   {%- if administrationLanguage is not none and administrationLanguage | length -%}
   ,"administrationLanguageDescriptor": "{{namespace}}#{{administrationLanguage}}"
   {%- endif -%}
