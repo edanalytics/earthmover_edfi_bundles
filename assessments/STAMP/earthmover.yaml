@@ -344,42 +344,6 @@ transformations:
       - operation: add_columns
         columns:
           schoolYear: "{%raw%} {% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %} {{school_year|int}} {% else %} {{school_year|int + 1}} {% endif %} {%endraw%}"
-          #Reading_Level_Agg: >
-          #  {%raw-%}
-          #  {%- if Reading_Level == 'NR' -%} 0
-          #  {%- elif Reading_Level == 'SP' -%} -1
-          #  {%- elif Reading_Level == 'IP' -%} -2
-          #  {%- elif Reading_Level == 'NS' -%} -3
-          #  {%- else -%} Reading_Level
-          #  {%- endif -%}
-          #  {%-endraw%}
-          #Writing_Level_Agg: >
-          #  {%raw-%}
-          #  {%- if Writing_Level == 'NR' -%} 0
-          #  {%- elif Writing_Level == 'SP' -%} -1
-          #  {%- elif Writing_Level == 'IP' -%} -2
-          #  {%- elif Writing_Level == 'NS' -%} -3
-          #  {%- else -%} Writing_Level
-          #  {%- endif -%}
-          #  {%-endraw%}
-          #Listening_Level_Agg: >
-          #  {%raw-%}
-          #  {%- if Listening_Level == 'NR' -%} 0
-          #  {%- elif Listening_Level == 'SP' -%} -1
-          #  {%- elif Listening_Level == 'IP' -%} -2
-          #  {%- elif Listening_Level == 'NS' -%} -3
-          #  {%- else -%} Listening_Level
-          #  {%- endif -%}
-          #  {%-endraw%}
-          #Speaking_Level_Agg: >
-          #  {%raw-%}
-          #  {%- if Speaking_Level == 'NR' -%} 0
-          #  {%- elif Speaking_Level == 'SP' -%} -1
-          #  {%- elif Speaking_Level == 'IP' -%} -2
-          #  {%- elif Speaking_Level == 'NS' -%} -3
-          #  {%- else -%} Speaking_Level
-          #  {%- endif -%}
-          #  {%-endraw%}
       - operation: join
         sources:
           - $transformations.prepare_assessments
@@ -393,10 +357,42 @@ transformations:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ administrationLanguage) }}{% endraw %}" 
       - operation: modify_columns
         columns:
-          Reading_Level: "{%raw%}{{Reading_Level|string}}{%endraw%}"
-          Writing_Level: "{%raw%}{{Writing_Level|string}}{%endraw%}"
-          Listening_Level: "{%raw%}{{Listening_Level|string}}{%endraw%}"
-          Speaking_Level: "{%raw%}{{Speaking_Level|string}}{%endraw%}"
+          Reading_Level: >
+            {%raw-%}
+            {%- if Reading_Level == 'NR' -%} 0
+            {%- elif Reading_Level == 'SP' -%} -1
+            {%- elif Reading_Level == 'IP' -%} -2
+            {%- elif Reading_Level == 'NS' -%} -3
+            {%- else -%} {{Reading_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Writing_Level: >
+            {%raw-%}
+            {%- if Writing_Level == 'NR' -%} 0
+            {%- elif Writing_Level == 'SP' -%} -1
+            {%- elif Writing_Level == 'IP' -%} -2
+            {%- elif Writing_Level == 'NS' -%} -3
+            {%- else -%} {{Writing_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Listening_Level: >
+            {%raw-%}
+            {%- if Listening_Level == 'NR' -%} 0
+            {%- elif Listening_Level == 'SP' -%} -1
+            {%- elif Listening_Level == 'IP' -%} -2
+            {%- elif Listening_Level == 'NS' -%} -3
+            {%- else -%} {{Listening_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Speaking_Level: >
+            {%raw-%}
+            {%- if Speaking_Level == 'NR' -%} 0
+            {%- elif Speaking_Level == 'SP' -%} -1
+            {%- elif Speaking_Level == 'IP' -%} -2
+            {%- elif Speaking_Level == 'NS' -%} -3
+            {%- else -%} {{Speaking_Level}}
+            {%- endif -%}
+            {%-endraw%}
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
@@ -411,19 +407,14 @@ transformations:
           - assessmentNamespace
           - namespace
           - whenAssessedGradeLevelDescriptor
-          #- CompositeScore
           - assessedMinutes
           - eventDescription
           - districtId
           - schoolId
           - serialNumber
-          #- Reading_Level
           - Reading_Length
-          #- Writing_Level
           - Writing_Length
-          #- Listening_Level
           - Listening_Length
-          #- Speaking_Level
           - Speaking_Length
           - descriptorNamespace
         create_columns: 
@@ -434,6 +425,49 @@ transformations:
           Writing_Level:  max(Writing_Level,)
           Listening_Level: max(Listening_Level,)
           Speaking_Level: max(Speaking_Level,)
+  
+  #Reverse the levels back to string after duplicates ahve been removed.
+  final_student_assessments:
+    source: $transformations.prepare_student_assessments
+    operations:
+      - operation: modify_columns
+        columns: 
+          Reading_Level: >
+            {%raw-%}
+            {%- if Reading_Level == 0 -%} 'NR'
+            {%- elif Reading_Level == -1  -%} 'SP'
+            {%- elif Reading_Level == -2  -%} 'IP'
+            {%- elif Reading_Level == -3  -%} 'NS'
+            {%- else -%} {{Reading_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Writing_Level: >
+            {%raw-%}
+            {%- if Writing_Level == 0 -%} 'NR'
+            {%- elif Writing_Level == -1 -%} 'SP'
+            {%- elif Writing_Level == -2 -%} 'IP'
+            {%- elif Writing_Level == -3 -%} 'NS'
+            {%- else -%} {{Writing_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Listening_Level: >
+            {%raw-%}
+            {%- if Listening_Level == 0 -%} 'NR'
+            {%- elif Listening_Level == -1 -%} 'SP'
+            {%- elif Listening_Level == -2 -%} 'IP'
+            {%- elif Listening_Level == -3 -%} 'NS'
+            {%- else -%} {{Listening_Level}}
+            {%- endif -%}
+            {%-endraw%}
+          Speaking_Level: >
+            {%raw-%}
+            {%- if Speaking_Level == 0 -%} 'NR'
+            {%- elif Speaking_Level == -1 -%} 'SP'
+            {%- elif Speaking_Level == -2 -%} 'IP'
+            {%- elif Speaking_Level == -3 -%} 'NS'
+            {%- else -%} {{Speaking_Level}}
+            {%- endif -%}
+            {%-endraw%}
 
 destinations:
   assessments:
@@ -445,11 +479,11 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.final_student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.final_student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   
