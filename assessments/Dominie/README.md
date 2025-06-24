@@ -24,7 +24,7 @@ To run this bundle, please add your own source file or use the sample file (<cod
 Run the following command:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/Dominie_sample_anonymized_file.csv",
+  "INPUT_FILE": "path/to/Dominie_anonymized_sample_file.csv",
   "OUTPUT_DIR": "./output",
   "STUDENT_ID_NAME": "suns",
 }'
