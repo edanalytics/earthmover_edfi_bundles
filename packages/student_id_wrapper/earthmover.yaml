@@ -9,6 +9,7 @@ config:
     OUTPUT_DIR: output
     ASSESSMENT_BUNDLE_BRANCH: main
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
+    SOURCE_ENCODING: utf-8
 
 packages:
   ${ASSESSMENT_BUNDLE}:
@@ -19,6 +20,10 @@ packages:
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     branch: main
     subdirectory: packages/student_ids
+
+sources:
+  input:
+    encoding: ${SOURCE_ENCODING}
 
 transformations:
   input:
