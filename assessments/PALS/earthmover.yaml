@@ -226,6 +226,11 @@ transformations:
 {% for assessment_name in assessment[1:] %}
         - $transformations.student_assessment_{{ assessment_name }}
 {% endfor %}
+    - operation: distinct_rows
+      columns: 
+        - studentUniqueId
+        - assessmentIdentifier
+        - administrationDate
   
   prepare_assessments:
     source: $sources.assessments
