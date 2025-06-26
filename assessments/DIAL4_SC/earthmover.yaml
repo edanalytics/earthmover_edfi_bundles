@@ -252,15 +252,19 @@ transformations:
           administration: assessmentPeriodDescriptor
       - operation: add_columns
         columns:
-          administrationDate: "{%raw%}{{ startdate }}{%endraw%}"
+          administrationDate: "{%raw%}{{ datetaken }}{%endraw%}"
           administrationEndDate: "{%raw%}{{ enddate }}{%endraw%}"
           whenAssessedGradeLevelDescriptor: "{%raw%}{{ whenAssessedGradeLevelDescriptor }}{%endraw%}"
           schoolYear: "{%raw%}{{ datetaken[:4] | int + 1 if datetaken[5:7] | int >= 7 else datetaken[:4] | int }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  startdate) }}{% endraw %}"
-  
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  datetaken) }}{% endraw %}"
+      - operation: distinct_rows
+        columns:
+          - studentUniqueId
+          - assessmentIdentifier
+          - administrationDate
   prepare_student_assessment_valid_school:
     source: $transformations.prepare_student_assessment
     operations:
