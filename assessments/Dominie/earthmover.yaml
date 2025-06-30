@@ -16,7 +16,7 @@ sources:
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
-    header_rows: 1 
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -26,7 +26,7 @@ sources:
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
-  
+
 transformations:
   input:
     source: $sources.input
@@ -60,7 +60,7 @@ transformations:
         columns:
           joinKey: "Key"
           grade_json: >
-              {%raw-%}  
+              {%raw-%}
               {
                 "gradeLevelDescriptor": "{{ Grade_Namespace }}#{{Grade_CodeValue}}"
               }
@@ -71,10 +71,9 @@ transformations:
       - operation: group_by
         group_by_columns:
           - joinKey
-        create_columns: 
+        create_columns:
           grade_json: agg(grade_json,,)
 
-  
   {% set assessment = [
   ('showmebook','Raw Score','Integer','showmebookstanine'),
   ('namewriting','Raw Score' , 'Integer', ''),
@@ -100,37 +99,17 @@ transformations:
   ('conventions','Raw Score' , 'Integer', ''),
   ('message', 'Raw Score' , 'Integer',''),
   ('spellinginventory', 'Raw Score' , 'Integer','spellinginventorystanines')
-] %}
-  
-{% for column_assessment_name, reporting_method, result_type, column_stanine in assessment %}
+  ] %}
 
-  student_assessment_{{ column_assessment_name }}:
+  prepare_student_assessment:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: add_columns
         columns:
-          joinKey: "{{ column_assessment_name }}"
-      - operation: join
-        sources:
-          - $sources.assessments
-        join_type: inner
-        left_key: joinKey
-        right_key: column_mapping
+          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: rename_columns
         columns:
           schoolcode: schoolId
-          {{ column_assessment_name }}: Score
-          {% if column_stanine %}{{ column_stanine }}: ScoreStanine{% endif %}
-      - operation: add_columns
-        columns:
-          joinKey: "Key"
-          result: "{% raw %}{{ Score }}{% endraw %}"
-          {% if column_stanine %}resultStanine: "{% raw %}{{ ScoreStanine }}{% endraw %}"{% else %}resultStanine: "NULL"{% endif %}
-          assessmentReportingMethod: "{{ reporting_method }}"
-          resultDatatype: "{{ result_type }}"
       - operation: join
         sources:
           - $transformations.stage_grade_level
@@ -139,16 +118,42 @@ transformations:
         right_key: GradeLevel
         right_keep_columns:
           - Grade_CodeValue
-          - Grade_Namespace 
+          - Grade_Namespace
       - operation: add_columns
         columns:
           administrationDate: "{% raw %}{{ datetaken | string }}{% endraw %}"
+          schoolYear: "{%raw%}{% if administrationDate and '-' in administrationDate %}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{% endif %}{%endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+
+{% for column_assessment_name, reporting_method, result_type, column_stanine in assessment %}
+
+  student_assessment_{{ column_assessment_name }}:
+    source: $transformations.prepare_student_assessment
+    operations:
       - operation: add_columns
         columns:
-          schoolYear: "{%raw%}{% if administrationDate and '-' in administrationDate %}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{% endif %}{%endraw%}"
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
+          assessment_column_name: "{{ column_assessment_name }}"
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessment_column_name
+        right_key: column_mapping
+      - operation: rename_columns
+        columns:
+          "{{ column_assessment_name }}": Score
+          {% if column_stanine %}
+          "{{ column_stanine }}": ScoreStanine
+          {% endif %}
+      - operation: add_columns
+        columns:
+          # Now, refer to the consistently renamed 'Score' and 'ScoreStanine' columns
+          result: "{% raw %}{{ Score }}{% endraw %}"
+          {% if column_stanine %}resultStanine: "{% raw %}{{ ScoreStanine }}{% endraw %}"{% else %}resultStanine: "NULL"{% endif %}
+          assessmentReportingMethod: "{{ reporting_method }}"
+          resultDatatype: "{{ result_type }}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ assessment_column_name) }}{% endraw %}"
           whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
-          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: keep_columns
         columns:
             - "studentAssessmentIdentifier"
@@ -168,7 +173,7 @@ transformations:
         query: "result != 'NULL' and result!=''"
         behavior: include
 
-    {% endfor %}
+{% endfor %}
 
   combined_results:
     source: $transformations.student_assessment_{{ assessment[0][0] }}
@@ -179,50 +184,51 @@ transformations:
           - $transformations.student_assessment_{{ column_assessment_name }}
   {% endfor %}
 
-  {% for a_name, a_method, a_type, a_stanine in assessment %}
-  prepare_assessments_{{ a_name }}:
+  # Optimized preparation of assessments (similar to original, but more direct)
+  prepare_assessments_metadata:
     source: $sources.assessments
     operations:
-      - operation: filter_rows
-        query: "column_mapping == '{{ a_name }}'"
-        behavior: include
       - operation: add_columns
         columns:
-          joinKey: "Key"
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+          joinKey: "Key" 
       - operation: join
         sources:
           - $transformations.assessment_grade_level_descriptors
         join_type: inner
         left_key: joinKey
         right_key: joinKey
+
+  prepare_assessments:
+    source: $transformations.prepare_assessments_metadata
+    operations:
       - operation: add_columns
         columns:
           score_json: >
             {
-            "assessmentReportingMethodDescriptor": {% raw %}"{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#{% endraw %}{{ a_method }}{% raw %}"{% endraw %},
-              "resultDatatypeTypeDescriptor": {% raw %}"{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#{% endraw %}{{ a_type }}{% raw %}"{% endraw %}
+            "assessmentReportingMethodDescriptor": "{% raw %}{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#{% endraw %}{% for col_name, rep_method, res_type, col_stanine in assessment %}{% if col_name == column_mapping %}{{ rep_method }}{% endif %}{% endfor %}{% raw %}"{% endraw %},
+              "resultDatatypeTypeDescriptor": "{% raw %}{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#{% endraw %}{% for col_name, rep_method, res_type, col_stanine in assessment %}{% if col_name == column_mapping %}{{ res_type }}{% endif %}{% endfor %}{% raw %}"{% endraw %}
             }
-            {% if a_stanine %}
+            {% for col_name, rep_method, res_type, col_stanine in assessment %}
+            {% if col_name == column_mapping and col_stanine %}
             , {
-              "assessmentReportingMethodDescriptor": {% raw %}"{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#Stanine"{% endraw %},
-              "resultDatatypeTypeDescriptor": {% raw %}"{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#Integer"{% endraw %}
+              "assessmentReportingMethodDescriptor": "{% raw %}{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#Stanine"{% endraw %},
+              "resultDatatypeTypeDescriptor": "{% raw %}{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#Integer"{% endraw %}
             }
             {% endif %}
+            {% endfor %}
       - operation: modify_columns
         columns:
           score_json: "{% raw %}{{ score_json | replace('\n', '') }}{% endraw %}"
-  {% endfor %}
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+          - assessmentNamespace
+          - descriptorNamespace
+          - grade_json
+        create_columns:
+          score_json: agg(score_json,,)
 
-  prepare_assessments:
-    source: $transformations.prepare_assessments_{{ assessment[0][0] }}
-    operations:
-      - operation: union
-        sources:
-          {% for a_name, a_method, a_type, a_stanine in assessment[1:] %}
-          - $transformations.prepare_assessments_{{ a_name }}
-          {% endfor %}
-          
 
   prepare_student_assessment_valid_school:
     source: $transformations.combined_results
@@ -241,7 +247,7 @@ destinations:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
-    
+
   studentAssessments:
     source: $transformations.combined_results
     template: ./templates/studentAssessments.jsont
