@@ -363,7 +363,7 @@ transformations:
       - operation: drop_columns
         columns:
           - student_unique_id
-      - operation: rename_columns
+      - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: keep_columns
@@ -422,12 +422,13 @@ transformations:
           - $transformations.scready_student_assessment_math
           - $transformations.scready_student_assessment_science
           - $transformations.scready_student_assessment_social_studies
-
+      - operation: modify_columns
+        columns: 
+          assessment_grade: "{%raw%}{{value|trim}}{%endraw%}"
       # Only populated assessments have `{Subject}Grade` column populated
       - operation: filter_rows
         query: assessment_grade != ''
         behavior: include
-      
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
