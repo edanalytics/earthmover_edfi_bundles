@@ -80,14 +80,24 @@
   "VSchool",
 ] -%}
 
-{%- set ela_score_results = [
-  "Lex",
-  "LexLow",
-  "LexNPR",
-  "LexUp",
-  "TDANoScore",
-  "TDAScore",
-] -%}
+{%- if api_year | int < 2025 -%}
+  {%- set ela_score_results = [
+    "Lex",
+    "LexLow",
+    "LexNPR",
+    "LexUp",
+    "TDANoScore",
+    "TDAScore",
+  ] -%}
+{%- elif api_year | int >= 2025 -%}
+  {%- set ela_score_results = [
+    "Lex",
+    "LexLow",
+    "LexUp",
+    "TDWNoScore",
+    "TDWScore",
+  ] -%}
+{%- endif -%}
 
 {%- set math_score_results = [
   "Quant",
