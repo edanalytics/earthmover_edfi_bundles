@@ -184,13 +184,24 @@
       {%- endfor -%}
   ]
   {%- endif -%}
-
+  
   {%- if Subject == 'E2' -%}
-    {%- set possible_obj_assess = [
-        ['Informational Text', Eng2Lev1],
-        ['Literary Text', Eng2Lev2],
-        ['Writing (to include TDA and Communication)', Eng2Lev3]
-    ] -%}
+    {%- if api_year | int < 2025 -%}
+      {%- set possible_obj_assess = [
+          ['Informational Text', Eng2Lev1],
+          ['Literary Text', Eng2Lev2],
+          ['Writing (to include TDA and Communication)', Eng2Lev3]
+      ] -%}
+    {%- elif api_year | int >= 2025 -%}
+      {%- set possible_obj_assess = [
+          ['Reading Literary Text', Eng2Lev1],
+          ['Reading Informational Text', Eng2Lev2],
+          ['Reading (vocabulary) Across Genres', Eng2Lev3],
+          ['Writing (to include TDW)', Eng2Lev4],
+          ['Research and Evaluating Ideas', Eng2Lev5]
+      ] -%}
+    {%- endif -%}
+      
   {%- endif %}
 
   {%- if Subject == 'A' -%}

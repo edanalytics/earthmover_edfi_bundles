@@ -109,6 +109,7 @@ transformations:
     - operation: modify_columns
       columns: 
           '*': "{%raw%}{{ value | trim }}{%endraw%}"
+          api_year: "${API_YEAR}" # make env variable available in data
     - operation: map_values
       columns: 
       - AlgLev1
@@ -189,6 +190,19 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+          # set min and max defaults if null in seed
+          min_year: "{%raw%}{% if min_year == '' %}2024{% else %}{{min_year}}{% endif %}{%endraw%}"
+          max_year: "{%raw%}{% if max_year == '' %}2100{% else %}{{max_year}}{% endif %}{%endraw%}"
+      - operation: add_columns
+          # add "boolean" column to filter down to matching rows in seed
+        columns:
+          current: "{%raw%}{% if ${API_YEAR} >= (min_year | int) and ${API_YEAR} <= (max_year | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "current == 'true'"
+        behavior: include
+        # string comparison works; trying to cast to int with Series.astype
+        # causes issues with Dask meta
+        # query: "'${API_YEAR}' >= min_year and '${API_YEAR}' <= max_year"
 
   assessments:
     source: $sources.assessments
