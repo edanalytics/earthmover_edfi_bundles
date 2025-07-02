@@ -99,6 +99,13 @@ transformations:
           ${STUDENT_ID_NAME}: studentUniqueId
           # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
           RSchoolID: educationOrganizationId
+    - operation: duplicate_columns
+      columns:
+        {% if ${API_YEAR} == 2024 %}
+        "USHCLev5                 ": USHCLev5 # typically the last column needs to be trimmed
+        {% elif ${API_YEAR} == 2025 %}
+        "USHCLev5                                                                                                                                                                                                                                                                                                                  ": USHCLev5
+        {% endif %}
     - operation: modify_columns
       columns: 
           '*': "{%raw%}{{ value | trim }}{%endraw%}"
