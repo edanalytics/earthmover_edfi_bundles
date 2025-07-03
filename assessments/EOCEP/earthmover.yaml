@@ -129,7 +129,7 @@ transformations:
         school_year: "${API_YEAR}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
         # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
-        educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor/Administration"
+        educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
     # Some dates are missing day-of-year. Force these to the first of the month.
     - operation: modify_columns
       columns:
