@@ -20,7 +20,12 @@ columns_list: &columns_list
   # Generic fields
   - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
+  {% if ${API_YEAR} < 2025 %}
   - SchoolID
+  {% else %}
+  - TSchoolID
+  - RSchoolID
+  {% endif %}
   - TestAdmin
   - UID
   - Grade
@@ -368,6 +373,12 @@ transformations:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: keep_columns
         columns: *columns_list
+      - operation: modify_columns
+        columns:
+          ELAGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          MathGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SciGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SocGrade: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
@@ -375,7 +386,11 @@ transformations:
         columns:
           school_year:  ${API_YEAR}
           administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
+          {% if ${API_YEAR} < 2025 %}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
+          {% else %}
+          lea_id: "{%raw%}{{RSchoolID[0:-3]}}{%endraw%}"
+          {% endif %}
           namespace: "uri://datarecognitioncorp.com/Assessment"
     
   scready_student_assessment_ela:
@@ -422,9 +437,6 @@ transformations:
           - $transformations.scready_student_assessment_math
           - $transformations.scready_student_assessment_science
           - $transformations.scready_student_assessment_social_studies
-      - operation: modify_columns
-        columns: 
-          assessment_grade: "{%raw%}{{value|trim}}{%endraw%}"
       # Only populated assessments have `{Subject}Grade` column populated
       - operation: filter_rows
         query: assessment_grade != ''
@@ -476,6 +488,21 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+  
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
+          end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
+      - operation: add_columns
+        columns:
+          current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "current == 'true'"
+        behavior: include
       
 
 
@@ -497,7 +524,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True

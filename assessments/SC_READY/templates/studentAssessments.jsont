@@ -1,6 +1,5 @@
 {%- set generic_score_results = [
     [subject, "Subject", "Level"],
-    [SchoolID, "SchoolID", "Integer"],
     [TestAdmin, "TestAdmin", "Level"],
     [Grade, "Grade", "Level"],
     [DOB, "DOB", "Level"],
@@ -50,6 +49,18 @@
     [TrueGrade, "TrueGrade", "Level"],
     [VSchool, "VSchool", "Level"],
 ] -%}
+
+{%- if (school_year | int) < 2025 -%}
+    {%- set schoolid_score_results = [
+        [SchoolID, "SchoolID", "Integer"]
+    ] -%}
+{%- else -%}
+    {%- set schoolid_score_results = [
+        [RSchoolID, "RSchoolID", "Integer"],
+        [TSchoolID, "TSchoolID", "Integer"]
+    ] -%}
+{%- endif -%}
+{%- set generic_score_results = generic_score_results + schoolid_score_results -%}
 
 {%- set ela_score_results = [
     [Lex, "Lexile Score", "Level"],
