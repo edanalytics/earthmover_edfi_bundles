@@ -106,6 +106,15 @@
     [ELA2TestDuration, "2TestDuration", "Integer"],
 ] -%}
 
+{%- if (school_year | int) < 2025 -%}
+    {%- set additional_ela_score_results = [] -%}
+{%- else -%}
+    {%- set additional_ela_score_results = [
+        [ELARS5, "RS5", "Level"]
+    ] -%}
+{%- endif -%}
+{%- set ela_score_results = ela_score_results + additional_ela_score_results -%}
+
 {%- set math_score_results = [
     [Quant, "Quantile Score", "Level"],
     [QuantLow, "Quantile Min", "Level"],

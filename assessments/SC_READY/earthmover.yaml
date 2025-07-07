@@ -1,7 +1,7 @@
 version: 2
 
 config:
-  log_level: INFO
+  log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   state_file: ${STATE_FILE}
   show_graph: False
@@ -480,6 +480,16 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
+          end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
+      - operation: add_columns
+        columns:
+          current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "current == 'true'"
+        behavior: include
 
           
   assessments:
