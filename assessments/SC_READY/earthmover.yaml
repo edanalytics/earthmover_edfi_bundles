@@ -501,16 +501,9 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
-      - operation: modify_columns
-        columns:
-          start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
-          end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
-      - operation: add_columns
-        columns:
-          current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
-      - operation: filter_rows
-        query: "current == 'true'"
-        behavior: include
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
           
   assessments:
@@ -524,16 +517,9 @@ transformations:
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     operations:
-      - operation: modify_columns
-        columns:
-          start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
-          end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
-      - operation: add_columns
-        columns:
-          current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
-      - operation: filter_rows
-        query: "current == 'true'"
-        behavior: include
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
