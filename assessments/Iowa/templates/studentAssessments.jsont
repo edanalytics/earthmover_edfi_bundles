@@ -4,11 +4,8 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
   },
-  "reportedSchoolReference": {
-    "schoolId": {{Building_Code}}
-  },
   "schoolYearTypeReference": {
-    "schoolYear": {{SchoolYear}}
+    "schoolYear": {{schoolYear}}
   },
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
@@ -40,7 +37,7 @@
         ,
         {% endif %}
         {
-          "accommodationDescriptor": "{{descriptor_namespace_override}}/AccommodationDescriptor#{{accomodation_descriptor_dictionary[loop.index]}}"
+          "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{accomodation_descriptor_dictionary[loop.index]}}"
         }
         {% if vars.update({'is_first_item': False}) %} {% endif %}  
       {% endif %}
@@ -68,27 +65,35 @@
 
   "administrationDate": "{{Date_Tested}}",
   "period": {
-    "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#{{Semester}}"
+    "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{Semester}}"
   },
 
   {# Here is the array for overall scores. Write if there is at least one value. We should add this validation. Should I add only this array to assessment.jsont? Currently they have included all the possibles scores. #}
-  "scoreResults": [
-    {% for score_name in scores_without_objective_dictionary %}
-      {% set ReportingMethod, SlotLength, DataType = scores_without_objective_dictionary[score_name] %}
-      {% set score_string = __row_data__[score_name]|trim %}
-      {# Report score as it is if scores are not saved within substrings #}
-      {% if score_string|length > 0 and score_string != 'NULL' and SlotLength == 0 %}
-        {
-          "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#{{ReportingMethod}}",
-          "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{DataType}}",
-          "result": "{{score_string}}"
-        }
-        {% if loop.index < loop.length %}
-        ,
-        {% endif %}
-      {% endif %}
-    {% endfor %} 
-  ],
+ {% set valid_scores = [] %}
+{% for score_name in scores_without_objective_dictionary %}
+  {% set ReportingMethod, SlotLength, DataType = scores_without_objective_dictionary[score_name] %}
+  {% set score_string = __row_data__[score_name] | trim %}
+  {% if score_string | length > 0 and score_string != 'NULL' and SlotLength == 0 %}
+    {% set _ = valid_scores.append({
+      "assessmentReportingMethodDescriptor": ReportingMethod,
+      "resultDatatypeTypeDescriptor": DataType,
+      "result": score_string
+    }) %}
+  {% endif %}
+{% endfor %}
+
+{% if valid_scores %}
+"scoreResults": [
+  {% for item in valid_scores %}
+  {
+    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ item.assessmentReportingMethodDescriptor }}",
+    "resultDatatypeTypeDescriptor": "{{ descriptor_namespace_override }}/ResultDatatypeTypeDescriptor#{{ item.resultDatatypeTypeDescriptor }}",
+    "result": "{{ item.result }}"
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+],
+{% endif %}
+
   {#-----------------------------------------------------------------------------------------------------------#}
   {#  Objective-Score Logic - Sourced from Appendix A #}
   {% set objectives_dictionary = {
@@ -120,9 +125,7 @@
     '25':'RW',
     '26':'RC',
     '27':'RT',
-    '28':'LT',
-    '29':'N/A',
-    '30':'N/A-2'
+    '28':'LT'
     } %}
 
   {# Mapping Definition 
@@ -157,9 +160,21 @@
     "Local_Stanine"                                                     : (["Local Stanine",                                      1, "Integer"    ]),
     "College_Readiness"                                                 : (["College Readiness",                                  1, "Level"      ]),
     "Standard_Score_Norm_Based"                                         : (["Standard Score based on 2011/2005 norms",            3, "Integer"    ]),
-    "Grade_Equivalent_Norm_Based"                                       : (["Grade Equivalent based on 2011/2005 norms",          2, "Percentage" ]),
+    "Grade_Equivalent_Norm_Based"                                       : (["Grade Equivalent based on 2011/2005 norms",          4, "Percentage" ]),
     "National_Percentile_Rank_Norm_Based"                               : (["National Percentile Rank based on 2011/2005 norms",  2, "Percentile" ]),
-    "National_Stanine_Norm_Based"                                       : (["National Stanine based on 2011/2005 norms",          1, "Integer"    ])
+    "National_Stanine_Norm_Based"                                       : (["National Stanine based on 2011/2005 norms",          1, "Integer"    ]),    
+    "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct" : (["SDCD Levels Percent Correct",                        3, "Percentage" ]),
+    "Common_Core_Standards_Domain_Percent_Correct"                      : (["CSS Domain Percent Correct",                         3, "Percentage" ]),
+    "State_Predicted_Scale_Score_Low_Score_of_Range"                    : (["State Predicted Scale Score: Low Score of Range",    4, "Integer" ]),
+    "State_Predicted_Scale_Score_High_Score_of_Range"                   : (["State Predicted Scale Score: High Score of Range",   4, "Integer" ]),
+    "State_Predicted_Scale_Score"                                       : (["State Predicted Scale Score",                        4, "Integer" ]),
+    "PR_Valid_Flag"                                                     : (["PR Valid Flag",                                      1, "Integer" ]),
+    "Significant_Diff_Indicators"                                       : (["Significant Diff Indicators",                        3, "Integer" ]),
+    "Catholic_Private_PR"                                               : (["Catholic - Private PR",                              2, "Percentile" ]),
+    "HSES_PR"                                                           : (["HSES PR",                                            2, "Percentile" ]),
+    "LSES_PR"                                                           : (["LSES PR",                                            2, "Percentile" ]),
+    "Common_Core_Standards_(CSS)_without_Computation_Domain_Percent_Correct": (["Common Core Standards (CSS) without Computation Domain Percent Correct",3, "Percentage" ])
+
   } %}
 
   {% set performanceLevelDictionary = {
@@ -173,21 +188,22 @@
     {% for idx, identification_code in objectives_dictionary.items() %}
       {
         {% set idx = idx|int %}
+        {% set zero_idx = idx - 1 %} {# idx starting from 1, so I think it needs to be decremented by 1.#}
         "administrationDate": "{{Date_Tested}}",
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{identification_code}}",
           "namespace": "{{namespace}}"
         },
-        {# idx starting from 1, so I think the Completion Criteria needs to be decremented by 1. Originally: set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] #}
-        {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx-1] %}
+        {# Originally: set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] #}
+        {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][zero_idx] %}
         {# Performance levels 0, 1 or blank #}
         {% set performanceLevelCodeValue = performanceLevelCodeValue if performanceLevelCodeValue|trim != "" else '-1' %}        
         {% set performanceLevelIndicatorName = performanceLevelDictionary[performanceLevelCodeValue] %}
         "performanceLevels": [
           {
-            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
-            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Completion Criteria",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
             "performanceLevelIndicatorName": "{{performanceLevelIndicatorName}}"
           }
         ],
@@ -208,14 +224,48 @@
               {% set ReportingMethod = "National Stanine based on 2005 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2011" else ReportingMethod %}
               {% set ReportingMethod = "National Stanine based on 2011 norms" if score_name == "National_Stanine_Norm_Based" and Norm_Year == "2017" else ReportingMethod %}
 
-              {% set scoreValue = score_string[idx*SlotLength-SlotLength:idx*SlotLength] if idx*SlotLength <= score_string|length else "" %} {# This extracts each objective’s score from a compact multi-objective string.#}
+
+              
+              {% if (zero_idx + 1) * SlotLength <= score_string|length %}
+                {% set scoreValue = score_string[zero_idx*SlotLength : zero_idx*SlotLength + SlotLength] %}
+              {% else %}
+                {% set scoreValue = "" %}
+              {% endif %}
+              
+              {# This extracts each objective’s score from a compact multi-objective string.#}
+              {# {% set scoreValue = score_string[idx*SlotLength-SlotLength:idx*SlotLength] if idx*SlotLength <= score_string|length else "" %} #}
+              
+              
               {% set scoreValue = scoreValue|trim %}
-              {% if scoreValue|length > 0 %}
+
+              {# Type validation 
+                {% set is_integer = DataType == "Integer" %}
+                {% set is_decimal = DataType in ["Decimal", "Percentage", "Percentile"] %}
+                {% set is_valid = (
+                  (is_integer and (scoreValue|int is not none)) or
+                  (is_decimal and (scoreValue|float is not none)) or
+                  (not is_integer and not is_decimal)
+                ) %}
+              #}
+              {# Simple number validation 
+                {% set is_valid = scoreValue|float is not none %}
+              #}
+
+              {# Avoid date and scientific notation #}
+              {% set is_valid = (
+                scoreValue|length > 0 and
+                scoreValue != 'NULL' and
+                '/' not in scoreValue and
+                '-' not in scoreValue[1:] and 
+                'e' not in scoreValue|lower
+              ) %}
+
+              {% if scoreValue|length > 0 and is_valid %} {# add and is_valid  when validate data types#}
                 {% if not vars.is_first_item %}
                 ,
                 {% endif %}
                 {
-                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#{{ReportingMethod}}",
+                    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ReportingMethod}}",
                     "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{DataType}}",
                     "result": "{{scoreValue|trim}}"
                 }

@@ -10,39 +10,6 @@
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "assessmentTitle": "{{assessmentTitle}}",
-  
-  {# Should I to remove performanceLevel from this template? They included perfomranceLevels per objective #}
-  "performanceLevels": [
-    {
-      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
-      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#1",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
-      "performanceLevelIndicatorName": "Completion Criteria met"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
-      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#0",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
-      "performanceLevelIndicatorName": "Completion Criteria not met"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/AssessmentReportingMethodDescriptor#Completion Criteria",
-      "performanceLevelDescriptor": "{{descriptor_namespace_override}}/Iowa_Assessments/PerformanceLevelDescriptor#-1",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
-      "performanceLevelIndicatorName": "Test not included in the Battery"
-    }
-  ],
-  "periods": [
-    {
-      "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#Fall"
-    },
-    {
-      "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#MidYear"
-    },
-    {
-      "assessmentPeriodDescriptor": "{{descriptor_namespace_override}}/IowaAssessments/AssessmentPeriodDescriptor#Spring"
-    }
-  ],
-  {# I think I should apply the same logic as studentAssessment template and include the overall scores instead the complete scores (they have included scores per objective here) #}
+  "periods": [{{period_json}}],
   "scores": [{{scores_json}}]
 }

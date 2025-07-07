@@ -62,6 +62,12 @@ sources:
     "Grade Equivalent based on 2011 or 2005 norms":"Grade_Equivalent_Norm_Based",
     "National Percentile Rank based on 2011 or 2005 norms":"National_Percentile_Rank_Norm_Based",
     "National Stanine based on 2011 or 2005 norms":"National_Stanine_Norm_Based",
+    "Common Core Standards (CSS) without Computation Domain Percent Correct":"Common_Core_Standards_(CSS)_without_Computation_Domain_Percent_Correct",      
+    "State Predicted Scale Score":"State_Predicted_Scale_Score",
+    "PR Valid Flag":"PR_Valid_Flag",
+    "LSES PR":"LSES_PR",
+    "State Predicted Scale Score: Low Score of Range":"State_Predicted_Scale_Score_Low_Score_of_Range",
+    "State Predicted Scale Score: High Score of Range":"State_Predicted_Scale_Score_High_Score_of_Range",
     "Mode of Administration":"Mode_of_Administration"
     }) %}
 
@@ -89,6 +95,9 @@ sources:
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeMappings.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -102,14 +111,14 @@ transformations:
       - operation: keep_columns
         columns:
         {% for col in columns_dictionary.keys() %}
-          - {{col}}
+          - "{{ col }}"
         {% endfor %}
       # Simplify column names
       - operation: rename_columns
         columns:
         {% for old,new in columns_dictionary.items() %}
         {% if old != new %} #avoids column name overwrite warning
-          {{old}}: {{new}}
+          "{{ old }}": "{{ new }}"
         {% endif %}
         {% endfor %}
       - operation: modify_columns
@@ -121,7 +130,8 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          school_year: ${SCHOOL_YEAR}
+          #school_year: ${SCHOOL_YEAR}
+          schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
     {% if "${DESCRIPTOR_NAMESPACE_OVERRIDE}" == "uri://ed-fi.org" %}
       - operation: map_values
@@ -155,27 +165,6 @@ transformations:
 
   # >>>>> Prepare descriptors >>>>>
 
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    operations:
-      - operation: modify_columns
-        columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-
-  assessmentPeriodDescriptors:
-    source: $sources.assessmentPeriodDescriptors
-    operations:
-      - operation: modify_columns
-        columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    operations:
-      - operation: modify_columns
-        columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
     operations:
@@ -187,23 +176,74 @@ transformations:
           - position
       - operation: distinct_rows
 
-  assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
+  stage_grade_level:
+    source: $sources.gradeLevelDescriptors
     operations:
-      - operation: modify_columns
+      - operation: add_columns
         columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          to: Grade_Namespace
 
   # <<<<< Prepare descriptors <<<<<
 
   # >>>>> Prepare assessments >>>>>
-            
+  performance_levels:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          performance_json: >
+              {%raw-%} {%- if codeValue is not none and codeValue | length -%} 
+              {
+                 "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
+                 "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns: 
+          performance_json: agg(performance_json,,)
+
+  period_descriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          period_json: >
+              {%raw-%}  
+              {
+                "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{period_json | replace('\n', '')}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns: 
+          period_json: agg(period_json,,)
+      - operation: keep_columns
+        columns:
+          - join_key
+          - period_json
+
   grades_json:
-    source: $transformations.cleaned_input
+    #source: $transformations.cleaned_input
+    source: $transformations.stage_grade_level #we need all the grade levels in assessment object
     operations:
       - operation: keep_columns
         columns:
-          - Class_Grade_Descriptor
+          - Grade_Namespace
       - operation: distinct_rows
       - operation: add_columns
         columns:
@@ -211,7 +251,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{Class_Grade_Descriptor}}"
+              "gradeLevelDescriptor": "{{Grade_Namespace}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -233,11 +273,11 @@ transformations:
           - grade_json
 
   scores_json:
-    source: $transformations.assessmentReportingMethodDescriptors
+    source: $sources.assessmentReportingMethodDescriptors
     operations:
       - operation: filter_rows
-        query: isPerformanceLevel == 0
-        behavior: exclude
+        query: codeValue in ["Predicted SAT Critical Reading High", "Predicted SAT Critical Reading Low","Predicted SAT Math High","Predicted SAT Math Low","Predicted ACT Composite High","Predicted ACT Composite Low"]
+        behavior: include
       - operation: add_columns
         columns:
           join_key: "1"
@@ -273,11 +313,6 @@ transformations:
   assessments_source_modified:
     source: $sources.assessments
     operations:
-      - operation: modify_columns
-        columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-          academicSubjectDescriptor: "{%raw%}{{academicSubjectDescriptor | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
       - operation: add_columns
         columns:
           join_key: "1"
@@ -311,6 +346,14 @@ transformations:
           - join_key
         right_keys: 
           - join_key
+      - operation: join
+        sources: 
+          - $transformations.period_descriptors
+        join_type: inner
+        left_keys: 
+          - join_key
+        right_keys: 
+          - join_key
   
   # <<<<< Prepare assessments <<<<<
 
@@ -333,7 +376,8 @@ transformations:
         join_type: outer
         left_key: join_key
         right_key: join_key
-    # Cleanup level-slot combination as per appendix a
+    # Cleanup level-slot combination as per appendix a. why are 19 levels? Shouldn't be 17? For WE, # shouldn't be test_slot == "7"?
+    # I don't understand the following lines, anyway all combinations are in the output file that not includes levels nor slots
     {% for i in range(5,19) %}
       {% if i > 8 %}
       - operation: filter_rows
@@ -342,7 +386,7 @@ transformations:
       {% endif %}
       {% if i < 9 or i > 17 %}
       - operation: filter_rows
-        query: 'test_slot == "6" & Level == "{{i}}" & identificationCode == "WE"'
+        query: 'test_slot == "6" & Level == "{{i}}" & identificationCode == "WE"' 
         behavior: exclude
       {% endif %}
       {% if i != 6 %}
@@ -359,6 +403,14 @@ transformations:
       - operation: add_columns
         columns:
           rowsOrder: 1
+      - operation: join
+        sources: 
+          - $transformations.performance_levels
+        join_type: inner
+        left_keys: 
+          - join_key
+        right_keys: 
+          - join_key
       - operation: keep_columns
         columns:
           - assessmentIdentifier
@@ -369,6 +421,7 @@ transformations:
           - rowsOrder
           - join_key
           - descriptor_namespace_override
+          - performance_json
       - operation: distinct_rows
 
   # <<<<< Prepare objective-assessments <<<<<
@@ -392,13 +445,22 @@ transformations:
           - Level
       - operation: add_columns
         columns:
-          SchoolYear: ${SCHOOL_YEAR}
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
+          #SchoolYear: ${SCHOOL_YEAR}
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{schoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
           # Information regarding Form and Level for the assessment
           serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
 
+  # <<<<< Prepare student-assessments <<<<<
+
+  # >>>>> Prepare student-assessments >>>>>
+  prepare_student_assessment_valid_school:
+    source: $transformations.student_assessments
+    operations:
+      - operation: filter_rows
+        query: Building_Code != "" and Building_Code != None
+        behavior: include
   # <<<<< Prepare student-assessments <<<<<
 
 destinations:
@@ -417,23 +479,27 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment_valid_school
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
   assessmentCategoryDescriptors:
-    source: $transformations.assessmentCategoryDescriptors
+    source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $transformations.assessmentReportingMethodDescriptors
+    source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentPeriodDescriptors:
-    source: $transformations.assessmentPeriodDescriptors
+    source: $sources.assessmentPeriodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
-    source: $transformations.performanceLevelDescriptors
+    source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
