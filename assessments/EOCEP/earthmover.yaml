@@ -26,7 +26,6 @@ definitions:
   - &scd2-year-fill-nas
     operation: modify_columns
     columns:
-      assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
       # set min and max defaults if null in seed
       start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
       end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
@@ -201,6 +200,9 @@ transformations:
   objective_assessments:
     source: $sources.objective_assessments
     operations: 
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
       - *scd2-year-fill-nas
       - *scd2-flag-current-rows
       - *scd2-filter-to-current-rows
