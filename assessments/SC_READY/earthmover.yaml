@@ -19,8 +19,8 @@ definitions:
   - &scd2-year-fill-nas
     operation: modify_columns
     columns:
-      start_year: "{%raw%}{% if start_year == '' %}2024{% else %}{{start_year}}{% endif %}{%endraw%}"
-      end_year: "{%raw%}{% if end_year == '' %}2100{% else %}{{end_year}}{% endif %}{%endraw%}"
+      start_year: "{%raw%}{{ start_year or 2024}}{%endraw%}"
+      end_year: "{%raw%}{{ end_year or 2100 }}{%endraw%}"
   - &scd2-flag-current-rows
     operation: add_columns
     columns:
