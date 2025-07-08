@@ -10,8 +10,6 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'Examinee ID,stateid' #Examinee ID for ACTWorkKeys and stateid for ACTWorkKeys2017
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    OVERRIDE_TO_2022_LOGIC: False # Set to True if the logic for 2022 and later should be used regardless of SCHOOL_YEAR
-  
 sources:
   input:
     file: ${INPUT_FILE}
@@ -71,21 +69,21 @@ transformations:
         columns:
           joinKey: "Key"
       - operation: modify_columns
-        columns:    
+        columns:
           CertificateLevel: "{% raw %}{{ CertificateLevel.strip().lower() }}{% endraw %}"
       - operation: rename_columns
         columns:
           codeValue: Performance_CodeValue
           namespace: Performance_Namespace
-          reportingMethod: Performance_ReportingMethod   
-   
+          reportingMethod: Performance_ReportingMethod
+
   stage_assessment_platform_type:
     source: $sources.assessmentPlatformTypeDescriptors
     operations:
       - operation: add_columns
         columns:
           joinKey: "Key"
-      
+
   stage_accommodation:
     source: $sources.accommodationDescriptors
     operations:
@@ -105,8 +103,8 @@ transformations:
       - operation: add_columns
         columns:
           joinKey: "Key"
- 
- {% if "${SCHOOL_YEAR}" >= "2022" or ${OVERRIDE_TO_2022_LOGIC} %}
+
+ {% if "${SCHOOL_YEAR}" > "2017" %}
   stage_student_assessments:
     source: $transformations.input
     operations:
@@ -124,27 +122,27 @@ transformations:
       - operation: add_columns
         columns:
           accommodationsFlag: "{% raw %}{{ 'true' if 'Speech' in objective else 'false' }}{% endraw %}"
-          MathLevelScore: > 
+          MathLevelScore: >
             {% raw %}
             {{ LevelScore if objective and 'Applied Math' in objective else none }}
             {% endraw %}
-          MathScaleScore: > 
+          MathScaleScore: >
             {% raw %}
             {{ ScaleScore if objective and 'Applied Math' in objective else none }}
             {% endraw %}
-          GraphLevelScore: > 
+          GraphLevelScore: >
             {% raw %}
             {{ LevelScore if objective and 'Graphic Literacy' in objective else none }}
             {% endraw %}
-          GraphScaleScore: > 
+          GraphScaleScore: >
             {% raw %}
             {{ ScaleScore if objective and 'Graphic Literacy' in objective else none }}
             {% endraw %}
-          DocumentsLevelScore: > 
+          DocumentsLevelScore: >
             {% raw %}
             {{ LevelScore if objective and 'Workplace Documents' in objective else none }}
             {% endraw %}
-          DocumentsScaleScore: > 
+          DocumentsScaleScore: >
             {% raw %}
             {{ ScaleScore if objective and 'Workplace Documents' in objective else none }}
             {% endraw %}
@@ -166,7 +164,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - studentKey
-        create_columns:   
+        create_columns:
           MathLevelScore: str_min(MathLevelScore)
           MathScaleScore: str_min(MathScaleScore)
           GraphLevelScore: str_min(GraphLevelScore)
@@ -184,11 +182,11 @@ transformations:
           joinKey: str_min(joinKey)
           schoolYear: str_min(administrationDate[:4])
 
-  
 
-    {% endif %} 
 
-  {% if "${SCHOOL_YEAR}" < "2022" and not ${OVERRIDE_TO_2022_LOGIC} %}
+    {% endif %}
+
+  {% if "${SCHOOL_YEAR}" <= "2017"  %}
   stage_student_assessments:
     source: $transformations.input
     operations:
@@ -211,7 +209,7 @@ transformations:
         columns:
           assessmentIdentifier: "ACTWorkKeysPre2022"
           joinKey: "Key"
-          EducationLevel: > 
+          EducationLevel: >
             {% raw %}
             {{ EducationLevelP if platformTypeDescriptor == 'WKPP' else EducationLevelO }}
             {% endraw %}
@@ -222,8 +220,8 @@ transformations:
         columns:
           EducationLevel: "{% raw %}{{ EducationLevel.strip().lower() }}{% endraw %}"
           CertificateLevel: "{% raw %}{{ CertificateLevel.strip().lower() }}{% endraw %}"
-      
-    {% endif %}      
+
+    {% endif %}
 
   stage_student_assessment_grade:
     source: $transformations.stage_student_assessments
@@ -232,13 +230,13 @@ transformations:
         sources:
           - $transformations.stage_assessment_grade_level
         join_type: left
-        left_keys: 
+        left_keys:
           - EducationLevel
-        right_keys: 
+        right_keys:
           - GradeLevel
         right_keep_columns:
           - Grade_CodeValue
-          - Grade_Namespace   
+          - Grade_Namespace
       - operation: join
         sources:
           - $transformations.stage_accommodation
@@ -268,7 +266,7 @@ transformations:
         columns:
           joinKey: "Key"
           grade_json: >
-              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%}
               {
                 "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
               }
@@ -280,7 +278,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - joinKey
-        create_columns: 
+        create_columns:
           grade_json: agg(grade_json,,)
 
   performance_levels:
@@ -290,7 +288,7 @@ transformations:
         columns:
           joinKey: "Key"
           performance_json: >
-              {%raw-%} {%- if Performance_CodeValue is not none and Performance_CodeValue | length -%} 
+              {%raw-%} {%- if Performance_CodeValue is not none and Performance_CodeValue | length -%}
               {
                  "assessmentReportingMethodDescriptor": "{{Performance_ReportingMethod}}",
                  "performanceLevelDescriptor": "{{Performance_Namespace}}#{{Performance_CodeValue}}"
@@ -303,7 +301,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - joinKey
-        create_columns: 
+        create_columns:
           performance_json: agg(performance_json,,)
 
   assessment_platform_types:
@@ -313,7 +311,7 @@ transformations:
         columns:
           joinKey: "Key"
           platform_type_json: >
-              {%raw-%} {%- if codeValue is not none and codeValue | length -%} 
+              {%raw-%} {%- if codeValue is not none and codeValue | length -%}
               {
                 "platformTypeDescriptor": "{{namespace}}#{{codeValue}}"
               }
@@ -325,9 +323,9 @@ transformations:
       - operation: group_by
         group_by_columns:
           - joinKey
-        create_columns: 
+        create_columns:
           platform_type_json: agg(platform_type_json,,)
-  
+
   objectiveAssessmentScores:
     source: $sources.assessmentReportingMethodDescriptors
     operations:
@@ -372,7 +370,7 @@ transformations:
       - operation: keep_columns
         columns:
           - identificationCode
-          - namespace 
+          - namespace
           - description
           - assessmentIdentifier
           - scores
@@ -426,8 +424,8 @@ transformations:
           - assessmentNamespace
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}" 
-     
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
+
   prepare_student_assessment_valid_school:
     source: $transformations.prepare_student_assessments
     operations:
