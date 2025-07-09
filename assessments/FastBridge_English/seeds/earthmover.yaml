@@ -114,11 +114,6 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
-  assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
     template: ./templates/descriptors.jsont
@@ -129,3 +124,8 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
+  assessmentCategoryDescriptors:
+		source: $sources.assessmentCategoryDescriptors
+		template: ./templates/descriptors.jsont
+		extension: jsonl
+		linearize: True
