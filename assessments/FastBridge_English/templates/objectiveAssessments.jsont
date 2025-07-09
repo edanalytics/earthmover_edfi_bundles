@@ -4,7 +4,7 @@
     "assessmentIdentifier": "{{ assessmentIdentifier }}",
     "namespace": "{{ namespace }}"
   },
-  "academicSubjectDescriptor": "{{ AcademicSubjectDescriptor }}",
-  "performanceLevels": [{{ performance_levels_json }}],
+  "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
+  "performanceLevels": [{{performance_level_json}}],
   "scores": [{{ scores_json }}]
 }

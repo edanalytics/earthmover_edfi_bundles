@@ -37,6 +37,9 @@ sources:
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -80,10 +83,108 @@ transformations:
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
 
+  # Generate grade level JSON for assessments
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate performance level JSON for assessments
+  performance_level_descriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          performance_level_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{performance_level_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          performance_level_json: agg(performance_level_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate assessment period JSON for assessments
+  assessment_period_descriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          period_json: >
+            {%raw-%}
+            {
+              "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{period_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          period_json: agg(period_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   # Prepare assessments with proper structure
   assessments:
     source: $sources.assessments
     operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -92,6 +193,12 @@ transformations:
   objective_assessments:
     source: $sources.objectiveAssessments
     operations:
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -114,6 +221,11 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
   assessmentPeriodDescriptors:
     source: $sources.assessmentPeriodDescriptors
     template: ./templates/descriptors.jsont
@@ -124,8 +236,3 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
-  assessmentCategoryDescriptors:
-		source: $sources.assessmentCategoryDescriptors
-		template: ./templates/descriptors.jsont
-		extension: jsonl
-		linearize: True
