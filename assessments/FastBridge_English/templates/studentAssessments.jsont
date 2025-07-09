@@ -6,7 +6,6 @@
 ] -%}
 
 
-
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
   {%- if score[0] is not none and score[0] | length -%}
@@ -18,21 +17,6 @@
   [early_reading_english_risk_level, "Risk Level", "Level"]
 ] -%}
 
-{%- set possible_objective_perf_levels = [
-  [concepts_of_print_risk_level, "Risk Level", "Level"],
-  [decodable_words_risk_level, "Risk Level", "Level"],
-  [letter_names_risk_level, "Risk Level", "Level"],
-  [letter_sounds_risk_level, "Risk Level", "Level"],
-  [nonsense_words_risk_level, "Risk Level", "Level"],
-  [onset_sounds_risk_level, "Risk Level", "Level"],
-  [oral_repetition_risk_level, "Risk Level", "Level"],
-  [sentence_reading_risk_level, "Risk Level", "Level"],
-  [sight_words_risk_level, "Risk Level", "Level"],
-  [word_blending_risk_level, "Risk Level", "Level"],
-  [word_rhyming_risk_level, "Risk Level", "Level"],
-  [word_segmenting_risk_level, "Risk Level", "Level"]
-] -%}
-
 {%- set perf_levels = [] -%}
 {%- for level in possible_perf_levels -%}
   {%- if level[0] is not none and level[0] | length -%}
@@ -40,15 +24,21 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- set obj_perf_levels = [] -%}
-{%- for level in possible_objective_perf_levels -%}
-  {%- if level[0] is not none and level[0] | length -%}
-    {%- set _ = obj_perf_levels.append(level) -%}
-  {%- endif -%}
-{%- endfor -%}
+
 
 
 {%- set obj_assessments = [
+  ['CBMREnglish', [
+    ('Total Words Read', 'Integer', cbmr_english_total_words_read),
+    ('Words Read Correct', 'Integer', cbmr_english_words_read_correct),
+    ('WRC per minute', 'Decimal', cbmr_english_wrc_per_minute),
+    ('Median Accuracy', 'Decimal', cbmr_english_median_accuracy),
+    ('Error(TWR - WRC)', 'Integer', cbmr_english_error_twr_wrc),
+    ('School Percentile', 'Percentile', cbmr_english_percentile_at_school),
+    ('LEA Percentile', 'Percentile', cbmr_english_percentile_at_lea),
+    ('National Percentile', 'Percentile', cbmr_english_percentile_at_nation),
+    ('Risk Level', 'Level', cbmr_english_risk_level)
+  ]],
   ['ConceptsOfPrint', [
     ('Total Items', 'Integer', concepts_of_print_total_items),
     ('Items Correct', 'Integer', concepts_of_print_items_correct),
@@ -177,6 +167,18 @@
   {%- endif -%}
 {%- endfor -%}
 
+{# Precompute objective performance levels for each objective assessment #}
+{%- set objective_levels_map = {} -%}
+{%- for obj in filtered_obj_assessments -%}
+  {%- set levels = [] -%}
+  {%- for score in obj[1] -%}
+    {%- if score[0] == 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 -%}
+      {%- set _ = levels.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- set _ = objective_levels_map.update({obj[0]: levels}) -%}
+{%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -190,6 +192,7 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{administration_date}}",
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
   "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{grade}}"
 
   {%- if scores -%}
@@ -234,12 +237,7 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor -%}
         ]
-        {%- set objective_levels = [] -%}
-        {%- for score in obj[1] -%}
-          {%- if score[0] == 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 -%}
-            {%- set _ = objective_levels.append(score) -%}
-          {%- endif -%}
-        {%- endfor -%}
+        {%- set objective_levels = objective_levels_map[obj[0]] -%}
         {%- if objective_levels -%}
         , "performanceLevels": [
           {%- for level in objective_levels -%}
