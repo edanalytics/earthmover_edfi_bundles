@@ -20,19 +20,6 @@ Each sub-assessment (component skill) within FastBridge English provides the sam
 3. **Percentile at School** - Sub-assessment percentile ranking within the school
 4. **Risk Level** - Sub-assessment risk categorization
 
-### Understanding Growth Metrics
-
-#### Growth Score
-- **Definition**: Simple arithmetic difference between two assessment scores for the same year
-- **Calculation**: Later Score - Earlier Score
-- **Example**: If a student scored 85 in Fall and 92 in Spring, Growth Score = 92 - 85 = 7
-
-#### Growth Percentile
-- **Definition**: Ranking of a student's growth relative to other students who had similar starting scores
-- **Important Note**: This is NOT a simple difference between percentiles
-- **Purpose**: Shows how well a student grew compared to academic peers
-- **Example**: A student with 45th percentile growth performed better than 45% of students with similar starting scores
-
 ### Risk Level Categories (Performance Level)
 Risk levels are typically categorized as:
 - **Low Risk**: Student performing at or above expected levels
@@ -48,7 +35,7 @@ FASTBridge exports extra granular metrics—useful for diagnostic drilling, but 
 - **Total Items** – items presented
 
 ## 5 · Growth Metrics Breakdown
-FASTBridge files also contain **700 + growth-derived columns**. These are calculated by comparing scores **between assessment windows** rather than within a single window, so they don’t map neatly onto any one period.
+FASTBridge files also contain **150 + growth-derived columns**. These are calculated by comparing scores **between assessment windows** rather than within a single window, so they don’t map neatly onto any one period.
 
 **Typical growth metrics (computed across Fall → Winter → Spring → Screening 4 → Screening 5):**
 
@@ -59,6 +46,16 @@ FASTBridge files also contain **700 + growth-derived columns**. These are calcul
 - School Growth Percentile
 
 Because they’re window-to-window deltas, they can be **safely excluded** from the mappings.
+
+### Understanding Growth Metrics
+
+#### Growth Score
+- **Definition**: Simple arithmetic difference between two assessment scores for the same year
+- **Calculation**: Later Score - Earlier Score
+#### Growth Percentile
+- **Definition**: Ranking of a student's growth relative to other students who had similar starting scores
+- **Purpose**: Shows how well a student grew compared to academic peers
+
 
 ### More details # FASTBRIDGE ASSESSMENT FIELDS BREAKDOWN
 
@@ -167,7 +164,7 @@ Because they’re window-to-window deltas, they can be **safely excluded** from 
 - Items Correct
 - Total Items
 
-#### Word Segmentin
+#### Word Segmentation
 - Error (Total Items ‑ Items Correct)
 - IC per minute
 - Items Correct
