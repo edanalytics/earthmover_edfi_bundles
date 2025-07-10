@@ -1,3 +1,64 @@
+{% set possible_accommodations = [
+  [AccommodationMC, 'MC'],
+  [AccommodationRA, 'RA'],
+  [AccommodationES, 'ES'],
+  [AccommodationLP, 'LP'],
+  [AccommodationBR, 'BR'],
+  [AccommodationSD, 'SD'],
+  [AccommodationIR, 'IR'],
+  [AccommodationRP, 'RP'],
+  [AccommodationHR, 'HR'],
+  [AccommodationRR, 'RR'],
+  [AccommodationHI, 'HI'],
+  [AccommodationRI, 'RI'],
+  [AccommodationSR, 'SR'],
+  [AccommodationWD, 'WD'],
+  [AccommodationRD, 'RD'],
+  [AccommodationNS, 'NS'],
+  [AccommodationET, 'ET'],
+  [AccommodationEM, 'EM']
+] %}
+{% set accommodations = [] %}
+{% for acc in possible_accommodations %}
+  {% if acc[0] == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#" ~ acc[1]) %}{% endif %}
+{% endfor %}
+
+{% if alternate_assessment == 'Y' %}
+  {# These accommodation fields are specific to the alternate assessment#}
+  {% set possible_alternate_accommodations = [
+    [TestEnvironmentFamiliarenvironmenttostudent, 'Familiar environment to student'],
+    [TestEnvironmentQuietEnvironment, 'Quiet Environment'],
+    [TestEnvironmentMinimaldistractions, 'Minimal distractions'],
+    [TestEnvironmentOnetooneinteractionwithtestadministrator, 'One-to-one interaction with test administrator'],
+    [AccommodationsTestdirections, 'Test directions'],
+    [AccommodationsPresentationFormat, 'Presentation Format'],
+    [AccommodationsResponseFormat, 'Response Format'],
+    [AccommodationsSettingformatenvironment, 'Setting format/environment'],
+    [AccommodationsTimingscheduling, 'Timing/scheduling'],
+    [AccommodationsOther, 'Other']
+  ] %}
+  {% for acc in possible_alternate_accommodations %}
+    {% if acc[0] is not none and acc[0] | length %}
+      {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#" ~ acc[1]) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{%- set possible_scores = [
+    ['Proficiency Level', 'Decimal', ProficiencyLevelOverall],
+    ['Scale Score', 'Integer', ScaleScoreOverall],
+    ['Confidence Low Score', 'Integer', ConfidenceLowScoreOverall],
+    ['Confidence High Score', 'Integer', ConfidenceHighScoreOverall],
+    ['Tier', 'Level', Tier]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if possible_scores[2] | int -%}
+    {%- set _ = scores.append(possible_scores) -%}
+  {%- endif -%}
+{%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{UniqueRecordID}}",
   "assessmentReference": {
@@ -10,52 +71,8 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-
-
-  {% set accommodations = [] %}
-
   "accommodations": [
-    {% if AccommodationMC == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#MC")%}{% endif %}
-    {% if AccommodationRA == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RA")%}{% endif %}
-    {% if AccommodationES == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#ES")%}{% endif %}
-    {% if AccommodationLP == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#LP")%}{% endif %}
-    {% if AccommodationBR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#BR")%}{% endif %}
-    {% if AccommodationSD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#SD")%}{% endif %}
-    {% if AccommodationIR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#IR")%}{% endif %}
-    {% if AccommodationRP == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RP")%}{% endif %}
-    {% if AccommodationHR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#HR")%}{% endif %}
-    {% if AccommodationRR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RR")%}{% endif %}
-    {% if AccommodationHI == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#HI")%}{% endif %}
-    {% if AccommodationRI == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RI")%}{% endif %}
-    {% if AccommodationSR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#SR")%}{% endif %}
-    {% if AccommodationWD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#WD")%}{% endif %}
-    {% if AccommodationRD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RD")%}{% endif %}
-    {% if AccommodationNS == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#NS")%}{% endif %}
-    {% if AccommodationET == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#ET")%}{% endif %}
-    {% if AccommodationEM == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#EM")%}{% endif %}
-    {% if alternate_assessment == 'Y' %}
-      {# These accommodation fields are specific to the alternate assessment#}
-      {% if TestEnvironmentFamiliarenvironmenttostudent is not none and TestEnvironmentFamiliarenvironmenttostudent | length %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Familiar environment to student")%}{% endif %}
-      {% if TestEnvironmentQuietEnvironment is not none and TestEnvironmentQuietEnvironment | length %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Quiet Environment")%}{% endif %}
-      {% if TestEnvironmentMinimaldistractions is not none and TestEnvironmentMinimaldistractions | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Minimal distractions")%}{% endif %}
-      {% if TestEnvironmentOnetooneinteractionwithtestadministrator is not none and TestEnvironmentOnetooneinteractionwithtestadministrator | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#One-to-one interaction with test administrator")%}{% endif %}
-      {% if AccommodationsTestdirections is not none and AccommodationsTestdirections | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Test directions")%}{% endif %}
-      {% if AccommodationsPresentationFormat is not none and zAccommodationsPresentationFormatzz | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Presentation Format")%}{% endif %}
-      {% if AccommodationsResponseFormat is not none and AccommodationsResponseFormat | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Response Format")%}{% endif %}
-      {% if AccommodationsSettingformatenvironment is not none and AccommodationsSettingformatenvironment | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Setting format/environment")%}{% endif %}
-      {% if AccommodationsTimingscheduling is not none and AccommodationsTimingscheduling | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Timing/scheduling")%}{% endif %}
-      {% if AccommodationsOther is not none and AccommodationsOther | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Other")%}{% endif %}
-    {% endif %}
+  
     {% if accommodations | length %}
       {% for accommodation in accommodations %}
       {
@@ -63,7 +80,6 @@
       } {% if not loop.last %},{% endif %}
       {% endfor %}
     {% endif %}
-
   ],
   
   {% if TestCompletionDate is not none and TestCompletionDate | length %}
@@ -91,27 +107,6 @@
   "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
 
   "scoreResults": [
-  {% set scores = [] %}
-
-    {% if ProficiencyLevelOverall|float(none) is not none and ProficiencyLevelOverall | length %}
-      {% set _ = scores.append(['Proficiency Level', 'Decimal', ProficiencyLevelOverall]) %}
-    {% endif %}
-
-    {% if ScaleScoreOverall|int(none) is not none and ScaleScoreOverall | length %}
-      {% set _ = scores.append(['Scale Score', 'Integer', ScaleScoreOverall]) %}
-    {% endif %}
-
-    {% if ConfidenceLowScoreOverall|int(none) is not none and ConfidenceLowScoreOverall | length %}
-      {% set _ = scores.append(['Confidence Low Score', 'Integer', ConfidenceLowScoreOverall]) %}
-    {% endif %}
-
-    {% if ConfidenceHighScoreOverall|int(none) is not none and ConfidenceHighScoreOverall | length %}
-      {% set _ = scores.append(['Confidence High Score', 'Integer', ConfidenceHighScoreOverall]) %}
-    {% endif %}
-
-    {% if Tier is not none and Tier | length %}
-      {% set _ = scores.append(['Tier', 'Level', Tier]) %}
-    {% endif %}
 
     {% for score in scores %}
     {
@@ -122,23 +117,26 @@
     {% endfor %}
   ],
 
+  {% if alternate_assessment == 'N' and PerformanceLevelOverall != '' and PerformanceLevelOverall is not none and PerformanceLevelOverall | length %}
   "performanceLevels": [
-    {% if alternate_assessment == 'N' %}
     {# Standard assessment has a numeric performance level #}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ PerformanceLevelOverall|float()|round(1, 'floor')|int }}",
         "performanceLevelMet": true
       }
-    {% else %}
+
+  ],
+  {% elif alternate_assessment == 'Y' and ProficiencyLevelOverall != '' and ProficiencyLevelOverall is not none and ProficiencyLevelOverall | length %}
+  "performanceLevels": [
     {# Alternate assessment has an alphanumeric performance (proficiency) level #}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ProficiencyLevelOverall}}",
         "performanceLevelMet": true
       }
+  ],
     {% endif %}
-    ],
 
     "studentObjectiveAssessments": [
       {% set all_obj_assess = [] %}
