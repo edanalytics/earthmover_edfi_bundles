@@ -1,17 +1,3 @@
-version: 2
-
-config:
-  log_level: INFO
-  output_dir: ${OUTPUT_DIR}
-  memory_limit: 1GB
-  state_file: ${STATE_FILE}
-  show_graph: False
-  show_stacktrace: true
-  parameter_defaults: 
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'UniqueDRCStudentID,StateStudentID,DistrictStudentID'
-    ALTERNATE: ''
-
 sources:
   input:
     file: ${INPUT_FILE}
