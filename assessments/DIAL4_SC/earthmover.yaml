@@ -16,7 +16,7 @@ sources:
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
-    header_rows: 1 
+    header_rows: 1
     debug: true
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -66,6 +66,17 @@ transformations:
           - assessmentIdentifier
           - grade_json
 
+  grade_level_mapping:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_uri: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - original_gradelevel
+          - descriptor_uri
+
   period_descriptors:
     source: $sources.assessmentPeriodDescriptors
     operations:
@@ -75,11 +86,11 @@ transformations:
           - "namespace"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "DIAL3_4" 
+          assessmentIdentifier: "DIAL3_4"
       - operation: add_columns
         columns:
           period_json: >
-              {%raw-%}  
+              {%raw-%}
               {
                 "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
               }
@@ -90,7 +101,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns: 
+        create_columns:
           period_json: agg(period_json,,)
       - operation: keep_columns
         columns:
@@ -157,11 +168,11 @@ transformations:
             uri://ed-fi.org/AssessmentPeriodDescriptor#Fall
             {% endif %}
             {% endraw %}
-      - operation: keep_columns  
+      - operation: keep_columns
         columns:
           - assessmentIdentifier
           - assessmentPeriodDescriptor
-  
+
 #assessment
   prepare_assessment_periods_grades:
     source: $transformations.period_descriptors
@@ -171,14 +182,14 @@ transformations:
           - $transformations.grade_level_descriptors
         join_type: inner
         left_key: assessmentIdentifier
-        right_key: assessmentIdentifier      
-      - operation: keep_columns  
+        right_key: assessmentIdentifier
+      - operation: keep_columns
         columns:
           - assessmentIdentifier
           - period_json
           - grade_json
-  
-              
+
+
   prepare_assessment_periods_scores_grades:
     source: $transformations.prepare_assessment_periods_grades
     operations:
@@ -194,7 +205,7 @@ transformations:
           - period_json
           - score_json
           - grade_json
-      - operation: keep_columns  
+      - operation: keep_columns
         columns:
           - assessmentIdentifier
           - period_json
@@ -210,7 +221,7 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-          
+
 
   prepare_student_assessment:
     source: $transformations.input
@@ -233,7 +244,7 @@ transformations:
           - "totalpercentile"
           - "gradelevel"
       - operation: duplicate_columns
-        columns: 
+        columns:
           schoolcode: schoolId
       - operation: add_columns
         columns:
@@ -245,16 +256,25 @@ transformations:
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
       - operation: duplicate_columns
-        columns: 
+        columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: duplicate_columns
-        columns: 
+        columns:
           administration: assessmentPeriodDescriptor
+      # Join with grade level descriptors to get correct descriptor URI from seed file
+      - operation: join
+        sources:
+          - $transformations.grade_level_mapping
+        join_type: left
+        left_key: gradelevel
+        right_key: original_gradelevel
       - operation: add_columns
         columns:
-          administrationDate: "{%raw%}{{ datetaken }}{%endraw%}"
-          administrationEndDate: "{%raw%}{{ enddate }}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{{ whenAssessedGradeLevelDescriptor }}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{{ descriptor_uri if descriptor_uri else '' }}{%endraw%}"
+      - operation: add_columns
+        columns:
+          administrationDate: "{%raw%}{{ datetaken[:10] }}{%endraw%}"
+          administrationEndDate: "{%raw%}{{ enddate[:10] }}{%endraw%}"
           schoolYear: "{%raw%}{{ datetaken[:4] | int + 1 if datetaken[5:7] | int >= 7 else datetaken[:4] | int }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: add_columns
