@@ -1,15 +1,15 @@
 {%- if schoolYear >= '2022' -%}
   {%- set score_map = {
   "Applied Math": [
-    [MathLevelScore, "String", "Level Score"],
+    [MathLevelScore, "Level", "Level Score"],
     [MathScaleScore, "Integer", "Scale Score"]
   ],
   "Workplace Documents": [
-    [DocumentsLevelScore, "String", "Level Score"],
+    [DocumentsLevelScore, "Level", "Level Score"],
     [DocumentsScaleScore, "Integer", "Scale Score"]
   ],
   "Graphic Literacy": [
-    [GraphLevelScore, "String", "Level Score"],
+    [GraphLevelScore, "Level", "Level Score"],
     [GraphScaleScore, "Integer", "Scale Score"]
   ]
 } -%}
@@ -17,15 +17,15 @@
 {%- else -%} 
 {%- set score_map = {
   "Applied Mathematics": [
-    [MathLevelScore, "String", "Level Score"],
+    [MathLevelScore, "Level", "Level Score"],
     [MathScaleScore, "Integer", "Scale Score"]
   ],
   "Locating Information": [
-    [InfoLevelScore, "String", "Level Score"],
+    [InfoLevelScore, "Level", "Level Score"],
     [InfoScaleScore, "Integer", "Scale Score"]
   ],
   "Reading for Information": [
-    [ReadLevelScore, "String", "Level Score"],
+    [ReadLevelScore, "Level", "Level Score"],
     [ReadScaleScore, "Integer", "Scale Score"]
   ]
 } -%}
