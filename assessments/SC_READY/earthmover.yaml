@@ -494,6 +494,38 @@ transformations:
           SocLev5_name: "{%raw%}{{assessment_grade | int}}_SocLev5{%endraw%}"
           SocLev6_name: "{%raw%}{{assessment_grade | int}}_SocLev6{%endraw%}"
           SocLev7_name: "{%raw%}{{assessment_grade | int}}_SocLev7{%endraw%}"
+  
+  ## StudentAssessmentEducationOrganizationAssociations
+  # Stack reported school ID (RSchoolID 2025 and later, SchoolID before 2025)
+  # and tested school ID (TSchoolID 2025 and later)
+
+  student_assessment_edu_org_associations__administration:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          educationOrganizationID: "{%raw%}{{ TSchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
+
+  student_assessment_edu_org_associations__attribution:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          # TSchoolID added in 2025
+          educationOrganizationID: "{%raw%}{{ RSchoolID or SchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Attribution"
+
+  student_assessment_edu_org_associations_stacked:
+    source: $transformations.student_assessment_edu_org_associations__administration
+    operations:
+      - operation: union
+        sources:
+          - $transformations.student_assessment_edu_org_associations__attribution
+      - operation: filter_rows
+        query: "educationOrganizationID.notnull() and (educationOrganizationID != '') and (educationOrganizationID != 'None')"
+        behavior: include
+
 
   objective_assessments:
     source: $sources.objectiveAssessments
@@ -559,5 +591,10 @@ destinations:
   studentAssessments:
     source: $transformations.scready_student_assessment_stacked
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_edu_org_associations_stacked
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
     linearize: True

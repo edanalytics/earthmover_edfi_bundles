@@ -1,0 +1,15 @@
+{
+  "educationOrganizationAssociationTypeDescriptor": "{{educationOrganizationAssociationTypeDescriptor}}",
+  "educationOrganizationReference": {
+    "educationOrganizationId": {{ educationOrganizationID | int }}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentAssessmentReference": {
+    "assessmentIdentifier": "{{ assessment_identifier }}",
+    "namespace": "{{ namespace }}",
+    "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+    "studentUniqueId": "{{ student_unique_id }}"
+  }
+}
