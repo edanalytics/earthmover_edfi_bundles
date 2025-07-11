@@ -504,7 +504,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          educationOrganizationID: "{%raw%}{{ TSchoolID }}{%endraw%}"
+          educationOrganizationId: "{%raw%}{{ TSchoolID }}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
 
   student_assessment_edu_org_associations__attribution:
@@ -513,7 +513,7 @@ transformations:
       - operation: add_columns
         columns:
           # TSchoolID added in 2025
-          educationOrganizationID: "{%raw%}{{ RSchoolID or SchoolID }}{%endraw%}"
+          educationOrganizationId: "{%raw%}{{ RSchoolID or SchoolID }}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Attribution"
 
   student_assessment_edu_org_associations_stacked:
@@ -523,7 +523,7 @@ transformations:
         sources:
           - $transformations.student_assessment_edu_org_associations__attribution
       - operation: filter_rows
-        query: "educationOrganizationID.notnull() and (educationOrganizationID != '') and (educationOrganizationID != 'None')"
+        query: "educationOrganizationId.notnull() and (educationOrganizationId != '') and (educationOrganizationId != 'None')"
         behavior: include
 
 
