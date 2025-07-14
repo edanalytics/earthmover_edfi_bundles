@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -12,6 +12,7 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'STUDENT_STATE_ID' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    EDFI_DS_VERSION: 3
 
 sources:
   assessments:
@@ -47,26 +48,28 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
+      # governance decision: removing rows without an achieved level because we have no other way to assign their identifier
+      - operation: filter_rows
+        query: LEVEL_ACHIEVED == '-'
+        behavior: exclude
       - operation: add_columns
         columns:
-          # How to handle AS & A ?
-          courseLevel: "{%raw%}{{ QUALIFICATION.split(' ')[0] }}{%endraw%}"
-          assessmentIdentifier: "{%raw%}cambridge_{%- if courseLevel == 'ADIP' -%}aice_diploma{%- else -%}{{ courseLevel }}_{{ SYLLABUS }}{%- endif -%}{%endraw%}"
+          assessmentIdentifier: "{%raw%}cambridge_{%- if QUALIFICATION == 'ADIP' and LEVEL_ACHIEVED == 'ADIP' -%}aice_diploma{%- elif QUALIFICATION != 'ADIP' and LEVEL_ACHIEVED != '-' -%}{{ LEVEL_ACHIEVED.split(' ')[0] }}_{{ SYLLABUS }}{%- endif -%}{%endraw%}"
           namespace: uri://cambridgeinternational.org
           schoolYear: ${SCHOOL_YEAR}
           testMonth:  >
             {%raw%}
-              {%- if SERIES[3:] == 'Apr' -%}
+              {%- if 'Apr' in SERIES -%}
                 04
-              {%- elif SERIES[3:] == 'May' -%}
+              {%- elif 'May' in SERIES -%}
                 05
-              {%- elif SERIES[3:] == 'Jun' -%}
+              {%- elif 'Jun' in SERIES -%}
                 06
-              {%- elif SERIES[3:] == 'Sep' -%}
+              {%- elif 'Sep' in SERIES -%}
                 09
-              {%- elif SERIES[3:] == 'Oct' -%}
+              {%- elif 'Oct' in SERIES -%}
                 10
-              {%- elif SERIES[3:] == 'Nov' -%}
+              {%- elif 'Nov' in SERIES -%}
                 11
               {%- endif -%}
             {%endraw%}
@@ -77,8 +80,9 @@ transformations:
               {%- else -%}
                 {{ schoolYear | int - 1 }}
               {%- endif -%}
-            {%endraw%}  
-          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ SERIES[:2] }}{%endraw%}"
+            {%endraw%}
+          testDay: "{%raw%}{{'%02d' % SERIES.split('-')[0]|int}}{%endraw%}"
+          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ testDay }}{%endraw%}"
           edfi_ds_version: ${EDFI_DS_VERSION}
       - operation: combine_columns
         columns:
