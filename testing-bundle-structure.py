@@ -283,69 +283,6 @@ def checking_id_package_compatibility(compiled_em_yaml_text):
 
 
 
-# TODO: after running the bundle 
-# TODO: replacing IDs
-
-def id_mapper(folder_path):
-
-    output_path = folder_path + "/output"
-
-    stu_assess_path = output_path + "/studentAssessments.jsonl"
-
-        # OR studentAssessment.jsonl
-
-    # "studentReference": { "studentUniqueId": "000000" },
-
-    grand_bend_ids = range(604821, 605781)
-
-    # Grand Bend student IDs range from 604821 to 605780
-    # the maximum number of students allowed in the data file is 960
-
-
-    with open(stu_assess_path, "r", encoding="utf-8") as f:
-        stu_assess_lines = [json.loads(line) for line in f]
-
-    original_ids = [line["studentReference"]["studentUniqueId"] for line in stu_assess_lines]
-
-    unique_original_ids = sorted(set(original_ids))
-
-    if len(unique_original_ids) == 1 and len(original_ids) > 1:
-        # this means all the ids in the sample are the same
-        # like 000000 for every student
-
-        one_id_for_all = True
-
-        if len(original_ids) > len(grand_bend_ids):
-            print("The maximum number of students allowed in the data file is 960")
-
-        else:
-            mapped_ids = list(grand_bend_ids[:len(original_ids)])
-
-
-    else:
-        # each student in the sample data has a different id
-
-        if len(unique_original_ids) > len(grand_bend_ids):
-            print("The maximum number of students allowed in the data file is 960")
-
-        else:
-            mapped_ids = {orig: gb for orig, gb in zip(unique_original_ids, grand_bend_ids)}
-
-
-    with open(stu_assess_path, "w", encoding="utf-8") as f:
-
-        for line in stu_assess_lines:
-
-            if one_id_for_all:
-                line["studentReference"]["studentUniqueId"] = mapped_ids.pop()
-
-            else:
-
-                original_id = line["studentReference"]["studentUniqueId"]
-                line["studentReference"]["studentUniqueId"] = mapped_ids[original_id]
-
-            f.write(json.dumps(line) + "\n")
-
 
 def exit_testing(global_warnings, not_run_tests):
 
