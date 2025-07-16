@@ -20,7 +20,7 @@
 ] %}
 {% set accommodations = [] %}
 {% for acc in possible_accommodations %}
-  {% if acc[0] == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#" ~ acc[1]) %}{% endif %}
+  {% if acc[0] == 'Y' and acc[0] is not none and acc[0] | length and acc[0]|trim != 'NA' %}{% set _ = accommodations.append(acc) %}{% endif %}
 {% endfor %}
 
 {% if alternate_assessment == 'Y' %}
