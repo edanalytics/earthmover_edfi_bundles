@@ -111,7 +111,7 @@
       }
       ]
     {%- endif -%}
-    {%- if obj[2] is not none and obj[2] | length -%}
+    {%- if obj[2] is not none and obj[2] | length and obj[2] != 'nan'-%}
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
@@ -144,7 +144,7 @@
       }
       ]
     {%- endif -%}
-    {%- if obj[2] is not none and obj[2] | length -%}
+    {%- if obj[2] is not none and obj[2] | length and obj[2] != 'nan'-%}
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
@@ -177,7 +177,7 @@
       }
       ]
     {%- endif -%}
-    {%- if obj[2] is not none and obj[2] | length -%}
+    {%- if obj[2] is not none and obj[2] | length and obj[2] != 'nan'-%}
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
@@ -218,7 +218,7 @@
       }
       ]
       {%- endif -%}
-    {%- if obj[2] is not none and obj[2] | length -%}
+    {%- if obj[2] is not none and obj[2] | length and obj[2] != 'nan'-%}
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
