@@ -40,8 +40,8 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
-  objectiveAssessmentScores:
-    file: ./seeds/objectiveAssessmentScores.csv
+  objectiveAssessmentScoreMapping:
+    file: ./seeds/objectiveAssessmentScoreMapping.csv
     header_rows: 1
 
 transformations:
@@ -85,6 +85,13 @@ transformations:
         column: administration_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
+      # Join with objective assessment score mappings
+      - operation: join
+        sources:
+          - $transformations.objective_assessment_score_mappings
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
 
   # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -169,7 +176,7 @@ transformations:
 
   # Generate scores JSON for objective assessments
   objective_assessment_scores:
-    source: $sources.objectiveAssessmentScores
+    source: $sources.objectiveAssessmentScoreMapping
     operations:
       - operation: add_columns
         columns:
@@ -220,6 +227,14 @@ transformations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Prepare objective assessment score mappings with join key
+  objective_assessment_score_mappings:
+    source: $sources.objectiveAssessmentScoreMapping
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: 1
 
   # Prepare objective assessments
   objective_assessments:
