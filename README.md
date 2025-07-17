@@ -19,7 +19,7 @@ Bundle developers can run automated testing to check whether a given bundle meet
 
 Run the following command to get a report:
 ```sh
-python testing-bundle-structure.py
+python testing-bundle-structure.py "<path to the bundle folder>"
 ```
 
 ### Coming Soon
