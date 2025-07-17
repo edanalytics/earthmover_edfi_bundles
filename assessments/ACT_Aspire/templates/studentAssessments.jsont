@@ -94,8 +94,10 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{administrationDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "administrationDate": "{{administrationDate}}"
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%} 
+  ,"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- endif -%}
   {%- if scores -%}
   , "scoreResults": [
     {% for score in scores %}

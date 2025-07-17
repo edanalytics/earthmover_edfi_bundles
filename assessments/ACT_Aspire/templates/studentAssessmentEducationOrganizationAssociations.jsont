@@ -1,3 +1,4 @@
+{%- if School_Code is not none and School_Code | length -%} 
 {
       "educationOrganizationAssociationTypeDescriptor": "{{descriptor_namespace}}/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
@@ -12,4 +13,4 @@
         "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
         "studentUniqueId": "{{studentUniqueId}}"
       }
-}
+} {%- endif -%}

@@ -487,11 +487,14 @@ transformations:
         right_keep_columns:
           - Grade_CodeValue
           - Grade_Namespace
+      - operation: modify_columns
+        columns:
+          Grade_CodeValue: "{%raw%}{{Grade_CodeValue|string}}{%endraw%}"
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TestDate[-4:]}}{%endraw%}"
           school_year_month: "{%raw%}{{TestDate[0:2]}}{%endraw%}"
-          gradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
+          gradeLevelDescriptor: "{%raw%}{%- if Grade_CodeValue is not none and Grade_CodeValue|length and Grade_CodeValue != 'nan'-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{% endif %}{%endraw%}"
           administrationDate: "{%raw%}{{TestDate}}{%endraw%}"
           studentAssessmentIdentifier: "{%raw%}{{md5(State_Student_ID ~ TestDate)}}{%endraw%}"
           studentUniqueId: "{%raw%}{{State_Student_ID}}{%endraw%}"
