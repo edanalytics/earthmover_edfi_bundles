@@ -88,7 +88,7 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          school_year: "{%raw%}{{administration_date[5:7]|int +1 if administration_date[5:7]|int >=7 else administration_date[5:7]|int }}{%endraw%}"
+          school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
 
 
 
