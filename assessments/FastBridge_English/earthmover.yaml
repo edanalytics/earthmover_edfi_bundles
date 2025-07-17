@@ -13,11 +13,11 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    SCHOOL_YEAR: 2025
+    SCHOOL_YEAR: 2024
 
 sources:
   input:
-    file: ./data/FastBridge_earlyReading_seasons_pivoted.csv
+    file: ${INPUT_FILE} # Path to the input CSV file
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
@@ -40,9 +40,10 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
-  objectiveAssessmentScoreMapping:
-    file: ./seeds/objectiveAssessmentScoreMapping.csv
+  objectiveAssessmentScores:
+    file: ./seeds/objectiveAssessmentScores.csv
     header_rows: 1
+
 
 transformations:
   input:
@@ -61,14 +62,14 @@ transformations:
       # Convert column names to snake_case for easier template access
       - operation: snake_case_columns
       # Add required columns
+
       - operation: add_columns
         columns:
-          join_key: 1
-          # Calculate school year from administration date (July 1 cutoff)
-          school_year: "{% raw %}{{ final_date[:4] if (final_date[5:7]|int < 7) else (final_date[:4]|int + 1) }}{% endraw %}"
           assessmentIdentifier: "FastBridge_earlyReading"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+
       # Create unique student assessment ID
       - operation: combine_columns
         columns:
@@ -85,13 +86,11 @@ transformations:
         column: administration_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-      # Join with objective assessment score mappings
-      - operation: join
-        sources:
-          - $transformations.objective_assessment_score_mappings
-        join_type: inner
-        left_key: join_key
-        right_key: join_key
+      - operation: add_columns
+        columns:
+          school_year: "{%raw%}{{administration_date[5:7]|int +1 if administration_date[5:7]|int >=7 else administration_date[5:7]|int }}{%endraw%}"
+
+
 
   # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -176,7 +175,7 @@ transformations:
 
   # Generate scores JSON for objective assessments
   objective_assessment_scores:
-    source: $sources.objectiveAssessmentScoreMapping
+    source: $sources.objectiveAssessmentScores
     operations:
       - operation: add_columns
         columns:
@@ -227,14 +226,6 @@ transformations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-
-  # Prepare objective assessment score mappings with join key
-  objective_assessment_score_mappings:
-    source: $sources.objectiveAssessmentScoreMapping
-    operations:
-      - operation: add_columns
-        columns:
-          join_key: 1
 
   # Prepare objective assessments
   objective_assessments:
