@@ -22,7 +22,7 @@ sources:
     header_rows: 1
     rename_cols: True
     columns:
-      {% if "${SCHOOL_YEAR}"|int >= 2021 %}
+      {% if "${SCHOOL_YEAR}"|int > 2021 %}
         {% if "${ALTERNATE}" == "N" %}
         # Standard (post-2021)
         - StateNameAbbreviation
@@ -376,7 +376,7 @@ sources:
         - UniqueRecordID
         - DSRUpdated
         {% endif %}
-      {% elif "${SCHOOL_YEAR}"|int < 2021 %}
+      {% elif "${SCHOOL_YEAR}"|int <= 2021 %}
         {% if "${ALTERNATE}" == "N" %}
         # Standard (pre-2021)
         - UniqueDRCStudentID
