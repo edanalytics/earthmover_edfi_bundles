@@ -19,6 +19,9 @@ def fast_bridge_english_pre_exec(source_file: str,
 
     df = pd.read_csv(source_file, dtype=str)          # read once, keep as str
 
+    # Clean up column names - fix extra spaces (e.g., "Summer  " -> "Summer")
+    df.columns = [re.sub(r'\s+', ' ', col.strip()) for col in df.columns]
+
     base_cols = [
         'Assessment', 'Assessment Language', 'State', 'District', 'School',
         'Local ID', 'State ID', 'FAST ID', 'First Name', 'Last Name',
@@ -59,12 +62,23 @@ def fast_bridge_english_pre_exec(source_file: str,
           .drop('_k', axis=1)
     )
 
-    tmp['Final_Date'] = tmp.apply(
-        lambda r: r[f"{r.Season} Early Reading English Final Date"], axis=1
-    )
+    # Use the exact column name as it appears after cleaning
+    def get_final_date(row):
+        season_col = f"{row.Season} Early Reading English Final Date"
+        # Check if the column exists, if not return empty string
+        return row.get(season_col, '')
+
+    tmp['Final_Date'] = tmp.apply(get_final_date, axis=1)
 
     score_cols = tmp.columns.difference(base_cols + ['Season', 'Final_Date'])
-    mask = tmp['Final_Date'].astype(bool) & tmp[score_cols].notna().any(axis=1)
+
+    # Fix the filtering logic to properly exclude NaN and empty values
+    mask = (
+        tmp['Final_Date'].notna() &  # Not NaN
+        (tmp['Final_Date'] != '') &  # Not empty string
+        tmp[score_cols].notna().any(axis=1)  # Has some score data
+    )
+
     final_df = tmp.loc[
         mask, list(base_cols) + ['Season', 'Final_Date'] + list(score_cols)
     ]
