@@ -459,7 +459,6 @@ transformations:
   
   prepare_student_assessment:
     source: $transformations.stage_student_assessment
-    #debug: true
     operations:
       - operation: add_columns
         columns:
@@ -646,11 +645,3 @@ destinations:
     source: $transformations.prepare_student_assessment
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-  #gradeLevelDescriptors:
-  #  source: $sources.gradeLevelDescriptors
-  #  template: ./templates/descriptors.jsont
-  #  extension: jsonl
