@@ -36,7 +36,7 @@ columns_list: &columns_list
   # Generic fields
   - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
-  {% if ("${API_YEAR}" | int) < 2025 %}
+  {% if "${API_YEAR}" < 2025 %}
   - SchoolID
   {% else %}
   - TSchoolID
@@ -407,7 +407,7 @@ transformations:
         columns:
           school_year:  ${API_YEAR}
           administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
-          {% if ("${API_YEAR}" | int) < 2025 %}
+          {% if ${API_YEAR} < 2025 %}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
           {% else %}
           lea_id: "{%raw%}{{RSchoolID[0:-3]}}{%endraw%}"
