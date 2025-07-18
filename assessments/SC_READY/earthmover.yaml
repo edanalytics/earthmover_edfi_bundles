@@ -36,7 +36,7 @@ columns_list: &columns_list
   # Generic fields
   - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
-  {% if "${API_YEAR}" < 2025 %}
+  {% if ${API_YEAR} < 2025 %}
   - SchoolID
   {% else %}
   - TSchoolID
