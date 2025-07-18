@@ -5,6 +5,24 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v0.3.0
+## New features
+- i-Ready Bundle
+- ASVAB Bundle
+- WIN Bundle
+- SC EOCEP Bundle
+- ACT (file-based) Bundle
+- ACT (Ed-Fi) Bundle
+- STAAR Summative 2025 compatibility updates
+
+## Fixes
+- Updated data model for PSAT/SAT bundle to follow governance best-practices
+- Updated data model for MAP Growth bundle to follow governance best-practices
+- Updated data model for STAR bundle to follow governance best-practices
+- Change MAP Fluency testing language to optional
+- Switch assessed grade in SCREADY
+- Remove null subjects in SC Alt
+
 # earthmover_edfi_bundles v0.2.2
 ## New features
 - South Carolina Alternate Assessment Bundle
