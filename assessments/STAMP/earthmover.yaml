@@ -448,7 +448,7 @@ transformations:
             {%- elif Reading_Level == -1  -%} SP
             {%- elif Reading_Level == -2  -%} IP
             {%- elif Reading_Level == -3  -%} NS
-            {%- else -%} {{Reading_Level}}
+            {%- else -%} {{Reading_Level|int}}
             {%- endif -%}
             {%-endraw%}
           Writing_Level: >
@@ -457,7 +457,7 @@ transformations:
             {%- elif Writing_Level == -1 -%} SP
             {%- elif Writing_Level == -2 -%} IP
             {%- elif Writing_Level == -3 -%} NS
-            {%- else -%} {{Writing_Level}}
+            {%- else -%} {{Writing_Level|int}}
             {%- endif -%}
             {%-endraw%}
           Listening_Level: >
@@ -466,7 +466,7 @@ transformations:
             {%- elif Listening_Level == -1 -%} SP
             {%- elif Listening_Level == -2 -%} IP
             {%- elif Listening_Level == -3 -%} NS
-            {%- else -%} {{Listening_Level}}
+            {%- else -%} {{Listening_Level|int}}
             {%- endif -%}
             {%-endraw%}
           Speaking_Level: >
@@ -475,7 +475,7 @@ transformations:
             {%- elif Speaking_Level == -1 -%} SP
             {%- elif Speaking_Level == -2 -%} IP
             {%- elif Speaking_Level == -3 -%} NS
-            {%- else -%} {{Speaking_Level}}
+            {%- else -%} {{Speaking_Level|int}}
             {%- endif -%}
             {%-endraw%}
           eventDescription: >
