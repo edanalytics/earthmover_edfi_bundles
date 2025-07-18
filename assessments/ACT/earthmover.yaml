@@ -1,0 +1,214 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME:  'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: ID_StateAssign,ID_Local
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    optional_fields:
+      - Composite
+      - StRnk_Comp
+      - USRnk_Comp
+      - Sup_Composite
+      - Sum_Scale
+      - Sup_Sum_Scale
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+          Test_Dte: administrationDate
+      - operation: add_columns
+        columns:
+          schoolYear: ${API_YEAR}
+          assessmentIdentifier: "ACT"
+          namespace: "uri://act.org/Assessment"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: combine_columns
+        columns:
+          - ID_ACT
+          - Test_Dte
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
+          # we get date as '32023', and need to convert this to '01032023' to represent 'March 1st 2023'
+          administrationDate: '{%raw%}01{{ "{:06d}".format(administrationDate| int) }}{%endraw%}'
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        # change this to match the grade from the file
+        left_keys: 
+          - HS_GradeLev
+          - assessmentIdentifier
+        right_keys: 
+          - originalGrade
+          - assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.performanceLevelDescriptors
+        join_type: left
+        # change this to match the grade from the file
+        left_keys: 
+          - C_Readiness
+        right_keys: 
+          - rawValue
+        right_keep_columns:
+          - codeValue
+      - operation: rename_columns
+        columns:
+          codeValue: performanceLevelDescriptor
+      - operation: date_format
+        column: administrationDate
+        from_format: "%d%m%Y"
+        to_format: "%Y-%m-%d"
+      - operation: filter_rows
+        # query: ((Composite == '-') | (Composite == '--') | (Composite == '---')) & ((StRnk_Comp == '-') | (StRnk_Comp == '--') | (StRnk_Comp == '---')) & ((USRnk_Comp == '-') | (USRnk_Comp == '--') | (USRnk_Comp == '---')) & ((Sup_Composite == '-') | (Sup_Composite == '--') | (Sup_Composite == '---')) & ((Sum_Scale == '-') | (Sum_Scale == '--') | (Sum_Scale == '---')) & ((Sup_Sum_Scale == '-') | (Sup_Sum_Scale == '--') | (Sup_Sum_Scale == '---'))
+        query: Composite.str.fullmatch('-*') & StRnk_Comp.str.fullmatch('-*') & USRnk_Comp.str.fullmatch('-*') & Sup_Composite.str.fullmatch('-*') & Sum_Scale.str.fullmatch('-*') & Sup_Sum_Scale.str.fullmatch('-*')
+        behavior: exclude
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
