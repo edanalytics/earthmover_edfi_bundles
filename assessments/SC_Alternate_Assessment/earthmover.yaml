@@ -174,7 +174,7 @@ transformations:
         columns:
           administration_date: "${API_YEAR}-05-15"
           school_year: ${API_YEAR}
-          student_assessment_id: "{% raw %}{{ assessment_identifier ~ '_' ~ student_unique_id }}{% endraw %}"
+          student_assessment_id: "{% raw %}{{ assessment_identifier ~ '_' ~ student_unique_id ~ '_' ~ test_name}}{% endraw %}"
       - operation: map_values
         columns:
           - grade
