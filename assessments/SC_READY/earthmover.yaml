@@ -11,7 +11,7 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     INPUT_FILE: ''
-    API_YEAR: ''
+    API_YEAR: 2024
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
@@ -36,7 +36,7 @@ columns_list: &columns_list
   # Generic fields
   - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
-  {% if ${API_YEAR} < 2025 %}
+  {% if ("${API_YEAR}" | int) < 2025 %}
   - SchoolID
   {% else %}
   - TSchoolID
@@ -407,7 +407,7 @@ transformations:
         columns:
           school_year:  ${API_YEAR}
           administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
-          {% if ${API_YEAR} < 2025 %}
+          {% if ("${API_YEAR}" | int) < 2025 %}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
           {% else %}
           lea_id: "{%raw%}{{RSchoolID[0:-3]}}{%endraw%}"
