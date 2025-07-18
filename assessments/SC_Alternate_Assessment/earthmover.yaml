@@ -106,13 +106,9 @@ transformations:
           assessment_grade: "{% raw %}{{ elagrade }}{% endraw %}"
           performance_level: "{% raw %}{{ levelela }}{% endraw %}"
           ss: "{% raw %}{{ elass }}{% endraw %}"
-          ss_sem: "{% raw %}{{ elasssem }}{% endraw %}"
           ssb: ""  # Only in Science before 2018
-          ssb_sem: ""
           ssh: "{% raw %}{{ ela_ssh }}{% endraw %}"
-          ssh_sem: "{% raw %}{{ ela_ssh_sem }}{% endraw %}"
           ssp: "{% raw %}{{ ela_ssp }}{% endraw %}"
-          ssp_sem: "{% raw %}{{ ela_ssp_sem }}{% endraw %}"
           status: "{% raw %}{{ statusela }}{% endraw %}"
           test_name: "{% raw %}{{ testnameela }}{% endraw %}"
 
@@ -125,13 +121,9 @@ transformations:
           assessment_grade: "{% raw %}{{ mathgrade }}{% endraw %}"
           performance_level: "{% raw %}{{ levelmath }}{% endraw %}"
           ss: "{% raw %}{{ mathss }}{% endraw %}"
-          ss_sem: "{% raw %}{{ mathsssem }}{% endraw %}"
           ssb: ""  # Only in Science before 2018
-          ssb_sem: ""
           ssh: "{% raw %}{{ math_ssh }}{% endraw %}"
-          ssh_sem: "{% raw %}{{ math_ssh_sem }}{% endraw %}"
           ssp: "{% raw %}{{ math_ssp }}{% endraw %}"
-          ssp_sem: "{% raw %}{{ math_ssp_sem }}{% endraw %}"
           status: "{% raw %}{{ statusmath }}{% endraw %}"
           test_name: "{% raw %}{{ testnamemath }}{% endraw %}"
 
@@ -144,13 +136,9 @@ transformations:
           assessment_grade: "{% raw %}{{ scigrade }}{% endraw %}"
           performance_level: "{% raw %}{{ levelsci }}{% endraw %}"
           ss: "{% raw %}{{ sciss }}{% endraw %}"
-          ss_sem: "{% raw %}{{ scisssem }}{% endraw %}"
           ssb: "{% raw %}{{ sci_ssb }}{% endraw %}"
-          ssb_sem: "{% raw %}{{ sci_ssb_sem }}{% endraw %}"
           ssh: ""  # Replaced by SSB in Science
-          ssh_sem: ""
           ssp: "{% raw %}{{ sci_ssp }}{% endraw %}"
-          ssp_sem: "{% raw %}{{ sci_ssp_sem }}{% endraw %}"
           status: "{% raw %}{{ statussci }}{% endraw %}"
           test_name: "{% raw %}{{ testnamesci }}{% endraw %}"
 
@@ -163,13 +151,9 @@ transformations:
           assessment_grade: "{% raw %}{{ socgrade }}{% endraw %}"
           performance_level: "{% raw %}{{ levelsoc }}{% endraw %}"
           ss: "{% raw %}{{ socss }}{% endraw %}"
-          ss_sem: "{% raw %}{{ socsssem }}{% endraw %}"
           ssb: ""  # Only in Science before 2018
-          ssb_sem: ""
           ssh: ""  # Excluded from Social Studies
-          ssh_sem: ""
           ssp: "{% raw %}{{ soc_ssp }}{% endraw %}"
-          ssp_sem: "{% raw %}{{ soc_ssp_sem }}{% endraw %}"
           status: "{% raw %}{{ statussoc }}{% endraw %}"
           test_name: "{% raw %}{{ testnamesoc }}{% endraw %}"
 
