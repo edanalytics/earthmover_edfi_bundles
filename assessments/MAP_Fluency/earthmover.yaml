@@ -6,6 +6,14 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: True
+  macros: >
+      {% macro build_test_type(test_type, result_type) -%}
+      {%- if test_type and test_type | length -%}{{ test_type | replace(' ' , '-') }}
+      {%- elif result_type == 'Oral Reading' -%}Adaptive-Oral-Reading
+      {%- elif result_type == 'Dyslexia Screener' -%}Foundational-Skills-with-Dyslexia-Screener
+      {%- else -%}{{ result_type | replace(' ' , '-') }}
+      {%- endif -%}
+      {%- endmacro %}
   parameter_defaults:
     source_encoding: latin-1
     STATE_FILE: ./runs.csv
@@ -38,6 +46,7 @@ sources:
 
   input:
     file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
     header_rows: 1
 
 transformations:
@@ -51,10 +60,12 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
+
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
-          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ AssignedTestType | replace(' ' ,'-') }}{%endraw%}"
+          # assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ build_test_type(AssignedTestType, ResultType)}}{%endraw%}"
+          assessment_identifier: "{%raw%}NWEA-Map-Fluency-{{ (AssignedTestType or 'Unknown') | replace(' ' , '-') }}{%endraw%}"
           namespace: "uri://www.nwea.org/mapFluency/Assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: date_format
@@ -93,7 +104,7 @@ transformations:
       - operation: join
         sources:
           - $sources.languageDescriptors
-        join_type: inner
+        join_type: left
         left_key: language
         right_key: language
 
