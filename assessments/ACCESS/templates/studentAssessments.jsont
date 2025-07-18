@@ -190,9 +190,27 @@
   "scoreResults": [
     {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length and DoNotScoreCodeListening|trim != 'NA' %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Listening",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{DoNotScoreCodeListening}}"
+      }
+    {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length and DoNotScoreCodeReading|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Reading",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeReading}}"
+      }
+    {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length and DoNotScoreCodeSpeaking|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Speaking",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeSpeaking}}"
+      }
+    {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length and DoNotScoreCodeWriting|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Writing",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeWriting}}"
       }
     {% else %}
     {% for score in scores %}
