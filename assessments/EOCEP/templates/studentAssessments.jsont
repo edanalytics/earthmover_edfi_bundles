@@ -193,13 +193,13 @@
   {%- endif -%}
   
   {%- if Subject == 'E2' -%}
-    {%- if api_year | int < 2025 -%}
+    {%- if school_year | int < 2025 -%}
       {%- set possible_obj_assess = [
           ['Informational Text', Eng2Lev1],
           ['Literary Text', Eng2Lev2],
           ['Writing (to include TDA and Communication)', Eng2Lev3]
       ] -%}
-    {%- elif api_year | int >= 2025 -%}
+    {%- elif school_year | int >= 2025 -%}
       {%- set possible_obj_assess = [
           ['Reading Literary Text', Eng2Lev1],
           ['Reading Informational Text', Eng2Lev2],

@@ -122,7 +122,6 @@ transformations:
     - operation: modify_columns
       columns: 
           '*': "{%raw%}{{ value | trim }}{%endraw%}"
-          api_year: "${API_YEAR}" # make env variable available in data
     - operation: map_values
       columns: 
       - AlgLev1
