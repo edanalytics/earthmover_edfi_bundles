@@ -212,6 +212,12 @@
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{DoNotScoreCodeWriting}}"
       }
+    {% elif scores|length == 0 %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Overall Score",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "No Score"
+      }
     {% else %}
     {% for score in scores %}
     {
