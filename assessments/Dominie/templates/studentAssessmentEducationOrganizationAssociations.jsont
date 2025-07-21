@@ -1,7 +1,7 @@
  {
       "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Administration",
       "educationOrganizationReference": {
-        "educationOrganizationId": {{ schoolId }}
+        "educationOrganizationId": {{ schoolId | int}}
       },
       "schoolYearTypeReference": {
         "schoolYear": {{schoolYear}}
