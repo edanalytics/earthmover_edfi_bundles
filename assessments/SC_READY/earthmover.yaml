@@ -11,16 +11,37 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     INPUT_FILE: ''
-    API_YEAR: ''
+    API_YEAR: 2024
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
+
+definitions:
+  - &scd2-year-fill-nas
+    operation: modify_columns
+    columns:
+      start_year: "{%raw%}{{ start_year or 2024}}{%endraw%}"
+      end_year: "{%raw%}{{ end_year or 2100 }}{%endraw%}"
+  - &scd2-flag-current-rows
+    operation: add_columns
+    columns:
+      current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+  - &scd2-filter-to-current-rows
+    operation: filter_rows
+    query: "current == 'true'"
+    behavior: include
+  
 
 # Define columns list as anchor to pass to keep-cols and optional_fields.
 columns_list: &columns_list
   # Generic fields
   - student_unique_id  # Initialized empty and renamed in first transformation.
   - StateID
+  {% if ${API_YEAR} < 2025 %}
   - SchoolID
+  {% else %}
+  - TSchoolID
+  - RSchoolID
+  {% endif %}
   - TestAdmin
   - UID
   - Grade
@@ -55,6 +76,11 @@ columns_list: &columns_list
   - IEP_TBI
   - IEP_TM
   - IEP_VH
+  - IEP_ID
+  - IEP_HI
+  - IEP_TB
+  - EFA_DB
+  - EFA_MD
   - InstrSetting
   - LName
   - MName
@@ -363,11 +389,17 @@ transformations:
       - operation: drop_columns
         columns:
           - student_unique_id
-      - operation: rename_columns
+      - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: keep_columns
         columns: *columns_list
+      - operation: modify_columns
+        columns:
+          ELAGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          MathGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SciGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SocGrade: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
@@ -375,7 +407,11 @@ transformations:
         columns:
           school_year:  ${API_YEAR}
           administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
+          {% if ${API_YEAR} < 2025 %}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
+          {% else %}
+          lea_id: "{%raw%}{{RSchoolID[0:-3]}}{%endraw%}"
+          {% endif %}
           namespace: "uri://datarecognitioncorp.com/Assessment"
     
   scready_student_assessment_ela:
@@ -422,12 +458,10 @@ transformations:
           - $transformations.scready_student_assessment_math
           - $transformations.scready_student_assessment_science
           - $transformations.scready_student_assessment_social_studies
-
       # Only populated assessments have `{Subject}Grade` column populated
       - operation: filter_rows
         query: assessment_grade != ''
         behavior: include
-      
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
@@ -460,6 +494,38 @@ transformations:
           SocLev5_name: "{%raw%}{{assessment_grade | int}}_SocLev5{%endraw%}"
           SocLev6_name: "{%raw%}{{assessment_grade | int}}_SocLev6{%endraw%}"
           SocLev7_name: "{%raw%}{{assessment_grade | int}}_SocLev7{%endraw%}"
+  
+  ## StudentAssessmentEducationOrganizationAssociations
+  # Stack reported school ID (RSchoolID 2025 and later, SchoolID before 2025)
+  # and tested school ID (TSchoolID 2025 and later)
+
+  student_assessment_edu_org_associations__administration:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          educationOrganizationId: "{%raw%}{{ TSchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
+
+  student_assessment_edu_org_associations__attribution:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          # TSchoolID added in 2025
+          educationOrganizationId: "{%raw%}{{ RSchoolID or SchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Attribution"
+
+  student_assessment_edu_org_associations_stacked:
+    source: $transformations.student_assessment_edu_org_associations__administration
+    operations:
+      - operation: union
+        sources:
+          - $transformations.student_assessment_edu_org_associations__attribution
+      - operation: filter_rows
+        query: "educationOrganizationId.notnull() and (educationOrganizationId != '') and (educationOrganizationId != 'None')"
+        behavior: include
+
 
   objective_assessments:
     source: $sources.objectiveAssessments
@@ -467,6 +533,9 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
           
   assessments:
@@ -475,7 +544,21 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
-      
+  
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
 
 destinations:
@@ -496,17 +579,22 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   accommodationDescriptors:
-    source: $sources.accommodationDescriptors
+    source: $transformations.accommodationDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.scready_student_assessment_stacked
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_edu_org_associations_stacked
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
     linearize: True
