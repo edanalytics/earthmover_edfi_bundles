@@ -225,6 +225,8 @@ transformations:
           - assessmentIdentifier
           - assessmentNamespace
           - descriptorNamespace
+          - assessmentTitle
+          - assessmentFamily
           - grade_json
         create_columns:
           score_json: agg(score_json,,)
