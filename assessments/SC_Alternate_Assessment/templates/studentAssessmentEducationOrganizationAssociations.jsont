@@ -1,7 +1,7 @@
 {
   "educationOrganizationAssociationTypeDescriptor": "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#{{ ed_org_assoc_descriptor }}",
   "educationOrganizationReference": {
-    "educationOrganizationId": {{ed_org_id}}
+    "educationOrganizationId": {{ed_org_id | int}}
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year | int}}
