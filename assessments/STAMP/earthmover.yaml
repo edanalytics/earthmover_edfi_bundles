@@ -362,51 +362,6 @@ transformations:
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ administrationLanguage) }}{% endraw %}" 
-      - operation: modify_columns
-        columns:
-          Reading_Level: >
-            {%raw-%}
-            {%- if Reading_Level == 'NR' -%} 0
-            {%- elif Reading_Level == 'SP' -%} -1
-            {%- elif Reading_Level == 'IP' -%} -2
-            {%- elif Reading_Level == 'NS' -%} -3
-            {%- else -%} {{Reading_Level}}
-            {%- endif -%}
-            {%-endraw%}
-          Writing_Level: >
-            {%raw-%}
-            {%- if Writing_Level == 'NR' -%} 0
-            {%- elif Writing_Level == 'SP' -%} -1
-            {%- elif Writing_Level == 'IP' -%} -2
-            {%- elif Writing_Level == 'NS' -%} -3
-            {%- else -%} {{Writing_Level}}
-            {%- endif -%}
-            {%-endraw%}
-          Listening_Level: >
-            {%raw-%}
-            {%- if Listening_Level == 'NR' -%} 0
-            {%- elif Listening_Level == 'SP' -%} -1
-            {%- elif Listening_Level == 'IP' -%} -2
-            {%- elif Listening_Level == 'NS' -%} -3
-            {%- else -%} {{Listening_Level}}
-            {%- endif -%}
-            {%-endraw%}
-          Speaking_Level: >
-            {%raw-%}
-            {%- if Speaking_Level == 'NR' -%} 0
-            {%- elif Speaking_Level == 'SP' -%} -1
-            {%- elif Speaking_Level == 'IP' -%} -2
-            {%- elif Speaking_Level == 'NS' -%} -3
-            {%- else -%} {{Speaking_Level}}
-            {%- endif -%}
-            {%-endraw%}
-          eventDescription: >
-            {%raw-%}
-            {%- if 'complete' in eventDescription|lower -%} 3
-            {%- elif 'progress' in eventDescription|lower -%} 2
-            {%- elif 'started' in eventDescription|lower -%} 1
-            {%- endif -%}
-            {%-endraw%}
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
@@ -430,65 +385,18 @@ transformations:
           - Listening_Length
           - Speaking_Length
           - descriptorNamespace
+          - Reading_Score
+          - Listening_Score
+          - Reading_Level
+          - Writing_Level 
+          - Listening_Level
+          - Speaking_Level
+          - eventDescription
         create_columns: 
           CompositeScore: max(CompositeScore,)
-          Reading_Score: max(Reading_Score,)
-          Listening_Score: max(Listening_Score,)
-          Reading_Level: max(Reading_Level,)
-          Writing_Level:  max(Writing_Level,)
-          Listening_Level: max(Listening_Level,)
-          Speaking_Level: max(Speaking_Level,)
-          eventDescription: max(eventDescription,)
-  
-  #Reverse the levels back to string after duplicates ahve been removed.
-  final_student_assessments:
-    source: $transformations.prepare_student_assessments
-    operations:
-      - operation: modify_columns
-        columns: 
-          Reading_Level: >
-            {%raw-%}
-            {%- if Reading_Level == 0 -%} NR
-            {%- elif Reading_Level == -1  -%} SP
-            {%- elif Reading_Level == -2  -%} IP
-            {%- elif Reading_Level == -3  -%} NS
-            {%- else -%} {{Reading_Level|int}}
-            {%- endif -%}
-            {%-endraw%}
-          Writing_Level: >
-            {%raw-%}
-            {%- if Writing_Level == 0 -%} NR
-            {%- elif Writing_Level == -1 -%} SP
-            {%- elif Writing_Level == -2 -%} IP
-            {%- elif Writing_Level == -3 -%} NS
-            {%- else -%} {{Writing_Level|int}}
-            {%- endif -%}
-            {%-endraw%}
-          Listening_Level: >
-            {%raw-%}
-            {%- if Listening_Level == 0 -%} NR
-            {%- elif Listening_Level == -1 -%} SP
-            {%- elif Listening_Level == -2 -%} IP
-            {%- elif Listening_Level == -3 -%} NS
-            {%- else -%} {{Listening_Level|int}}
-            {%- endif -%}
-            {%-endraw%}
-          Speaking_Level: >
-            {%raw-%}
-            {%- if Speaking_Level == 0 -%} NR
-            {%- elif Speaking_Level == -1 -%} SP
-            {%- elif Speaking_Level == -2 -%} IP
-            {%- elif Speaking_Level == -3 -%} NS
-            {%- else -%} {{Speaking_Level|int}}
-            {%- endif -%}
-            {%-endraw%}
-          eventDescription: >
-            {%raw-%}
-            {%- if eventDescription == 3 -%} Completed
-            {%- elif eventDescription == 2 -%} In Progress
-            {%- elif eventDescription == 1 -%} Not Started
-            {%- endif -%}
-            {%-endraw%}
+      - operation: distinct_rows
+        columns:
+        - studentAssessmentIdentifier    
 
 destinations:
   assessments:
@@ -500,11 +408,11 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.final_student_assessments
+    source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.final_student_assessments
+    source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   
