@@ -147,7 +147,6 @@ transformations:
           {% endif %}
       - operation: add_columns
         columns:
-          # Now, refer to the consistently renamed 'Score' and 'ScoreStanine' columns
           result: "{% raw %}{{ Score }}{% endraw %}"
           {% if column_stanine %}resultStanine: "{% raw %}{{ ScoreStanine }}{% endraw %}"{% else %}resultStanine: "NULL"{% endif %}
           assessmentReportingMethod: "{{ reporting_method }}"
@@ -184,53 +183,49 @@ transformations:
           - $transformations.student_assessment_{{ column_assessment_name }}
   {% endfor %}
 
-  # Optimized preparation of assessments (similar to original, but more direct)
-  prepare_assessments_metadata:
+  {% for a_name, a_method, a_type, a_stanine in assessment %}
+  prepare_assessments_{{ a_name }}:
     source: $sources.assessments
     operations:
+      - operation: filter_rows
+        query: "column_mapping == '{{ a_name }}'"
+        behavior: include
       - operation: add_columns
         columns:
+          joinKey: "Key"
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
-          joinKey: "Key" 
       - operation: join
         sources:
           - $transformations.assessment_grade_level_descriptors
         join_type: inner
         left_key: joinKey
         right_key: joinKey
-
-  prepare_assessments:
-    source: $transformations.prepare_assessments_metadata
-    operations:
       - operation: add_columns
         columns:
           score_json: >
             {
-            "assessmentReportingMethodDescriptor": "{% raw %}{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#{% endraw %}{% for col_name, rep_method, res_type, col_stanine in assessment %}{% if col_name == column_mapping %}{{ rep_method }}{% endif %}{% endfor %}{% raw %}"{% endraw %},
-              "resultDatatypeTypeDescriptor": "{% raw %}{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#{% endraw %}{% for col_name, rep_method, res_type, col_stanine in assessment %}{% if col_name == column_mapping %}{{ res_type }}{% endif %}{% endfor %}{% raw %}"{% endraw %}
+            "assessmentReportingMethodDescriptor": {% raw %}"{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#{% endraw %}{{ a_method }}{% raw %}"{% endraw %},
+              "resultDatatypeTypeDescriptor": {% raw %}"{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#{% endraw %}{{ a_type }}{% raw %}"{% endraw %}
             }
-            {% for col_name, rep_method, res_type, col_stanine in assessment %}
-            {% if col_name == column_mapping and col_stanine %}
+            {% if a_stanine %}
             , {
-              "assessmentReportingMethodDescriptor": "{% raw %}{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#Stanine"{% endraw %},
-              "resultDatatypeTypeDescriptor": "{% raw %}{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#Integer"{% endraw %}
+              "assessmentReportingMethodDescriptor": {% raw %}"{{ assessmentNamespace }}/AssessmentReportingMethodDescriptor#Stanine"{% endraw %},
+              "resultDatatypeTypeDescriptor": {% raw %}"{{ descriptorNamespace }}/ResultDatatypeTypeDescriptor#Integer"{% endraw %}
             }
             {% endif %}
-            {% endfor %}
       - operation: modify_columns
         columns:
           score_json: "{% raw %}{{ score_json | replace('\n', '') }}{% endraw %}"
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-          - assessmentNamespace
-          - descriptorNamespace
-          - assessmentTitle
-          - assessmentFamily
-          - grade_json
-        create_columns:
-          score_json: agg(score_json,,)
+  {% endfor %}
 
+  prepare_assessments:
+    source: $transformations.prepare_assessments_{{ assessment[0][0] }}
+    operations:
+      - operation: union
+        sources:
+          {% for a_name, a_method, a_type, a_stanine in assessment[1:] %}
+          - $transformations.prepare_assessments_{{ a_name }}
+          {% endfor %}
 
   prepare_student_assessment_valid_school:
     source: $transformations.combined_results
