@@ -115,7 +115,7 @@
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]|trim}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -148,7 +148,7 @@
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]|trim}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -181,7 +181,7 @@
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]|trim}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
@@ -222,7 +222,7 @@
     ,"performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{obj[2]|trim}}",
         "performanceLevelMet": true
       }
     ] {%- endif -%}
