@@ -32,13 +32,6 @@ transformations:
     source: $sources.input
     operations: []
 
-  stage_reporting_method:
-    source: $sources.assessmentReportingMethodDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          joinKey: "Key"
-
   stage_grade_level:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -226,10 +219,6 @@ transformations:
           {% for a_name, a_method, a_type, a_stanine in assessment[1:] %}
           - $transformations.prepare_assessments_{{ a_name }}
           {% endfor %}
-      # - operation: debug
-      #   function: head # or `tail`, `describe`, `columns`; default=`head`
-      #   rows: 1 # (optional, default=5; ignored if function=describe|columns)
-      #   transpose: true # (default=False; ignored when function=columns)
 
   prepare_student_assessment_valid_school:
     source: $transformations.combined_results
