@@ -11,7 +11,7 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}",
     "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
-    "studentUniqueId": "{{student_unique_id}}"
+    "studentUniqueId": "{{student_unique_id|int}}"
   }
 }
 {% elif district is not none and district | length %}
@@ -27,7 +27,7 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}",
     "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
-    "studentUniqueId": "{{student_unique_id}}"
+    "studentUniqueId": "{{student_unique_id|int}}"
   }
 }
 {% endif %}
