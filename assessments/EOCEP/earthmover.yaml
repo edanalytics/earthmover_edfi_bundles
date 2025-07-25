@@ -22,6 +22,26 @@ config:
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
+definitions:
+  - &scd2-year-fill-nas
+    operation: modify_columns
+    columns:
+      # set min and max defaults if null in seed
+      start_year: "{%raw%}{{start_year or 2024}}{%endraw%}"
+      end_year: "{%raw%}{{end_year or 2100}}{%endraw%}"
+  - &scd2-flag-current-rows
+    operation: add_columns
+      # add "boolean" column to filter down to matching rows in seed
+    columns:
+      current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+  - &scd2-filter-to-current-rows
+    operation: filter_rows
+    query: "current == 'true'"
+    behavior: include
+    # string comparison works; trying to cast to int with Series.astype
+    # causes issues with Dask meta
+    # query: "'${API_YEAR}' >= start_year and '${API_YEAR}' <= end_year"
+
 sources:
 
   accommodation_descriptors:
@@ -128,7 +148,7 @@ transformations:
         school_year: "${API_YEAR}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
         # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
-        educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor/Administration"
+        educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
     # Some dates are missing day-of-year. Force these to the first of the month.
     - operation: modify_columns
       columns:
@@ -182,7 +202,24 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+  
+  assessment_reporting_method_descriptors:
+    source: $sources.assessment_reporting_method_descriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
+  accommodation_descriptors:
+    source: $sources.accommodation_descriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+       
   assessments:
     source: $sources.assessments
     operations:
@@ -195,6 +232,9 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - operation: add_columns
+        columns:
+          api_year: "${API_YEAR}"
 
 
 destinations:
@@ -212,13 +252,13 @@ destinations:
     linearize: True
 
   accommodationDescriptors:
-    source: $sources.accommodation_descriptors
+    source: $transformations.accommodation_descriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
 
   assessmentReportingMethodDescriptors:
-    source: $sources.assessment_reporting_method_descriptors
+    source: $transformations.assessment_reporting_method_descriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
