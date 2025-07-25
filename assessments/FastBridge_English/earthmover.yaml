@@ -74,7 +74,7 @@ transformations:
       - operation: combine_columns
         columns:
           - final_date
-          - state_id
+          - student_unique_id
           - season
         new_column: studentAssessmentIdentifier
         separator: '-'
@@ -89,7 +89,10 @@ transformations:
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
-
+      # filter out rows with missing student IDs
+      - operation: filter_rows
+        query: "student_unique_id	 != ''"
+        behavior: include
 
 
   # Generate grade level JSON for assessments
