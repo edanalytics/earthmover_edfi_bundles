@@ -1,0 +1,33 @@
+{% if school is not none and school | length %}
+{
+  "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
+  "educationOrganizationReference": {
+    "educationOrganizationId": {{ school }}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentAssessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+    "studentUniqueId": "{{student_unique_id}}"
+  }
+}
+{% elif district is not none and district | length %}
+{
+  "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
+  "educationOrganizationReference": {
+    "educationOrganizationId": {{ district }}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentAssessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+    "studentUniqueId": "{{student_unique_id}}"
+  }
+}
+{% endif %}

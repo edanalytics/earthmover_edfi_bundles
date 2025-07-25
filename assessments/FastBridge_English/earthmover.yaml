@@ -263,6 +263,10 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+  studentEducationOrganizationAssociations:
+    source: $transformations.cleaned_input
+    template: ./templates/studentEducationOrganizationAssociations.jsont
+    extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
