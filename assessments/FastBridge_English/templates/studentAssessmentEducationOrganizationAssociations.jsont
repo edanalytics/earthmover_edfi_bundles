@@ -2,7 +2,7 @@
 {
   "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
   "educationOrganizationReference": {
-    "educationOrganizationId": {{ school }}
+    "educationOrganizationId": {{ school|int }}
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
@@ -18,7 +18,7 @@
 {
   "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
   "educationOrganizationReference": {
-    "educationOrganizationId": {{ district }}
+    "educationOrganizationId": {{ district | int }}
   },
   "schoolYearTypeReference": {
     "schoolYear": {{school_year}}
