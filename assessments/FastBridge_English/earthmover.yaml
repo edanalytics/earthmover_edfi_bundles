@@ -263,7 +263,7 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  studentEducationOrganizationAssociations:
+  studentAssessmentEducationOrganizationAssociations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
