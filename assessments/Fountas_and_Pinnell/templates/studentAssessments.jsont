@@ -1,0 +1,95 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "reportedSchoolReference": {
+    "schoolId": {{SchoolCode}}
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+ 
+  {#-----------------------------------------------------------------------------------------------------------#}
+
+  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
+  {% set textReadingObjectiveScores = {
+    'TextReadingAccuracy' : ('Text Reading Accuracy', 'Percentile'),
+    'TextReading' : ('Text Reading Level', 'String'),
+    'FluencyLevel' : ('Fluency Level', 'Float'),
+    'WordsPerMinute' : ('Words Per Minute', 'Integer'),
+    'SelfCorrectionRate': ('Self Correction Rate', 'Float'),
+    'EarlyLiteracyBehaviors': ('Early Literacy Behaviors', 'Integer'),
+    'LetterRecognition': ('Letter Recognition', 'Integer'),
+    'InitialSounds': ('Initial Sounds', 'Integer'),
+    'HighFrequencyWords': ('High Frequency Words', 'Integer'),
+    'RhymingAssessment': ('Rhyming Assessment', 'Integer')
+    } %}
+
+  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
+  {% set comprehensionObjectiveScores = {
+  'Comprehension' : ('Comprehension Accuracy', 'Percentile'),
+  'Meaning': ('Meaning', 'Integer'),
+  'Visual': ('Visual', 'Integer'),
+  'WordWriting': ('Word Writing', 'Integer')
+  } %}
+
+  {# identificationCode : <Dictionaries defined above> #}
+  {% set objective_dict_mappings = {
+    'Text Reading': textReadingObjectiveScores,
+    'Comprehension' : comprehensionObjectiveScores
+  } %}
+
+
+  "studentObjectiveAssessments": [ 
+      {
+        "administrationEndDate": "{{DateTaken}}",
+        "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}",
+            "identificationCode": "{{identificationCode}}",
+            "namespace": "{{namespace}}"
+        },
+        "performanceLevels": [
+          {% if identificationCode == "Comprehension" %}
+            {% if ComprehensionLevel == "NULL" or ComprehensionLevel|length == 0 %}
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#N/A",
+              "performanceLevelIndicatorName": "N/A"
+            }
+            {% else %}
+            {
+              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
+              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{ComprehensionLevel}}",
+              "performanceLevelIndicatorName": "{{ComprehensionLevel}}"
+            }
+            {% endif %}
+          {% else %}
+          {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
+            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{LexileLevel}}",
+            "performanceLevelIndicatorName": "{{LexileLevel}}"
+          }
+          {% endif %}
+        ],
+        "scoreResults": [
+          {% set mapping_dictionary = objective_dict_mappings[identificationCode] %}
+          {% for (colName,colValue) in mapping_dictionary.items() %}
+            {
+            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#{{colValue[0]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{colValue[1]}}",
+            "result": "{{__row_data__[colName]}}"
+            }
+            {% if loop.index < loop.length %}
+              ,
+            {% endif %}
+          {% endfor %}
+        ]
+      }    
+  ],
+  "whenAssessedGradeLevelDescriptor": "{{GradeLevel}}" 
+}
