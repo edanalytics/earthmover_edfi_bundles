@@ -176,11 +176,6 @@
 
   } %}
 
-  {% set performanceLevelDictionary = {
-    "1" : "Completion Criteria met",
-    "0" : "Completion Criteria not met",
-    "-1": "Test not included in the Battery"
-  } %}
   {#-----------------------------------------------------------------------------------------------------------#}
   "serialNumber": "{{serialNumber}}",
   "studentObjectiveAssessments": [
@@ -188,7 +183,6 @@
       {
         {% set idx = idx|int %}
         {% set zero_idx = idx - 1 %} {# idx starting from 1, so I think it needs to be decremented by 1.#}
-        "administrationDate": "{{Date_Tested}}",
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessmentIdentifier}}",
           "identificationCode": "{{identification_code}}",
@@ -197,15 +191,15 @@
         {# Originally: set performanceLevelCodeValue = __row_data__['Completion_Criteria'][idx] #}
         {% set performanceLevelCodeValue = __row_data__['Completion_Criteria'][zero_idx] %}
         {# Performance levels 0, 1 or blank #}
-        {% set performanceLevelCodeValue = performanceLevelCodeValue if performanceLevelCodeValue|trim != "" else '-1' %}        
-        {% set performanceLevelIndicatorName = performanceLevelDictionary[performanceLevelCodeValue] %}
+        
+        {% if performanceLevelCodeValue|trim != "" %}    
         "performanceLevels": [
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Completion Criteria",
-            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
-            "performanceLevelIndicatorName": "{{performanceLevelIndicatorName}}"
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}"
           }
         ],
+        {% endif %}
         {# Don't write if the Test is not included in the Battery #}
         "scoreResults": [
           {% set vars = {'is_first_item': True} %} 
@@ -279,5 +273,5 @@
     {% endif %} 
     {% endfor %}
   ],
-  "whenAssessedGradeLevelDescriptor": "{{Class_Grade_Descriptor}}"
+  "whenAssessedGradeLevelDescriptor": "{{Class_Grade}}"
 }

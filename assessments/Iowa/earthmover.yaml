@@ -133,24 +133,15 @@ transformations:
           #school_year: ${SCHOOL_YEAR}
           schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
-    {% if "${DESCRIPTOR_NAMESPACE_OVERRIDE}" == "uri://ed-fi.org" %}
       - operation: map_values
         column: Class_Grade
         map_file: ./seeds/gradeMappings.csv
-    {% else %}
-      - operation: modify_columns
-        columns:
-          Class_Grade: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/GradeLevelDescriptor#{{value}}{%endraw%}"
-    {% endif %}
       - operation: map_values
         column: Semester
         mapping:
           "1": Fall
           "2": MidYear
           "3": Spring
-      - operation: rename_columns
-        columns:
-          Class_Grade: Class_Grade_Descriptor
       # rename student id column after x-walk operation
       - operation: rename_columns
         columns:
@@ -168,12 +159,6 @@ transformations:
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
     operations:
-      - operation: modify_columns
-        columns:
-          namespace: "{%raw%}{{namespace | replace('<NAMESPACE_PREFIX>', '${DESCRIPTOR_NAMESPACE_OVERRIDE}')-}}{%endraw%}"
-      - operation: drop_columns
-        columns:
-          - position
       - operation: distinct_rows
 
   stage_grade_level:
