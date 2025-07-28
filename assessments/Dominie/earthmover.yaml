@@ -164,6 +164,7 @@ transformations:
       - operation: filter_rows
         query: "result != 'NULL' and result!=''"
         behavior: include
+      - operation: distinct_rows
 
 {% endfor %}
 
