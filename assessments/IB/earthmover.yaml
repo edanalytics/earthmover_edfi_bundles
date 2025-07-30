@@ -70,7 +70,7 @@ transformations:
           assessment_family: "International Baccalaureate"
           namespace: "uri://ibo.org"
           school_year: ${API_YEAR}
-          administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
+          administration_date: "{%raw%}{{year}}-{%- if month|upper == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
   
   student_assessments:
