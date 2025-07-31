@@ -3,8 +3,8 @@
 * **Title:** Iowa Assessments
 * **Description:** Achievement tests (part of “The Iowa Testing Programs.”)
 * **API version:** 5.3
-* **Submitter name:** Shailendra Singh
-* **Submitter organization:** Double Line Inc.
+* **Submitter name:** Mariela Suárez
+* **Submitter organization:** Crocus LLC.
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
@@ -45,8 +45,3 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_CLIENT_SECRET": "<yourSecret>",
 "SCHOOL_YEAR": "<yourAPIYear>" }'
 ```
-### Dataflow Graph
-
-![DAG view of transformations](graph.png)
-
-(**Above**: a graphical depiction of the dataflow.)

@@ -13,15 +13,13 @@ Namespace: uri://www.riversideinsights.com/Iowa_Assessments
 
 # Objectives
 ## Objectives Identifiers
-For each assessment there are the following objectives identifiers:
  - R: Reading
  - V: Vocabulary
  - SP: Spelling
  - CP: Capitalization
  - PC: Punctuation
  - L: Language (levels 05-08)
- - WE: Written Expression (levels 09-17) (in Appendix A layout definitions this objective doesn't have a slot number, DLP has used the same slot number for both WE and CW, which is incorrect for arrays in the template. )
- - CW: Conventions of Writing
+ - WE: Written Expression (levels 09-17)
  - ET: ELA Total
  - WA: Word Analysis
  - Li: Listening
@@ -43,18 +41,13 @@ For each assessment there are the following objectives identifiers:
  - RC: Reading Comprehension for Level 06 only (this is Reading Part 2 reported in Slot 1)
  - RT: Reading Total
  - LT: Language Total
- - N/A: Not used
- - N/A-2: Not used
 
 ## Performance levels
  - 1 = Completion Criteria met 
  - 0 = Completion Criteria not met
- - -1 = Test not included in the Battery
 
 ## Assessments Score Method Descriptors
-These are the score method descriptors:
-
-The following scores are not tied to an objective, so I can assume that they are overall scores. (always empty)
+The following scores are not tied to an objective, so we can assume that they are overall scores. (always empty??)
  - Predicted SAT Critical Reading High (overall)
  - Predicted SAT Critical Reading Low (overall)
  - Predicted SAT Math High (overall)
@@ -63,6 +56,7 @@ The following scores are not tied to an objective, so I can assume that they are
  - Predicted ACT Composite Low (overall)
 
 The following scores are tied to an objective, so they are objectives scores:
+
  - Number Attempted
  - Completion Criteria, modeled as Performance Level
  - Raw Score
@@ -74,7 +68,7 @@ The following scores are tied to an objective, so they are objectives scores:
  - Predicted Standard Score
  - Predicted Grade Equivalent
  - Predicted National Percentile Rank
- - Predicted Standard Score Diffs (Date format in sample file)
+ - Predicted Standard Score Diffs (Date format in sample file ???)
  - Predicted Grade Equivalent Diffs
  - Local Percentile Rank
  - Local Stanine
@@ -99,28 +93,35 @@ The following scores are tied to an objective, so they are objectives scores:
  - State Predicted Scale Score
  - PR Valid Flag
  - Significant Diff Indicators
- - Filler / Catholic - Private PR
- - Filler / HSES PR
- - Filler / LSES PR
+ - Catholic - Private PR
+ - HSES PR
+ - LSES PR
  
-They have 2 records per student in studentAssessment for IOWA-Complete, that is not correct. It should be IOWA-Survey. 
- 
-# Hierarchy
-![alt text](hierarchy.png)
-
 ## Reasoning
 
-
+The IOWA Assessments are standardized achievement tests used to evaluate student learning and academic progress across core subject areas.
 
 
 # Data Sources
 
 ## Input Requirements
 
-
 ## Bundle Seeds
+  - accommodationDescriptors.csv
+  - appendix_a_tests.csv (objectives assessments)
+  - assessmentCategoryDescriptors.csv
+  - assessmentPeriodDescriptors.csv
+  - assessmentReportingMethodDescriptors.csv
+  - assessments.csv
+  - gradeMappings.csv
+  - performanceLevelDescriptors.csv
 
-
+## Template Files
+  - assessments.jsont
+  - descriptors.jsont
+  - objectivesAssessments.jsont
+  - studentAssessmentEducationOrganizationAssociations.jsont
+  - studentAssessments.jsont
 
 ## Summary of Descriptor Fields and Mappings
 
@@ -213,13 +214,12 @@ uri://www.riversideinsights.com/Iowa_Assessments/AccommodationDescriptor
 - assessmentReportingMethodDescriptors.jsonl
 - assessments.jsonl
 - objectiveAssessments.jsonl
+- performanceLevelDescriptors.jsonl
 - studentAssessmentEducationOrganizationAssociations.jsonl
 - studentAssessments.jsonl
 
 
-- performanceLevelDescriptors.jsonl
-
 # Dependencies
 - Requires Earthmover version 0.3.8 or higher
-- Requires template files:
+
 
