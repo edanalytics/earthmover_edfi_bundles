@@ -20,10 +20,17 @@ templates/studentAssessment.jsont
 
 
 
+# FIXME: bad bundles: ACCUPLACER and CogAT
+
+
+
+
+
 # TODO: exceptions for the testing # FIXME: idk if I want this
 
 class NoReadme(Exception): pass
 class NoEMParams(Exception): pass
+class InvalidBlockError(Exception): pass
 
 
 
@@ -31,13 +38,15 @@ class NoEMParams(Exception): pass
 class Checker:
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.warnings = []
-        self.successes = []
+        self.warnings = {"Bundle Folder Contents": [], "Getting EM Parameters": [], "Compiling earthmover.yaml": [], "ID Package Compatibility": []}
+        self.successes = {key: [] for key in self.warnings}
+
+
         self.not_run_tests = \
-            ["Checking folder contents",
-            "Getting EM parameters",
+            ["Bundle Folder Contents",
+            "Getting EM Parameters",
             "Compiling earthmover.yaml",
-            "Checking ID package compatibility"] # FIXME: add more tests
+            "ID Package Compatibility"] # FIXME: add more tests
 
 
     # TODO: checking folder contents 
@@ -54,35 +63,41 @@ class Checker:
 
 
         if set(required_contents) - set(folder_contents) == set():
-            self.successes.append("You seem to have all the necessary files and folders")
+            self.successes["Bundle Folder Contents"].append("You seem to have all the necessary files and folders at the root.\n          "+ 
+                                                            "\n          ".join(f"{item}" for item in required_contents)+"\n")
         else:
             missing_contents = list(set(required_contents) - set(folder_contents))
-            self.warnings.append(f"You are missing the following files/folders:\n{missing_contents}")  
+            self.warnings["Bundle Folder Contents"].append(f"You are missing the following files/folders:\n          "+
+                                                           "\n          ".join(f"{item}" for item in missing_contents)+"\n")  
 
 
-        if folder_contents.count("earthmover.yaml") != 1:
-            self.warnings.append("Please make sure there is one earthmover.yaml file in your bundle")
+        if folder_contents.count("earthmover.yaml") > 1:
+            self.warnings["Bundle Folder Contents"].append(f"Please make sure there is one earthmover.yaml file in your bundle, found {folder_contents.count('earthmover.yaml')}")
         else:
-            self.successes.append("There is a single earthmover.yaml file")
+            self.successes["Bundle Folder Contents"].append("There is a single earthmover.yaml file")
 
-        if folder_contents.count("lightbeam.yaml") != 1:
-            self.warnings.append("Please make sure there is one lightbeam.yaml file in your bundle")
+        if folder_contents.count("lightbeam.yaml") > 1:
+            self.warnings["Bundle Folder Contents"].append(f"Please make sure there is one lightbeam.yaml file in your bundle, found {folder_contents.count('lightbeam.yaml')}")
         else:
-            self.successes.append("There is a single lightbeam.yaml file")
+            self.successes["Bundle Folder Contents"].append("There is a single lightbeam.yaml file")
 
 
-        data_folder = os.listdir(f"{self.folder_path}/data")
+        self.has_sample_data = False
 
-        if ("sample_anonymized_file.csv" in data_folder
-            or "sample_anonymized_file.txt" in data_folder):
+        if "data" in folder_contents:
+            data_folder = [f for f in os.listdir(f"{self.folder_path}/data")
+                            if f != ".gitkeep"]
 
+        if data_folder:
             self.has_sample_data = True
-            self.successes.append("There is a sample data file") # FIXME: there are other ways the files are named
-        else:
-            self.has_sample_data = False
-            self.warnings.append("Missing a sample data file")
+            self.successes["Bundle Folder Contents"].append("Found the following sample data files:\n          " +
+                                                            "\n          ".join(file for file in data_folder))
+        
+        if not self.has_sample_data:
+            self.warnings["Bundle Folder Contents"].append("Missing a sample data file")
 
-        self.not_run_tests.remove("Checking folder contents")
+
+        self.not_run_tests.remove("Bundle Folder Contents")
 
 
     # TODO: parsing readme 
@@ -99,24 +114,27 @@ class Checker:
         except FileNotFoundError:
             raise NoReadme
 
-        try:
-            params_string = readme_file.split("earthmover run -c ./earthmover.yaml -p '")[1].split("'\n```")[0]
-        except IndexError:
-            params_string = readme_file.split("earthmover run -c earthmover.yaml -p '")[1].split("'\n```")[0]
+        for pattern in ["./earthmover.yaml", "earthmover.yaml"]:
+            try:
+                params_string = readme_file.split(f"earthmover run -c {pattern} -p '")[1].split("'\n```")[0]
+                self.successes["Getting EM Parameters"].append("Found sample Earthmover run command in the README.md")
+                break
+            except IndexError:
+                continue
+        else:
+            self.warnings["Getting EM Parameters"].append("Please make sure there is a sample Earthmover run command in README.md")
 
-        except IndexError:
-            self.warnings.append("Please make sure there is a sample earthmover run command in README.md")
 
 
-
-        # FIXME: maybe error handling for this
+        # FIXME: maybe better error handling for this
         try:
             em_params_dict = json.loads(params_string)
             self.em_params = json.dumps(em_params_dict)
-        except:
-            self.warnings.append("Unable to use provided earthmover command") # FIXME: fix it
+            self.successes["Getting EM Parameters"].append("The Earthmover command is valid JSON")
+        except json.JSONDecodeError:
+            self.warnings["Getting EM Parameters"].append("Unable to use the provided earthmover command, invalid JSON: ", params_string) 
 
-        self.not_run_tests.remove("Getting EM parameters")
+        self.not_run_tests.remove("Getting EM Parameters")
 
 
 
@@ -143,17 +161,19 @@ class Checker:
             capture_output=True,
             text=True)
 
-        self.warnings.append(result.stdout)
-        self.warnings.append(result.stderr)
+        if result.returncode == 0:
+            self.successes["Compiling earthmover.yaml"].append("Successfully compiled with Earthmover")
+        else:
+            self.warnings["Compiling earthmover.yaml"].append(f"Error during compiling with Earthmover:\n{result.stdout}\n{result.stderr}")
 
         self.not_run_tests.remove("Compiling earthmover.yaml")
 
 
 
     # TODO: studentAssessment.jsont 
-    # FIXME: I don't know what to do with this
-
     def something_studentAssessment(self):
+    # FIXME: useless, not running it
+    # FIXME: I don't know what to do with this
 
         templ_st_assess_path = f"{self.folder_path}/templates/studentAssessment.jsont"
 
@@ -210,10 +230,6 @@ class Checker:
     """
 
 
-
-
-
-
     # check for the templates NOT hard-coding descriptor namespaces
     # -> under templates
     # -> parse jsont
@@ -227,7 +243,6 @@ class Checker:
 
 
     # TODO parsing compiled yaml 
-
     def parsing_compiled_em_yaml(self):
 
         compiled_em_yaml_path = self.em_yaml_path[:-5] + "_compiled.yaml"
@@ -236,54 +251,69 @@ class Checker:
             self.compiled_em_yaml_text = yaml.safe_load(f)
 
 
-    # TODO check compatibility with ID package 
 
+    # TODO check compatibility with ID package 
     def checking_id_package_compatibility(self):
 
         try:
             if self.compiled_em_yaml_text["transformations"]["input"] == {'source': '$sources.input', 'operations': []}:
-                # print("correct transformations start")
-                print()
+                self.successes["ID Package Compatibility"].append("Correct transformations.input")
             else:
-                self.warnings.append("Please make sure the following code is in your earthmover.yaml:\
-                                transformations: input: source: '$sources.input' operations: []") # FIXME: better error
-        except Exception as e:
-            self.warnings.append("Please make sure the following code is in your earthmover.yaml:\
-                            transformations: input: source: '$sources.input' operations: []") # FIXME: better error
+                raise InvalidBlockError
+        except (KeyError, InvalidBlockError):
+            self.warnings["ID Package Compatibility"].append("Please make sure the following block is in your `earthmover.yaml`:\n\n"
+                                                                "transformations:\n"
+                                                                "  input:\n"
+                                                                "    source: '$sources.input'\n"
+                                                                "    operations: []")
+
 
         try:
             if self.compiled_em_yaml_text["config"]["parameter_defaults"]["STUDENT_ID_NAME"] == "edFi_studentUniqueID":
-                self.successes.append("correct default id")
+                self.successes["ID Package Compatibility"].append("Correct config.parameter_defaults.STUDENT_ID_NAME")
             else:
-                self.warnings.append('Please make sure the following code is in your earthmover.yaml:\
-                                config: parameter_defaults: STUDENT_ID_NAME: "edFi_studentUniqueID"') # FIXME: better error
-        except Exception as e:
-            self.warnings.append('Please make sure the following code is in your earthmover.yaml:\
-                            config: parameter_defaults: STUDENT_ID_NAME: "edFi_studentUniqueID"') # FIXME: better error
+                raise InvalidBlockError
+        except (KeyError, InvalidBlockError):
+            self.warnings["ID Package Compatibility"].append("Please make sure the following block is in your `earthmover.yaml`:\n\n"
+                                                                "config:\n"
+                                                                "  parameter_defaults:\n"
+                                                                '    STUDENT_ID_NAME: "edFi_studentUniqueID"')
+                
+
+        self.not_run_tests.remove("ID Package Compatibility")
 
 
-        self.not_run_tests.remove("Checking ID package compatibility")
-
-
-
+    # TODO: exit testing
     def exit_testing(self):
 
-        print(self.not_run_tests)
-        print(self.warnings)
-        print(self.successes)
-
-        # if len(not_run_tests) > 0: # FIXME: idk bro
-        #     sys.exit(1)
-        # else:
-        #     sys.exit(0)
+        """✨ ⚠️ ✅"""
 
 
+        for key in self.warnings.keys():
+            if key in self.not_run_tests:
+                continue
+
+            print(f"\n✨ {key}")
+
+            for warning in self.warnings[key]:
+                print(f"    ⚠️  {warning}")
+
+            for success in self.successes[key]:
+                print(f"    ✅ {success}")
+
+
+        if len(self.not_run_tests) > 0:
+            print("\n⚠️  Not run tests:")
+            for test in self.not_run_tests:
+                print(f"        {test}")
+
+        print()
 
 
 def main():
     
     if len(sys.argv) < 2:
-        print('Usage: python testing-bundle-structure.py "<folder_path>"')
+        print('Usage: python testing-bundle-structure.py <folder_path>')
         sys.exit(1)
 
     folder_path = sys.argv[1]
@@ -302,13 +332,17 @@ def main():
         except NoEMParams:
             pass
 
-        c.something_studentAssessment() # FIXME: this does nothing rn
+        # c.something_studentAssessment() # FIXME: this does nothing rn
 
     except NoReadme:
         pass
 
     finally:
         c.exit_testing()
+
+        if os.path.exists(os.path.join(folder_path, "earthmover_compiled.yaml")):
+            os.remove(os.path.join(folder_path, "earthmover_compiled.yaml"))
+
 
 
 
