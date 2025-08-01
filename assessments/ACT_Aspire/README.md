@@ -8,25 +8,15 @@ To run this bundle, please add your own source file data/ACT_Aspire_Sample_File.
 
 This bundle was designed to work with the ACT 2015 Aspire Summative Student Performance File Format layout provided by the assessment vendor. 
 
-## Running this bundle without Student ID Xwalking
-To run this bundle without implementing the student ID xwalking packages:
-```bash
-earthmover run -c ./earthmover.yaml -p '{
-"STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
-"OUTPUT_DIR": "output/" 
-}'
-```
-
 ## CLI Parameters
 
-# Required
+### Required
 * OUTPUT_DIR: Where output files will be written
 * INPUT_FILE: The assessment file to be mapped
 * STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Can be one of the native columns in the assessment file (e.g., State Student ID) when the bundle is run directly. Otherwise leave the default value edFi_studentUniqueID
 * POSSIBLE_STUDENT_ID_COLUMNS: This should contain all the possible native student id columns in the assessment file( e.g., State Student ID) .
 
-# Optional
+### Optional
 * DESCRIPTOR_NAMESPACE: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor. The default value is: uri://ed-fi.org
 
 ## Run Earthmover
