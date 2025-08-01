@@ -196,7 +196,8 @@
         "performanceLevels": [
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Completion Criteria",
-            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}"
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelCodeValue}}",
+            "performanceLevelMet": {% if performanceLevelCodeValue|int == 1 %} true{% else %} false{% endif %}
           }
         ],
         {% endif %}
