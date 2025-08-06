@@ -5,6 +5,18 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v0.3.1
+## Fixes
+- Modified ACCESS / Alt-ACCESS bundle to match bundle best-practices
+- Removed deprecated performance level from objective assessment template in ACT bundle
+
+## Under the hood
+- Updated the SCREADY bundle for 2025 changes
+- Updated the SC-Alt bundle for 2025 changes
+- Updated the SC EOCEP bundle for 2025 changes
+- Changed the student id package sort for highest match to include `source_column_name` and `edfi_column_name` columns to ensure a consistent winner
+
+
 # earthmover_edfi_bundles v0.3.0
 ## New features
 - i-Ready Bundle
