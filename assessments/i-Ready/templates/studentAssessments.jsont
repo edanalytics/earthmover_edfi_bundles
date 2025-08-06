@@ -1,0 +1,134 @@
+{%- set all_performance_levels = [
+  [overall_placement, "Overall Placement"],
+  [overall_relative_placement, "Overall Relative Placement"],
+] -%}
+
+{%- set performance_levels = [] -%}
+{%- for perf_level in all_performance_levels if perf_level[0] and perf_level[0] != 'NA' -%}
+  {%- set _ = performance_levels.append(perf_level) -%}
+{%- endfor -%}
+
+
+{%- set all_score_results = [
+  [overall_scale_score, "Overall Scale Score", "Integer"],
+  [lexile_measure, "Lexile Measure", "Level"],
+  [lexile_range, "Lexile Range", "Level"],
+  [quantile_measure, "Quantile Measure", "Level"],
+  [quantile_range, "Quantile Range", "Level"],
+  [annual_typical_growth_measure, "Annual Typical Growth Measure", "Integer"],
+  [annual_stretch_growth_measure, "Annual Stretch Growth Measure", "Integer"],
+  [percent_progress_to_annual_typical_growth, "Percent Progress to Annual Typical Growth (%)", "Percentile"],
+  [percent_progress_to_annual_stretch_growth, "Percent Progress to Annual Stretch Growth (%)", "Percentile"],
+  [mid_on_grade_level_scale_score, "Mid On Grade Level Scale Score", "Integer"],
+  [percentile, "Percentile", "Integer"],
+  [grouping, "Grouping", "Integer"],
+  [diagnostic_gain, "Diagnostic Gain", "Integer"],
+] -%}
+
+{%- set score_results = [] -%}
+{%- for score in all_score_results if score[0] and score[0] != 'NA' -%}
+  {%- set _ = score_results.append(score) -%}
+{%- endfor -%}
+
+
+{%- set all_objective_assessments = [
+  [phonological_awareness_scale_score, phonological_awareness_placement, phonological_awareness_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-PHONOLOGICAL-AWARENESS"],
+  [phonics_scale_score, phonics_placement, phonics_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-PHONICS"],
+  [highfrequency_words_scale_score, highfrequency_words_placement, highfrequency_words_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-HIGH-FREQUENCY-WORDS"],
+  [vocabulary_scale_score, vocabulary_placement, vocabulary_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-VOCABULARY"],
+  [comprehension_overall_scale_score, comprehension_overall_placement, comprehension_overall_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-OVERALL"],
+  [comprehension_literature_scale_score, comprehension_literature_placement, comprehension_literature_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-LITERATURE"],
+  [comprehension_informational_text_scale_score, comprehension_informational_text_placement, comprehension_informational_text_relative_placement, "CAINC-IREADY-DIAGNOSTIC-ELA-COMP-INFORMATION-TEXT"],
+  [number_and_operations_scale_score, number_and_operations_placement, number_and_operations_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-NUMBER-AND-OPERATIONS"],
+  [algebra_and_algebraic_thinking_scale_score, algebra_and_algebraic_thinking_placement, algebra_and_algebraic_thinking_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-ALGEBRA"],
+  [measurement_and_data_scale_score, measurement_and_data_placement, measurement_and_data_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-MEASUREMENT-AND-DATA"],
+  [geometry_scale_score, geometry_placement, geometry_relative_placement, "CAINC-IREADY-DIAGNOSTIC-MATH-GEOMETRY"],
+] -%}
+
+{%- set objective_assessments = [] -%}
+{%- for obj_assess in all_objective_assessments if obj_assess[0] | int and obj_assess[0] != "NA" and obj_assess[0] != "0" -%}
+  {%- set _ = objective_assessments.append(obj_assess) -%}
+{%- endfor -%}
+
+
+{
+  "studentAssessmentIdentifier": "{{ student_assessment_id }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}"
+
+  {%- if performance_levels -%}
+  , "performanceLevels": [
+    {%- for perf_level in performance_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ perf_level[0]}}",
+      "performanceLevelMet": true
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+
+  {%- if score_results -%}
+  , "scoreResults": [
+    {%- for score in score_results -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
+    } {%- if not loop.last -%},{%- endif -%}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+
+  {%- if objective_assessments -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj_assess in objective_assessments -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{ obj_assess[3] }}",
+        "namespace": "{{namespace}}"
+      },
+
+      {%- if obj_assess[1] and obj_assess[1] != 'NA' -%}
+      "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+          "performanceLevelMet": true
+        }{%- if obj_assess[2] and obj_assess[2] != 'NA' -%},
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
+          "performanceLevelMet": true
+        }
+        {%- endif -%}
+      ],
+      {%- endif -%}
+
+      "scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",
+          "result": "{{ obj_assess[0] | int}}"
+        }
+      ]
+    } {%-if not loop.last -%}, {%- endif -%}
+
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+
+  {% if gradeLevelDescriptor and gradeLevelDescriptor != "NA" %}
+  , "whenAssessedGradeLevel": "{{ gradeLevelDescriptor }}"
+  {% endif %}
+}

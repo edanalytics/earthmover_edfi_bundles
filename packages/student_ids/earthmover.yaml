@@ -3,6 +3,7 @@ version: 2
 config:
   tmp_dir: ${TEMPORARY_DIRECTORY}
   parameter_defaults:
+    TEMPORARY_DIRECTORY: /tmp
     # The following values are required to use this bundle:
     
     # a comma-separated list of studentEdOrgAssns.studentIdentificationCodes.studentIdentificationSystem
@@ -228,6 +229,8 @@ transformations:
       - operation: sort_rows
         columns:
           - num_matches
+          - source_column_name
+          - edfi_column_name
         descending: True
       - operation: add_columns
         columns:

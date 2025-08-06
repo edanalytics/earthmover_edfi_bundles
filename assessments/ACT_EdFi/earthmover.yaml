@@ -1,0 +1,234 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: INFO # TODO CHANGE TO INFO AFTER TESTING
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'registration_state_student_id,registration_local_student_id'
+    ACT_SNOWFLAKE_CONNECTION: ${SNOWFLAKE_CONNECTION}
+    ACT_SNOWFLAKE_TENANT_CODE: ${SNOWFLAKE_TENANT_CODE}
+    ACT_SNOWFLAKE_API_YEAR: ${SNOWFLAKE_API_YEAR}
+    ACT_SNOWFLAKE_EDU_STG_SCHEMA: ${SNOWFLAKE_EDU_STG_SCHEMA}
+    ACT_SNOWFLAKE_EDU_BLD_SCHEMA: 'analytics.prod_build'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+
+sources:
+# QUESTION - should my source here for assessments, pls, etc. all be from what ACT has, too, instead of seeds?
+  input:
+    connection: "${ACT_SNOWFLAKE_CONNECTION}"
+    query: >
+      with act_stu_assess as (
+          select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+          where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+          and api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      ),
+      act_stu_ids as (
+          select 
+            stg_ef3__students.student_unique_id,
+            bld_ef3__wide_ids_student.registration_local_student_id,
+            bld_ef3__wide_ids_student.registration_state_student_id,
+            bld_ef3__wide_ids_student.registration_person_id
+          from ${ACT_SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
+          join ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
+            on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
+            and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
+            and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
+          where bld_ef3__wide_ids_student.tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+          and bld_ef3__wide_ids_student.api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      )
+      select 
+        act_stu_assess.*,
+        act_stu_ids.registration_local_student_id,
+        act_stu_ids.registration_state_student_id,
+        act_stu_ids.registration_person_id
+      from act_stu_assess
+      join act_stu_ids
+        on act_stu_assess.student_unique_id = act_stu_ids.student_unique_id
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+# TODO can this be imported from a file at compile time?
+{% set unpackable_obj_assess = {
+  'ACT_ELA': {
+    'scale_score': 'ELA Score',
+    'us_rank': 'ELA US Rank',
+    'state_rank': 'ELA State Rank',
+    'sem': 'ELA Standard Error of Measurement',
+    'super_score': 'Super ELA Score',
+    },
+  'ACT_STEM': {
+    'scale_score': 'STEM Score',
+    'us_rank': 'STEM US Rank',
+    'state_rank': 'STEM State Rank',
+    'sem': 'STEM Standard Error of Measurement',
+    'super_score': 'Super STEM Score'
+  }
+} %}
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+  # student-level transformation 1 - pull out top-level assessment scores for STEM/ELA, so they can be converted to objective assessments
+  unpacked_scores:
+    source: $transformations.input
+    operations:
+      # add wide score columns for certain scores that we want to eventually convert to objective assessments
+        # note, this is based on guidance from EA's assessment governance to map STEM & ELA as objective assessments rather than at the top level
+      - operation: add_columns
+        columns:
+          {% set score_namespace_prefix = 'uri://act.org/AssessmentReportingMethodDescriptor#' %}
+          {% for obj_id, score_columns in unpackable_obj_assess.items() %}
+            {% for score_key, score_column in score_columns.items() %}
+            "{{obj_id}}_{{score_key}}": '{%raw%}{{(fromjson(v_score_results)|selectattr("assessmentReportingMethodDescriptor","eq","{%endraw%}{{score_namespace_prefix}}{{score_column}}{%raw%}")|map(attribute="result")|first or "")}}{%endraw%}'
+            
+            {% endfor %}
+          {% endfor %}
+  student_assessments: 
+    source: $transformations.unpacked_scores
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns: 
+          studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_keys: [when_assessed_grade_level]
+        right_keys: [gradeLevelShort]
+      # overwrite assess ID to match governance decision
+      - operation: modify_columns
+        columns:
+          assessment_identifier: 'ACT'
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          namespace: "uri://act.org/"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+        
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+  
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True

@@ -12,15 +12,23 @@
   },
   "administrationDate": "{{TEST_DATE}}",
   "administrationLanguageDescriptor": "uri://ed-fi.org/LanguageDescriptor#{{language}}",
+  {% if (api_year | int <= 2023 and Overall_Performance_Level is not none and Overall_Performance_Level | length) %}
   "performanceLevels": [
-    {% if Overall_Performance_Level is not none and Overall_Performance_Level | length %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Overall_Performance_Level}}",
       "performanceLevelMet": true
     }
-    {% endif %}
   ],
+  {% elif (api_year | int > 2023 and Predicted_STAAR_Performance_Level is not none and Predicted_STAAR_Performance_Level | length ) %}
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#{{Predicted_STAAR_Performance_Level}}",
+      "performanceLevelMet": true
+    }
+  ],
+  {% endif %}
   "scoreResults": [
     {% set scores_present = [] %}
     {% set all_scores = {'Subject':['Level',subject],
@@ -46,6 +54,14 @@
     {%- if not loop.last %},
     {% else %}{% endif %}{% endfor %}
   ]
+  {% set objs_present = [] %}
+  {%- for n in range(1,6) -%}
+    {% set pl_name = self._TemplateReference__context.resolve('REPORTING_CATEGORY_'~n~'_STRENGTH_WEAKNESS_INDICATOR')%}
+    {% if pl_name is not none and pl_name | length %}
+      {% set _= objs_present.append(pl_name) %}
+    {% endif %}
+  {% endfor %}
+  {% if objs_present | length %}
   ,
   "studentObjectiveAssessments": [
     {%- for n in range(1,6) -%}
@@ -57,7 +73,7 @@
     {
       "objectiveAssessmentReference": {
         "assessmentIdentifier": "{{ assessment_identifier }}",
-        "identificationCode": "{{ id_code }}",
+        "identificationCode": "{{ id_code[:60] }}",
         "namespace": "uri://tea.texas.gov/student-assessment"
       }
       {% if pl_name is not none and pl_name | length %}
@@ -82,6 +98,7 @@
       {% endif %}
     }{% endif %}{%- endfor -%}
   ]
+  {%endif%}
   {% if grade_level_tested is not none and grade_level_tested | length %}
   ,
   "whenAssessedGradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#{{grade_level_tested}}"

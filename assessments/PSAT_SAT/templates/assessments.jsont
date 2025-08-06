@@ -1,50 +1,23 @@
 {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "assessmentTitle": "{{assessmentTitle}}",
+    "assessmentFamily": "{{assessmentFamily}}",
     "namespace": "{{namespace}}",
     "assessedGradeLevels": [{{grade_json}}],
     "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
     "academicSubjects": [{{subject_json}}],
-    "scores": [
+    "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Total Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Section Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Total Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Nationally Rep Sample Pctl Section Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
       },
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Total Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#User Percentile Section Score",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      }
-    ],
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Y",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
       }
     ]
   }

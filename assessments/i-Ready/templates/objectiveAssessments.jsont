@@ -1,0 +1,107 @@
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "performanceLevels": [
+    {% set placement_levels = [
+        'Early 1',
+        'Early 10',
+        'Early 11',
+        'Early 12',
+        'Early 2',
+        'Early 3',
+        'Early 4',
+        'Early 5',
+        'Early 6',
+        'Early 7',
+        'Early 8',
+        'Early 9',
+        'Early K',
+        'Grade K',
+        'Grade 1',
+        'Grade 10',
+        'Grade 11',
+        'Grade 12',
+        'Grade 2',
+        'Grade 3',
+        'Grade 4',
+        'Grade 5',
+        'Grade 6',
+        'Grade 7',
+        'Grade 8',
+        'Grade 9',
+        'Late 1',
+        'Late 10',
+        'Late 11',
+        'Late 12',
+        'Late 2',
+        'Late 3',
+        'Late 4',
+        'Late 5',
+        'Late 6',
+        'Late 7',
+        'Late 8',
+        'Late 9',
+        'Late K',
+        'Emerging K',
+        'Level 1',
+        'Level 10',
+        'Level 11',
+        'Level 12',
+        'Level 2',
+        'Level 3',
+        'Level 4',
+        'Level 5',
+        'Level 6',
+        'Level 7',
+        'Level 8',
+        'Level 9',
+        'Level K',
+        'Mid 1',
+        'Mid 10',
+        'Mid 11',
+        'Mid 12',
+        'Mid 2',
+        'Mid 3',
+        'Mid 4',
+        'Mid 5',
+        'Mid 6',
+        'Mid 7',
+        'Mid 8',
+        'Mid 9',
+        'Mid K',
+        'Max Score',
+        'Tested Out'
+    ] %}
+    {% set rel_placement_levels = [
+        '1 Grade Level Below',
+        '2 Grade Levels Below',
+        '3 or More Grade Levels Below',
+        'Early On Grade Level',
+        'Mid or Above Grade Level'
+    ] %}
+    {%- for level in placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {%- endfor -%}
+    {%- for rel_level in rel_placement_levels -%}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{rel_level}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ]
+}
