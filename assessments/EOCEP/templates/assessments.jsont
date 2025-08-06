@@ -25,22 +25,6 @@
   "Hispanic",
   "Homeless",
   "HomeSch",
-  "IEP_AU",
-  "IEP_DB",
-  "IEP_DD",
-  "IEP_EH",
-  "IEP_EM",
-  "IEP_HH",
-  "IEP_LD",
-  "IEP_MD",
-  "IEP_OH",
-  "IEP_OHI",
-  "IEP_PMD",
-  "IEP_SP",
-  "IEP_TBI",
-  "IEP_TM",
-  "IEP_VH",
-  "IEP",
   "InstrSetting",
   "LastItem",
   "Level",
@@ -80,14 +64,63 @@
   "VSchool",
 ] -%}
 
-{%- set ela_score_results = [
-  "Lex",
-  "LexLow",
-  "LexNPR",
-  "LexUp",
-  "TDANoScore",
-  "TDAScore",
-] -%}
+{%- if api_year | int < 2025 -%}
+  {%- set iep_score_results = [
+    "IEP_AU",
+    "IEP_DB",
+    "IEP_DD",
+    "IEP_EH",
+    "IEP_EM",
+    "IEP_HH",
+    "IEP_LD",
+    "IEP_MD",
+    "IEP_OH",
+    "IEP_OHI",
+    "IEP_PMD",
+    "IEP_SP",
+    "IEP_TBI",
+    "IEP_TM",
+    "IEP_VH",
+    "IEP"
+  ] -%}
+{%- elif api_year | int >= 2025 -%}
+  {%- set iep_score_results = [
+    "IEP_AU",
+    "IEP_DB",
+    "IEP_DD",
+    "IEP_EH",
+    "IEP_HH",
+    "IEP_ID",
+    "IEP_LD",
+    "IEP_MD",
+    "IEP_OH",
+    "IEP_HI",
+    "IEP_SP",
+    "IEP_TB",
+    "IEP_VH",
+    "IEP"
+  ] -%}
+{%- endif -%}
+
+
+{%- if api_year | int < 2025 -%}
+  {%- set ela_score_results = [
+    "Lex",
+    "LexLow",
+    "LexNPR",
+    "LexUp",
+    "TDANoScore",
+    "TDAScore",
+  ] -%}
+{%- elif api_year | int >= 2025 -%}
+  {%- set ela_score_results = [
+    "Lex",
+    "LexLow",
+    "LexUp",
+    "TDWNoScore",
+    "TDWScore",
+  ] -%}
+{%- endif -%}
 
 {%- set math_score_results = [
   "Quant",
@@ -97,11 +130,11 @@
 ] -%}
 
 {%- if 'EOCEP_E2' in assessmentIdentifier -%}
-  {%- set subject_score_results = generic_score_results + ela_score_results -%}
+  {%- set subject_score_results = generic_score_results + iep_score_results + ela_score_results -%}
 {%- elif 'EOCEP_A' in asssessmentIdentifier -%}
-  {%- set subject_score_results = generic_score_results + math_score_results -%}
+  {%- set subject_score_results = generic_score_results + iep_score_results + math_score_results -%}
 {%- else -%}
-  {%- set subject_score_results = generic_score_results -%}
+  {%- set subject_score_results = generic_score_results + iep_score_results -%}
 {%- endif -%}
 
 {
