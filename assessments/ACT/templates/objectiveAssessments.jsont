@@ -45,15 +45,5 @@
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       }
     ]
-    {% if has_pls|string == 'True' %}
-    ,"performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Score",
-        "maximumScore": "36",
-        "minimumScore": "22",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#At or Above Readiness Benchmark"
-      }
-    ]
-    {% endif %}
 
   }
