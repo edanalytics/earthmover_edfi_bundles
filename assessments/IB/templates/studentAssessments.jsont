@@ -1,0 +1,63 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessment_identifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_id}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "scoreResults": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Category",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "result": "{{category}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Group",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "result": "{{group_number}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "result": "{{level}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Predicted Grade",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{predicted_grade}}"
+    }
+  {% if subject_grade is not none and subject_grade | length %},
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Grade",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{subject_grade}}"
+    }
+  {% endif %}
+  {% if category == 'DIPLOMA' %},
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#EE/TOK Bonus Points",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{ee_tok_bonus_points}}"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Total Points",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{total_points}}"
+    }
+  ],
+
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Diploma Result Code",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{result_code}}",
+      "performanceLevelMet": true
+    }
+ {% endif %}
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "assessmentIdentifier": "{{assessment_identifier}}",
+  "assessmentTitle": "Indicadores Dinámicos del Éxito en la Lectura",
+  "namespace": "{{namespace}}",
+  "languages" : [{{language_json}}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Benchmark Period",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels":[
+    {
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Intensive",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Strategic",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Benchmark",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor":"{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Measure Level",
+      "performanceLevelDescriptor":"{{namespace}}/PerformanceLevelDescriptor#Not Determined",
+      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}

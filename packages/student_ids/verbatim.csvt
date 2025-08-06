@@ -1,0 +1,3 @@
+{% for key, value in __row_data__.pop('__row_data__').items() -%}
+"{{value|trim}}"{% if not loop.last %},{% endif %}
+{%- endfor %}

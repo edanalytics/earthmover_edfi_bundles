@@ -1,0 +1,750 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR} # this will be a parameter that is passed through from the command line, leave this as-is.
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student_State_ID'
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 3
+    optional_fields:
+      - RLN_v1
+      - RLN_v1_Date
+      - CP_RLN_v1
+      - Rapid_Vocabulary_v1
+      - Rapid_Vocabulary_v1_Date
+      - CP_Rapid_Vocabulary_v1
+      - Rapid_Vocabulary_v1_RV_set1_v1
+      - Rapid_Vocabulary_v1_RV_set1_v1_Date
+      - CP_Rapid_Vocabulary_v1_RV_set1_v1
+      - Rapid_Vocabulary_v1_RV_set2_v1
+      - Rapid_Vocabulary_v1_RV_set2_v1_Date
+      - CP_Rapid_Vocabulary_v1_RV_set2_v1
+      - Rapid_Vocabulary_v1_RV_set3_v1
+      - Rapid_Vocabulary_v1_RV_set3_v1_Date
+      - CP_Rapid_Vocabulary_v1_RV_set3_v1
+      - PA_v2
+      - PA_v2_Date
+      - CP_PA_v2
+      - PA_v2_Syllabication_v2
+      - PA_v2_Syllabication_v2_Date
+      - CP_PA_v2_Syllabication_v2
+      - PA_v2_Onset-Rime_v2
+      - PA_v2_Onset-Rime_v2_Date
+      - CP_PA_v2_Onset-Rime_v2
+      - PA_v2_Alliteration_v2
+      - PA_v2_Alliteration_v2_Date
+      - CP_PA_v2_Alliteration_v2
+      - PA_v2_Rhyming_I_v2
+      - PA_v2_Rhyming_I_v2_Date
+      - CP_PA_v2_Rhyming_I_v2
+      - PA_Opt_v1
+      - PA_Opt_v1_Date
+      - CP_PA_Opt_v1
+      - PA_Opt_v1_Listening_v2
+      - PA_Opt_v1_Listening_v2_Date
+      - CP_PA_Opt_v1_Listening_v2
+      - PA_Opt_v1_Words_v2
+      - PA_Opt_v1_Words_v2_Date
+      - CP_PA_Opt_v1_Words_v2
+      - PA_Opt_v1_Rhyming_II_v2
+      - PA_Opt_v1_Rhyming_II_v2_Date
+      - CP_PA_Opt_v1_Rhyming_II_v2
+      - Math_v1
+      - Math_v1_Date
+      - CP_Math_v1
+      - Math_v1_Rote_Counting_v1
+      - Math_v1_Rote_Counting_v1_Date
+      - CP_Math_v1_Rote_Counting_v1
+      - Math_v1_Shape_Naming_v1
+      - Math_v1_Shape_Naming_v1_Date
+      - CP_Math_v1_Shape_Naming_v1
+      - Math_v1_Number_Discrimination_v1
+      - Math_v1_Number_Discrimination_v1_Date
+      - CP_Math_v1_Number_Discrimination_v1
+      - Math_v1_Number_Naming_v1
+      - Math_v1_Number_Naming_v1_Date
+      - CP_Math_v1_Number_Naming_v1
+      - Math_v1_Shape_Disc_v1
+      - Math_v1_Shape_Disc_v1_Date
+      - CP_Math_v1_Shape_Disc_v1
+      - Math_v1_Counting_v1
+      - Math_v1_Counting_v1_Date
+      - CP_Math_v1_Counting_v1
+      - Math_v1_Operations_v1
+      - Math_v1_Operations_v1_Date
+      - CP_Math_v1_Operations_v1
+      - Math_Opt_v1
+      - Math_Opt_v1_Date
+      - CP_Math_Opt_v1
+      - Math_Opt_v1_Patterns_v1
+      - Math_Opt_v1_Patterns_v1_Date
+      - CP_Math_Opt_v1_Patterns_v1
+      - Math_Opt_v1_Real_World_v1
+      - Math_Opt_v1_Real_World_v1_Date
+      - CP_Math_Opt_v1_Real_World_v1
+      - Letter_Sound_v1
+      - Letter_Sound_v1_Date
+      - CP_Letter_Sound_v1
+      - Story_Retell_Comp_v1
+      - Story_Retell_Comp_v1_Date
+      - CP_Story_Retell_Comp_v1
+      - Book_Print_v1
+      - Book_Print_v1_Date
+      - CP_Book_Print_v1
+      - Science_v1
+      - Science_v1_Date
+      - CP_Science_v1
+      - Social_Studies_v1
+      - Social_Studies_v1_Date
+      - CP_Social_Studies_v1
+      - Social-Emotional_V1
+      - Social-Emotional_V1_Date
+      - CP_Social-Emotional_V1
+      - Social-Emotional_V1_Positive_Social_v1
+      - CP_Social-Emotional_V1_Positive_Social_v1
+      - Social-Emotional_V1_Positive_Social_v1_Date
+      - Social-Emotional_V1_Classroom_Community_Safety_v1
+      - Social-Emotional_V1_Classroom_Community_Safety_v1_Date
+      - CP_Social-Emotional_V1_Classroom_Community_Safety_v1
+      - Social-Emotional_V1_Emotion_Behavior_v1
+      - Social-Emotional_V1_Emotion_Behavior_v1_Date
+      - CP_Social-Emotional_V1_Emotion_Behavior_v1
+      - Social-Emotional_V1_Self_Care_v1
+      - Social-Emotional_V1_Self_Care_v1_Date
+      - CP_Social-Emotional_V1_Self_Care_v1
+      - Social-Emotional_V1_Approaches_to_Learning_v1
+      - Social-Emotional_V1_Approaches_to_Learning_v1_Date
+      - CP_Social-Emotional_V1_Approaches_to_Learning_v1
+      - Early_Writing_v1
+      - Early_Writing_v1_Date
+      - CP_Early_Writing_v1
+      - Approaches_To_Learning_Exp_v2
+      - Approaches_To_Learning_Exp_v2_Date
+      - CP_Approaches_To_Learning_Exp_v2
+      - Approaches_To_Learning_Exp_v2_Initiative_Curiosity_v1
+      - Approaches_To_Learning_Exp_v2_Initiative_Curiosity_v1_Date
+      - CP_Approaches_To_Learning_Exp_v2_Initiative_Curiosity_v1
+      - Approaches_To_Learning_Exp_v2_Flexibility_v1
+      - Approaches_To_Learning_Exp_v2_Flexibility_v1_Date
+      - CP_Approaches_To_Learning_Exp_v2_Flexibility_v1
+      - Approaches_To_Learning_Exp_v2_Creativity_Dramatic_Play_v1
+      - Approaches_To_Learning_Exp_v2_Creativity_Dramatic_Play_v1_Date
+      - CP_Approaches_To_Learning_Exp_v2_Creativity_Dramatic_Play_v1
+      - Physical_Dev_Health_v1
+      - Physical_Dev_Health_v1_Date
+      - CP_Physical_Dev_Health_v1
+      - Physical_Dev_Health_v1_Fine_Visual_Motor_V1
+      - Physical_Dev_Health_v1_Fine_Visual_Motor_V1_Date
+      - CP_Physical_Dev_Health_v1_Fine_Visual_Motor_V1
+      - Physical_Dev_Health_v1_Gross_Motor_V1
+      - Physical_Dev_Health_v1_Gross_Motor_V1_Date
+      - CP_Physical_Dev_Health_v1_Gross_Motor_V1
+      - Physical_Dev_Health_v1_Health_V1
+      - Physical_Dev_Health_v1_Health_V1_Date
+      - CP_Physical_Dev_Health_v1_Health_V1
+      - Language_Communication_2016_v1
+      - Language_Communication_2016_v1_Date
+      - CP_Language_Communication_2016_v1
+      - Motivation_to_Read_2016_v1
+      - Motivation_to_Read_2016_v1_Date
+      - CP_Motivation_to_Read_2016_v1
+      - CPM_Admin_Mode
+      - CPM_Admin_Mode_Date
+      - CP_CPM_Admin_Mode
+      - RLNA_spa_v1
+      - RLNA_spa_v1_Date
+      - CP_RLNA_spa_v1
+      - Rapid_Vocabulary_spa_v1
+      - Rapid_Vocabulary_spa_v1_Date
+      - CP_Rapid_Vocabulary_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set1_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set1_spa_v1_Date
+      - CP_Rapid_Vocabulary_spa_v1_RV_set1_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set2_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set2_spa_v1_Date
+      - CP_Rapid_Vocabulary_spa_v1_RV_set2_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set3_spa_v1
+      - Rapid_Vocabulary_spa_v1_RV_set3_spa_v1_Date
+      - CP_Rapid_Vocabulary_spa_v1_RV_set3_spa_v1
+      - PA_spa_v2
+      - PA_spa_v2_Date
+      - CP_PA_spa_v2
+      - PA_spa_v2_Syllabication_spa_v2
+      - PA_spa_v2_Syllabication_spa_v2_Date
+      - CP_PA_spa_v2_Syllabication_spa_v2
+      - PA_spa_v2_Alliteration_spa_v2
+      - PA_spa_v2_Alliteration_spa_v2_Date
+      - CP_PA_spa_v2_Alliteration_spa_v2
+      - PA_spa_v2_Rhyming_I_spa_v2
+      - PA_spa_v2_Rhyming_I_spa_v2_Date
+      - CP_PA_spa_v2_Rhyming_I_spa_v2
+      - PA_Optional_spa_v1
+      - PA_Optional_spa_v1_Date
+      - CP_PA_Optional_spa_v1
+      - PA_Optional_spa_v1_Listening_spa_v2
+      - PA_Optional_spa_v1_Listening_spa_v2_Date
+      - CP_PA_Optional_spa_v1_Listening_spa_v2
+      - PA_Optional_spa_v1_Words_spa_v2
+      - PA_Optional_spa_v1_Words_spa_v2_Date
+      - CP_PA_Optional_spa_v1_Words_spa_v2
+      - PA_Optional_spa_v1_Rhyming_II_spa_v2
+      - PA_Optional_spa_v1_Rhyming_II_spa_v2_Date
+      - CP_PA_Optional_spa_v1_Rhyming_II_spa_v2
+      - Math_spa_v1
+      - Math_spa_v1_Date
+      - CP_Math_spa_v1
+      - Math_spa_v1_Rote_Counting_spa_v1
+      - Math_spa_v1_Rote_Counting_spa_v1_Date
+      - CP_Math_spa_v1_Rote_Counting_spa_v1
+      - Math_spa_v1_Shape_Naming_spa_v1
+      - Math_spa_v1_Shape_Naming_spa_v1_Date
+      - CP_Math_spa_v1_Shape_Naming_spa_v1
+      - Math_spa_v1_Number_Discrimination_spa_v1
+      - Math_spa_v1_Number_Discrimination_spa_v1_Date
+      - CP_Math_spa_v1_Number_Discrimination_spa_v1
+      - Math_spa_v1_Number_Name_spa_v1
+      - Math_spa_v1_Number_Name_spa_v1_Date
+      - CP_Math_spa_v1_Number_Name_spa_v1
+      - Math_spa_v1_Shape_Disc_spa_v1
+      - Math_spa_v1_Shape_Disc_spa_v1_Date
+      - CP_Math_spa_v1_Shape_Disc_spa_v1
+      - Math_spa_v1_Counting_spa_v1
+      - Math_spa_v1_Counting_spa_v1_Date
+      - CP_Math_spa_v1_Counting_spa_v1
+      - Math_spa_v1_Operations_spa_v1
+      - Math_spa_v1_Operations_spa_v1_Date
+      - CP_Math_spa_v1_Operations_spa_v1
+      - Math_Opt_spa_v1
+      - Math_Opt_spa_v1_Date
+      - CP_Math_Opt_spa_v1
+      - Math_Opt_spa_v1_Patterns_spa_v1
+      - Math_Opt_spa_v1_Patterns_spa_v1_Date
+      - CP_Math_Opt_spa_v1_Patterns_spa_v1
+      - Math_Opt_spa_v1_Real_World_spa_v1
+      - Math_Opt_spa_v1_Real_World_spa_v1_Date
+      - CP_Math_Opt_spa_v1_Real_World_spa_v1
+      - Letter_Sound_spa_v1
+      - Letter_Sound_spa_v1_Date
+      - CP_Letter_Sound_spa_v1
+      - Story_Retell_Comp_spa_v1
+      - Story_Retell_Comp_spa_v1_Date
+      - CP_Story_Retell_Comp_spa_v1
+      - Book_Print_spa_v1
+      - Book_Print_spa_v1_Date
+      - CP_Book_Print_spa_v1
+      - Science_spa_v1
+      - Science_spa_v1_Date
+      - CP_Science_spa_v1
+      - Social_Studies_spa_v1
+      - Social_Studies_spa_v1_Date
+      - CP_Social_Studies_spa_v1
+      - Social-Emotional_spa_v2
+      - Social-Emotional_spa_v2_Date
+      - CP_Social-Emotional_spa_v2
+      - Social-Emotional_spa_v2_Positive_Social_Spa_V1
+      - Social-Emotional_spa_v2_Positive_Social_Spa_V1_Date
+      - CP_Social-Emotional_spa_v2_Positive_Social_Spa_V1
+      - Social-Emotional_spa_v2_Classroom_Community_Safety_spa_v1
+      - Social-Emotional_spa_v2_Classroom_Community_Safety_spa_v1_Date
+      - CP_Social-Emotional_spa_v2_Classroom_Community_Safety_spa_v1
+      - Social-Emotional_spa_v2_Emotion_Behavior_Spa_V1
+      - Social-Emotional_spa_v2_Emotion_Behavior_Spa_V1_Date
+      - CP_Social-Emotional_spa_v2_Emotion_Behavior_Spa_V1
+      - Social-Emotional_spa_v2_Self_Care_Spa_V1
+      - Social-Emotional_spa_v2_Self_Care_Spa_V1_Date
+      - CP_Social-Emotional_spa_v2_Self_Care_Spa_V1
+      - Social-Emotional_spa_v2_Approaches_to_Learning_Spa_v1
+      - Social-Emotional_spa_v2_Approaches_to_Learning_Spa_v1_Date
+      - CP_Social-Emotional_spa_v2_Approaches_to_Learning_Spa_v1
+      - Early_Writing_spa_v1
+      - Early_Writing_spa_v1_Date
+      - CP_Early_Writing_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Date
+      - CP_Approaches_To_Learning_Extended_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Initiative_Curiosity_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Initiative_Curiosity_spa_v1_Date
+      - CP_Approaches_To_Learning_Extended_spa_v1_Initiative_Curiosity_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Flexibility_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Flexibility_spa_v1_Date
+      - CP_Approaches_To_Learning_Extended_spa_v1_Flexibility_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Creativity_Dramatic_Play_spa_v1
+      - Approaches_To_Learning_Extended_spa_v1_Creativity_Dramatic_Play_spa_v1_Date
+      - CP_Approaches_To_Learning_Extended_spa_v1_Creativity_Dramatic_Play_spa_v1
+      - Physical_Dev_Health_spa_v1
+      - Physical_Dev_Health_spa_v1_Date
+      - CP_Physical_Dev_Health_spa_v1
+      - Physical_Dev_Health_spa_v1_Fine_Visual_Motor_Spa_v1
+      - Physical_Dev_Health_spa_v1_Fine_Visual_Motor_Spa_v1_Date
+      - CP_Physical_Dev_Health_spa_v1_Fine_Visual_Motor_Spa_v1
+      - Physical_Dev_Health_spa_v1_Gross_Motor_Spa_V1
+      - Physical_Dev_Health_spa_v1_Gross_Motor_Spa_V1_Date
+      - CP_Physical_Dev_Health_spa_v1_Gross_Motor_Spa_V1
+      - Physical_Dev_Health_spa_v1_Health_Spa_v1
+      - Physical_Dev_Health_spa_v1_Health_Spa_v1_Date
+      - CP_Physical_Dev_Health_spa_v1_Health_Spa_v1
+      - Language_Communication_2016_Spa_v1
+      - Language_Communication_2016_Spa_v1_Date
+      - CP_Language_Communication_2016_Spa_v1
+      - Motivation_to_Read_2016_Spa_v1
+      - Motivation_to_Read_2016_Spa_v1_Date
+      - CP_Motivation_to_Read_2016_Spa_v1
+      - CPM_Admin_Mode_Sp
+      - CPM_Admin_Mode_Sp_Date
+      - CP_CPM_Admin_Mode_Sp
+      - CPM_PK_Pilot_Math_En_23-24
+      - CPM_PK_Pilot_Math_En_23-24_Date
+      - CP_CPM_PK_Pilot_Math_En_23-24
+      - CPM_PK_Pilot_Math_Sp_23-24
+      - CPM_PK_Pilot_Math_Sp_23-24_Date
+      - CP_CPM_PK_Pilot_Math_Sp_23-24
+
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+# PREP-STEP 1: CREATE A LIST OF COLUMNS TO STACK VERTICALLY.
+# The CLI CIRCLE Data arrives in a wide format with each row representing a single student. To use this data in our templates, we need to pivot the table into a long format.
+# This involves standardizing the column titles of subject/objective assessments (e.g., "math_v1") to generic titles (e.g., "subject_name").
+# The objective is to stack these conformed columns so that one row represents a student/subject assessed.
+# This list will be used in our final "keep columns" step, to indicate the conformed columns we want to retain in the final transformation.
+{% set conformed_columns = [
+  'wave',
+  'student_wave_id', 
+  'generated_test_id',
+  'student_unique_id',
+  'local_student_id',
+  'student_state_id',
+  'school_year',
+  'subject_assessment_id',
+  'subject_name',
+  'subject_descriptor',
+  'subject_score',
+  'subject_cut_point',
+  'subject_date',
+  'subject_assess_lang',
+  'oa_category_1_name',
+  'oa_category_2_name',
+  'oa_category_3_name',
+  'oa_category_4_name',
+  'oa_category_5_name',
+  'oa_category_6_name',
+  'oa_category_7_name',
+  'oa_category_1_descriptor',
+  'oa_category_2_descriptor',
+  'oa_category_3_descriptor',
+  'oa_category_4_descriptor',
+  'oa_category_5_descriptor',
+  'oa_category_6_descriptor',
+  'oa_category_7_descriptor',
+  'oa_category_1_date',
+  'oa_category_2_date',
+  'oa_category_3_date',
+  'oa_category_4_date',
+  'oa_category_5_date',
+  'oa_category_6_date',
+  'oa_category_7_date',
+  'oa_category_1_score',
+  'oa_category_2_score',
+  'oa_category_3_score',
+  'oa_category_4_score',
+  'oa_category_5_score',
+  'oa_category_6_score',
+  'oa_category_7_score',
+  'oa_category_1_cut_point',
+  'oa_category_2_cut_point',
+  'oa_category_3_cut_point',
+  'oa_category_4_cut_point',
+  'oa_category_5_cut_point',
+  'oa_category_6_cut_point',
+  'oa_category_7_cut_point'
+  ] 
+%}
+
+# PREP-STEP 2: CREATE A DICTIONARY OF SUBJECTS AND OBJECTIVE ASSESSMENTS TO CONFORM AND STACK.
+# We need this comprehensive dictionary to pass on values to our conformed columns above.
+# In CLI CIRCLE data, the subject column names vary between English and Spanish assessments.
+# For example, "pa_v2" is used for English assessments, while "pa_spa_v2" is used for Spanish assessments.
+
+# To handle these distinctions, we create two distinct dictionaries, which eventually merge to undergo the final transformations.
+  # student_id | subject_name | subject_descriptor     | ...subject_cut_point | oa_category_1_name       | ...oa_category_1_cut_point
+  # 1234       | pa_v2        | Phonological Awareness | ...Needs Support       | pa_opt_v1_listening_v2   | ...Monitoring
+  # 1234       | math_v1      | Math                   | ...On Track            | math_v1_rote_counting_v1 | ...On Track
+
+{% set subjects = {
+    'rln_v1': {
+      'subject_name_spa': 'rlna_spa_v1',
+      'subject_assess_id': 'rln',
+      'descriptor': 'Rapid Letter Naming',
+      'objective_assessments': [],
+      'subject_assess_lang':  ['English','Spanish']
+    },
+    'rapid_vocabulary_v1': {
+      'subject_name_spa': 'rapid_vocabulary_spa_v1',
+      'subject_assess_id': 'rapid_vocabulary',
+      'descriptor': 'Rapid Vocabulary',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'pa_v2': {
+      'subject_name_spa': 'pa_spa_v2',
+      'subject_assess_id': 'pa',
+      'descriptor': 'Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'pa_v2_syllabication_v2', 'colname_spa': 'pa_spa_v2_syllabication_spa_v2', 'descriptor':'Phonological Awareness Syllabication'}},
+        {'oa_category_2':{'colname':'pa_v2_alliteration_v2', 'colname_spa': 'pa_spa_v2_alliteration_spa_v2', 'descriptor':'Phonological Awareness Alliteration'}},
+        {'oa_category_3':{'colname':'pa_v2_rhyming_i_v2', 'colname_spa': 'pa_spa_v2_rhyming_i_spa_v2', 'descriptor':'Phonological Awareness Rhyming I'}},
+        {'oa_category_4':{'colname':'pa_v2_onset_rime_v2', 'descriptor':'Phonological Awareness Onset-Rime'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'pa_opt_v1': {
+      'subject_name_spa': 'pa_optional_spa_v1',
+      'subject_assess_id': 'pa_opt',
+      'descriptor': 'Optional Phonological Awareness',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'pa_opt_v1_listening_v2', 'colname_spa': 'pa_optional_spa_v1_listening_spa_v2', 'descriptor':'Optional Phonological Awareness Listening'}},
+        {'oa_category_2':{'colname':'pa_opt_v1_words_v2', 'colname_spa': 'pa_optional_spa_v1_words_spa_v2', 'descriptor':'Optional Phonological Awareness Words in a Sentence'}},
+        {'oa_category_3':{'colname':'pa_opt_v1_rhyming_ii_v2', 'colname_spa': 'pa_optional_spa_v1_rhyming_ii_spa_v2', 'descriptor':'Optional Phonological Awareness Rhyming II'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'math_v1': {
+      'subject_name_spa': 'math_spa_v1',
+      'subject_assess_id': 'math',
+      'descriptor': 'Math',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'math_v1_rote_counting_v1', 'colname_spa': 'math_spa_v1_rote_counting_spa_v1', 'descriptor':'Math Rote Counting'}},
+        {'oa_category_2':{'colname':'math_v1_shape_naming_v1', 'colname_spa': 'math_spa_v1_shape_naming_spa_v1', 'descriptor':'Math Shape Naming'}},
+        {'oa_category_3':{'colname':'math_v1_number_discrimination_v1', 'colname_spa': 'math_spa_v1_number_discrimination_spa_v1', 'descriptor':'Math Number Discrimination'}},
+        {'oa_category_4':{'colname':'math_v1_number_naming_v1', 'colname_spa': 'math_spa_v1_number_name_spa_v1', 'descriptor':'Math Number Naming'}},
+        {'oa_category_5':{'colname':'math_v1_shape_disc_v1', 'colname_spa': 'math_spa_v1_shape_disc_spa_v1', 'descriptor':'Math Shape Discrimination'}},
+        {'oa_category_6':{'colname':'math_v1_counting_v1', 'colname_spa': 'math_spa_v1_counting_spa_v1', 'descriptor':'Math Counting Sets'}},
+        {'oa_category_7':{'colname':'math_v1_operations_v1', 'colname_spa': 'math_spa_v1_operations_spa_v1', 'descriptor':'Math Operations'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'math_opt_v1': {
+      'subject_name_spa': 'math_opt_spa_v1',
+      'subject_assess_id': 'math_opt',
+      'descriptor': 'Optional Math',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'math_opt_v1_patterns_v1', 'colname_spa': 'math_opt_spa_v1_patterns_spa_v1', 'descriptor':'Optional Math Patterns'}},
+        {'oa_category_2':{'colname':'math_opt_v1_real_world_v1', 'colname_spa': 'math_opt_spa_v1_real_world_spa_v1', 'descriptor':'Optional Math Real World'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'letter_sound_v1': {
+      'subject_name_spa': 'letter_sound_spa_v1',
+      'subject_assess_id': 'letter_sound',
+      'descriptor': 'Letter-Sound Correspondence',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'story_retell_comp_v1': {
+      'subject_name_spa': 'story_retell_comp_spa_v1',
+      'subject_assess_id': 'story_retell_comp',
+      'descriptor': 'Story Retell and Comprehension',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'book_print_v1': {
+      'subject_name_spa': 'book_print_spa_v1',
+      'subject_assess_id': 'book_print',
+      'descriptor': 'Book and Print Knowledge',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'science_v1': {
+      'subject_name_spa': 'science_spa_v1',
+      'subject_assess_id': 'science',
+      'descriptor': 'Science',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'social_studies_v1': {
+      'subject_name_spa': 'social_studies_spa_v1',
+      'subject_assess_id': 'social_studies',
+      'descriptor': 'Social Studies',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'social_emotional_v1': {
+      'subject_name_spa': 'social_emotional_spa_v2',
+      'subject_assess_id': 'social_emotional',
+      'descriptor': 'Social Emotional Behaviors',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'social_emotional_v1_positive_social_v1', 'colname_spa': 'social_emotional_spa_v2_positive_social_spa_v1', 'descriptor':'Positive Social Behaviors'}},
+        {'oa_category_2':{'colname':'social_emotional_v1_classroom_community_safety_v1', 'colname_spa': 'social_emotional_spa_v2_classroom_community_safety_spa_v1', 'descriptor':'Classroom Community and Safety'}},
+        {'oa_category_3':{'colname':'social_emotional_v1_emotion_behavior_v1', 'colname_spa': 'social_emotional_spa_v2_emotion_behavior_spa_v1', 'descriptor':'Emotion and Behavior Regulation'}},
+        {'oa_category_4':{'colname':'social_emotional_v1_self_care_v1', 'colname_spa': 'social_emotional_spa_v2_self_care_spa_v1', 'descriptor':'Self-Care'}},
+        {'oa_category_5':{'colname':'social_emotional_v1_approaches_to_learning_v1', 'colname_spa': 'social_emotional_spa_v2_approaches_to_learning_spa_v1', 'descriptor':'Approaches to Learning'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'early_writing_v1': {
+      'subject_name_spa': 'early_writing_spa_v1',
+      'subject_assess_id': 'early_writing',
+      'descriptor': 'Early Writing Skills',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'approaches_to_learning_exp_v2': {
+      'subject_name_spa': 'approaches_to_learning_extended_spa_v1',
+      'subject_assess_id': 'approaches_to_learning_exp',
+      'descriptor': 'Approaches to Learning Expanded',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'approaches_to_learning_exp_v2_initiative_curiosity_v1', 'colname_spa': 'approaches_to_learning_extended_spa_v1_initiative_curiosity_spa_v1', 'descriptor':'Initiative and Curiosity'}},
+        {'oa_category_2':{'colname':'approaches_to_learning_exp_v2_flexibility_v1', 'colname_spa': 'approaches_to_learning_extended_spa_v1_flexibility_spa_v1', 'descriptor':'Flexibility'}},
+        {'oa_category_3':{'colname':'approaches_to_learning_exp_v2_creativity_dramatic_play_v1', 'colname_spa': 'approaches_to_learning_extended_spa_v1_creativity_dramatic_play_spa_v1', 'descriptor':'Art/Creativity and Dramatic Play'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'physical_dev_health_v1': {
+      'subject_name_spa': 'physical_dev_health_spa_v1',
+      'subject_assess_id': 'physical_dev_health',
+      'descriptor': 'Physical Development and Health',
+      'objective_assessments': [
+        {'oa_category_1':{'colname':'physical_dev_health_v1_fine_visual_motor_v1', 'colname_spa': 'physical_dev_health_spa_v1_fine_visual_motor_spa_v1', 'descriptor':'Fine and Visual Motor'}},
+        {'oa_category_2':{'colname':'physical_dev_health_v1_gross_motor_v1', 'colname_spa': 'physical_dev_health_spa_v1_gross_motor_spa_v1', 'descriptor':'Gross Motor'}},
+        {'oa_category_3':{'colname':'physical_dev_health_v1_health_v1', 'colname_spa': 'physical_dev_health_spa_v1_health_spa_v1', 'descriptor':'Health Status'}}
+      ],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'language_communication_2016_v1': {
+      'subject_name_spa': 'language_communication_2016_spa_v1',
+      'subject_assess_id': 'language_communication',
+      'descriptor': 'Speech Production/Sentence Skills',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'motivation_to_read_2016_v1': {
+      'subject_name_spa': 'motivation_to_read_2016_spa_v1',
+      'subject_assess_id': 'motivation_to_read',
+      'descriptor': 'Motivation to Read',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    },
+    'cpm_admin_mode': {
+      'subject_name_spa': 'cpm_admin_mode_sp',
+      'subject_assess_id': 'cpm_admin_mode',
+      'descriptor': 'Administration Mode',
+      'objective_assessments': [],
+      'subject_assess_lang': ['English','Spanish']
+    }
+  }
+%}
+
+
+# TRANSFORMATION-STEP 1: CONVERT COLUMNS TO SNAKE CASE
+# Certain columns in the data arrive with spaces or use "-" symbols instead of "_" as separators.
+# For uniformity, we convert all columns to snake case before we begin working on the data. 
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+  cli_circle_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId 
+      - operation: snake_case_columns 
+      - operation: modify_columns
+        columns:
+          school_year: "{%raw%}20{{ value[-2:] }}{%endraw%}"
+          wave: "{%raw%}{{ wave | replace(' ', '_') }}{%endraw%}"
+      - operation: group_by_with_rank
+        group_by_columns:
+          - wave
+          - school_year
+          - school_engage_id
+          - student_engage_id
+        rank_column: rank      
+      - operation: add_columns
+        columns:
+          student_wave_id: '{%raw%}{{ wave }}_{{ school_year }}_{{ school_engage_id }}_{{ student_engage_id }}_{{ rank }}{%endraw%}'
+
+
+# TRANSFORMATION-STEP 2: ITERATE THROUGH SUBJECT DICTIONARY TO STANDARDIZE COLUMNS
+# This loop creates the main subject columns in our conformed columns list.
+
+{% for subject_name, subject_values in subjects.items() %}
+  {% for assess_lang in subject_values.subject_assess_lang %}
+    
+    {% if assess_lang == 'English' %}
+      {% set subject_colname = subject_name %}
+      {% set subject_assess_lang = 'eng' %}
+    {% elif assess_lang == 'Spanish' %}
+      {% set subject_colname = subject_values.subject_name_spa %}
+      {% set subject_assess_lang = 'spa' %}
+    {% endif %}
+
+  cli_circle_student_{{ subject_colname }}:
+    source: $transformations.cli_circle_student_assessment
+    operations:
+      - operation: rename_columns
+        columns:
+          {{ subject_colname }}: subject_score
+          {{ subject_colname }}_date: subject_date
+          cp_{{ subject_colname }}: subject_cut_point
+
+      # Add the final subject columns: name and descriptor (e.g. "math_v1" and "Math")
+      - operation: add_columns
+        columns:
+          subject_assessment_id: circle_{{ subject_values.subject_assess_id }}
+          subject_name: {{ subject_name }}
+          subject_descriptor: {{ subject_values.descriptor }}
+          subject_assess_lang: {{ subject_assess_lang }}
+          generated_test_id: '{%raw%}{{ student_wave_id }}__{{ subject_assessment_id }}_{{ subject_assess_lang }}{%endraw%}'
+
+            
+    # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
+    # When subjects have listed objective assessments, we standardize them by assigning generic names such as "oa_category_x" to "oa_category_7."
+
+        {% set cat_numbers=[] -%}
+
+        {% for objective_assessment in subject_values.objective_assessments %}
+          {% for oa_category, oa_values in objective_assessment.items() %}
+            # Dealing with Spanish and English colname differences.
+            {% if assess_lang == 'English' %}
+              {% set oa_colname = oa_values.colname %}
+            {% elif assess_lang == 'Spanish' %}
+              {% set oa_colname = oa_values.colname_spa %}
+            {% endif %}
+
+            {% if oa_colname is not none and oa_colname | length %}
+      # Creating basic columns for OAs.      
+      - operation: rename_columns
+        columns:
+          {{ oa_colname }}: {{ oa_category }}_score
+          {{ oa_colname }}_date: {{ oa_category }}_date  
+          cp_{{ oa_colname }}: {{ oa_category }}_cut_point  
+            
+      - operation: add_columns
+        columns:
+          {{ oa_category }}_name: {{oa_colname }}
+          {{ oa_category }}_descriptor: {{ oa_values.descriptor }} 
+
+      # Append an empty record to our list above if a total of 7 OAs are not found on the subject record (need this for the keep columns operation).
+      # This will let us construct the rest of the "oa_category_x" columns, so if "pa_v2" only has 4 objective assessments we append "1,2,3,4" to the empty cat_numbers list above
+      # Then the code below will build the rest of the range for the numbers missing (e.g. "5,6,7")
+          {% set cat_number = cat_numbers.append(oa_category.split('_')[-1]) %}   
+            {% endif %}
+        {% endfor %}
+      {% endfor %}
+      
+      # Create additional null columns if not found in the list for this subject (need this for the keep columns operation).
+        {% for n in range(1, 8) %}
+          {% if n|string not in cat_numbers %}
+      - operation: add_columns
+        columns:
+          oa_category_{{ n }}_name: ''  
+          oa_category_{{ n }}_descriptor: '' 
+          oa_category_{{ n }}_date: '' 
+          oa_category_{{ n }}_score: '' 
+          oa_category_{{ n }}_cut_point: '' 
+          {%- endif -%}      
+        {%- endfor -%}
+
+      # Filter out any data with empty scores and dates (so any rows that don't have a valid subject score taken).
+      - operation: filter_rows
+        query: subject_score != '' and subject_date != '' and student_state_id != ''
+        behavior: include 
+
+      # Transform date formatting
+      - operation: date_format
+        columns: 
+          - subject_date
+          - oa_category_1_date
+          - oa_category_2_date
+          - oa_category_3_date
+          - oa_category_4_date
+          - oa_category_5_date
+          - oa_category_6_date
+          - oa_category_7_date
+        from_format: "%m/%d/%Y %H:%M"
+        to_format: "%Y-%m-%d" 
+        ignore_errors: True
+        exact_match: False
+
+      # Finally, we keep the conformed columns we need for the templates.
+      - operation: keep_columns
+        columns: {{conformed_columns}}
+
+  {% endfor %}
+{% endfor %}
+
+
+# TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
+# Stack all the data we created together.
+  stacked_subject_scores:
+    source: $transformations.cli_circle_student_rln_v1
+    operations:
+      - operation: union
+        sources:
+# To avoid duplicates, we remove rln_v1 from this join (so we don't join rln_v1 twice - once as a source above and as a joined table below)
+{% for subject_name, subject_values in subjects.items() %}
+  {% for assess_lang in subject_values.subject_assess_lang %}
+    
+    {% if assess_lang == 'English' %}
+      {% set subject_colname = subject_name %}
+    {% elif assess_lang == 'Spanish' %}
+      {% set subject_colname = subject_values.subject_name_spa %}
+    {% endif %}
+
+    {% if subject_colname != 'rln_v1' %}
+          - $transformations.cli_circle_student_{{ subject_colname }}
+    {% endif %}  
+  {% endfor %} 
+{% endfor %} 
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.stacked_subject_scores
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+
+  assessments:
+    source: $sources.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+

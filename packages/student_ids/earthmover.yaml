@@ -1,0 +1,419 @@
+version: 2
+
+config:
+  tmp_dir: ${TEMPORARY_DIRECTORY}
+  parameter_defaults:
+    TEMPORARY_DIRECTORY: /tmp
+    # The following values are required to use this bundle:
+    
+    # a comma-separated list of studentEdOrgAssns.studentIdentificationCodes.studentIdentificationSystem
+    # (see https://github.com/Ed-Fi-Alliance-OSS/Ed-Fi-Data-Standard/blob/main/Descriptors/StudentIdentificationSystemDescriptor.xml)
+    EDFI_STUDENT_ID_TYPES: "" # such as "District,School,State"
+
+    # what type of Ed-Fi roster you're xwalking against:
+    EDFI_ROSTER_SOURCE_TYPE: "file" # or "snowflake"
+      # if EDFI_ROSTER_SOURCE_TYPE=="file" then also provide
+    EDFI_ROSTER_FILE: "" # "./studentEducationOrganizationAssociations.jsonl"
+      # elseif EDFI_ROSTER_SOURCE_TYPE=="snowflake" then also provide
+    SNOWFLAKE_CONNECTION: "snowflake://[username]:[password]@[account]?warehouse=[warehouse]"
+    SNOWFLAKE_EDU_STG_SCHEMA: "analytics.prod_stage"
+    SNOWFLAKE_TENANT_CODE: "" # such as "demo_isd"
+    SNOWFLAKE_API_YEAR: "" # such as "2024"
+
+    # require match rate >= this, or else earthmover will exit
+    REQUIRED_ID_MATCH_RATE: 0.5
+
+    # which assessment bundle to install/run:
+    ASSESSMENT_BUNDLE: ""
+    # the assessment bundle should declare
+    # POSSIBLE_STUDENT_ID_COLUMNS: School_StateID,StudentID,Student_StateID,...
+    # (a comma-separated list of columns of EARTHMOVER_NODE_TO_XWALK that contain
+    #  various types of student IDs)
+    # ----------------------------------------------------
+
+    # The following values are optional:
+    EARTHMOVER_NODE_TO_XWALK: "$sources.input"
+    MATCH_RATES_SOURCE_TYPE: "" # "file" or "snowflake" or "none" or ""
+      # if MATCH_RATES_SOURCE_TYPE=="file" then also provide
+    MATCH_RATES_FILE: "" # "./student_id_match_rates.csv"
+      # if MATCH_RATES_SOURCE_TYPE=="snowflake" then also provide
+    MATCH_RATES_SNOWFLAKE_QUERY: >
+      select
+          source_column_name,edfi_column_name,num_matches,num_rows,match_rate
+          from [database].[schema].[table]
+          -- where tenant_code='${SNOWFLAKE_TENANT_CODE}'
+          -- and api_year=${SNOWFLAKE_API_YEAR}
+          -- and assessment='${ASSESSMENT_BUNDLE}'
+      )
+    # and SNOWFLAKE_CONNECTION, SNOWFLAKE_TENANT_CODE, and SNOWFLAKE_API_YEAR (as above)
+    # ----------------------------------------------------
+
+    # The following values are set by this bundle for downstream bundles (they should typically not be changed):
+    STUDENT_ID_NAME: edFi_studentUniqueID # after doing the student ID xwalk, we'll always want to use this column for the assessment bundle
+    # ----------------------------------------------------
+
+{% set compute_match_rates = ("${MATCH_RATES_SOURCE_TYPE}"=="" or "${MATCH_RATES_SOURCE_TYPE}"=="none") %}
+
+
+sources:
+
+  edfi_roster: # the user must supply this when using this package!
+    {% if "${EDFI_ROSTER_SOURCE_TYPE}"=="file" %}
+    # A file produced by (for example):
+    # `lightbeam fetch -s studentEducationOrganizationAssociations -k studentIdentificationCodes,educationOrganizationReference,studentReference`
+    file: ${EDFI_ROSTER_FILE}
+    {% elif "${EDFI_ROSTER_SOURCE_TYPE}"=="snowflake" %}
+    connection: "${SNOWFLAKE_CONNECTION}"
+    # This is a Snowflake SQL query which constructs a structure like the student ID portion of
+    # Ed-Fi studentEducationOrganizationAssociations from EDU warehouse data:
+    query: >
+      with ids as (
+          select
+              seoa.tenant_code,
+              seoa.api_year,
+              seoa.k_student,
+              seoa.ed_org_id,
+              object_construct_keep_null('assigningOrganizationIdentificationCode', seo_ids.id_system,
+                  'identificationCode', seo_ids.id_code) as stu_id_code,
+          from ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__student_education_organization_associations seoa
+              left join  ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes seo_ids on seoa.k_student=seo_ids.k_student
+          where seoa.tenant_code='${SNOWFLAKE_TENANT_CODE}'
+              and seoa.api_year=${SNOWFLAKE_API_YEAR}
+      ),
+      aggd_ids as (
+          select
+              tenant_code, api_year, k_student, ed_org_id,
+              array_agg(stu_id_code) as stu_id_codes
+          from ids group by 1,2,3,4
+      )
+      select
+          object_construct('educationOrganizationId', ed_org_id,
+          'link', object_construct(
+              'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
+          object_construct('studentUniqueId', stu.student_unique_id) as "studentReference",
+          stu_id_codes as "studentIdentificationCodes"
+      from aggd_ids
+          join ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
+      where aggd_ids.tenant_code='${SNOWFLAKE_TENANT_CODE}'
+          and aggd_ids.api_year=${SNOWFLAKE_API_YEAR}
+    {% endif %}
+  
+  {% if "${MATCH_RATES_SOURCE_TYPE}"=="file" %}
+  student_id_match_rates:
+    file: ${MATCH_RATES_FILE}
+    header_rows: 1
+  {% elif "${MATCH_RATES_SOURCE_TYPE}"=="snowflake" %}
+  student_id_match_rates:
+    connection: "${SNOWFLAKE_CONNECTION}"
+    query: >
+      ${MATCH_RATES_SNOWFLAKE_QUERY}
+  {% endif %}
+    
+
+{% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
+
+transformations:
+  unpacked_edfi_roster:
+    source: $sources.edfi_roster
+    operations:
+      - operation: add_columns
+        columns:
+          edOrgId: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).educationOrganizationId}}{% else %}{{educationOrganizationReference.educationOrganizationId}}{% endif %}{%endraw%}'
+          edOrgType: '{%raw%}{% if educationOrganizationReference is string %}{{fromjson(educationOrganizationReference).link.rel}}{% else %}{{educationOrganizationReference.link.rel}}{% endif %}{%endraw%}'
+          studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
+          # TODO: could maybe use a flatten operation for this?
+          {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
+          "{{id_code}}": '{%raw%}{% if studentIdentificationCodes is string %}{{(fromjson(studentIdentificationCodes)|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% else %}{{(studentIdentificationCodes|selectattr("assigningOrganizationIdentificationCode","eq","{%endraw%}{{id_code}}{%raw%}")|first or {"identificationCode":""}).identificationCode}}{% endif %}{%endraw%}'
+          {% endfor %}
+      - operation: keep_columns
+        columns:
+          - edOrgId
+          - edOrgType
+          {% for id_code in edfi_student_id_types %}
+          - "{{id_code}}"
+          {% endfor %}
+
+{% if compute_match_rates %}
+
+{% set possible_student_id_columns = "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") %}
+  
+  num_input_rows:
+    source: ${EARTHMOVER_NODE_TO_XWALK}
+    operations:
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: group_by
+        group_by_columns:
+          - __join_id
+        create_columns:
+          num_rows: count()
+  # this makes a smaller (narrower) dataframe for all the joins that follow, which significantly improves performance:
+  joins_base:
+    source: ${EARTHMOVER_NODE_TO_XWALK}
+    operations:
+      - operation: keep_columns
+        columns:
+          {% for source_student_id_column in possible_student_id_columns -%}
+          - {{source_student_id_column}}
+          {% endfor %}
+
+  {% for edfi_student_id_column in edfi_student_id_types -%}
+  {{edfi_student_id_column}}_filtered:
+    source: $transformations.unpacked_edfi_roster
+    operations:  
+      - operation: filter_rows
+        query:  "{{edfi_student_id_column}} != ''"
+        behavior: include
+      - operation: distinct_rows
+        columns:
+          - "{{edfi_student_id_column}}"
+  {% for source_student_id_column in possible_student_id_columns -%}
+  {{source_student_id_column}}_{{edfi_student_id_column}}_join:
+    source: $transformations.joins_base
+    operations:
+      - operation: modify_columns
+        columns:
+          # special handling for student ID values that come through as a string that ends in ".0"
+          # (we can't cast student IDs to int because sometimes they contain letters)
+          {{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
+      - operation: join
+        sources:
+          - $transformations.{{edfi_student_id_column}}_filtered
+        join_type: inner
+        left_key: {{source_student_id_column}}
+        right_key: "{{edfi_student_id_column}}"
+      - operation: rename_columns
+        columns:
+          {{source_student_id_column}}: value
+      - operation: keep_columns
+        columns:
+          - value
+          - studentUniqueId
+      - operation: add_columns
+        columns:
+          source_column_name: {{source_student_id_column}}
+          edfi_column_name: "{{edfi_student_id_column}}"
+  {% endfor %}
+  {% endfor %}
+
+  stacked_joins:
+    source: $transformations.{{possible_student_id_columns[0]}}_{{edfi_student_id_types[0]}}_join
+    operations:
+      - operation: union
+        sources:
+          {% for source_student_id_column in possible_student_id_columns -%}
+          {% for edfi_student_id_column in edfi_student_id_types -%}
+          {# Avoid adding two copies of the first combination: #}
+          {% if source_student_id_column!=possible_student_id_columns[0] or edfi_student_id_column!=edfi_student_id_types[0] %}
+          - $transformations.{{source_student_id_column}}_{{edfi_student_id_column}}_join
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+  id_match_rates:
+    source: $transformations.stacked_joins
+    operations:
+      - operation: drop_columns
+        columns:
+          - studentUniqueId
+      - operation: group_by
+        group_by_columns:
+          - source_column_name
+          - edfi_column_name
+        create_columns:
+          num_matches: count()
+      # this is (unfortunately) needed to prevent a type bug with sorting ints
+      - operation: modify_columns
+        columns:
+          num_matches: "{%raw%}{{value|string}}{%endraw%}"
+      - operation: sort_rows
+        columns:
+          - num_matches
+          - source_column_name
+          - edfi_column_name
+        descending: True
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: join
+        sources:
+          - $transformations.num_input_rows
+        join_type: inner
+        left_key: __join_id
+        right_key: __join_id
+      - operation: add_columns
+        columns:
+          match_rate: "{%raw%}{{num_matches|float / num_rows|float}}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          num_matches: "{%raw%}{{value|int}}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - __join_id
+{% endif %}{# compute_match_rates #}
+
+# this section applies the xwalk:
+  student_id_match_rates:
+    {% if compute_match_rates %}
+    source: $transformations.id_match_rates
+    {% else %}
+    source: $sources.student_id_match_rates
+    {% endif %}
+    operations: []
+
+  best_id_match:
+    source: $transformations.student_id_match_rates
+    operations:
+      - operation: add_columns
+        columns:
+          meets_filter_criteria: '{%raw%}{%if match_rate|float > ${REQUIRED_ID_MATCH_RATE}%}Yes{%else%}No{%endif%}{%endraw%}'
+      - operation: filter_rows
+        query:  'meets_filter_criteria=="Yes"'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - meets_filter_criteria
+      # this should (hopefully) result in zero or one rows
+      - operation: rename_columns
+        columns:
+          # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
+          # (since we will materialize those rows from INPUT_FILE where no student ID matches the xwalk we created)
+          source_column_name: __source_column_name
+          edfi_column_name: __edfi_column_name
+          num_matches: __num_matches
+          num_rows: __num_rows
+          match_rate: __match_rate
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      # ensure there's not more than 1 row:
+      - operation: limit_rows
+        count: 1
+    expect:
+      - __match_rate | float >= ${REQUIRED_ID_MATCH_RATE}
+    # ensure there's not 0 rows:
+    require_rows: True
+
+  edfi_roster:
+    source: $transformations.unpacked_edfi_roster
+    operations:
+      - operation: rename_columns
+        columns:
+          # this tries to ensure that the columns we're adding don't collide with real columns from INPUT_FILE
+          # (since we will materialize those rows from INPUT_FILE where no student ID matches the xwalk we created)
+          edOrgId: __edfi_edOrgId
+          edOrgType: __edfi_edOrgType
+          studentUniqueId: __edfi_studentUniqueId
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: join
+        sources:
+          - $transformations.best_id_match
+        join_type: inner
+        left_key: __join_id
+        right_key: __join_id
+      - operation: drop_columns
+        columns:
+          - __join_id
+      - operation: add_columns
+        columns:
+          __xwalk_id_to: '{%raw%}{% if __edfi_column_name=="studentUniqueId" %}{{__edfi_studentUniqueId|string}}{% else %}{{__row_data__[__edfi_column_name]|string}}{% endif %}{%endraw%}'
+      - operation: keep_columns
+        columns:
+          - __edfi_edOrgId
+          - __edfi_edOrgType
+          - __edfi_studentUniqueId
+          - __xwalk_id_to
+      - operation: distinct_rows
+        columns:
+          - __edfi_studentUniqueId
+          - __xwalk_id_to
+
+  input_base:
+    source: ${EARTHMOVER_NODE_TO_XWALK}
+    operations:
+      - operation: add_columns
+        columns:
+          __join_id: "1"
+      - operation: join
+        sources:
+          - $transformations.best_id_match
+        join_type: inner
+        left_key: __join_id
+        right_key: __join_id
+      - operation: drop_columns
+        columns:
+          - __join_id
+      - operation: add_columns
+        columns:
+          __xwalk_id_from: '{%raw%}{{__row_data__[__source_column_name]|string}}{%endraw%}'
+      - operation: modify_columns
+        columns:
+          # special handling for student ID values that come through as a string that ends in ".0"
+          # (we can't cast student IDs to int because sometimes they contain letters)
+          __xwalk_id_from: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
+      - operation: join
+        sources:
+          - $transformations.edfi_roster
+        join_type: left
+        left_key: __xwalk_id_from
+        right_key: __xwalk_id_to
+      - operation: drop_columns
+        columns:
+          - __xwalk_id_from
+          - __xwalk_id_to
+          - __source_column_name
+          - __edfi_column_name
+          - __num_matches
+          - __num_rows
+          - __match_rate
+
+  input_no_student_id_match:
+    source: $transformations.input_base
+    operations:
+      # filter to rows where `to` is null:
+      - operation: filter_rows
+        query:  '__edfi_studentUniqueId.isnull()'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - __edfi_edOrgId
+          - __edfi_edOrgType
+          - __edfi_studentUniqueId
+
+  input_xwalked:
+    # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
+    source: $transformations.input_base
+    operations:
+      # filter to rows where `to` is NOT null:
+      - operation: filter_rows
+        query:  '__edfi_studentUniqueId.isnull()'
+        behavior: exclude
+      - operation: rename_columns
+        columns:
+          __edfi_studentUniqueId: edFi_studentUniqueID
+
+destinations:
+  input_no_student_id_match:
+    source: $transformations.input_no_student_id_match
+    # here we are assuming that INPUT_FILE is a CSV, but that might not be true... maybe
+    # need to switch destination template and extension based on INPUT_FILE type?
+    template: ./verbatim.csvt
+    # add a CSV header with the columns:
+    header: |
+      {%raw%}{% for k in __row_data__.pop('__row_data__').keys() %}{{k}}{% if not loop.last %},{% endif %}{% endfor %}{%endraw%}
+
+    extension: csv
+    linearize: True
+
+  {% if compute_match_rates %}
+  student_id_match_rates:
+    source: $transformations.id_match_rates
+    template: ./verbatim.csvt
+    header: |
+      source_column_name,edfi_column_name,num_matches,num_rows,match_rate
+
+    extension: csv
+    linearize: True
+  {% endif %}

@@ -1,0 +1,109 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student ID'
+
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  accuplacer_snake_case:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
+
+  {% set assessments = ['reading', 'writing', 'arithmetic', 'quantitative_reasoning_algebra_and_statistics', 'advanced_algebra_and_functions'] %}
+  {% for assessment in assessments %}
+  scores_{{assessment}}:
+    source: $transformations.accuplacer_snake_case
+    operations:
+      - operation: keep_columns
+        columns:
+          - student_unique_id
+          - test_end
+          - next_generation_{{assessment}}
+      - operation: add_columns
+        columns:
+          assessment_identifier: {{assessment}}
+      - operation: rename_columns
+        columns:
+          next_generation_{{assessment}}: scale_score
+      - operation: filter_rows
+        query: scale_score != ''
+        behavior: include
+  {% endfor %}  
+
+  stacked_assessments:
+    source: $transformations.scores_{{assessments[0]}}
+    operations:
+      - operation: union
+        sources:
+          {% for assessment in assessments[1:] %}
+          - $transformations.scores_{{assessment}}
+          {% endfor %}
+
+  accuplacer_results:
+    source: $transformations.stacked_assessments
+    operations:
+      - operation: map_values
+        column: assessment_identifier
+        mapping:
+          reading: accuplacer_reading
+          writing: accuplacer_writing
+          arithmetic: accuplacer_arithmetic
+          quantitative_reasoning_algebra_and_statistics: accuplacer_quant_algebra_stats
+          advanced_algebra_and_functions: accuplacer_adv_algebra_functions
+      - operation: add_columns
+        columns:
+          namespace: "uri://accuplacer.collegeboard.org"
+          school_year: ${API_YEAR}
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{test_end}}-{{assessment_identifier}}{%endraw%}" 
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
+      - operation: date_format
+        column: test_end
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+
+
+destinations:
+  assessments:
+    source: $sources.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.accuplacer_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True

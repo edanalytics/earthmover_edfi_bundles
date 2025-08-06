@@ -1,0 +1,134 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: studentId # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: studentId
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "fake_math_assessment"
+          namespace: "uri://fakeassessment.com"
+      - operation: combine_columns
+        columns:
+          - studentId
+          - adminDate
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        # change this to match the grade from the file
+        left_keys: 
+          - grade
+          - assessmentIdentifier
+        right_keys: 
+          - originalGrade
+          - assessmentIdentifier
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl

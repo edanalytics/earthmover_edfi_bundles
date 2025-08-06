@@ -1,0 +1,58 @@
+{
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "namespace": "{{ namespace }}",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Early Education"
+    }
+  ],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Subject",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Type",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Wave",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/tx-kea/assessment/PerformanceLevelDescriptor#Monitor"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/tx-kea/assessment/PerformanceLevelDescriptor#Support"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/tx-kea/assessment/AssessmentReportingMethodDescriptor#Cut Point",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+      "performanceLevelDescriptor": "uri://www.cliengage.org/tx-kea/assessment/PerformanceLevelDescriptor#On-Track"
+    }
+  ]
+}

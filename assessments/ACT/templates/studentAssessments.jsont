@@ -1,0 +1,143 @@
+{%- set possible_scores = [
+  [Composite, "Score", "Integer"],
+  [StRnk_Comp, "State Rank", "Percentile"],
+  [USRnk_Comp, "US Rank", "Percentile"],
+  [Sup_Composite, "Superscore", "Integer"],
+  [Sum_Scale, "Sum of Scale Scores", "Integer"],
+  [Sup_Sum_Scale, "Sum of Superscores", "Integer"],
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length and score[0] not in ['-', '--', '---'] -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{%- set possible_perf_levels = [
+  [performanceLevelDescriptor, "Progress Toward Career Readiness Indicator", "Level"],
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{% set topline_obj_assess = [
+  ['topline', 'ACT_STEM', [('Score', 'Integer', STEM),    ('State Rank', 'Percentile', Strnk_STEM), ('US Rank', 'Percentile', USRnk_STEM), ('Superscore', 'Integer', Sup_STEM)]],
+  ['topline', 'ACT_ELA',  [('Score', 'Integer', ELA),     ('State Rank', 'Percentile', Strnk_ELA),  ('US Rank', 'Percentile', USRnk_ELA),  ('Superscore', 'Integer', Sup_ELA)]],
+  ['topline', 'ACT_E',    [('Score', 'Integer', Eng),     ('State Rank', 'Percentile', StRnk_Eng),  ('US Rank', 'Percentile', USRnk_Eng),  ('Superscore', 'Integer', Sup_Eng_Sc)]],
+  ['topline', 'ACT_M',    [('Score', 'Integer', Mth),     ('State Rank', 'Percentile', StRnk_Math), ('US Rank', 'Percentile', USRnk_Math), ('Superscore', 'Integer', Sup_Mth_Sc)]],
+  ['topline', 'ACT_R',    [('Score', 'Integer', Rdg),     ('State Rank', 'Percentile', StRnk_Read), ('US Rank', 'Percentile', USRnk_Read), ('Superscore', 'Integer', Sup_Rdg_Sc)]],
+  ['topline', 'ACT_S',    [('Score', 'Integer', Sci),     ('State Rank', 'Percentile', StRnk_Sci),  ('US Rank', 'Percentile', USRnk_Sci),  ('Superscore', 'Integer', Sup_Sci_Sc)]],
+  ['topline', 'ACT_W',    [('Score', 'Integer', Writing), ('State Rank', 'Percentile', StRnk_W),    ('US Rank', 'Percentile', W_USRnk),    ('Superscore', 'Integer', Sup_Writ_Sc)]],
+] -%}
+
+{%- set subscore_obj_assess = [
+  ['subscore', 'ACT_E_CSE',    [('Points Earned', 'Integer', E_Earn_Conv),   ('Points Possible', 'Integer', E_Poss_Conv),   ('Percent Correct', 'Percentage', E_PctC_Conv),   ('Readiness Range Lower Bound', 'Percentage', E_RdyRng_Conv)]],
+  ['subscore', 'ACT_E_KL',     [('Points Earned', 'Integer', E_Earn_Knlg),   ('Points Possible', 'Integer', E_Poss_Knlg),   ('Percent Correct', 'Percentage', E_PctC_Knlg),   ('Readiness Range Lower Bound', 'Percentage', E_RdyRng_Knlg)]],
+  ['subscore', 'ACT_E_PW',     [('Points Earned', 'Integer', E_Earn_Prod),   ('Points Possible', 'Integer', E_Poss_Prod),   ('Percent Correct', 'Percentage', E_PctC_Prod),   ('Readiness Range Lower Bound', 'Percentage', E_RdyRng_Prod)]],
+  ['subscore', 'ACT_M_IES',    [('Points Earned', 'Integer', M_Earn_Essen),  ('Points Possible', 'Integer', M_Poss_Essen),  ('Percent Correct', 'Percentage', M_PctC_Essen),  ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Essen)]],
+  ['subscore', 'ACT_M_M',      [('Points Earned', 'Integer', M_Earn_Mod),    ('Points Possible', 'Integer', M_Poss_Mod),    ('Percent Correct', 'Percentage', M_PctC_Mod),    ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Mod)]],
+  ['subscore', 'ACT_M_PHM',    [('Points Earned', 'Integer', M_Earn_Higher), ('Points Possible', 'Integer', M_Poss_Higher), ('Percent Correct', 'Percentage', M_PctC_Higher), ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Higher)]],
+  ['subscore', 'ACT_M_PHM_A',  [('Points Earned', 'Integer', M_Earn_Alg),    ('Points Possible', 'Integer', M_Poss_Alg),    ('Percent Correct', 'Percentage', M_PctC_Alg),    ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Alg)]],
+  ['subscore', 'ACT_M_PHM_F',  [('Points Earned', 'Integer', M_Earn_Func),   ('Points Possible', 'Integer', M_Poss_Func),   ('Percent Correct', 'Percentage', M_PctC_Func),   ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Func)]],
+  ['subscore', 'ACT_M_PHM_G',  [('Points Earned', 'Integer', M_Earn_Geom),   ('Points Possible', 'Integer', M_Poss_Geom),   ('Percent Correct', 'Percentage', M_PctC_Geom),   ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Geom)]],
+  ['subscore', 'ACT_M_PHM_NQ', [('Points Earned', 'Integer', M_Earn_NumQ),   ('Points Possible', 'Integer', M_Poss_NumQ),   ('Percent Correct', 'Percentage', M_PctC_NumQ),   ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_NumQ)]],
+  ['subscore', 'ACT_M_PHM_SP', [('Points Earned', 'Integer', M_Earn_Stat),   ('Points Possible', 'Integer', M_Poss_Stat),   ('Percent Correct', 'Percentage', M_PctC_Stat),   ('Readiness Range Lower Bound', 'Percentage', M_RdyRng_Stat)]],
+  ['subscore', 'ACT_R_CS',     [('Points Earned', 'Integer', R_Earn_Struc),  ('Points Possible', 'Integer', R_Poss_Struc),  ('Percent Correct', 'Percentage', R_PctC_Struc),  ('Readiness Range Lower Bound', 'Percentage', R_RdyRng_Struc)]],
+  ['subscore', 'ACT_R_IKI',    [('Points Earned', 'Integer', R_Earn_Knlg),   ('Points Possible', 'Integer', R_Poss_Knlg),   ('Percent Correct', 'Percentage', R_PctC_Knlg),   ('Readiness Range Lower Bound', 'Percentage', R_RdyRng_Knlg)]],
+  ['subscore', 'ACT_R_KID',    [('Points Earned', 'Integer', R_Earn_Ideas),  ('Points Possible', 'Integer', R_Poss_Ideas),  ('Percent Correct', 'Percentage', R_PctC_Ideas),  ('Readiness Range Lower Bound', 'Percentage', R_RdyRng_Ideas)]],
+  ['subscore', 'ACT_S_EMIER',  [('Points Earned', 'Integer', S_Earn_Eval),   ('Points Possible', 'Integer', S_Poss_Eval),   ('Percent Correct', 'Percentage', S_PctC_Eval),   ('Readiness Range Lower Bound', 'Percentage', S_RdyRng_Eval)]],
+  ['subscore', 'ACT_S_ID',     [('Points Earned', 'Integer', S_Earn_Data),   ('Points Possible', 'Integer', S_Poss_Data),   ('Percent Correct', 'Percentage', S_PctC_Data),   ('Readiness Range Lower Bound', 'Percentage', S_RdyRng_Data)]],
+  ['subscore', 'ACT_S_SI',     [('Points Earned', 'Integer', S_Earn_Inv),    ('Points Possible', 'Integer', S_Poss_Inv),    ('Percent Correct', 'Percentage', S_PctC_Inv),    ('Readiness Range Lower Bound', 'Percentage', S_RdyRng_Inv)]],
+  ['subscore', 'ACT_W_DS',     [('Domain Score', 'Integer', W_Dom_Supt)]],
+  ['subscore', 'ACT_W_IA',     [('Domain Score', 'Integer', W_Dom_Ideas)]],
+  ['subscore', 'ACT_W_LUC',    [('Domain Score', 'Integer', W_Dom_LangUse)]],
+  ['subscore', 'ACT_W_O',      [('Domain Score', 'Integer', W_Dom_Org)]],
+] -%}
+
+{%- set all_obj_assessment = [] -%}
+{%- for obj in topline_obj_assess + subscore_obj_assess -%}
+  {%- if obj[1] is not none and obj[1] | length -%}
+
+    {%- set obj_assessment_subscores = [] -%}
+    {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
+      {%- set _ = obj_assessment_subscores.append(perf_level) -%}
+    {%- endfor -%}
+
+    {%- if obj_assessment_subscores -%}
+      {%- set _ = all_obj_assessment.append(obj) -%}
+    {%- endif -%}
+
+  {% endif %}
+{%- endfor -%}
+
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+
+  {%- if scores -%}
+  , "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if perf_levels -%}
+  , "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if all_obj_assessment -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj in all_obj_assessment -%}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{obj[1]}}",
+          "namespace": "{{namespace}}"
+        },
+
+        "scoreResults": [
+          {%- for score in obj[2] if score[2] is not none and score[2] | length and score[2] not in ['-', '--', '---'] -%}
+            {
+              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+              "result": "{{score[2]}}"
+            }{% if not loop.last %},{% endif %}
+          {%- endfor %}
+        ]
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+}
