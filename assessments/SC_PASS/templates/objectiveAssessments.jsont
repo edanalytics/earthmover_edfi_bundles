@@ -1,10 +1,37 @@
+{% set objectives_reporting = {
+  'Science Standard 1': 'SciLev1',
+  'Science Standard 2': 'SciLev2',
+  'Science Standard 3': 'SciLev3',
+  'Science Standard 4': 'SciLev4',
+  'Science Standard 5': 'SciLev5',
+  'Science Standard 6': 'SciLev6',
+  'Social Studies Standard 1': 'SocLev1',
+  'Social Studies Standard 2': 'SocLev2',
+  'Social Studies Standard 3': 'SocLev3',
+  'Social Studies Standard 4': 'SocLev4',
+  'Social Studies Standard 5': 'SocLev5',
+  'Social Studies Standard 6': 'SocLev6',
+  'Social Studies Standard 7': 'SocLev7',
+  } %}
+
+{% set performanceLevel = ['1','2','3'] %}
+
 {
   "identificationCode": "{{ identificationCode }}",
   "assessmentReference": {
     "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
     "namespace": "{{ namespace }}"
   },
-  "academicSubjectDescriptor": "{{ AcademicSubjectDescriptor }}",
-  "performanceLevels": [{{ performance_levels_json }}],
-  "scores": [{{ scores_json }}]
+  "performanceLevels": [
+    {% set comma = joiner(",") %}
+    {% set performanceReporting = objectives_reporting[identificationCode] %}
+      {% for performanceKey in performanceLevel %}
+
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceReporting}}",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}"
+        }
+       {% endfor %} 
+  ]
 }

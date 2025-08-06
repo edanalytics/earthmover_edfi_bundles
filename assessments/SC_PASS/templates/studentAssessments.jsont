@@ -1,11 +1,45 @@
+{% set assessment_map = {
+    'SC_PASS_Science' : '01',
+    'SC_PASS_Social_Studies' : '02'
+   } %}
+
+{% set assessment_performance_map = {
+    '01': 'SciLev',
+    '02' : 'SocLev'
+   } %}
+
+{% set assessment_append_map = {
+    '01': 'Sci',
+    '02': 'Soc'
+   } %}
+
+{% set reportingMethods = [
+  ['RCWAbs','Integer'],['SS','Integer'],['Ag','String']
+  ] %}
+
+{% set performance_objective = ['Lev1','Lev2','Lev3','Lev4','Lev5','Lev6','Lev7'] %}
+
+{% set objectives_reporting = {
+  'SciLev1': 'Science Standard 1',
+  'SciLev2': 'Science Standard 2',
+  'SciLev3': 'Science Standard 3',
+  'SciLev4': 'Science Standard 4',
+  'SciLev5': 'Science Standard 5',
+  'SciLev6': 'Science Standard 6',
+  'SocLev1': 'Social Studies Standard 1',
+  'SocLev2': 'Social Studies Standard 2',
+  'SocLev3': 'Social Studies Standard 3',
+  'SocLev4': 'Social Studies Standard 4',
+  'SocLev5': 'Social Studies Standard 5',
+  'SocLev6': 'Social Studies Standard 6',
+  'SocLev7': 'Social Studies Standard 7'
+} %}
+  
 {
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
     "namespace": "{{assessmentIdentifier_namespace}}"
-  },
-  "reportedSchoolReference": {
-    "schoolId": {{SchoolID}}
   },
   "schoolYearTypeReference": {
     "schoolYear": {{SchoolYear}}
@@ -13,118 +47,133 @@
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   },
- 
-  {#-----------------------------------------------------------------------------------------------------------#}
-  {% set objective_assessment_map = {
-    'SC_PASS_Science' : '01',
-    'SC_PASS_Social_Studies' : '02'
-   } %}
+  "period": {
+    "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{TestAdmin}}"
+  }
 
-  {% set objective_names_dict = {
-    '01': 'Science',
-    '02': 'SocialStudies'
-   } %}
+{% set assessment = assessment_map[assessmentIdentifier] %}
+
+{% set grade_column = assessment_append_map[assessment] ~ 'Grade' %}
+{% set gradeName = __row_data__[grade_column]|trim %}
+
+  {%- if gradeName is not none and gradeName | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{gradeName}}"
+  {% endif %}
+
+  {#  Accommodations #}
+
+  {% set accommodation_descriptor_dictionary = [
+    'Acc1',
+    'Acc2',
+    'Acc3',
+    'Acc4',
+    'Acc5',
+    'Acc6',
+    'Acc7',
+    'Acc8',
+    'Acc9',
+    'Acc10',
+    'Acc11',
+    'ESLAcc1',
+    'ESLAcc2',
+    'ESLAcc3',
+    'ESLAcc4',
+    'ESLAcc5',
+    'ESLAcc6'
+  ] %}
+
+  {# Detect if any accommodation has 'Y' #}
+ {% set vars = {'has_accommodation': False} %} 
+{% for acc in accommodation_descriptor_dictionary %}
+  {% set accommodation_column = assessment_append_map[assessment] ~ acc %}
+  {% if accommodation_column in __row_data__ and __row_data__[accommodation_column]|trim == 'Y' %}
+   {% if vars.update({'has_accommodation': True}) %} {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% if vars.has_accommodation %}
+
+    ,"accommodations": [
+       {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+    {% for acc in accommodation_descriptor_dictionary %}
+      {% set accommodation_column = assessment_append_map[assessment] ~ acc %}
+      {% set accommodation_value = __row_data__[accommodation_column]|trim %}
+        {% if accommodation_column in __row_data__ and __row_data__[accommodation_column]|trim == 'Y' %}
+        {{ comma() }}
+        {
+          "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{accommodation_column}}"
+        }
+        {% endif %}
+    {% endfor %}
+    ]
+{% endif %}
+    
   
-   {% set objective_append_map = {
-    '01': 'Sci',
-    '02': 'Soc'
-   } %}
-
-  {% set objective_reportingmethod_map = {
-    '01': ['01','02','03','04','05','06','07','08', '09', '10', '11', '12'],
-    '02' : ['01','02','03','04','05','06','07','08', '09', '10', '11', '12', '13']
-   } %}  
-
-  {% set objective_performance_map = {
-    '01': 'SciLev',
-    '02' : 'SocLev'
-   } %} 
-
-  {% set reportingMethods = {
-      '01' :	'VSS',
-      '02' :	'RCWAbs',
-      '03' :	'RCWGro',
-      '04' :	'SS',
-      '05' :	'RSMaxHOSS',
-      '06' :	'Ag',
-      '07' :	'Lev1',
-      '08' :	'Lev2',
-      '09' :	'Lev3',
-      '10' :	'Lev4',
-      '11' :	'Lev5',
-      '12' :	'Lev6',
-      '13' :	'Lev7'
-    } %}
-
-  {% set reportingMethod_datatypes_dictionary = {
-      '01' : 'Integer',   
-      '02' : 'Integer',
-      '03' : 'Integer',
-      '04' : 'Integer',
-      '05' : 'String',
-      '06' : 'String',
-      '07' : 'Integer',
-      '08' : 'Integer',
-      '09' : 'Integer',
-      '10' : 'Integer',
-      '11' : 'Integer',
-      '12' : 'Integer',
-      '13' : 'Integer'
-
-    } %}
 
 
-  
-  "studentObjectiveAssessments": [ 
+{#--------------- performance Level ---------------#}
+{% set performanceLevel = __row_data__[assessment_performance_map[assessment]] %}
+{% set performanceLevelName = assessment_performance_map[assessment] %}
+{%- if performanceLevel -%}
+,"performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevel}}",
+          "performanceLevelMet": {% if performanceLevel|int == 1 %} false{% else %} true{% endif %}
+        }
+    ]
+{% endif %}
+{#--------------- scores ---------------#}
+,"scoreResults": [
+         {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+{% for reportingKey, reportingDataType in reportingMethods %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set scoreName = reportingKey %}
+    {% set scoreAppendName = assessment_append_map[assessment] %}
+    {% set scoreColumnValue = __row_data__[scoreAppendName ~ scoreName] %}
 
-      { 
-        {% set objective = objective_assessment_map[assessmentIdentifier] %}
-        {% set objectiveName = objective_names_dict[objective] %}
-        {% set performanceLevelValue = __row_data__[objective_performance_map[objective]]  %}
-        
-        "administrationEndDate": "{{SchoolYear}}_05_15",
+    {#- Check if the score value actually exists -#}
+    {% if scoreColumnValue %}
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreAppendName ~ scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{reportingDataType}}",
+            "result": "{{scoreColumnValue}}"
+        }
+    {% endif %}
+{% endfor %}          
+        ]
+{#--------------- objectives ---------------#}
+,"studentObjectiveAssessments": [ 
+ {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+{% for performance in performance_objective %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set performanceName = performance %}
+    {% set performanceAppendName = assessment_append_map[assessment] %}
+    {% set realPerformanceNameAppendName = performanceAppendName ~ performanceName %}
+    {% set performanceColumnValue = __row_data__[realPerformanceNameAppendName] %}
+    {% set objectiveName = objectives_reporting[realPerformanceNameAppendName] %}
+    {#- Check if the performance value actually exists -#}
+    {% if performanceColumnValue %}
+    {{ comma() }} 
+      {
         "objectiveAssessmentReference": {
             "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
             "identificationCode": "{{objectiveName}}",
-            "namespace": "{{descriptor_namespace_override}}/SC_PASS/{{objectiveName}}"
+            "namespace": "{{namespace}}"
         },
         "performanceLevels": [
-          {%- if performanceLevelValue -%}
-            {
-              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/SC_PASS/AssessmentReportingMethodDescriptor#Performance Level",
-              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/SC_PASS/PerformanceLevelDescriptor#{{performanceLevelValue}}",
-              "performanceLevelIndicatorName": "{{performanceLevelValue}}"
-            }
-          {% endif %}
-        ],
-        
-        "scoreResults": [
-          {% set reportingMethod = objective_reportingmethod_map[objective]  %}
-          {% set i = 0 %}
-
-          {% for reportingKey in reportingMethod %}
-            {% set objectiveDataTypeName = reportingMethod_datatypes_dictionary[reportingKey] %}
-            {% set objectiveDataType = descriptor_namespace_override+'/ResultDatatypeTypeDescriptor#'+objectiveDataTypeName %}
-            {% set objectiveName = reportingMethods[reportingKey] %}
-            {% set objectiveAppendName = objective_append_map[objective] %}                
-            {% set objectiveColumnName = (objectiveName).replace(' ', '') %}
-            {% set objectiveColumnValue = __row_data__[objectiveAppendName+objectiveColumnName] %}
-
-            {% if objectiveColumnValue !=  "NULL" %}
-              {% if objectiveColumnValue %}
-                {% set i = i+1 %}
-                {% if not loop.changed(i) %}, {% endif %}                        
-                {
-                    "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/SC_PASS/AssessmentReportingMethodDescriptor#{{objectiveName}}",
-                    "resultDatatypeTypeDescriptor": "{{objectiveDataType}}",
-                    "result": "{{objectiveColumnValue}}"
-                }
-              {% endif %}
-            {% endif %} 
-          {% endfor %}            
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{realPerformanceNameAppendName}}",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceColumnValue}}",
+            "performanceLevelMet": true
+        }
         ]
       } 
-
+{% endif %}
+{% endfor %}   
   ]
-
 }

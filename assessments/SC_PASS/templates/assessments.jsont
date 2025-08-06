@@ -1,15 +1,70 @@
+{% set assessment_map = {
+    'SC_PASS_Science' : '01',
+    'SC_PASS_Social_Studies' : '02'
+   } %}
+
+{% set assessment_reporting_map = {
+    '01': 'SciLev',
+    '02' : 'SocLev'
+   } %}
+
+{% set performance_map = {
+    '01': ['1','2','3','4'],
+    '02' : ['1','2','3']
+   } %} 
+
+{% set assessment_append_map = {
+    '01': 'Sci',
+    '02': 'Soc'
+   } %}
+
+{% set scoresReportingMethods = [
+  ['RCWAbs','Integer'],['SS','Integer'],['Ag','String']
+  ] %}
 {
+  "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
+  "namespace": "{{ namespace }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
     }
   ],
-  "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
-  "namespace": "{{ namespace }}",
+  "periods": [{{period_json}}],
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
-  "assessmentFamily": "{{ assessmentFamily }}",
-  "assessmentTitle": "{{ assessmentTitle }}",
-  "performanceLevels": [{{ performance_levels_json }}],
-  "scores": [{{scores_json}}]
+  {% set assessment = assessment_map[assessmentIdentifier] %}
+
+  {#--------------- overall performance Level ---------------#}
+  {% set reportingMethod = assessment_reporting_map[assessment] %}
+
+   "performanceLevels": [
+      {% set comma = joiner(",") %}
+      {% set performanceLevel = performance_map[assessment]  %}
+      {% for performanceKey in performanceLevel %}
+        {{ comma() }}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}",
+          "resultDatatypeTypeDescriptor": "Level"
+        }
+      {% endfor %} 
+    ],
+  "scores": [
+    {# The joiner will add a comma before every item except the first one that gets printed #}
+    {% set comma = joiner(",") %}
+
+    {% for reportingKey, reportingDataType in scoresReportingMethods %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set scoreName = reportingKey %}
+    {% set scoreAppendName = assessment_append_map[assessment] %}
+
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreAppendName ~ scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{reportingDataType}}"
+        }
+{% endfor %} 
+  ]
 }
