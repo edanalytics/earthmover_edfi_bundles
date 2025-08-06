@@ -40,6 +40,9 @@
   [IEP_TBI, 'IEP_TBI', 'Level'],
   [IEP_TM, 'IEP_TM', 'Level'],
   [IEP_VH, 'IEP_VH', 'Level'],
+  [IEP_ID, 'IEP_ID', 'Level'],
+  [IEP_HI, 'IEP_HI', 'Level'],
+  [IEP_TB, 'IEP_TB', 'Level'],
   [IEP, 'IEP', 'Level'],
   [InstrSetting, 'InstrSetting', 'Level'],
   [LastItem, 'LastItem', 'Level'],
@@ -78,6 +81,8 @@
   [STimeW, 'STimeW', 'Level'],
   [TDANoScore, 'TDANoScore', 'Level'],
   [TDAScore, 'TDAScore', 'Level'],
+  [TDWNoScore, 'TDWNoScore', 'Level'],
+  [TDWScore, 'TDWScore', 'Level'],
   [TeachFI, 'TeachFI', 'Level'],
   [TeachLName, 'TeachLName', 'Level'],
   [TeachMI, 'TeachMI', 'Level'],
@@ -123,6 +128,8 @@
   [CMat6, "CMat6"],
   [CMat7, "CMat7"],
   [CMat8, "CMat8"],
+  [CMatW4, "CMatW4"],
+  [CMatW5, "CMatW5"],
   [CMatW6, "CMatW6"],
   [CMatW7, "CMatW7"],
   [CMatW8, "CMatW8"],
@@ -184,13 +191,24 @@
       {%- endfor -%}
   ]
   {%- endif -%}
-
+  
   {%- if Subject == 'E2' -%}
-    {%- set possible_obj_assess = [
-        ['Informational Text', Eng2Lev1],
-        ['Literary Text', Eng2Lev2],
-        ['Writing (to include TDA and Communication)', Eng2Lev3]
-    ] -%}
+    {%- if school_year | int < 2025 -%}
+      {%- set possible_obj_assess = [
+          ['Informational Text', Eng2Lev1],
+          ['Literary Text', Eng2Lev2],
+          ['Writing (to include TDA and Communication)', Eng2Lev3]
+      ] -%}
+    {%- elif school_year | int >= 2025 -%}
+      {%- set possible_obj_assess = [
+          ['Reading Literary Text', Eng2Lev1],
+          ['Reading Informational Text', Eng2Lev2],
+          ['Reading (vocabulary) Across Genres', Eng2Lev3],
+          ['Writing (to include TDW)', Eng2Lev4],
+          ['Research and Evaluating Ideas', Eng2Lev5]
+      ] -%}
+    {%- endif -%}
+      
   {%- endif %}
 
   {%- if Subject == 'A' -%}
