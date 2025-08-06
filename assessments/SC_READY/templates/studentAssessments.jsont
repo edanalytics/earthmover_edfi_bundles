@@ -1,6 +1,5 @@
 {%- set generic_score_results = [
     [subject, "Subject", "Level"],
-    [SchoolID, "SchoolID", "Integer"],
     [TestAdmin, "TestAdmin", "Level"],
     [Grade, "Grade", "Level"],
     [DOB, "DOB", "Level"],
@@ -51,6 +50,18 @@
     [VSchool, "VSchool", "Level"],
 ] -%}
 
+{%- if (school_year | int) < 2025 -%}
+    {%- set schoolid_score_results = [
+        [SchoolID, "SchoolID", "Integer"]
+    ] -%}
+{%- else -%}
+    {%- set schoolid_score_results = [
+        [RSchoolID, "RSchoolID", "Integer"],
+        [TSchoolID, "TSchoolID", "Integer"]
+    ] -%}
+{%- endif -%}
+{%- set generic_score_results = generic_score_results + schoolid_score_results -%}
+
 {%- set ela_score_results = [
     [Lex, "Lexile Score", "Level"],
     [LexLow, "Lexile Min", "Level"],
@@ -76,6 +87,7 @@
     [ELASectionID, "SectionID", "Level"],
     [ELASecurityNum, "SecurityNum", "Level"],
     [ELATDANoScore, "TDANoScore", "Level"],
+    [ELATDWNoScore, "TDWNoScore", "Level"],
     [ELATeachFName, "TeachFName", "Level"],
     [ELATeachLName, "TeachLName", "Level"],
     [ELATeachMName, "TeachMName", "Level"],
@@ -93,6 +105,15 @@
     [ELA2TAInitials, "2TAInitials", "Level"],
     [ELA2TestDuration, "2TestDuration", "Integer"],
 ] -%}
+
+{%- if (school_year | int) < 2025 -%}
+    {%- set additional_ela_score_results = [] -%}
+{%- else -%}
+    {%- set additional_ela_score_results = [
+        [ELARS5, "RS5", "Level"]
+    ] -%}
+{%- endif -%}
+{%- set ela_score_results = ela_score_results + additional_ela_score_results -%}
 
 {%- set math_score_results = [
     [Quant, "Quantile Score", "Level"],
@@ -348,7 +369,7 @@
 
 {%- set score_results = [] -%}
 {%- for score in generic_score_results + subject_variables[0] -%}
-  {%- if (score[2] == 'Integer' and score[0] | int) or (score[2] != 'Integer' and score[0] | string) -%}
+  {%- if (score[2] == 'Integer' and score[0] | int) or (score[2] != 'Integer' and score[0] | string | trim) -%}
     {%- set _ = score_results.append(score) -%}
   {%- endif -%}
 {%- endfor -%}
