@@ -1,0 +1,14 @@
+display_name: "SC Alternate"
+path: "assessments/SC_Alternate_Assessment"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv", "txt"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+
