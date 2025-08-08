@@ -7,7 +7,7 @@ input_files:
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv", "txt"]
-# should build validation to enfore correct file uploads 
+# should build validation to enfore correct file uploads i.e. descriptor col exists 
   - display_name: "Academic subject descriptor mapping data"
     env_var: "ACADEMIC_SUBJECT_DESCRIPTOR_MAPPING_FILE"
     descriptor_name: "academicSubjectDescriptors"
