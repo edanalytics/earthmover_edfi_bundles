@@ -1,0 +1,25 @@
+display_name: "PSAT_SAT"
+path: "assessments/PSAT_SAT"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv", "txt"]
+# should build validation to enfore correct file uploads 
+  - display_name: "Academic subject descriptor mapping data"
+    env_var: "ACADEMIC_SUBJECT_DESCRIPTOR_MAPPING_FILE"
+    descriptor_name: "academicSubjectDescriptors"
+    is_required: false
+    file_type: ["csv", "txt"]
+  - display_name: "Academic subject descriptor mapping data"
+    env_var: "GRADE_LEVEL_DESCRIPTOR_MAPPING_FILE"
+    descriptor_name: "gradeLevelDescriptors"
+    is_required: false
+    file_type: ["csv", "txt"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+    
