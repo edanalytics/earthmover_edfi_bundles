@@ -26,7 +26,7 @@ Risk levels are typically categorized as:
 - **Some Risk**: Student showing some areas of concern
 - **High Risk**: Student requiring intensive intervention
 
-## 4 · Additional, Item-Level Fields
+## 4 · Additional, Item-Level Fields (Scores)
 FASTBridge exports extra granular metrics—useful for diagnostic drilling
 
 - **Error (Total Items − Items Correct)** – raw count
