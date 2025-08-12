@@ -27,7 +27,7 @@ Risk levels are typically categorized as:
 - **High Risk**: Student requiring intensive intervention
 
 ## 4 · Additional, Item-Level Fields
-FASTBridge exports extra granular metrics—useful for diagnostic drilling, but can be safely excluded from the assessment mapping.
+FASTBridge exports extra granular metrics—useful for diagnostic drilling
 
 - **Error (Total Items − Items Correct)** – raw count
 - **IC per minute** – items answered correctly per minute
