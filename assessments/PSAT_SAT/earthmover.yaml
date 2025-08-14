@@ -121,6 +121,27 @@ transformations:
     source: $sources.input
     operations: []
   
+  descriptor_rename__gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
+
+  descriptor_rename__academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+
+  descriptor_rename__assessments:
+    source: $sources.assessments
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: assessmentCategoryDescriptor
+
   psat_sat_student_assessment:
     source: $transformations.input
     operations:
@@ -230,17 +251,16 @@ transformations:
           schoolYear: ${API_YEAR}
           assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(administrationDate)}}{%endraw%}"
           namespace: "uri://collegeboard.org"
-          assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESPACE}/AssessmentCategoryDescriptor#College entrance exam"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
       - operation: join
         sources:
-          - $sources.gradeLevelDescriptors
+          - $transformations.descriptor_rename__gradeLevelDescriptors
         join_type: inner
         left_keys: [grade_when_assessed, assessmentIdentifier]
         right_keys: [psat_sat_grade, assessmentIdentifier]
 
   academic_subject_descriptors:
-    source: $sources.academicSubjectDescriptors
+    source: $transformations.descriptor_rename__academicSubjectDescriptors
     operations:
       - operation: add_columns
         columns:
@@ -263,7 +283,7 @@ transformations:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   grade_level_descriptors:
-    source: $sources.gradeLevelDescriptors
+    source: $transformations.descriptor_rename__gradeLevelDescriptors
     operations:
       - operation: distinct_rows
         columns:
@@ -290,7 +310,7 @@ transformations:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessments:
-    source: $sources.assessments
+    source: $transformations.descriptor_rename__assessments
     operations:
       - operation: join
         sources:
