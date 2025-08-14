@@ -34,6 +34,7 @@
   'SocLev6': 'Social Studies Standard 6',
   'SocLev7': 'Social Studies Standard 7'
 } %}
+
   
 {
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
@@ -102,7 +103,7 @@
         {% if accommodation_column in __row_data__ and __row_data__[accommodation_column]|trim == 'Y' %}
         {{ comma() }}
         {
-          "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{accommodation_column}}"
+          "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{acc}}"
         }
         {% endif %}
     {% endfor %}
@@ -114,13 +115,13 @@
 
 {#--------------- performance Level ---------------#}
 {% set performanceLevel = __row_data__[assessment_performance_map[assessment]] %}
-{% set performanceLevelName = assessment_performance_map[assessment] %}
+{% set performanceLevelName = "Lev" %}
 {%- if performanceLevel -%}
 ,"performanceLevels": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevel}}",
-          "performanceLevelMet": {% if performanceLevel|int == 1 %} false{% else %} true{% endif %}
+          "performanceLevelMet": true
         }
     ]
 {% endif %}
@@ -138,8 +139,8 @@
     {% if scoreColumnValue %}
         {{ comma() }}
         {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreAppendName ~ scoreName}}",
-            "resultDatatypeTypeDescriptor": "{{reportingDataType}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{ descriptor_namespace_override }}/ResultDatatypeTypeDescriptor#{{reportingDataType}}",
             "result": "{{scoreColumnValue}}"
         }
     {% endif %}
@@ -167,7 +168,7 @@
         },
         "performanceLevels": [
         {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{realPerformanceNameAppendName}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceName}}",
             "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceColumnValue}}",
             "performanceLevelMet": true
         }

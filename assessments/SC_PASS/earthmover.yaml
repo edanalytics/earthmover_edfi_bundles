@@ -23,6 +23,9 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -79,59 +82,8 @@ transformations:
           ${STUDENT_ID_NAME}: student_unique_id
       
 
-  # Assessment Category Descriptors
-  assessmentCategoryDescriptors:
-    # source: $transformations.transformations_seed_file_assessments
-    source: $sources.assessments
-    operations:
-      - operation: keep_columns
-        columns:
-          - assessmentCategoryCodeValue
-          - assessmentCategoryNamespace
-          - assessmentCategoryDescription
-      - operation: distinct_rows
-
-    # Get reporting method  score descriptors
-  assessment_reporting_method_score_descriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    operations:
-      - operation: filter_rows
-        query: isScoreMetric == "1"
-        behavior: include
-      - operation: keep_columns
-        columns:
-          - codeValue
-          - namespace
-          - description
-          - shortDescription
-          - datatype
-
-    # Get reporting method non score descriptors
-  assessment_reporting_method_non_score_descriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    operations:
-      - operation: filter_rows
-        query: isScoreMetric == "-1"
-        behavior: include
-      - operation: keep_columns
-        columns:
-          - codeValue
-          - namespace
-          - description
-          - shortDescription
-          - datatype
-
-  # >>>>> Prepare assessment reporting method descriptors final >>>>>
-  assessmentReportingMethodDescriptorsFinal:
-    source: $transformations.assessment_reporting_method_score_descriptors
-    operations:
-      - operation: union
-        sources:
-          - $transformations.assessment_reporting_method_non_score_descriptors
-
   # Get distinct assessment identifiers
   assessment_identifiers:
-    # source: $transformations.transformations_seed_file_assessments
     source: $sources.assessments
     operations:
       - operation: add_columns
@@ -140,7 +92,6 @@ transformations:
       - operation: duplicate_columns
         columns:
           namespace: assessmentIdentifier_namespace
-      # - operation: distinct_rows
       
   stage_grade_level:
     source: $sources.gradeLevelDescriptors
@@ -227,8 +178,9 @@ transformations:
           - join_key
       - operation: add_columns
         columns:
-          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryNamespace}}#{{assessmentCategoryCodeValue}}{%endraw%}"    
+          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryDescriptor}}{%endraw%}"    
           SchoolYear: ${SCHOOL_YEAR}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
       - operation: filter_rows
         query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= 2021)'
         behavior: exclude  
@@ -244,6 +196,7 @@ transformations:
           - grade_json
           - period_json
           - SchoolYear
+          - descriptor_namespace_override
       
 
   # <<<<< Prepare objective-assessments <<<<<
@@ -304,13 +257,13 @@ destinations:
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
-    source: $transformations.assessmentReportingMethodDescriptorsFinal
-    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentCategoryDescriptors:
-    source: $transformations.assessmentCategoryDescriptors
-    template: ./templates/assessmentCategoryDescriptors.jsont
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
@@ -320,7 +273,7 @@ destinations:
     linearize: True
   accommodationDescriptors:
     source: $sources.accommodationDescriptors
-    template: ./templates/accommodationDescriptors.jsont
+    template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentPeriodDescriptors:

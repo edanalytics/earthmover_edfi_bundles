@@ -3,20 +3,10 @@
     'SC_PASS_Social_Studies' : '02'
    } %}
 
-{% set assessment_reporting_map = {
-    '01': 'SciLev',
-    '02' : 'SocLev'
-   } %}
-
 {% set performance_map = {
     '01': ['1','2','3','4'],
     '02' : ['1','2','3']
    } %} 
-
-{% set assessment_append_map = {
-    '01': 'Sci',
-    '02': 'Soc'
-   } %}
 
 {% set scoresReportingMethods = [
   ['RCWAbs','Integer'],['SS','Integer'],['Ag','String']
@@ -37,7 +27,6 @@
   {% set assessment = assessment_map[assessmentIdentifier] %}
 
   {#--------------- overall performance Level ---------------#}
-  {% set reportingMethod = assessment_reporting_map[assessment] %}
 
    "performanceLevels": [
       {% set comma = joiner(",") %}
@@ -45,9 +34,8 @@
       {% for performanceKey in performanceLevel %}
         {{ comma() }}
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
-          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}",
-          "resultDatatypeTypeDescriptor": "Level"
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lev",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}"
         }
       {% endfor %} 
     ],
@@ -58,12 +46,10 @@
     {% for reportingKey, reportingDataType in scoresReportingMethods %}
     {#- Define variables and use the ~ operator for string concatenation -#}
     {% set scoreName = reportingKey %}
-    {% set scoreAppendName = assessment_append_map[assessment] %}
-
         {{ comma() }}
         {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreAppendName ~ scoreName}}",
-            "resultDatatypeTypeDescriptor": "{{reportingDataType}}"
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{reportingDataType}}"
         }
 {% endfor %} 
   ]

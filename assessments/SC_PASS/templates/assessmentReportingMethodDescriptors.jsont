@@ -1,5 +1,0 @@
-{% set prefixes = ['Sci', 'Soc'] %}
-{%- for prefix in prefixes -%}
-{{ '{ "codeValue": "' ~ prefix ~ codeValue ~ '", "description": "' ~ description ~ '", "namespace": "' ~ namespace ~ '", "shortDescription": "' ~ shortDescription ~ '" }' }}
-{%- if not loop.last %}{{"\n"}}{% endif -%}
-{%- endfor -%}

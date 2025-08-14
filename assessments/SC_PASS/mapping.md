@@ -51,30 +51,22 @@ Social studies performance levels
 
 
 ## Assessments Score Method Descriptors
+
 - For scores:
- - SocSS: 	Scale Score
- - SocRCWAbs: Report Card Weight—Absolute
- - SocAg: Aggregated Student
- - SciSS: 	Scale Score
- - SciRCWAbs: Report Card Weight—Absolute
- - SciAg: Aggregated Student
+ - SS: 	Scale Score
+ - RCWAbs: Report Card Weight—Absolute
+ - Ag: Aggregated Student
+ - 
 - For performance levels:
- - SocLev1
- - SocLev2
- - SocLev3
- - SocLev4
- - SocLev5
- - SocLev6
- - SocLev7
- - SocLev
- - SciLev1
- - SciLev2
- - SciLev3
- - SciLev4
- - SciLev5
- - SciLev6
- - SciLev7
- - SciLev
+ - Lev1
+ - Lev2
+ - Lev3
+ - Lev4
+ - Lev5
+ - Lev6
+ - Lev7
+ - Lev (overall)
+
 
 ## Reasoning
 SCPASS is designed to measure student performance against the South Carolina Academic Standards and indicators — in other words, what the state expects students to learn and demonstrate in science and social studies classes.
@@ -124,42 +116,23 @@ SCPASS is designed to measure student performance against the South Carolina Aca
 
 ### accommodationDescriptors:
 Namespace: uri://datarecognitioncorp.com/Assessments/SCPASS/AccommodationDescriptor
-  - SciAcc1	Science Setting
-  - SciAcc2	Science Timing
-  - SciAcc3	Science Scheduling
-  - SciAcc4	Science Presentation – Oral/Signed Administration Script
-  - SciAcc5	Science Presentation – Oral Administration TTS
-  - SciAcc6	Science Presentation – Signed Administration VSL
-  - SciAcc7	Science Presentation – Other
-  - SciAcc8	Science Response Options
-  - SciAcc9	Science – Supplemental Materials or Devices
-  - SciAcc10	
-  - SciAcc11	
-  - SciESLAcc1	Science ESL Bilingual Dictionary
-  - SciESLAcc2	Science ESL Directions Translated
-  - SciESLAcc3	Science ESL Individual and Small Group Administration
-  - SciESLAcc4	Science ESL Oral Administration
-  - SciESLAcc5	Science ESL Scheduling
-  - SciESLAcc6	Science ESL Timing
-
-
-  - SocAcc1	Social Studies Setting
-  - SocAcc2	Social Studies Timing
-  - SocAcc3	Social Studies Scheduling
-  - SocAcc4	Social Studies Presentation – Oral/Signed Administration Script
-  - SocAcc5	Social Studies Presentation – Oral Administration TTS
-  - SocAcc6	Social Studies Presentation – Signed Administration VSL
-  - SocAcc7	Social Studies Presentation – Other
-  - SocAcc8	Social Studies Response Options
-  - SocAcc9	Social Studies Supplemental Materials or Devices
-  - SocAcc10	
-  - SocAcc11	
-  - SocESLAcc1	Social Studies ESL Bilingual Dictionary
-  - SocESLAcc2	Social Studies ESL Directions Translated
-  - SocESLAcc3	Social Studies ESL Individual and Small Group Administration
-  - SocESLAcc4	Social Studies ESL Oral Administration
-  - SocESLAcc5	Social Studies ESL Scheduling
-  - SocESLAcc6	Social Studies ESL Timing
+  - Acc1	Science Setting
+  - Acc2	Science Timing
+  - Acc3	Science Scheduling
+  - Acc4	Science Presentation – Oral/Signed Administration Script
+  - Acc5	Science Presentation – Oral Administration TTS
+  - Acc6	Science Presentation – Signed Administration VSL
+  - Acc7	Science Presentation – Other
+  - Acc8	Science Response Options
+  - Acc9	Science – Supplemental Materials or Devices
+  - Acc10	
+  - Acc11	
+  - ESLAcc1	Science ESL Bilingual Dictionary
+  - ESLAcc2	Science ESL Directions Translated
+  - ESLAcc3	Science ESL Individual and Small Group Administration
+  - ESLAcc4	Science ESL Oral Administration
+  - ESLAcc5	Science ESL Scheduling
+  - ESLAcc6	Science ESL Timing
 
 
 # Output Files
