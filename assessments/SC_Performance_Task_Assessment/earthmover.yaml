@@ -42,7 +42,6 @@ transformations:
     source: $sources.input
     operations: []
   
-  # modify input for basic mappings
   stage_student_assessments:
     source: $transformations.input
     operations:
@@ -71,7 +70,7 @@ transformations:
           - stargrade
       - operation: add_columns
         columns:
-          assessmentIdentifier: 'PTA'
+          assessmentIdentifier: 'SC_PTA'
           assessmentNamespace: 'uri://c2five.com/Assessment/PTA'
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
           schoolYear: "{%raw-%} 20{{testadmin[-2:]}}{%-endraw%}"
@@ -84,7 +83,7 @@ transformations:
           verbalScore: "{%raw-%} {%-if vtotal is not none and vtotal|length-%} {{vtotal}} {%-elif totalv is not none and totalv|length-%} {{totalv}} {%-else-%} {{noVerbalScoreReason}} {%-endif-%}{%-endraw%}"
           nonVerbalScore: "{%raw-%} {%-if nvtotal is not none and nvtotal|length-%} {{nvtotal}} {%-elif totalnv is not none and totalnv|length-%} {{totalnv}} {%-else-%} {{noNonVerbalScoreReason}} {%-endif-%}{%-endraw%}"
           studentAssessmentIdentifier: "{% raw %}{{ md5('PTA' ~ '-' ~ stateid ~ '-' ~  testadmin) }}{% endraw %}"
-      # rename student id column after x-walk operation
+
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
@@ -97,11 +96,6 @@ transformations:
           qualify: starQualifier
           vnoscore: noVerbalScoreReason
           nvnoscore: noNonVerbalScoreReason
-          #vtotal: verbalTotal
-          #nvtotal: nonVerbalTotal          
-          #totalv: verbalScore
-          #totalnv: nonVerbalScore
-          #stargrade: starGradeLevel
 
   #Descriptors
   grade_levels:
@@ -171,7 +165,7 @@ transformations:
         create_columns: 
           performancejson: agg(performancejson,,)
 
-  # Assessments
+  # Assessment
   prepare_assessments:
     source: $sources.assessments
     operations:
@@ -194,7 +188,7 @@ transformations:
         left_key: joinKey
         right_key: joinKey
 
-  # ObjectiveAssessments
+  # ObjectiveAssessment
   prepare_objective_assessments:
     source: $sources.objectiveAssessments
     operations:
@@ -208,7 +202,6 @@ transformations:
   #StudentAssessment
   prepare_student_assessments:
     source: $transformations.stage_student_assessments
-    #debug: true
     operations:      
       - operation: join
         sources:
