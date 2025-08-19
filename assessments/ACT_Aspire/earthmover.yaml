@@ -505,10 +505,6 @@ transformations:
       - operation: filter_rows
         query: studentUniqueId != ''
         behavior: include
-      - operation: distinct_rows
-        columns:
-        - studentUniqueId
-        - studentAssessmentIdentifier
 
   prepare_student_assessment_edorg:
     source: $transformations.prepare_student_assessment
