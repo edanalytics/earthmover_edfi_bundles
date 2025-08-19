@@ -13,7 +13,7 @@ Namespace: uri://fountasandpinnell.com/bas
 
 # Objectives
 ## Objectives Identifiers
-- For F&P-Text Reading:
+For F&P-Text Reading:
  - Fluency Level
  - Self Correction Rate
  - Words Per Minute
@@ -27,7 +27,7 @@ Namespace: uri://fountasandpinnell.com/bas
  - Word Writing
  
   
-- F&P-Comprehension:
+For F&P-Comprehension:
  - Comprehension
  - Comprehension2
  - Meaning
