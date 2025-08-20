@@ -63,7 +63,7 @@
 	{%- for score in scores -%}
     {
 		"assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
-		"resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+		"resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
 		"result": "{{score[0]}}"
 	} {% if not loop.last %},{% endif %}
 	{% endfor %}
