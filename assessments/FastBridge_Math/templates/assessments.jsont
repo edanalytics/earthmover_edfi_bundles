@@ -1,0 +1,33 @@
+{
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+    }
+  ],
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "namespace": "{{ namespace }}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "assessmentFamily": "Fast Bridge",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "performanceLevels": [{{performance_level_json}}],
+  "periods": [{{period_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{ namespace }}/AssessmentReportingMethodDescriptor#Composite Score",
+      "resultDatatypeTypeDescriptor": "{{ descriptor_namespace }}/ResultDatatypeTypeDescriptor#Decimal"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ namespace }}/AssessmentReportingMethodDescriptor#School Percentile",
+      "resultDatatypeTypeDescriptor": "{{ descriptor_namespace }}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ namespace }}/AssessmentReportingMethodDescriptor#LEA Percentile",
+      "resultDatatypeTypeDescriptor": "{{ descriptor_namespace }}/ResultDatatypeTypeDescriptor#Percentile"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ namespace }}/AssessmentReportingMethodDescriptor#National Percentile",
+      "resultDatatypeTypeDescriptor": "{{ descriptor_namespace }}/ResultDatatypeTypeDescriptor#Percentile"
+    }
+  ]
+}

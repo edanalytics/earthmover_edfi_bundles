@@ -1,0 +1,289 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: false
+  show_stacktrace: true
+  parameter_defaults:
+    # You can set these values at the command line or leave the defaults
+    OUTPUT_DIR: ./output/
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    SCHOOL_YEAR: 2024
+
+sources:
+  input:
+    file: ${INPUT_FILE} # Path to the input CSV file
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  objectiveAssessmentScores:
+    file: ./seeds/objectiveAssessmentScores.csv
+    header_rows: 1
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  # Clean and prepare input data
+  cleaned_input:
+    source: $transformations.input
+    operations:
+      # Duplicate key columns for easier template access
+      - operation: duplicate_columns
+        columns:
+          Final_Date: administrationDate
+          ${STUDENT_ID_NAME}: studentUniqueId
+      # Convert column names to snake_case for easier template access
+      - operation: snake_case_columns
+      # Add required columns
+
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "FastBridge_earlyMath"
+          namespace: "uri://fastbridge.org/assessment"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+
+      # Create unique student assessment ID
+      - operation: combine_columns
+        columns:
+          - final_date
+          - student_unique_id
+          - season
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+      # Format the administration date
+      - operation: date_format
+        column: administration_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
+      # filter out rows with missing student IDs
+      - operation: filter_rows
+        query: "student_unique_id	 != ''"
+        behavior: include
+
+
+  # Generate grade level JSON for assessments
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate performance level JSON for assessments
+  performance_level_descriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          base_namespace: "uri://fastbridge.org/assessment"
+          performance_level_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{performance_level_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          performance_level_json: agg(performance_level_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate assessment period JSON for assessments
+  assessment_period_descriptors:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          period_json: >
+            {%raw-%}
+            {
+              "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{period_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          period_json: agg(period_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Generate scores JSON for objective assessments
+  objective_assessment_scores:
+    source: $sources.objectiveAssessmentScores
+    operations:
+      - operation: add_columns
+        columns:
+          base_namespace: "uri://fastbridge.org/assessment"
+          score_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#{{scoreType}}",
+              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate by identificationCode:
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns:
+          score_json: agg(score_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  # Prepare assessments with proper structure
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Prepare objective assessments
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.objective_assessment_scores
+        join_type: inner
+        left_key: identificationCode
+        right_key: identificationCode
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.cleaned_input
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.cleaned_input
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True

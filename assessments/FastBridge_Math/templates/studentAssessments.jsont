@@ -1,0 +1,328 @@
+{%- set possible_scores = [
+  [early_math_composite_score, "Composite Score", "Decimal"],
+  [early_math_percentile_at_school, "School Percentile", "Percentile"],
+  [early_math_percentile_at_lea, "LEA Percentile", "Percentile"],
+  [early_math_percentile_at_nation, "National Percentile", "Percentile"],
+  [growth_score_from_fall, "Growth Score from Fall", "Decimal"],
+  [school_growth_percentile_from_fall, "School Growth Percentile from Fall", "Percentile"],
+  [district_growth_percentile_from_fall, "District Growth Percentile from Fall", "Percentile"],
+  [national_growth_percentile_from_fall, "National Growth Percentile from Fall", "Percentile"],
+  [growth_percentile_by_start_score_from_fall, "Growth Percentile by Start Score from Fall", "Percentile"],
+  [growth_score_from_winter, "Growth Score from Winter", "Decimal"],
+  [school_growth_percentile_from_winter, "School Growth Percentile from Winter", "Percentile"],
+  [district_growth_percentile_from_winter, "District Growth Percentile from Winter", "Percentile"],
+  [national_growth_percentile_from_winter, "National Growth Percentile from Winter", "Percentile"],
+  [growth_percentile_by_start_score_from_winter, "Growth Percentile by Start Score from Winter", "Percentile"],
+  [growth_score_from_spring, "Growth Score from Spring", "Decimal"],
+  [school_growth_percentile_from_spring, "School Growth Percentile from Spring", "Percentile"],
+  [district_growth_percentile_from_spring, "District Growth Percentile from Spring", "Percentile"],
+  [national_growth_percentile_from_spring, "National Growth Percentile from Spring", "Percentile"],
+  [growth_percentile_by_start_score_from_spring, "Growth Percentile by Start Score from Spring", "Percentile"],
+  [growth_score_from_screening_period_4, "Growth Score from Screening Period 4", "Decimal"],
+  [school_growth_percentile_from_screening_period_4, "School Growth Percentile from Screening Period 4", "Percentile"],
+  [district_growth_percentile_from_screening_period_4, "District Growth Percentile from Screening Period 4", "Percentile"],
+  [national_growth_percentile_from_screening_period_4, "National Growth Percentile from Screening Period 4", "Percentile"],
+  [growth_percentile_by_start_score_from_screening_period_4, "Growth Percentile by Start Score from Screening Period 4", "Percentile"]
+] -%}
+
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = [
+  [early_math_risk_level, "Risk Level", "Level"]
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for level in possible_perf_levels -%}
+  {%- if level[0] is not none and level[0] | length -%}
+    {%- set _ = perf_levels.append(level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+
+
+{%- set obj_assessments = [
+  ['EarlyMathComposite', [
+    ('Composite Score', 'Decimal', early_math_composite_score),
+    ('School Percentile', 'Percentile', early_math_percentile_at_school),
+    ('LEA Percentile', 'Percentile', early_math_percentile_at_lea),
+    ('National Percentile', 'Percentile', early_math_percentile_at_nation),
+    ('Risk Level', 'Level', early_math_risk_level)
+  ]],
+  ['Composing', [
+    ('Items Correct', 'Integer', composing_items_correct),
+    ('IC per minute', 'Decimal', composing_ic_per_minute),
+    ('Total Items', 'Integer', composing_total_items),
+    ('Error Total Items Items Correct', 'Integer', composing_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', composing_percentile_at_school),
+    ('LEA Percentile', 'Percentile', composing_percentile_at_lea),
+    ('National Percentile', 'Percentile', composing_percentile_at_nation),
+    ('Risk Level', 'Level', composing_risk_level)
+  ]],
+  ['CountingObjects', [
+    ('Items Correct', 'Integer', counting_objects_items_correct),
+    ('IC per minute', 'Decimal', counting_objects_ic_per_minute),
+    ('Total Items', 'Integer', counting_objects_total_items),
+    ('Error Total Items Items Correct', 'Integer', counting_objects_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', counting_objects_percentile_at_school),
+    ('LEA Percentile', 'Percentile', counting_objects_percentile_at_lea),
+    ('National Percentile', 'Percentile', counting_objects_percentile_at_nation),
+    ('Risk Level', 'Level', counting_objects_risk_level)
+  ]],
+  ['DecomposingKG', [
+    ('Items Correct', 'Integer', decomposing_kg_items_correct),
+    ('IC per minute', 'Decimal', decomposing_kg_ic_per_minute),
+    ('Total Items', 'Integer', decomposing_kg_total_items),
+    ('Error Total Items Items Correct', 'Integer', decomposing_kg_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', decomposing_kg_percentile_at_school),
+    ('LEA Percentile', 'Percentile', decomposing_kg_percentile_at_lea),
+    ('National Percentile', 'Percentile', decomposing_kg_percentile_at_nation),
+    ('Risk Level', 'Level', decomposing_kg_risk_level)
+  ]],
+  ['DecomposingONE', [
+    ('Items Correct', 'Integer', decomposing_one_items_correct),
+    ('IC per minute', 'Decimal', decomposing_one_ic_per_minute),
+    ('Total Items', 'Integer', decomposing_one_total_items),
+    ('Error Total Items Items Correct', 'Integer', decomposing_one_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', decomposing_one_percentile_at_school),
+    ('LEA Percentile', 'Percentile', decomposing_one_percentile_at_lea),
+    ('National Percentile', 'Percentile', decomposing_one_percentile_at_nation),
+    ('Risk Level', 'Level', decomposing_one_risk_level)
+  ]],
+  ['EqualPartitioning', [
+    ('Items Correct', 'Integer', equal_partitioning_items_correct),
+    ('IC per minute', 'Decimal', equal_partitioning_ic_per_minute),
+    ('Total Items', 'Integer', equal_partitioning_total_items),
+    ('Error Total Items Items Correct', 'Integer', equal_partitioning_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', equal_partitioning_percentile_at_school),
+    ('LEA Percentile', 'Percentile', equal_partitioning_percentile_at_lea),
+    ('National Percentile', 'Percentile', equal_partitioning_percentile_at_nation),
+    ('Risk Level', 'Level', equal_partitioning_risk_level)
+  ]],
+  ['MatchQuantity', [
+    ('Items Correct', 'Integer', match_quantity_items_correct),
+    ('IC per minute', 'Decimal', match_quantity_ic_per_minute),
+    ('Total Items', 'Integer', match_quantity_total_items),
+    ('Error Total Items Items Correct', 'Integer', match_quantity_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', match_quantity_percentile_at_school),
+    ('LEA Percentile', 'Percentile', match_quantity_percentile_at_lea),
+    ('National Percentile', 'Percentile', match_quantity_percentile_at_nation),
+    ('Risk Level', 'Level', match_quantity_risk_level)
+  ]],
+  ['NumberSequenceKG', [
+    ('Items Correct', 'Integer', number_sequence_kg_items_correct),
+    ('IC per minute', 'Decimal', number_sequence_kg_ic_per_minute),
+    ('Total Items', 'Integer', number_sequence_kg_total_items),
+    ('Error Total Items Items Correct', 'Integer', number_sequence_kg_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', number_sequence_kg_percentile_at_school),
+    ('LEA Percentile', 'Percentile', number_sequence_kg_percentile_at_lea),
+    ('National Percentile', 'Percentile', number_sequence_kg_percentile_at_nation),
+    ('Risk Level', 'Level', number_sequence_kg_risk_level)
+  ]],
+  ['NumberSequenceONE', [
+    ('Items Correct', 'Integer', number_sequence_one_items_correct),
+    ('IC per minute', 'Decimal', number_sequence_one_ic_per_minute),
+    ('Total Items', 'Integer', number_sequence_one_total_items),
+    ('Error Total Items Items Correct', 'Integer', number_sequence_one_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', number_sequence_one_percentile_at_school),
+    ('LEA Percentile', 'Percentile', number_sequence_one_percentile_at_lea),
+    ('National Percentile', 'Percentile', number_sequence_one_percentile_at_nation),
+    ('Risk Level', 'Level', number_sequence_one_risk_level)
+  ]],
+  ['NumeralIdentificationKG', [
+    ('Number Read Correct', 'Integer', numeral_identification_kg_number_read_correct),
+    ('NRC per minute', 'Decimal', numeral_identification_kg_nrc_per_minute),
+    ('Total Number Read', 'Integer', numeral_identification_kg_total_number_read),
+    ('Error Count', 'Integer', numeral_identification_kg_error),
+    ('School Percentile', 'Percentile', numeral_identification_kg_percentile_at_school),
+    ('LEA Percentile', 'Percentile', numeral_identification_kg_percentile_at_lea),
+    ('National Percentile', 'Percentile', numeral_identification_kg_percentile_at_nation),
+    ('Risk Level', 'Level', numeral_identification_kg_risk_level)
+  ]],
+  ['NumeralIdentificationONE', [
+    ('Number Read Correct', 'Integer', numeral_identification_one_number_read_correct),
+    ('NRC per minute', 'Decimal', numeral_identification_one_nrc_per_minute),
+    ('Total Number Read', 'Integer', numeral_identification_one_total_number_read),
+    ('Error Count', 'Integer', numeral_identification_one_error),
+    ('School Percentile', 'Percentile', numeral_identification_one_percentile_at_school),
+    ('LEA Percentile', 'Percentile', numeral_identification_one_percentile_at_lea),
+    ('National Percentile', 'Percentile', numeral_identification_one_percentile_at_nation),
+    ('Risk Level', 'Level', numeral_identification_one_risk_level)
+  ]],
+  ['PlaceValue', [
+    ('Items Correct', 'Integer', place_value_items_correct),
+    ('IC per minute', 'Decimal', place_value_ic_per_minute),
+    ('Total Items', 'Integer', place_value_total_items),
+    ('Error Total Items Items Correct', 'Integer', place_value_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', place_value_percentile_at_school),
+    ('LEA Percentile', 'Percentile', place_value_percentile_at_lea),
+    ('National Percentile', 'Percentile', place_value_percentile_at_nation),
+    ('Risk Level', 'Level', place_value_risk_level)
+  ]],
+  ['QuantityDiscriminationMost', [
+    ('Items Correct', 'Integer', quantity_discrimination_most_items_correct),
+    ('IC per minute', 'Decimal', quantity_discrimination_most_ic_per_minute),
+    ('Total Items', 'Integer', quantity_discrimination_most_total_items),
+    ('Error Total Items Items Correct', 'Integer', quantity_discrimination_most_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', quantity_discrimination_most_percentile_at_school),
+    ('LEA Percentile', 'Percentile', quantity_discrimination_most_percentile_at_lea),
+    ('National Percentile', 'Percentile', quantity_discrimination_most_percentile_at_nation),
+    ('Risk Level', 'Level', quantity_discrimination_most_risk_level)
+  ]],
+  ['QuantityDiscriminationLeast', [
+    ('Items Correct', 'Integer', quantitydiscrimination_least_items_correct),
+    ('IC per minute', 'Decimal', quantitydiscrimination_least_ic_per_minute),
+    ('Total Items', 'Integer', quantitydiscrimination_least_total_items),
+    ('Error Total Items Items Correct', 'Integer', quantitydiscrimination_least_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', quantitydiscrimination_least_percentile_at_school),
+    ('LEA Percentile', 'Percentile', quantitydiscrimination_least_percentile_at_lea),
+    ('National Percentile', 'Percentile', quantitydiscrimination_least_percentile_at_nation),
+    ('Risk Level', 'Level', quantitydiscrimination_least_risk_level)
+  ]],
+  ['StoryProblems', [
+    ('Items Correct', 'Integer', story_problems_items_correct),
+    ('IC per minute', 'Decimal', story_problems_ic_per_minute),
+    ('Total Items', 'Integer', story_problems_total_items),
+    ('Error Total Items Items Correct', 'Integer', story_problems_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', story_problems_percentile_at_school),
+    ('LEA Percentile', 'Percentile', story_problems_percentile_at_lea),
+    ('National Percentile', 'Percentile', story_problems_percentile_at_nation),
+    ('Risk Level', 'Level', story_problems_risk_level)
+  ]],
+  ['Subitizing', [
+    ('Items Correct', 'Integer', subitizing_items_correct),
+    ('IC per minute', 'Decimal', subitizing_ic_per_minute),
+    ('Total Items', 'Integer', subitizing_total_items),
+    ('Error Total Items Items Correct', 'Integer', subitizing_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', subitizing_percentile_at_school),
+    ('LEA Percentile', 'Percentile', subitizing_percentile_at_lea),
+    ('National Percentile', 'Percentile', subitizing_percentile_at_nation),
+    ('Risk Level', 'Level', subitizing_risk_level)
+  ]],
+  ['VerbalAddition', [
+    ('Items Correct', 'Integer', verbal_addition_items_correct),
+    ('IC per minute', 'Decimal', verbal_addition_ic_per_minute),
+    ('Total Items', 'Integer', verbal_addition_total_items),
+    ('Error Total Items Items Correct', 'Integer', verbal_addition_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', verbal_addition_percentile_at_school),
+    ('LEA Percentile', 'Percentile', verbal_addition_percentile_at_lea),
+    ('National Percentile', 'Percentile', verbal_addition_percentile_at_nation),
+    ('Risk Level', 'Level', verbal_addition_risk_level)
+  ]],
+  ['VerbalSubtraction', [
+    ('Items Correct', 'Integer', verbal_subtraction_items_correct),
+    ('IC per minute', 'Decimal', verbal_subtraction_ic_per_minute),
+    ('Total Items', 'Integer', verbal_subtraction_total_items),
+    ('Error Total Items Items Correct', 'Integer', verbal_subtraction_error_total_items_items_correct),
+    ('School Percentile', 'Percentile', verbal_subtraction_percentile_at_school),
+    ('LEA Percentile', 'Percentile', verbal_subtraction_percentile_at_lea),
+    ('National Percentile', 'Percentile', verbal_subtraction_percentile_at_nation),
+    ('Risk Level', 'Level', verbal_subtraction_risk_level)
+  ]]
+] -%}
+{%- set filtered_obj_assessments = [] -%}
+{%- for obj in obj_assessments -%}
+  {%- set valid_scores = [] -%}
+  {%- for score in obj[1] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---', ''] -%}
+      {%- set _ = valid_scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if valid_scores -%}
+    {%- set _ = filtered_obj_assessments.append([obj[0], valid_scores]) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{# Precompute objective performance levels for each objective assessment #}
+{%- set objective_levels_map = {} -%}
+{%- for obj in filtered_obj_assessments -%}
+  {%- set levels = [] -%}
+  {%- for score in obj[1] -%}
+    {%- if score[0] == 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 -%}
+      {%- set _ = levels.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- set _ = objective_levels_map.update({obj[0]: levels}) -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id|int}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
+  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{grade}}"
+
+  {%- if scores -%}
+  , "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if perf_levels -%}
+  , "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if filtered_obj_assessments -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj in filtered_obj_assessments -%}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{obj[0]}}",
+          "namespace": "{{namespace}}"
+        },
+        "scoreResults": [
+          {%- for score in obj[1] if score[0] != 'Risk Level' -%}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+              "result": "{{score[2]}}"
+            }{% if not loop.last %},{% endif %}
+          {%- endfor -%}
+        ]
+        {%- set objective_levels = objective_levels_map[obj[0]] -%}
+        {%- if objective_levels -%}
+        , "performanceLevels": [
+          {%- for level in objective_levels -%}
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{level[0]}}",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level[2]}}",
+            "performanceLevelMet": true
+          }{% if not loop.last %},{% endif %}
+          {%- endfor -%}
+        ]
+        {%- endif -%}
+      }{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+}
