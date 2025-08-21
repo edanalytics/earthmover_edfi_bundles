@@ -3,8 +3,8 @@
 * **Title:** FastBridge
 * **Description:** Screening and progress monitoring assessments for English and Math
 * **API version:** 5.3
-* **Submitter name:** Shailendra Singh
-* **Submitter organization:** Double Line Inc.
+* **Submitter name:** Bruk Woldearegay
+* **Submitter organization:** Crocus LLC.
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
@@ -27,9 +27,8 @@ Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/sample_anonymized_file_earlyReading.csv",
-"STATE_FILE": "./tmp/runs.csv",
 "OUTPUT_DIR": "output/",
-"STUDENT_ID_NAME": "StateID",
+"STUDENT_ID_NAME": "State ID",
 "SCHOOL_YEAR": "2024"}'
 ```
 
