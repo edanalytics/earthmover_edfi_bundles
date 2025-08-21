@@ -105,6 +105,9 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
@@ -120,27 +123,6 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  
-  descriptor_rename__gradeLevelDescriptors:
-    source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: rename_columns
-        columns:
-          edfi_descriptor: gradeLevelDescriptor
-
-  descriptor_rename__academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    operations:
-      - operation: rename_columns
-        columns:
-          edfi_descriptor: academicSubjectDescriptor
-
-  descriptor_rename__assessments:
-    source: $sources.assessments
-    operations:
-      - operation: rename_columns
-        columns:
-          edfi_descriptor: assessmentCategoryDescriptor
 
   psat_sat_student_assessment:
     source: $transformations.input
@@ -254,20 +236,20 @@ transformations:
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
       - operation: join
         sources:
-          - $transformations.descriptor_rename__gradeLevelDescriptors
+          - $sources.gradeLevelDescriptors
         join_type: inner
         left_keys: [grade_when_assessed, assessmentIdentifier]
         right_keys: [psat_sat_grade, assessmentIdentifier]
 
   academic_subject_descriptors:
-    source: $transformations.descriptor_rename__academicSubjectDescriptors
+    source: $sources.academicSubjectDescriptors
     operations:
       - operation: add_columns
         columns:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -283,18 +265,18 @@ transformations:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   grade_level_descriptors:
-    source: $transformations.descriptor_rename__gradeLevelDescriptors
+    source: $sources.gradeLevelDescriptors
     operations:
       - operation: distinct_rows
         columns:
           - assessmentIdentifier
-          - gradeLevelDescriptor
+          - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -310,7 +292,7 @@ transformations:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessments:
-    source: $transformations.descriptor_rename__assessments
+    source: $sources.assessments
     operations:
       - operation: join
         sources:
@@ -327,6 +309,12 @@ transformations:
       - operation: add_columns
         columns:
           assessmentFamily: "{%raw%}{{ assessmentIdentifier.split('_')[0] }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 
 destinations:
@@ -351,3 +339,4 @@ destinations:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
+
