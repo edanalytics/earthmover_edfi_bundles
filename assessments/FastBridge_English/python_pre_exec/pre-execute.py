@@ -93,6 +93,30 @@ def fast_bridge_english_pre_exec(source_file, output_file):
             c: to_snake_case(c[len(prefix) :]) for c in cols
         }
 
+    # Detect positional generic Error columns named exactly 'Error' (or pandas-duplicated
+    # variants like 'Error.1', 'Error.2', etc.). These appear immediately after an
+    # anchor column (ends with ' WRC per minute' or ' IC per minute') for a given season.
+    # We'll map them to canonical headers like '{season} {objective} Error'.
+    error_mapping = {}
+    error_name_pat = re.compile(r"^Error(?:\.\d+)?$")
+    for season in seasons:
+        season_prefix = f"{season} "
+        for i, col in enumerate(df.columns):
+            if not col.startswith(season_prefix):
+                continue
+            anchor_suffix = None
+            if col.endswith(" WRC per minute"):
+                anchor_suffix = " WRC per minute"
+            elif col.endswith(" IC per minute"):
+                anchor_suffix = " IC per minute"
+            if anchor_suffix is None:
+                continue
+            objective = col[len(season_prefix) : -len(anchor_suffix)]
+            if i + 1 < len(df.columns):
+                next_col = df.columns[i + 1]
+                if error_name_pat.match(next_col) and not next_col.startswith(season_prefix):
+                    error_mapping[next_col] = f"{season} {objective} Error"
+
     # Step 5: Build growth pivot as its own small table (one row per end-season per student)
     growth_pivot_data = None
     if growth_columns:
@@ -159,6 +183,14 @@ def fast_bridge_english_pre_exec(source_file, output_file):
             for col in season_score_cols[season]:
                 snake_name = season_score_snake[season][col]
                 season_row[snake_name] = row.get(col)
+
+            # Include mapped generic Error columns for this season as '{objective}_error'
+            season_prefix = f"{season} "
+            for orig_err_col, mapped_header in error_mapping.items():
+                if mapped_header.startswith(season_prefix):
+                    objective = mapped_header[len(season_prefix):].replace(" Error", "")
+                    snake_err = to_snake_case(f"{objective} error")
+                    season_row[snake_err] = row.get(orig_err_col)
 
             assessment_rows.append(season_row)
 
