@@ -1,0 +1,66 @@
+{%- set possible_scores = 
+  [
+    [PercCorr, "Percent Correct", "Decimal"],
+    [SuggNMark, "Suggested Number Mark", "Integer"],
+    [SuggLMark, "Suggested Letter Mark", "Level"]
+  ] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = 
+  [
+    [AchLev, "Achievement Level", "Integer"],
+    [AchLevExt, "Achievement Level Ext", "Level"]
+  ] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {% if scores | length %}
+  "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  {% endif %}
+  {% if perf_levels | length %}
+  "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+}
