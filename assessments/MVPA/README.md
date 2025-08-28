@@ -1,6 +1,6 @@
-* **Title**: Template Bundle
-* **Description**: This is a template bundle that will map a fake assessment. 
-* **Submitter name**: Julianna Alvord
+* **Title**: MVPA
+* **Description**: This is a template bundle that will map MVPA assessments. 
+* **Submitter name**: Theo Kaufman
 * **Submitter organization**: Education Analytics
 
 This bundle has _two_ use-cases:
