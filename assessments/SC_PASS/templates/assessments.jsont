@@ -9,7 +9,7 @@
    } %} 
 
 {% set scoresReportingMethods = [
-  ['RCWAbs','Integer'],['SS','Integer'],['Ag','String']
+  ['SS','Integer'],['Ag','String']
   ] %}
 {
   "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
@@ -36,6 +36,13 @@
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lev",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}"
+        }
+      {% endfor %}
+      {% for i in range(1, 6) %}
+        {{ comma() }}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RCWAbs",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{i}}"
         }
       {% endfor %} 
     ],
