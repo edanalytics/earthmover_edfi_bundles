@@ -14,7 +14,7 @@
    } %}
 
 {% set reportingMethods = [
-  ['RCWAbs','Integer'],['SS','Integer'],['Ag','String']
+  ['SS','Integer'],['Ag','String']
   ] %}
 
 {% set performance_objective = ['Lev1','Lev2','Lev3','Lev4','Lev5','Lev6','Lev7'] %}
@@ -40,7 +40,7 @@
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
-    "namespace": "{{assessmentIdentifier_namespace}}"
+    "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
     "schoolYear": {{SchoolYear}}
@@ -48,9 +48,7 @@
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   },
-  "period": {
-    "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{TestAdmin}}"
-  }
+  "administrationDate": "{{administration_date}}"
 
 {% set assessment = assessment_map[assessmentIdentifier] %}
 
@@ -116,15 +114,32 @@
 {#--------------- performance Level ---------------#}
 {% set performanceLevel = __row_data__[assessment_performance_map[assessment]] %}
 {% set performanceLevelName = "Lev" %}
-{%- if performanceLevel -%}
+{% set RCWAbsPerformanceLevel = __row_data__[assessment_append_map[assessment] ~ 'RCWAbs'] %}
+
+{%- if performanceLevel or RCWAbsPerformanceLevel -%}
 ,"performanceLevels": [
+  {%- if performanceLevel -%}
+  {% set writeComma=true %}
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
           "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevel}}",
           "performanceLevelMet": true
         }
+    {% endif %}
+    {%- if RCWAbsPerformanceLevel -%}
+    {%- if writeComma -%}, {% endif %}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RCWAbs",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{RCWAbsPerformanceLevel}}",
+          "performanceLevelMet": true
+        }
+{% endif %}
     ]
 {% endif %}
+
+
+
+
 {#--------------- scores ---------------#}
 ,"scoreResults": [
          {# The joiner will add a comma before every item except the first one that gets printed #}
@@ -152,9 +167,8 @@
 {% set comma = joiner(",") %}
 {% for performance in performance_objective %}
     {#- Define variables and use the ~ operator for string concatenation -#}
-    {% set performanceName = performance %}
     {% set performanceAppendName = assessment_append_map[assessment] %}
-    {% set realPerformanceNameAppendName = performanceAppendName ~ performanceName %}
+    {% set realPerformanceNameAppendName = performanceAppendName ~ performance %}
     {% set performanceColumnValue = __row_data__[realPerformanceNameAppendName] %}
     {% set objectiveName = objectives_reporting[realPerformanceNameAppendName] %}
     {#- Check if the performance value actually exists -#}
@@ -168,7 +182,7 @@
         },
         "performanceLevels": [
         {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceName}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
             "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceColumnValue}}",
             "performanceLevelMet": true
         }

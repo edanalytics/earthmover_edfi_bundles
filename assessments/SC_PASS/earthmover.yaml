@@ -57,23 +57,21 @@ transformations:
       - operation: add_columns
         columns:
           join_key: "1"
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
       - operation: modify_columns
         columns:
           SciGrade: "{%raw%}{{ SciGrade | int }}{%endraw%}"
           SocGrade: "{%raw%}{{ SocGrade | int }}{%endraw%}"
-          TestAdmin: "{%raw%}{{ (TestAdmin | default('', true) | trim)[:2] }}{%endraw%}"
+          TestAdmin: "{%raw%}{{ (TestAdmin | default('', true) | trim)[:2] }}{%endraw%}" #change to derive the year and administrationDate, not the period
       - operation: map_values
         column: SciGrade
         map_file: ./seeds/gradeMapping.csv
       - operation: map_values
         column: SocGrade
         map_file: ./seeds/gradeMapping.csv
-      - operation: map_values
-        column: TestAdmin
-        mapping:
-          "SP": "Spring"
       # rename student id column after x-walk operation
+      - operation: modify_columns
+        columns:
+          ${STUDENT_ID_NAME}: "{% raw %}{{ ${STUDENT_ID_NAME} | trim }}{% endraw %}"
       - operation: filter_rows
         query: ${STUDENT_ID_NAME} != "" and ${STUDENT_ID_NAME} != None
         behavior: include
@@ -89,9 +87,11 @@ transformations:
       - operation: add_columns
         columns:
           join_key: "1"
-      - operation: duplicate_columns
-        columns:
-          namespace: assessmentIdentifier_namespace
+          SchoolYear: ${SCHOOL_YEAR}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+      - operation: filter_rows
+        query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= 2021)'
+        behavior: exclude
       
   stage_grade_level:
     source: $sources.gradeLevelDescriptors
@@ -168,36 +168,16 @@ transformations:
         join_type: inner
         left_key: join_key
         right_key: join_key
+        right_keep_columns: 
+          - grade_json
       - operation: join
         sources: 
           - $transformations.period_descriptors
         join_type: inner
-        left_keys: 
-          - join_key
-        right_keys: 
-          - join_key
-      - operation: add_columns
-        columns:
-          assessmentCategoryDescriptor: "{%raw%}{{assessmentCategoryDescriptor}}{%endraw%}"    
-          SchoolYear: ${SCHOOL_YEAR}
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
-      - operation: filter_rows
-        query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= 2021)'
-        behavior: exclude  
-      # Output columns list
-      - operation: keep_columns
-        columns: 
-          - assessmentIdentifier
-          - academicSubjectDescriptor
-          - namespace
-          - assessmentCategoryDescriptor
-          - assessmentFamily
-          - assessmentTitle
-          - grade_json
-          - period_json
-          - SchoolYear
-          - descriptor_namespace_override
-      
+        left_key: join_key
+        right_key: join_key
+        right_keep_columns: 
+          - period_json     
 
   # <<<<< Prepare objective-assessments <<<<<
   objective_assessments:
@@ -218,15 +198,12 @@ transformations:
           - $transformations.assessment_identifiers
         join_type: inner
         left_key: join_key
-        right_key: join_key        
+        right_key: join_key
       - operation: add_columns
         columns:
-          SchoolYear: ${SCHOOL_YEAR}
+          administration_date: "{%raw%}{{${SCHOOL_YEAR} ~ '-05-15'}}{%endraw%}"
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{SchoolID}}-{{SchoolYear}}-{{assessmentIdentifier}}{%endraw%}"  
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
-      - operation: filter_rows
-        query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= 2021)'
-        behavior: exclude
         
   # <<<<< Prepare student-assessments <<<<<
 
