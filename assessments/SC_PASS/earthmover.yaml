@@ -54,14 +54,15 @@ transformations:
   cleaned_input:
     source: $transformations.input
     operations:
-      - operation: add_columns
-        columns:
-          join_key: "1"
       - operation: modify_columns
         columns:
           SciGrade: "{%raw%}{{ SciGrade | int }}{%endraw%}"
           SocGrade: "{%raw%}{{ SocGrade | int }}{%endraw%}"
-          TestAdmin: "{%raw%}{{ (TestAdmin | default('', true) | trim)[:2] }}{%endraw%}" #change to derive the year and administrationDate, not the period
+          #TestAdmin: "{%raw%}{{ (TestAdmin | default('', true) | trim)[:2] }}{%endraw%}" #change to derive the year and administrationDate, not the period
+          TestAdmin: "{%raw%}{{ 2000 | int + TestAdmin[-2:] | int }}{%endraw%}"
+      - operation: add_columns
+        columns:
+          join_key: "1"
       - operation: map_values
         column: SciGrade
         map_file: ./seeds/gradeMapping.csv
@@ -78,7 +79,22 @@ transformations:
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
-      
+
+  extract_year_from_testadmin:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "1"
+      - operation: rename_columns
+        columns:
+          TestAdmin: SchoolYear
+      - operation: keep_columns
+        columns:
+          - SchoolYear
+          - join_key
+      - operation: distinct_rows
+          
 
   # Get distinct assessment identifiers
   assessment_identifiers:
@@ -86,11 +102,20 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          join_key: "1"
-          SchoolYear: ${SCHOOL_YEAR}
+          join_key: "1"         
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          # SchoolYear: ${SCHOOL_YEAR}
+      - operation: join
+        sources:
+          - $transformations.extract_year_from_testadmin
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
+      - operation: modify_columns
+        columns:
+          SchoolYear: "{% raw %}{{ SchoolYear | int }}{% endraw %}"
       - operation: filter_rows
-        query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= 2021)'
+        query: '(assessmentIdentifier == "SC_PASS_Social_Studies" and SchoolYear >= "2021")'
         behavior: exclude
       
   stage_grade_level:
@@ -185,8 +210,14 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          SchoolYear: ${SCHOOL_YEAR}
+         # SchoolYear: ${SCHOOL_YEAR}
           join_key: "1"
+      - operation: join
+        sources:
+          - $transformations.extract_year_from_testadmin
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
 
   # >>>>> Prepare student-assessments >>>>>
 
@@ -201,7 +232,7 @@ transformations:
         right_key: join_key
       - operation: add_columns
         columns:
-          administration_date: "{%raw%}{{${SCHOOL_YEAR} ~ '-05-15'}}{%endraw%}"
+          administration_date: "{%raw%}{{SchoolYear}}-05-15{%endraw%}" #administration_date: "{%raw%}{{${SCHOOL_YEAR} ~ '-05-15'}}{%endraw%}"
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{SchoolID}}-{{SchoolYear}}-{{assessmentIdentifier}}{%endraw%}"  
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
         
