@@ -118,7 +118,7 @@
 
 {%- if performanceLevel or RCWAbsPerformanceLevel -%}
 ,"performanceLevels": [
-  {%- if performanceLevel -%}
+  {%- if  performanceLevel != None and performanceLevel | string != 'None' and performanceLevel | string != 'none' and performanceLevel | string | trim != '' -%}
   {% set writeComma=true %}
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
@@ -126,7 +126,7 @@
           "performanceLevelMet": true
         }
     {% endif %}
-    {%- if RCWAbsPerformanceLevel -%}
+    {%- if  RCWAbsPerformanceLevel != None and RCWAbsPerformanceLevel | string != 'None' and RCWAbsPerformanceLevel | string != 'none' and RCWAbsPerformanceLevel | string | trim != '' -%}
     {%- if writeComma -%}, {% endif %}
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RCWAbs",
@@ -151,7 +151,7 @@
     {% set scoreColumnValue = __row_data__[scoreAppendName ~ scoreName] %}
 
     {#- Check if the score value actually exists -#}
-    {% if scoreColumnValue %}
+    {% if scoreColumnValue != None and scoreColumnValue | string != 'None' and scoreColumnValue | string != 'none' and scoreColumnValue | string | trim != '' %}
         {{ comma() }}
         {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreName}}",
@@ -172,7 +172,7 @@
     {% set performanceColumnValue = __row_data__[realPerformanceNameAppendName] %}
     {% set objectiveName = objectives_reporting[realPerformanceNameAppendName] %}
     {#- Check if the performance value actually exists -#}
-    {% if performanceColumnValue %}
+    {% if performanceColumnValue| trim %}
     {{ comma() }} 
       {
         "objectiveAssessmentReference": {
