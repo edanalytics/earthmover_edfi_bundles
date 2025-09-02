@@ -1,7 +1,7 @@
 ## SC PASS Assessments
 
 * **Title:** DRC SC PASS Assessment Results - API 3.X
-* **Description:** Data Recognition Corporation South Carolina College-and Career-Ready Assessment
+* **Description:** Data Recognition Corporation South Carolina College and Career-Ready Assessment
 * **API version:** 5.3
 * **Submitter name:** Mariela Suárez
 * **Submitter organization:** Crocus LLC.
@@ -20,12 +20,11 @@ Or use the sample file (`data/sample_anonymized_file_SC_PASS.csv`).
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The student assessment file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'StateID' from the SC PASS file.
-- SCHOOL_YEAR: The year of the assessment file (format as 'YYYY' e.g. '2024', etc).
 
 ### Examples
 Using an ID column from the assessment file:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{"INPUT_FILE":"data/sample_anonymized_file_SC_PASS.csv","STATE_FILE": "./tmp/runs.csv","OUTPUT_DIR": "output/","STUDENT_ID_NAME": "StateID","SCHOOL_YEAR": "2017"}'                             
+earthmover run -c ./earthmover.yaml -p '{"INPUT_FILE":"data/sample_anonymized_file_SC_PASS.csv","STATE_FILE": "./tmp/runs.csv","OUTPUT_DIR": "output/","STUDENT_ID_NAME": "StateID"}'                             
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
