@@ -13,7 +13,7 @@ Namespace: uri://fountasandpinnell.com/bas
 
 # Objectives
 ## Objectives Identifiers
-For F&P-Text Reading:
+For F&P-Text Reading assessment:
  - Fluency Level
  - Self Correction Rate
  - Words Per Minute
@@ -27,7 +27,7 @@ For F&P-Text Reading:
  - Word Writing
  
   
-For F&P-Comprehension:
+For F&P-Comprehension assessment:
  - Comprehension
  - Comprehension2
  - Meaning
@@ -35,7 +35,7 @@ For F&P-Comprehension:
 
 
 # Performance levels
-F&P-Text Reading: Lexile Level (overall performance level)
+For F&P-Text Reading assessment: Lexile Level (is it an overall assessment performance level or objective performance level???)
  - BR-25
  - 26-199
  - 200-299
@@ -45,7 +45,7 @@ F&P-Text Reading: Lexile Level (overall performance level)
  - 750-949
  - 950-Up
 
-F&P-Comprehension: Comprehension Level (overall performance level)
+For F&P-Comprehension assessment: Comprehension Level (is it an overall assessment performance level or objective performance level???)
  - Approaching Proficiency
  - Limited Proficiency
  - Proficient
@@ -56,7 +56,6 @@ F&P-Comprehension: Comprehension Level (overall performance level)
  
 
 ## Assessments Score Method Descriptors
-
  - Lexile
  - Level
  - Percent
@@ -64,13 +63,13 @@ F&P-Comprehension: Comprehension Level (overall performance level)
  - Rubric
  - Raw score
   
-## Genre ????? How to map? 
+## Genre ????? Should I map? If so, how to map? 
 - Fiction
 - Nonfiction
 
 ## TextReading column ?????
 From Pre-A, A, B .... Z
-It seems to be related to gradeLevel. Should I map? The sample files have a column for grade levels (GradeLevel)
+It seems to be difficulty ranges, related to gradeLevels.  Should I map?
 
 
 
