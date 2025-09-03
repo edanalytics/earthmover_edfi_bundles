@@ -590,7 +590,7 @@ transformations:
               {%raw-%}
               {
                 "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
-                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}#{{resultDataType}}"
+                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{resultDataType}}"
               }
               {%-endraw%}  
       - operation: modify_columns
@@ -601,6 +601,23 @@ transformations:
           - identificationCode
         create_columns: 
           scorejson: agg(scorejson,,)
+
+  performance_descriptors:  
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: keep_columns
+        columns:
+        - codeValue
+        - shortDescription
+        - namespace
+        - description
+      - operation: distinct_rows
+        columns:
+        - codeValue
+        - shortDescription
+        - namespace
+        - description
+
 
   prepare_objective_assessments:
     source: $sources.objectiveAssessments
@@ -640,7 +657,7 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
+    source: $transformations.performance_descriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:
