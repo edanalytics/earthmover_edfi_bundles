@@ -80,8 +80,8 @@ transformations:
           qualifyingNonVerbalPercentile: "{%raw-%} {%-if qdim == 'A'-%} {{qdimnvm}} {%-endif-%}{%-endraw%}"
           mathScore: "{%raw-%} {%-if qdim == 'B'-%} {{qdimnvm}} {%-endif-%}{%-endraw%}"
           studentGradeLevel: "{%raw-%} {%-if grade is not none and grade|length-%} {{grade}} {%-elif grade == '' and stargrade is not none and stargrade|length-%} {{stargrade}} {%-endif-%}{%-endraw%}"
-          verbalScore: "{%raw-%} {%-if vtotal is not none and vtotal|length-%} {{vtotal}} {%-elif totalv is not none and totalv|length-%} {{totalv}} {%-else-%} {{noVerbalScoreReason}} {%-endif-%}{%-endraw%}"
-          nonVerbalScore: "{%raw-%} {%-if nvtotal is not none and nvtotal|length-%} {{nvtotal}} {%-elif totalnv is not none and totalnv|length-%} {{totalnv}} {%-else-%} {{noNonVerbalScoreReason}} {%-endif-%}{%-endraw%}"
+          verbalScore: "{%raw-%} {%-if vtotal is not none and vtotal|length-%} {{vtotal}} {%-elif totalv is not none and totalv|length-%} {{totalv}} {%-endif-%}{%-endraw%}"
+          nonVerbalScore: "{%raw-%} {%-if nvtotal is not none and nvtotal|length-%} {{nvtotal}} {%-elif totalnv is not none and totalnv|length-%} {{totalnv}} {%-endif-%}{%-endraw%}"
           studentAssessmentIdentifier: "{% raw %}{{ md5('PTA' ~ '-' ~ stateid ~ '-' ~  testadmin) }}{% endraw %}"
 
       - operation: rename_columns

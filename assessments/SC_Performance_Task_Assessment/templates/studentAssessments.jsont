@@ -30,8 +30,8 @@
 {%- endfor -%}
 
 {%- set possible_obj_assess = [
-    ['Verbal', [('Raw Score', 'Integer', verbalScore), ('No Score', 'Level', noVerbalScoreReason)]],
-    ['Non-Verbal', [('Raw Score', 'Integer', nonVerbalScore), ('No Score', 'Level', noNonVerbalScoreReason)]],
+    ['Verbal', [('Rubric Score', 'Integer', verbalScore), ('No Score', 'Level', noVerbalScoreReason)]],
+    ['Non-Verbal', [('Rubric Score', 'Integer', nonVerbalScore), ('No Score', 'Level', noNonVerbalScoreReason)]],
   ] -%}
 
 {%- set all_obj_assessment = [] -%}
