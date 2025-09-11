@@ -9,7 +9,7 @@
    } %} 
 
 {% set scoresReportingMethods = [
-  ['SS','Integer'],['Ag','String']
+  ['SS','Integer'],['Ag','Level']
   ] %}
 {
   "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
