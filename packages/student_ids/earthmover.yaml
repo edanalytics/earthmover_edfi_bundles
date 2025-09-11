@@ -110,7 +110,7 @@ sources:
   {% endif %}
     
 
-{% set edfi_student_id_types = (("${EDFI_STUDENT_ID_TYPES}" | trim) and "${EDFI_STUDENT_ID_TYPES}".split(",") or []) + ["studentUniqueId"] %}
+{% set edfi_student_id_types = "${EDFI_STUDENT_ID_TYPES},studentUniqueId".split(",") %}
 
 transformations:
   unpacked_edfi_roster:
