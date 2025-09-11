@@ -4,10 +4,10 @@
   "namespace": "{{namespace}}",
   "assessmentFamily": "{{assessmentIdentifier}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentCategoryDescriptor": [{{category_json}}],
   "academicSubjects": [
     {
-      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+      "academicSubjectDescriptor": [{{subject_json}}]
     }
   ],
   "scores": [

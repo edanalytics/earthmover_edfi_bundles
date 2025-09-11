@@ -185,7 +185,7 @@
     "reasonNotTestedDescriptor": "{{namespace}}/ReasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
   {% endif %}
 
-  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
 
   "scoreResults": [
     {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length and DoNotScoreCodeListening|trim != 'NA' %}

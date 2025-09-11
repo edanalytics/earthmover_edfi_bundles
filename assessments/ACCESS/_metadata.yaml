@@ -1,0 +1,18 @@
+display_name: "ACCESS"
+path: "assessments/ACCESS"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
+input_params:
+  - display_name: "School Year"
+    env_var: "SCHOOL_YEAR"
+    is_required: true
+  - display_name: "Alternate"
+    env_var: "ALTERNATE"
+    is_required: true
+    allowed_values: ["Y", "N"]
+descriptor_mapping_files: ["academicSubjectDescriptors.csv", "assessmentCategoryDescriptors.csv", "gradeLevelDescriptors.csv"]
