@@ -838,7 +838,7 @@ transformations:
             {%-endraw%}
       - operation: modify_columns
         columns:
-          subject: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
       # group and aggregate:
       - operation: group_by
         group_by_columns:
@@ -863,7 +863,7 @@ transformations:
             {%-endraw%}
       - operation: modify_columns
         columns:
-          subject: "{%raw%}{{category_json | replace('\n', '')-}}{%endraw%}"
+          category_json: "{%raw%}{{category_json | replace('\n', '')-}}{%endraw%}"
       # group and aggregate:
       - operation: group_by
         group_by_columns:
