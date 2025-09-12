@@ -1,0 +1,9 @@
+display_name: "Curriculum Associates i-Ready Diagnostic Math and ELA Assessments"
+path: "assessments/i-Ready"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
