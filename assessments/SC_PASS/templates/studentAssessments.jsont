@@ -187,8 +187,16 @@
             "performanceLevelMet": true
         }
         ]
+        ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Ag",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "No Score"
+      }
+      ]   
       } 
 {% endif %}
-{% endfor %}   
+{% endfor %}
+
   ]
 }
