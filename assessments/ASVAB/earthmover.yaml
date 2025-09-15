@@ -58,7 +58,7 @@ transformations:
         columns:
           assessmentIdentifier: ASVAB
           namespace: uri://officialasvab.com
-          schoolYear: ${SCHOOL_YEAR}
+          schoolYear: ${API_YEAR}
       - operation: combine_columns
         columns:
           - student_id
