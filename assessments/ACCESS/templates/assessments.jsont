@@ -5,11 +5,7 @@
   "assessmentFamily": "{{assessmentIdentifier}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": [{{category_json}}],
-  "academicSubjects": [
-    {
-      "academicSubjectDescriptor": [{{subject_json}}]
-    }
-  ],
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency Level",
