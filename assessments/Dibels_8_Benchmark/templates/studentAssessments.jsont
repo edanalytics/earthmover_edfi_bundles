@@ -3,7 +3,7 @@
     ["Composite National Norm Percentile", composite_national_norm_percentile, "Integer"],
     ["Composite Score Lexile", dibels_composite_score_lexile, "Level"],
     ["Benchmark Period", benchmark_period, "Level"],
-    ["Enrolled Grade Level", gradeLevelDescriptor, "Level"]
+    ["Enrolled Grade Level", enrollment_grade, "Level"]
 ] -%}
 
 {%- set scores = [] -%}
