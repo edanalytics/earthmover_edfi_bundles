@@ -68,6 +68,7 @@ transformations:
           - totalv
           - totalnv
           - stargrade
+          - ${STUDENT_ID_NAME}
       - operation: add_columns
         columns:
           assessmentIdentifier: 'SC_PTA'
