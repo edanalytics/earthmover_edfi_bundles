@@ -17,10 +17,6 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The act assessment results file to be mapped
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default column is 'ID_StateAssign'
-- SCHOOL_YEAR: The school year of the assessment file (structure of '2023' or '2024', etc).
-
-### Optional
-- INPUT_FILE_CMAS_GROWTH: The CMAS assessment growth results file to be mapped
 
 ### Examples
 Using an ID column from the assessment file:
