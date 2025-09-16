@@ -26,7 +26,6 @@ earthmover run -c earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "ID_StateAssign",
-"SCHOOL_YEAR" : "2025"
 }'
 ```
 
