@@ -240,7 +240,6 @@ transformations:
         join_type: inner
         left_keys: [grade_when_assessed, assessmentIdentifier]
         right_keys: [psat_sat_grade, assessmentIdentifier]
-    debug: True
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
