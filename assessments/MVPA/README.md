@@ -1,4 +1,4 @@
-* **Title**: MVPA
+* **Title**: Mastery View Predictive Assessments (MVPA)
 * **Description**: This is a template bundle that will map MVPA assessments. 
 * **Submitter name**: Theo Kaufman
 * **Submitter organization**: Education Analytics
