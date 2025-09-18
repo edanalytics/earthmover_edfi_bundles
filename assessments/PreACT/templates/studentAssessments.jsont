@@ -7,6 +7,7 @@
   [USRnk_Comp, "National Norms Score", "Percentile"]
 ] -%}
 
+
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
   {%- if score[0] is not none and score[0] | length -%}
@@ -62,6 +63,16 @@
     ('High Predicted Score', 'Integer', Pred_ACT_Sci_High),
     ('Raw Score','Integer',Sci_Raw)
   ]],
+  ['PreACT_STEM', [
+    ('Scale Score', 'Integer', STEM),
+    ('National Norms Score', 'Percentile', USRnk_Sub_STEM),
+    ('Low Scale Score', 'Integer', STEM_Low),
+    ('High Scale Score', 'Integer', STEM_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_STEM_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_STEM_High),
+    ('Raw Score','Integer',STEM_Raw)
+  ]],
+
   ['PreACT_E_Earn_Prod', [('Raw Score', 'Integer', E_Earn_Prod)]],
   ['PreACT_E_Earn_Knlg', [('Raw Score', 'Integer', E_Earn_Knlg)]],
   ['PreACT_E_Earn_Conv', [('Raw Score', 'Integer', E_Earn_Conv)]],
