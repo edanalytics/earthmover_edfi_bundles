@@ -75,10 +75,17 @@ sources:
               seoa.api_year,
               seoa.k_student,
               seoa.ed_org_id,
+              stg_ef3__students.student_unique_id,
               object_construct_keep_null('assigningOrganizationIdentificationCode', seo_ids.id_system,
                   'identificationCode', seo_ids.id_code) as stu_id_code,
+              -- in case of multiple years, dedupe by student unique ID
+              rank() over (
+                  partition by stg_ef3__students.student_unique_id, seoa.tenant_code, seoa.ed_org_id 
+                  order by seoa.api_year asc
+              ) as rank_by_year
           from ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__student_education_organization_associations seoa
-              left join  ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes seo_ids on seoa.k_student=seo_ids.k_student
+              left join ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes seo_ids on seoa.k_student=seo_ids.k_student
+              join ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students on seoa.k_student = stg_ef3__students.k_student
           where seoa.tenant_code='${SNOWFLAKE_TENANT_CODE}'
           {% if "${ALLOW_MATCHING_ON_FUTURE_ENROLLMENTS}" != "True" %}
               and seoa.api_year=${SNOWFLAKE_API_YEAR}
@@ -86,27 +93,16 @@ sources:
               and seoa.api_year >= ${SNOWFLAKE_API_YEAR}
           {% endif %}
       ),
+      ids_deduped as (
+          select *
+          from ids
+          where rank_by_year = 1
+      ),
       aggd_ids as (
           select
-              tenant_code, api_year, k_student, ed_org_id,
+              tenant_code, api_year, k_student, ed_org_id, student_unique_id,
               array_agg(stu_id_code) as stu_id_codes
-          from ids group by 1,2,3,4
-      ), aggd_ids_ranked as (
-          select stu.student_unique_id,
-          aggd_ids.tenant_code,
-          aggd_ids.api_year,
-          aggd_ids.k_student,
-          aggd_ids.ed_org_id,
-          aggd_ids.stu_id_codes,
-          {% if "${ALLOW_MATCHING_ON_FUTURE_ENROLLMENTS}" != "True" %}
-          1 as rank_by_year
-          {% else %}
-          -- dedupe by student_unique_id if multiple years are allowed, taking 
-          -- minimum year
-          rank() over(partition by stu.student_unique_id, aggd_ids.ed_org_id order by aggd_ids.api_year asc) as rank_by_year
-          {% endif %}
-          from aggd_ids
-              join ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students stu on aggd_ids.k_student=stu.k_student
+          from ids group by 1,2,3,4,5
       )
       select
           object_construct('educationOrganizationId', ed_org_id,
@@ -114,8 +110,7 @@ sources:
               'rel', 'LocalEducationAgency')) as "educationOrganizationReference",
           object_construct('studentUniqueId', student_unique_id) as "studentReference",
           stu_id_codes as "studentIdentificationCodes"
-      from aggd_ids_ranked
-      where rank_by_year = 1
+      from aggd_ids
     {% endif %}
   
   {% if "${MATCH_RATES_SOURCE_TYPE}"=="file" %}
