@@ -44,6 +44,9 @@ sources:
   assessmentPeriodDescriptors:
     file: ./seeds/assessmentPeriodDescriptors.csv
     header_rows: 1
+  assessmentPlatformTypeDescriptors:
+    file: ./seeds/assessmentPlatformTypeDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -126,6 +129,13 @@ transformations:
           to: Grade_Namespace
           from: Grade_CodeValue
 
+  stage_assessment_platform_type:
+    source: $sources.assessmentPlatformTypeDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+
   grade_level_descriptors:
     source: $transformations.stage_grade_level #we need all the grade levels in assessment object
     operations:
@@ -180,7 +190,29 @@ transformations:
       - operation: keep_columns
         columns:
           - join_key
-          - period_json    
+          - period_json
+
+  assessment_platform_types:
+    source: $transformations.stage_assessment_platform_type
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "Key"
+          platform_type_json: >
+              {%raw-%} {%- if codeValue is not none and codeValue | length -%}
+              {
+                "platformTypeDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          platform_type_json: "{%raw%}{{platform_type_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns:
+          platform_type_json: agg(platform_type_json,,)    
 
   # Final assessments dataframe
   assessments:
@@ -202,7 +234,15 @@ transformations:
         left_key: join_key
         right_key: join_key
         right_keep_columns: 
-          - period_json     
+          - period_json
+      - operation: join
+        sources:
+          - $transformations.assessment_platform_types
+        join_type: left
+        left_key: join_key
+        right_key: join_key
+        right_keep_columns: 
+          - platform_type_json     
 
   # <<<<< Prepare objective-assessments <<<<<
   objective_assessments:
@@ -230,11 +270,85 @@ transformations:
         join_type: inner
         left_key: join_key
         right_key: join_key
+      - operation: modify_columns
+        columns:
+          SciMode: "{%raw%}{{ (SciMode | default('', true) | trim) }}{%endraw%}"
+          SocMode: "{%raw%}{{ (SocMode | default('', true) | trim) }}{%endraw%}"
+      #Choose mode based on assessmentIdentifier
       - operation: add_columns
         columns:
-          administration_date: "{%raw%}{{SchoolYear}}-05-15{%endraw%}" #administration_date: "{%raw%}{{${SCHOOL_YEAR} ~ '-05-15'}}{%endraw%}"
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{SchoolID}}-{{SchoolYear}}-{{assessmentIdentifier}}{%endraw%}"  
+          assessment_mode: >
+            {%raw-%}
+            {% if assessmentIdentifier == 'SC_PASS_Science' %}
+              {{ SciMode }}
+            {% elif assessmentIdentifier == 'SC_PASS_Social_Studies' %}
+              {{ SocMode }}
+            {% endif %}
+            {%-endraw%}
+          prefix: >
+            {%raw-%}
+             {% if assessmentIdentifier == 'SC_PASS_Science' %}Sci{% elif assessmentIdentifier == 'SC_PASS_Social_Studies' %}Soc{% endif %}
+            {%-endraw%}
+      - operation: add_columns
+        columns:
+          has_any_score: >
+            {% raw -%}
+            {% if prefix == 'Sci' %}
+              {{ 1 if (
+                  (SciSS   | default('', true) | string | trim and (SciSS   | string | lower != 'none')) or
+                  (SciAg   | default('', true) | string | trim and (SciAg   | string | lower != 'none'))
+                ) else 0 }}
+            {% elif prefix == 'Soc' %}
+              {{ 1 if (
+                  (SocSS   | default('', true) | string | trim and (SocSS   | string | lower != 'none')) or
+                  (SocAg   | default('', true) | string | trim and (SocAg   | string | lower != 'none'))
+                ) else 0 }}
+            {% else %}0{% endif %}
+            {%- endraw %}
+
+      - operation: add_columns
+        columns:
+          has_any_objective: >
+            {% raw -%}
+            {% if prefix == 'Sci' %}
+              {{ 1 if (
+                (SciLev1|default('',true)|string|trim and (SciLev1|string|lower!='none')) or
+                (SciLev2|default('',true)|string|trim and (SciLev2|string|lower!='none')) or
+                (SciLev3|default('',true)|string|trim and (SciLev3|string|lower!='none')) or
+                (SciLev4|default('',true)|string|trim and (SciLev4|string|lower!='none')) or
+                (SciLev5|default('',true)|string|trim and (SciLev5|string|lower!='none')) or
+                (SciLev6|default('',true)|string|trim and (SciLev6|string|lower!='none'))
+              ) else 0 }}
+            {% elif prefix == 'Soc' %}
+              {{ 1 if (
+                (SocLev1|default('',true)|string|trim and (SocLev1|string|lower!='none')) or
+                (SocLev2|default('',true)|string|trim and (SocLev2|string|lower!='none')) or
+                (SocLev3|default('',true)|string|trim and (SocLev3|string|lower!='none')) or
+                (SocLev4|default('',true)|string|trim and (SocLev4|string|lower!='none')) or
+                (SocLev5|default('',true)|string|trim and (SocLev5|string|lower!='none')) or
+                (SocLev6|default('',true)|string|trim and (SocLev6|string|lower!='none')) or
+                (SocLev7|default('',true)|string|trim and (SocLev7|string|lower!='none'))
+              ) else 0 }}
+            {% else %}0{% endif %}
+            {%- endraw %}
+
+      - operation: modify_columns
+        columns:
+          has_any_score: >
+            {% raw %}{{ (has_any_score | string | replace('\n','') | trim) | int }}{% endraw %}
+          has_any_objective: >
+            {% raw %}{{ (has_any_objective | string | replace('\n','') | trim) | int }}{% endraw %}
+      - operation: modify_columns
+        columns:
+          assessment_mode: "{%raw%}{{ assessment_mode_raw | lower | replace(' ', '') | replace('/', '-') }}{%endraw%}"
+      - operation: add_columns
+        columns:
+          administration_date: "{%raw%}{{SchoolYear}}-05-15{%endraw%}" 
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{SchoolID}}-{{SchoolYear}}-{{assessmentIdentifier}}-{{assessment_mode}}{%endraw%}"  
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+      - operation: filter_rows
+        query: has_any_score == '1' or has_any_objective =='1'
+        behavior: include
         
   # <<<<< Prepare student-assessments <<<<<
 
@@ -245,6 +359,7 @@ transformations:
       - operation: filter_rows
         query: SchoolID != "" and SchoolID != None
         behavior: include
+      - operation: distinct_rows
   # <<<<< Prepare AssessmentEducationOrganizationAssociations <<<<<
 
 destinations:
@@ -260,6 +375,7 @@ destinations:
     source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+    linearize: True
   studentAssessmentEducationOrganizationAssociations:
     source: $transformations.prepare_student_assessment_valid_school
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
@@ -289,3 +405,7 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
+  platformTypeDescriptors:
+    source: $sources.assessmentPlatformTypeDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl

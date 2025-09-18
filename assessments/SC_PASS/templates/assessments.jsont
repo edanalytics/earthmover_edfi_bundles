@@ -24,6 +24,7 @@
   ],
   "periods": [{{period_json}}],
   "assessedGradeLevels": [{{grade_json}}],
+  "platformTypes": [{{platform_type_json}}],
   {% set assessment = assessment_map[assessmentIdentifier] %}
 
   {#--------------- overall performance Level ---------------#}

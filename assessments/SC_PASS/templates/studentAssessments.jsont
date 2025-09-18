@@ -1,25 +1,25 @@
-{% set assessment_map = {
+{%- set assessment_map = {
     'SC_PASS_Science' : '01',
     'SC_PASS_Social_Studies' : '02'
-   } %}
+   } -%}
 
-{% set assessment_performance_map = {
+{%- set assessment_performance_map = {
     '01': 'SciLev',
     '02' : 'SocLev'
-   } %}
+   } -%}
 
-{% set assessment_append_map = {
+{%- set assessment_append_map = {
     '01': 'Sci',
     '02': 'Soc'
-   } %}
+   } -%}
 
-{% set reportingMethods = [
+{%- set reportingMethods = [
   ['SS','Integer'],['Ag','Level']
-  ] %}
+  ] -%}
 
-{% set performance_objective = ['Lev1','Lev2','Lev3','Lev4','Lev5','Lev6','Lev7'] %}
+{%- set performance_objective = ['Lev1','Lev2','Lev3','Lev4','Lev5','Lev6','Lev7'] -%}
 
-{% set objectives_reporting = {
+{%- set objectives_reporting = {
   'SciLev1': 'Science Standard 1',
   'SciLev2': 'Science Standard 2',
   'SciLev3': 'Science Standard 3',
@@ -33,9 +33,11 @@
   'SocLev5': 'Social Studies Standard 5',
   'SocLev6': 'Social Studies Standard 6',
   'SocLev7': 'Social Studies Standard 7'
-} %}
+} -%}
 
-  
+
+{%- set assessment = assessment_map[assessmentIdentifier] -%}
+
 {
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
@@ -50,14 +52,20 @@
   },
   "administrationDate": "{{administration_date}}"
 
-{% set assessment = assessment_map[assessmentIdentifier] %}
-
 {% set grade_column = assessment_append_map[assessment] ~ 'Grade' %}
 {% set gradeName = __row_data__[grade_column]|trim %}
 
   {%- if gradeName is not none and gradeName | length -%}
   ,"whenAssessedGradeLevelDescriptor": "{{gradeName}}"
   {% endif %}
+
+  {% set platform_column = assessment_append_map[assessment] ~ 'Mode' %}
+{% set platformName = __row_data__[platform_column]|trim %}
+
+  {%- if platformName is not none and platformName | length -%}
+  ,"platformTypeDescriptor": "{{namespace}}/PlatformTypeDescriptor#{{platformName}}"
+  {% endif %}
+
 
   {#  Accommodations #}
 
@@ -108,9 +116,6 @@
     ]
 {% endif %}
     
-  
-
-
 {#--------------- performance Level ---------------#}
 {% set performanceLevel = __row_data__[assessment_performance_map[assessment]] %}
 {% set performanceLevelName = "Lev" %}
@@ -136,9 +141,6 @@
 {% endif %}
     ]
 {% endif %}
-
-
-
 
 {#--------------- scores ---------------#}
 ,"scoreResults": [
@@ -195,8 +197,7 @@
       }
       ]   
       } 
-{% endif %}
-{% endfor %}
-
-  ]
+{%- endif -%}
+{%- endfor -%}
+]
 }
