@@ -1,8 +1,8 @@
 {%- set possible_scores = 
   [
-    [PercCorr, "Percent Correct", "Decimal"],
-    [SuggNMark, "Suggested Number Mark", "Integer"],
-    [SuggLMark, "Suggested Letter Mark", "Level"]
+    [PercCorr, "PercCorr", "Decimal"],
+    [SuggNMark, "SuggNMark", "Integer"],
+    [SuggLMark, "SuggLMark", "Level"]
   ] -%}
 
 {%- set scores = [] -%}
@@ -14,8 +14,8 @@
 
 {%- set possible_perf_levels = 
   [
-    [AchLev, "Achievement Level", "Integer"],
-    [AchLevExt, "Achievement Level Ext", "Level"]
+    [AchLev, "AchLev"],
+    [AchLevExt, "AchLevExt"]
   ] -%}
 
 {%- set perf_levels = [] -%}
