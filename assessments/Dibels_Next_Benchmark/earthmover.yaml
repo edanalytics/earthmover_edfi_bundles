@@ -53,7 +53,7 @@ transformations:
         sources:
           - $sources.gradeLevelDescriptors
         join_type: inner
-        left_key: enrollment_grade
+        left_key: grade
         right_key: original_grade
       - operation: add_columns
         columns:
