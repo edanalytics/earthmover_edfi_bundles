@@ -68,7 +68,7 @@
     "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{Semester}}"
   },
 
-  {# Here is the array for overall scores. Write if there is at least one value. We should add this validation. Should I add only this array to assessment.jsont? Currently they have included all the possibles scores. #}
+  {# Here is the array for overall scores. Write if there is at least one value. #}
  {% set valid_scores = [] %}
 {% for score_name in scores_without_objective_dictionary %}
   {% set ReportingMethod, SlotLength, DataType = scores_without_objective_dictionary[score_name] %}

@@ -130,7 +130,6 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          #school_year: ${SCHOOL_YEAR}
           schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
       - operation: map_values
@@ -169,7 +168,7 @@ transformations:
           joinKey: "Key"
       - operation: rename_columns
         columns:
-          to: Grade_Namespace
+          to: Grade_Descriptor
 
   # <<<<< Prepare descriptors <<<<<
 
@@ -223,12 +222,11 @@ transformations:
           - period_json
 
   grades_json:
-    #source: $transformations.cleaned_input
     source: $transformations.stage_grade_level #we need all the grade levels in assessment object
     operations:
       - operation: keep_columns
         columns:
-          - Grade_Namespace
+          - Grade_Descriptor
       - operation: distinct_rows
       - operation: add_columns
         columns:
@@ -236,7 +234,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{Grade_Namespace}}"
+              "gradeLevelDescriptor": "{{Grade_Descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -361,8 +359,7 @@ transformations:
         join_type: outer
         left_key: join_key
         right_key: join_key
-    # Cleanup level-slot combination as per appendix a. why are 19 levels? Shouldn't be 17? For WE, # shouldn't be test_slot == "7"?
-    # I don't understand the following lines, anyway all combinations are in the output file that not includes levels nor slots
+    # Cleanup level-slot combination as per appendix a.
     {% for i in range(5,19) %}
       {% if i > 8 %}
       - operation: filter_rows
@@ -430,7 +427,6 @@ transformations:
           - Level
       - operation: add_columns
         columns:
-          #SchoolYear: ${SCHOOL_YEAR}
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{schoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
