@@ -264,9 +264,10 @@
     "studentUniqueId": "{{student_unique_id|int}}"
   },
   "administrationDate": "{{administration_date}}",
-  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
-  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{grade}}"
-
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}"
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- endif -%}
   {%- if scores -%}
   , "scoreResults": [
     {% for score in scores %}
