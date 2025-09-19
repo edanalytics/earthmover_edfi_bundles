@@ -432,6 +432,10 @@ transformations:
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
           # Information regarding Form and Level for the assessment
           serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
+      # filter out rows with missing student IDs
+      - operation: filter_rows
+        query: "student_unique_id  != ''"
+        behavior: include
 
   # <<<<< Prepare student-assessments <<<<<
 
