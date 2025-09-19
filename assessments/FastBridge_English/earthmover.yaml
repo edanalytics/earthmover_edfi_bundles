@@ -62,14 +62,11 @@ transformations:
       # Convert column names to snake_case for easier template access
       - operation: snake_case_columns
       # Add required columns
-
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_earlyReading"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-
-
       # Create unique student assessment ID
       - operation: combine_columns
         columns:
@@ -89,6 +86,15 @@ transformations:
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
+      #join gradeleveldescriptor
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_key: grade
+        right_key: original_grade
+        right_keep_columns:
+        - gradeLevelDescriptor
       # filter out rows with missing student IDs
       - operation: filter_rows
         query: "student_unique_id	 != ''"

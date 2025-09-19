@@ -216,7 +216,7 @@
   },
   "administrationDate": "{{administration_date}}",
   "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
-  "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{grade}}"
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
 
   {%- if scores -%}
   , "scoreResults": [
