@@ -38,7 +38,7 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{adminDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
   {% if scores | length %}
   "scoreResults": [
     {% for score in scores %}

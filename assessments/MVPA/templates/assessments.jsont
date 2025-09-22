@@ -4,8 +4,8 @@
   "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": ["{{academicSubjectDescriptor}}"],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PercCorr",
