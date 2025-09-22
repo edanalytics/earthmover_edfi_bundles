@@ -11,7 +11,7 @@ To run this bundle, please add your own source file(s) and column(s):
 This template works with vendor layout file structure. The pre-execute script transforms the wide CSV format (seasons as columns) into a long format (seasons as rows) suitable for Ed-Fi ingestion. See the sample anonymized file.
 </details>
 
-Sample file: `data/Sample_FastBridge_earlyMath_2023_2024_deidentified.csv`
+Sample file: `data/Sample_earlyMath_deidentified.csv`
 
 ### CLI Parameters
 
@@ -34,15 +34,15 @@ fast_bridge_math_pre_exec(source_file, output_file)
 Example:
 ```python
 fast_bridge_math_pre_exec(
-    'data/Sample_FastBridge_earlyMath_2023_2024_deidentified.csv',
-    'data/Sample_FastBridge_earlyMath_2023_2024_deidentified_pivoted.csv'
+    'data/Sample_earlyMath_deidentified.csv',
+    'data/Sample_earlyMath_deidentified_pivoted.csv'
 )
 ```
 
 **Step 2: Running earthmover with the transformed file:**
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/Sample_FastBridge_earlyMath_2023_2024_deidentified_pivoted.csv",
+"INPUT_FILE": "data/Sample_earlyMath_deidentified_pivoted.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "State ID",
 "SCHOOL_YEAR": "2024"}'
