@@ -3,11 +3,7 @@
     "assessmentTitle": "{{assessment_title}}",
     "assessmentFamily": "{{assessment_family}}",
     "namespace": "{{namespace}}",
-    "academicSubjects": [
-        {
-            "academicSubjectDescriptor": "{{edfi_subject}}"
-        }
-    ],
+    "academicSubjects": [{{subject_json}}],
     "scores": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Category",

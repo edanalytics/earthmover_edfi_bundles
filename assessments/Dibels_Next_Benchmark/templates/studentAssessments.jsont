@@ -99,5 +99,5 @@
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
   ],
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
 }

@@ -1,0 +1,22 @@
+display_name: "Renaissance Star"
+path: "assessments/STAR"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE_OVERALL"
+    is_required: true
+    file_type: ["csv"]
+  - display_name: "Dashboard standards"
+    env_var: "INPUT_FILE_DS"
+    is_required: true
+    file_type: ["csv"]
+  - display_name: "Skill area"
+    env_var: "INPUT_FILE_SA"
+    is_required: true
+    file_type: ["csv"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+descriptor_mapping_files: ["academicSubjectDescriptors.csv", "gradeLevelDescriptors.csv"]

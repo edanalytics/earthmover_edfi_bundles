@@ -49,8 +49,8 @@
     "studentUniqueId": "{{student_id}}"
   },
   "administrationDate": "{{test_date}}",
-  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"{% if scores | length or all_obj_assessment | length %},{% endif %}
+  {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"{% if scores | length or all_obj_assessment | length %},{% endif %}
   {% endif %}  
   {% if scores | length %}
   "scoreResults": [
