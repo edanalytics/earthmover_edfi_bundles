@@ -2,7 +2,7 @@ state_dir: ~/.lightbeam/
 data_dir: ${DATA_DIR}
 namespace: ed-fi
 edfi_api:
-  base_url: ${BASE_URL}
+  base_url: ${EDFI_API_BASE_URL}
   version: 3
   mode: district_specific
   year: ${API_YEAR}

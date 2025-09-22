@@ -4,7 +4,7 @@
   "assessmentFamily": "CA-IREADY-DIAGNOSTIC",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": [{{category_json}}],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
   "academicSubjects": [{{subject_json}}],
   "performanceLevels": [
     {% set placement_levels = [

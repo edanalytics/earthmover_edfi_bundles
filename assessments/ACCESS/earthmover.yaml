@@ -850,31 +850,6 @@ transformations:
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  assessment_category_descriptors:
-    source: $sources.assessmentCategoryDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          category_json: >
-            {%raw-%}
-            {
-              "assessmentCategoryDescriptor": "{{edfi_descriptor}}"
-            },
-            {%-endraw%}
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{category_json | replace('\n', '')-}}{%endraw%}"
-      # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns:
-          category_json: agg(category_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-
   assessments:
     source: $sources.assessments
     operations:
@@ -892,7 +867,7 @@ transformations:
         right_key: assessmentIdentifier
       - operation: join
         sources:
-          - $transformations.assessment_category_descriptors
+          - $sources.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
