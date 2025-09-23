@@ -38,7 +38,26 @@
 
 {%- set assessment = assessment_map[assessmentIdentifier] -%}
 
-{
+{# --- Check if there is at least one score or objective  --- #}
+{# Scores #}
+{%- set vars = {'any_score': False} -%} 
+{%- for reportingKey, reportingDataType in reportingMethods -%}
+  {%- set val = __row_data__[assessment_append_map[assessment] ~ reportingKey] -%}
+  {%- if val != None and val | string != 'None' and val | string != 'none' and val | string | trim != '' -%}
+   {%- if vars.update({'any_score': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{# Objectives #}
+{%- set vars = {'any_obj': False} -%} 
+{%- for perf in performance_objective -%}
+  {%- set key = assessment_append_map[assessment] ~ perf -%}
+  {%- if key in __row_data__ and (__row_data__[key]|string|trim) -%}
+    {%- if vars.update({'any_obj': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if vars.any_score or vars.any_obj -%}{
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
@@ -199,5 +218,4 @@
       } 
 {%- endif -%}
 {%- endfor -%}
-]
-}
+]}{%- endif -%}
