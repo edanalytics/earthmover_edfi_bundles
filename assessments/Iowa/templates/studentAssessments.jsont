@@ -203,7 +203,8 @@
         {% endif %}
         {# Don't write if the Test is not included in the Battery #}
         "scoreResults": [
-          {% set vars = {'is_first_item': True} %} 
+          {% set vars = {'is_first_item': True, 'has_score': False} %}
+          
           {% for score_name in scores_names %}
             {% set ReportingMethod, SlotLength, DataType = scores_names[score_name] %}
             {% set score_string = __row_data__[score_name] %}            
@@ -255,6 +256,7 @@
               ) %}
 
               {% if scoreValue|length > 0 and is_valid %} {# add and is_valid  when validate data types#}
+              {% if vars.update({'has_score': True}) %} {% endif %}
                 {% if not vars.is_first_item %}
                 ,
                 {% endif %}
@@ -267,6 +269,13 @@
               {% endif %}
             {% endif %}
           {% endfor %}
+          {% if not vars.has_score %}
+          {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Score",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+          "result": "No Score"
+          }
+          {% endif %}
         ]
       }
     {% if loop.index < loop.length %}
