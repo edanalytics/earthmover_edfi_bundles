@@ -16,12 +16,12 @@ earthmover run -c earthmover.yaml -p '{
 "OUTPUT_DIR": "output",
 "STUDENT_ID_NAME": "StateStudentID",
 "API_YEAR" : "2024",
-"ALTERNATE": "N" }'
+"FORMAT": "Standard" }'
 ```
 
 Runtime notes:
 - If you are processing an ACCESS file from 2021 or earlier, use `-c earthmover_2021.yaml`.
-- The <code>ALTERNATE</code> parameter must be set to "Y" for Alternate results files and "N" for Summative/Standard files.
+- The <code>FORMAT</code> parameter must be set to "Standard" for Summative/Standard files and "Alternate" for Alternate results files.
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash

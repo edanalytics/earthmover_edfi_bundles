@@ -11,8 +11,8 @@ input_params:
   - display_name: "School Year"
     env_var: "API_YEAR"
     is_required: true
-  - display_name: "Alternate"
-    env_var: "ALTERNATE"
+  - display_name: "Format"
+    env_var: "FORMAT"
     is_required: true
-    allowed_values: ["Y", "N"]
+    allowed_values: ["Standard", "Alternate"]
 descriptor_mapping_files: ["academicSubjectDescriptors.csv", "assessmentCategoryDescriptors.csv", "gradeLevelDescriptors.csv"]

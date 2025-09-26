@@ -13,7 +13,7 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'UniqueDRCStudentID,StateStudentID,DistrictStudentID'
-    ALTERNATE: ''
+    FORMAT: 'Standard'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
@@ -23,7 +23,7 @@ sources:
     rename_cols: True
     columns:
       {% if "${API_YEAR}"|int > 2021 %}
-        {% if "${ALTERNATE}" == "N" %}
+        {% if "${FORMAT}" == "Standard" %}
         # Standard (post-2021)
         - StateNameAbbreviation
         - DistrictName
@@ -192,7 +192,7 @@ sources:
         - UniqueRecordID
         - DSRUpdated
         {% endif %}
-        {% if "${ALTERNATE}" == "Y" %}
+        {% if "${FORMAT}" == "Alternate" %}
         # Alternate (post-2021)
         - StateNameAbbreviation
         - DistrictName
@@ -377,7 +377,7 @@ sources:
         - DSRUpdated
         {% endif %}
       {% elif "${API_YEAR}"|int <= 2021 %}
-        {% if "${ALTERNATE}" == "N" %}
+        {% if "${FORMAT}" == "Standard" %}
         # Standard (pre-2021)
         - UniqueDRCStudentID
         - ReportedRecord
@@ -544,7 +544,7 @@ sources:
         - TierSelectionOverrideSpeaking
         - TierSelectionOverrideWriting
         {% endif %}
-        {% if "${ALTERNATE}" == "Y" %}
+        {% if "${FORMAT}" == "Alternate" %}
         # Alternate (pre-2021)
         - UniqueDRCStudentID
         - ReportedRecord
@@ -771,9 +771,14 @@ transformations:
           namespace: "uri://wida.wisc.edu/assess/access"
           defaultTestStartDateTime: "${API_YEAR}-04-01 00:00:00"
           school_year: ${API_YEAR}
-          alternate_assessment: ${ALTERNATE}
+          alternate_assessment:
+            {% if "${FORMAT}" == "Standard" %}
+              "N"
+            {% else %}
+              "Y"
+            {% endif %}
           assessment_identifier:
-            {% if "${ALTERNATE}" == "N" %}
+            {% if "${FORMAT}" == "Standard" %}
               "ACCESS"
             {% else %}
               "Alternate-ACCESS"
