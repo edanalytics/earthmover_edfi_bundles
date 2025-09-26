@@ -1,4 +1,4 @@
-display_name: "PSAT_SAT"
+display_name: "PSAT/SAT"
 path: "assessments/PSAT_SAT"
 valid_edfi: ">=3.0"
 report_resources: ["studentAssessments"]
@@ -14,5 +14,5 @@ input_params:
   - display_name: "Test Type"
     env_var: "TEST_TYPE"
     is_required: true
-    allowed_values: ["PSAT", "SAT"]
+    allowed_values: ["PSAT 8/9", "PSAT 10", "PSAT/NMSQT", "SAT"]
 descriptor_mapping_files: ["academicSubjectDescriptors.csv", "gradeLevelDescriptors.csv","assessmentCategoryDescriptors.csv"]

@@ -264,8 +264,16 @@ transformations:
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  grade_level_descriptors:
+  # Extra filter operation to remove undefined grade levels and ensure assessedGradeLevels array does not include nulls 
+  grade_level_descriptors__filtered:
     source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: filter_rows
+        query: edfi_descriptor != ""
+        behavior: include
+
+  grade_level_descriptors:
+    source: $transformations.grade_level_descriptors__filtered
     operations:
       - operation: distinct_rows
         columns:
