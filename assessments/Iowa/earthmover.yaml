@@ -55,18 +55,13 @@ transformations:
       # Filter only required columns
       - operation: rename_columns
         columns:
-          # "Test": "Test"
-          "State Name": "State_Name"
+          "District Code": "District_Code"
           "Building Code": "Building_Code"
           "Class Grade": "Class_Grade"
           "Date Tested": "Date_Tested"
           "Student ID": "Student_Id"
           "Secondary Student ID": "Secondary_Student_Id"
-          # "Battery": "Battery"
-          # "Level": "Level"
-          # "Form": "Form"
           "Norm Year": "Norm_Year"
-          # "Semester": "Semester"
           "Programs String": "Programs_String"
           "Number Attempted (NA)": "Number_Attempted"
           "Completion Criteria (CC)": "Completion_Criteria"
@@ -378,7 +373,7 @@ transformations:
           - Level
       - operation: add_columns
         columns:
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{State}}-{{District}}-{{School}}-{{schoolYear}}-{{assessmentIdentifier}}-{{assessment_period_codeValue}}{%endraw%}" 
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Semester}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
           # Information regarding Form and Level for the assessment
