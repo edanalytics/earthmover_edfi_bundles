@@ -28,6 +28,17 @@
     12: 'Extended Time',
     13: 'Reserved for future'
   } %}
+
+  {% set has_acc = false %}
+{% if Mode_of_Administration %}
+  {% for c in Mode_of_Administration %}
+    {% if loop.index0 < 12 and c == '1' %}
+      {% set has_acc = true %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if has_acc %}
   {% set vars = {'is_first_item': True} %}  
   {% if Mode_of_Administration|length > 0 and Mode_of_Administration != '0' %}
     "accommodations": [
@@ -44,6 +55,7 @@
     {% endfor %}
     ],
   {% endif %}
+{% endif %}
   {#-----------------------------------------------------------------------------------------------------------#}
   {# Mapping Definition 
 
@@ -163,7 +175,7 @@
     "National_Percentile_Rank_Norm_Based"                               : (["National Percentile Rank based on 2011/2005 norms",  2, "Percentile" ]),
     "National_Stanine_Norm_Based"                                       : (["National Stanine based on 2011/2005 norms",          1, "Integer"    ]),    
     "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct" : (["SDCD Levels Percent Correct",                        3, "Percentage" ]),
-    "Common_Core_Standards_Domain_Percent_Correct"                      : (["CSS Domain Percent Correct",                         3, "Percentage" ]),
+    "Common_Core_Standards_Domain_Percent_Correct"                      : (["CCS Domain Percent Correct",                         3, "Percentage" ]),
     "State_Predicted_Scale_Score_Low_Score_of_Range"                    : (["State Predicted Scale Score: Low Score of Range",    4, "Integer" ]),
     "State_Predicted_Scale_Score_High_Score_of_Range"                   : (["State Predicted Scale Score: High Score of Range",   4, "Integer" ]),
     "State_Predicted_Scale_Score"                                       : (["State Predicted Scale Score",                        4, "Integer" ]),
@@ -172,8 +184,10 @@
     "Catholic_Private_PR"                                               : (["Catholic - Private PR",                              2, "Percentile" ]),
     "HSES_PR"                                                           : (["HSES PR",                                            2, "Percentile" ]),
     "LSES_PR"                                                           : (["LSES PR",                                            2, "Percentile" ]),
-    "Common_Core_Standards_(CSS)_without_Computation_Domain_Percent_Correct": (["Common Core Standards (CSS) without Computation Domain Percent Correct",3, "Percentage" ])
-
+    "Common_Core_Standards_(CSS)_without_Computation_Domain_Percent_Correct": (["Common Core Standards (CCS) without Computation Domain Percent Correct",3, "Percentage" ]),
+    "Standard_Score_Universal_Scale_Score"                              : (["Standard Score/Universal Scale Score",               3, "Integer"    ]),
+    "National_Percentile_Rank_Grade_Percentile_Rank"                    : (["National Percentile Rank/Grade Percentile Rank",     2, "Percentile" ]),
+    "National_Stanine_Grade_Stanine"                                    : (["National Stanine/Grade Stanine",                     1, "Integer"    ]),
   } %}
 
   {#-----------------------------------------------------------------------------------------------------------#}

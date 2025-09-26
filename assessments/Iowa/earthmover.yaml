@@ -16,61 +16,6 @@ config:
     DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
 
 sources:
-  {% set columns_dictionary = ({
-    "Test":"Test",
-    "State Name":"State_Name",
-    "Building Code":"Building_Code",
-    "Class Grade":"Class_Grade",
-    "Date Tested":"Date_Tested",
-    "GUID":"Guid",
-    "Student ID":"Student_Id",
-    "Secondary Student ID":"Secondary_Student_Id",
-    "Battery":"Battery",
-    "Level":"Level",
-    "Form":"Form",
-    "Norm Year":"Norm_Year",
-    "Semester":"Semester",
-    "Programs String":"Programs_String",
-    "Number Attempted (NA)":"Number_Attempted",
-    "Completion Criteria (CC)":"Completion_Criteria",
-    "Raw Score (RS)":"Raw_Score",
-    "Standard Score (SS)":"Standard_Score",
-    "Grade Equivalent (GE)":"Grade_Equivalent",
-    "National Percentile Rank (NPR)":"National_Percentile_Rank",
-    "National Curve Equivalent (NCE)":"National_Curve_Equivalent",
-    "National Stanine (NS)":"National_Stanine",
-    "Predicted Standard Score (PSS)":"Predicted_Standard_Score",
-    "Predicted Grade Equivalent (PGE)":"Predicted_Grade_Equivalent",
-    "Predicted National Percentile Rank (PNPR)":"Predicted_National_Percentile_Rank",
-    "Predicted Standard Score Diffs":"Predicted_Standard_Score_Diffs",
-    "Predicted Grade Equivalent Diffs":"Predicted_Grade_Equivalent_Diffs",
-    "Significant Diff Indicators":"Significant_Diff_Indicators",
-    "Local Percentil Rank":"Local_Percentil_Rank",
-    "Local Stanine":"Local_Stanine",
-    "Catholic - Private PR":"Catholic_Private_PR",
-    "HSES PR":"HSES_PR",
-    "Predicted SAT Critical Reading High":"Predicted_SAT_Critical_Reading_High",
-    "Predicted SAT Critical Reading Low":"Predicted_SAT_Critical_Reading_Low",
-    "Predicted SAT Math High":"Predicted_SAT_Math_High",
-    "Predicted SAT Math Low":"Predicted_SAT_Math_Low",
-    "Predicted ACT Composite High":"Predicted_ACT_Composite_High",
-    "Predicted ACT Composite Low":"Predicted_ACT_Composite_Low",
-    "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct":"Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct",
-    "Common Core Standards (CSS) Domain Percent Correct":"Common_Core_Standards_Domain_Percent_Correct",
-    "College Readiness":"College_Readiness",
-    "Standard Score based on 2011 or 2005 norms":"Standard_Score_Norm_Based",
-    "Grade Equivalent based on 2011 or 2005 norms":"Grade_Equivalent_Norm_Based",
-    "National Percentile Rank based on 2011 or 2005 norms":"National_Percentile_Rank_Norm_Based",
-    "National Stanine based on 2011 or 2005 norms":"National_Stanine_Norm_Based",
-    "Common Core Standards (CSS) without Computation Domain Percent Correct":"Common_Core_Standards_(CSS)_without_Computation_Domain_Percent_Correct",      
-    "State Predicted Scale Score":"State_Predicted_Scale_Score",
-    "PR Valid Flag":"PR_Valid_Flag",
-    "LSES PR":"LSES_PR",
-    "State Predicted Scale Score: Low Score of Range":"State_Predicted_Scale_Score_Low_Score_of_Range",
-    "State Predicted Scale Score: High Score of Range":"State_Predicted_Scale_Score_High_Score_of_Range",
-    "Mode of Administration":"Mode_of_Administration"
-    }) %}
-
   input:
     file: ${INPUT_FILE}
     header_rows: 1
@@ -108,21 +53,45 @@ transformations:
     source: $transformations.input
     operations:
       # Filter only required columns
-      - operation: keep_columns
-        columns:
-        {% for col in columns_dictionary.keys() %}
-          - "{{ col }}"
-        {% endfor %}
-      # Simplify column names
       - operation: rename_columns
         columns:
-        {% for old,new in columns_dictionary.items() %}
-        {% if old != new %} #avoids column name overwrite warning
-          "{{ old }}": "{{ new }}"
-        {% endif %}
-        {% endfor %}
+          # "Test": "Test"
+          "State Name": "State_Name"
+          "Building Code": "Building_Code"
+          "Class Grade": "Class_Grade"
+          "Date Tested": "Date_Tested"
+          "Student ID": "Student_Id"
+          "Secondary Student ID": "Secondary_Student_Id"
+          # "Battery": "Battery"
+          # "Level": "Level"
+          # "Form": "Form"
+          "Norm Year": "Norm_Year"
+          # "Semester": "Semester"
+          "Programs String": "Programs_String"
+          "Number Attempted (NA)": "Number_Attempted"
+          "Completion Criteria (CC)": "Completion_Criteria"
+          "Raw Score (RS)": "Raw_Score"
+      # Simplify column names
+      - operation: add_columns
+        columns:
+          Standard_Score: "{% raw -%}{{ __row_data__.get('Standard Score (SS)') or ''}}{%- endraw %}"
+          National_Percentile_Rank: "{% raw -%}{{ __row_data__.get('National Percentile Rank (NPR)') or ''}}{%- endraw %}"
+          National_Stanine: "{% raw -%}{{ __row_data__.get('National Stanine (NS)') or ''}}{%- endraw %}"
+          Standard_Score_Universal_Scale_Score: "{% raw -%}{{ __row_data__.get('Standard Score (SS)/Universal Scale Score (USS)') or ''}}{%- endraw %}"
+          National_Percentile_Rank_Grade_Percentile_Rank: "{% raw -%}{{ __row_data__.get('National Percentile Rank (NPR)/Grade Percentile Rank (GPR)') or ''}}{%- endraw %}"
+          National_Stanine_Grade_Stanine: "{% raw -%}{{ __row_data__.get('National Stanine (NS)/Grade Stanine (GS)') or ''}}{%- endraw %}"
+          Local_Percentil_Rank: "{% raw -%}{{ __row_data__.get('Local Percentil Rank')  or __row_data__.get('Local Percentile Rank') or ''}}{%- endraw %}"
+          Local_Stanine: "{% raw -%}{{ __row_data__.get('Local Stanine')  or __row_data__.get('Local Stanines') or ''}}{%- endraw %}"
+          Common_Core_Standards_Domain_Percent_Correct: "{% raw -%}{{ __row_data__.get('Common Core Standards (CCS) Domain Percent Correct')  or __row_data__.get('Common Core Standards (CSS) Domain Percent Correct') or ''}}{%- endraw %}"
+          Common_Core_Standards_without_Computation_Domain_Percent_Correct: "{% raw -%}{{ __row_data__.get('Common Core Standards (CCS) without Computation Domain Percent Correct')  or __row_data__.get('Common Core Standards (CSS) without Computation Domain Percent Correct') or ''}}{%- endraw %}"
+          Standard_Score_Norm_Based: "{% raw -%}{{ __row_data__.get('Standard Score based on 2011 or 2005 norms')  or __row_data__.get('Standard Score based on 2005 norms') or ''}}{%- endraw %}"
+          Grade_Equivalent_Norm_Based: "{% raw -%}{{ __row_data__.get('Grade Equivalent based on 2011 or 2005 norms')  or __row_data__.get('Grade Equivalent based on 2005 norms') or ''}}{%- endraw %}"
+          National_Percentile_Rank_Norm_Based: "{% raw -%}{{ __row_data__.get('National Percentile Rank based on 2011 or 2005 norms')  or __row_data__.get('National Percentile Rank based on 2005 norms') or ''}}{%- endraw %}"
+          National_Stanine_Norm_Based: "{% raw -%}{{ __row_data__.get('National Stanine based on 2011 or 2005 norms')  or __row_data__.get('National Stanine based on 2005 norms') or ''}}{%- endraw %}"
+          Mode_of_Administration: "{% raw -%}{{ __row_data__.get('Mode of Administration String')  or __row_data__.get('Mode of Administration') or ''}}{%- endraw %}"
       - operation: modify_columns
         columns:
+          Level: "{% raw -%}{{ (Level | int) | string if Level is not none and Level|string|trim != '' else '' }}{%- endraw %}"
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
@@ -153,13 +122,6 @@ transformations:
         columns:
           join_key: "1"
 
-  # >>>>> Prepare descriptors >>>>>
-
-  accommodationDescriptors:
-    source: $sources.accommodationDescriptors
-    operations:
-      - operation: distinct_rows
-
   stage_grade_level:
     source: $sources.gradeLevelDescriptors
     operations:
@@ -170,9 +132,6 @@ transformations:
         columns:
           to: Grade_Descriptor
 
-  # <<<<< Prepare descriptors <<<<<
-
-  # >>>>> Prepare assessments >>>>>
   performance_levels:
     source: $sources.performanceLevelDescriptors
     operations:
@@ -222,7 +181,7 @@ transformations:
           - period_json
 
   grades_json:
-    source: $transformations.stage_grade_level #we need all the grade levels in assessment object
+    source: $transformations.stage_grade_level 
     operations:
       - operation: keep_columns
         columns:
@@ -338,10 +297,6 @@ transformations:
         right_keys: 
           - join_key
   
-  # <<<<< Prepare assessments <<<<<
-
-  # >>>>> Prepare objective-assessments >>>>>
-
   objectiveAssessments:
     source: $transformations.assessments_source_modified
     operations:
@@ -406,10 +361,6 @@ transformations:
           - performance_json
       - operation: distinct_rows
 
-  # <<<<< Prepare objective-assessments <<<<<
-
-  # >>>>> Prepare student-assessments >>>>>
-
   student_assessments:
     source: $transformations.cleaned_input
     operations:
@@ -437,16 +388,15 @@ transformations:
         query: "student_unique_id  != ''"
         behavior: include
 
-  # <<<<< Prepare student-assessments <<<<<
-
-  # >>>>> Prepare student-assessments >>>>>
   prepare_student_assessment_valid_school:
     source: $transformations.student_assessments
     operations:
+      - operation: modify_columns
+        columns:
+          Building_Code: "{% raw -%}{{ (Building_Code | int) | string if Building_Code is not none and Level|string|trim != '' else '' }}{%- endraw %}"
       - operation: filter_rows
         query: Building_Code != "" and Building_Code != None
         behavior: include
-  # <<<<< Prepare student-assessments <<<<<
 
 destinations:
   assessments:
@@ -489,7 +439,7 @@ destinations:
     extension: jsonl
     linearize: True
   accommodationDescriptors:
-    source: $transformations.accommodationDescriptors
+    source: $sources.accommodationDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
