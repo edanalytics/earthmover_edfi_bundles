@@ -9,11 +9,11 @@ input_files:
     file_type: ["csv"]
   - display_name: "Dashboard standards"
     env_var: "INPUT_FILE_DS"
-    is_required: true
+    is_required: false
     file_type: ["csv"]
   - display_name: "Skill area"
     env_var: "INPUT_FILE_SA"
-    is_required: true
+    is_required: false
     file_type: ["csv"]
 input_params:
   - display_name: "School Year"
