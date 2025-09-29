@@ -162,11 +162,6 @@ transformations:
   {{edfi_student_id_column}}_filtered:
     source: $transformations.unpacked_edfi_roster
     operations:
-      - operation: add_columns
-        columns:
-          debug_query: "`{{edfi_student_id_column}}` != ''"
-          debug_column: "{{edfi_student_id_column}}"
-          debug_raw: "{{edfi_student_id_column}}"
       - operation: filter_rows
         query:  "`{{edfi_student_id_column}}` != ''"
         behavior: include
