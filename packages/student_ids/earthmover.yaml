@@ -163,7 +163,7 @@ transformations:
     source: $transformations.unpacked_edfi_roster
     operations:  
       - operation: filter_rows
-        query:  "{{edfi_student_id_column}} != ''"
+        query: "`{{edfi_student_id_column}}` != ''"
         behavior: include
       - operation: distinct_rows
         columns:
