@@ -159,6 +159,16 @@ transformations:
           {% endfor %}
 
   {% for edfi_student_id_column in edfi_student_id_types -%}
+  debug_backticks:
+    source: $transformations.unpacked_edfi_roster
+    operations:
+      - operation: add_columns
+        columns:
+          debug_query: "`{{edfi_student_id_column}}` != ''"
+          debug_column: "{{edfi_student_id_column}}"
+          debug_raw: "{{edfi_student_id_column}}"
+      debug: True
+
   {{edfi_student_id_column}}_filtered:
     source: $transformations.unpacked_edfi_roster
     operations:  
