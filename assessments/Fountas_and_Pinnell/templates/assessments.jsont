@@ -1,15 +1,15 @@
 {
+  "assessmentIdentifier": "{{ assessmentIdentifier }}",
+  "namespace": "{{ namespace }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
     }
   ],
-  "assessmentIdentifier": "{{ assessmentIdentifier }}",
-  "namespace": "{{ namespace }}",
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",  
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
-  "assessmentFamily": "{{ assessmentFamily }}",
-  "assessmentTitle": "{{ assessmentTitle }}",
-  "performanceLevels": [{{ performance_levels_json }}],
-  "scores": [{{scores_json}}]
+  "performanceLevels": [{{ performance_json }}],
+  "scores": [{{score_json}}]
 }

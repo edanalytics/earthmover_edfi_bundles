@@ -2,8 +2,7 @@
 
 # Assessments
 ## Assessments Identifiers
-  - F&P-Text Reading
-  - F&P-Comprehension
+  - Fountas_and_Pinnell
 
 ## Assessment Family
 Fountas and Pinnell
@@ -11,13 +10,12 @@ Fountas and Pinnell
 ## Namespace
 Namespace: uri://fountasandpinnell.com/bas
 
-# Objectives
-## Objectives Identifiers
-For F&P-Text Reading assessment:
+# Overall scores
+## Assessment Score Method Descriptors
  - Fluency Level
  - Self Correction Rate
  - Words Per Minute
- - Text Reading Accuracy
+ - Text Reading Accuracy 
  - Text Reading Level
  - Early Literacy Behaviors
  - Letter Recognition
@@ -25,17 +23,16 @@ For F&P-Text Reading assessment:
  - High Frequency Words
  - Rhyming Assessment
  - Word Writing
- 
-  
-For F&P-Comprehension assessment:
+ - Lexile Level  
  - Comprehension
  - Comprehension2
  - Meaning
  - Visual
+ - Comprehension Level
 
 
-# Performance levels
-For F&P-Text Reading assessment: Lexile Level (is it an overall assessment performance level or objective performance level???)
+# Overall Performance levels
+For Lexile Level reporting method
  - BR-25
  - 26-199
  - 200-299
@@ -45,7 +42,7 @@ For F&P-Text Reading assessment: Lexile Level (is it an overall assessment perfo
  - 750-949
  - 950-Up
 
-For F&P-Comprehension assessment: Comprehension Level (is it an overall assessment performance level or objective performance level???)
+For Comprehension Level reporting method
  - Approaching Proficiency
  - Limited Proficiency
  - Proficient
@@ -54,23 +51,18 @@ For F&P-Comprehension assessment: Comprehension Level (is it an overall assessme
  - Limited
  - Unsatisfactory
  
-
-## Assessments Score Method Descriptors
+## Genre  how to map?  SerialNumber of eventDescription?     or SCORE directly
+- Fiction
+- Nonfiction
+- 
+<!-- ## Assessments Score Method Descriptors
  - Lexile
  - Level
  - Percent
  - Rate
  - Rubric
- - Raw score
+ - Raw score -->
   
-## Genre ????? Should I map? If so, how to map? 
-- Fiction
-- Nonfiction
-
-## TextReading column ?????
-From Pre-A, A, B .... Z
-It seems to be difficulty ranges, related to gradeLevels.  Should I map?
-
 
 
 ## Reasoning
@@ -81,7 +73,6 @@ The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide e
 ## Input Requirements
 
 ## Bundle Seeds
-  - objectiveAssessments.csv
   - assessmentReportingMethodDescriptors.csv
   - assessments.csv
   - gradeMappings.csv
@@ -92,7 +83,6 @@ The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide e
   - assessmentReportingMethodDescriptors
   - assessments.jsont
   - descriptors.jsont
-  - objectivesAssessments.jsont
   - studentAssessmentEducationOrganizationAssociations.jsont
   - studentAssessments.jsont
 
@@ -121,7 +111,6 @@ The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide e
 - assessmentCategoryMethodDescriptors.jsonl
 - assessmentReportingMethodDescriptors.jsonl
 - assessments.jsonl
-- objectiveAssessments.jsonl
 - performanceLevelDescriptors.jsonl
 - studentAssessmentEducationOrganizationAssociations.jsonl
 - studentAssessments.jsonl

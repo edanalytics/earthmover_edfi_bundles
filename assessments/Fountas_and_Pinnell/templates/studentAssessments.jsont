@@ -4,92 +4,93 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
   },
-  "reportedSchoolReference": {
-    "schoolId": {{SchoolCode}}
-  },
   "schoolYearTypeReference": {
     "schoolYear": {{SchoolYear}}
   },
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
-  },
+  }
+  {%- if GradeLevel is not none and GradeLevel | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{GradeLevel}}"
+  {% endif %}
+
  
-  {#-----------------------------------------------------------------------------------------------------------#}
+  {%- set reportingMethodsScores = [
+  ['TextReadingAccuracy','Text Reading Accuracy','Percentile'],
+  ['TextReading','Text Reading Level','Level'],
+  ['FluencyLevel','Fluency Level','Float'],
+  ['WordsPerMinute','Words Per Minute','Integer'],
+  ['SelfCorrectionRate','Self Correction Rate','Float'],
+  ['EarlyLiteracyBehaviors','Early Literacy Behaviors','Integer'],
+  ['LetterRecognition','Letter Recognition','Integer'],
+  ['InitialSounds','Initial Sounds','Integer'],
+  ['HighFrequencyWords','High Frequency Words','Integer'],
+  ['RhymingAssessment','Rhyming Assessment','Integer'],
+  ['Comprehension','Comprehension','Percentile'],
+  ['Comprehension2','Comprehension 2','Percentile'],
+  ['Meaning','Meaning','Integer'],
+  ['Visual','Visual','Integer'],
+  ['WordWriting','Word Writing','Integer'],
+  ['Genre','Genre','Level']
+  ] -%}
 
-  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
-  {% set textReadingObjectiveScores = {
-    'TextReadingAccuracy' : ('Text Reading Accuracy', 'Percentile'),
-    'TextReading' : ('Text Reading Level', 'String'),
-    'FluencyLevel' : ('Fluency Level', 'Float'),
-    'WordsPerMinute' : ('Words Per Minute', 'Integer'),
-    'SelfCorrectionRate': ('Self Correction Rate', 'Float'),
-    'EarlyLiteracyBehaviors': ('Early Literacy Behaviors', 'Integer'),
-    'LetterRecognition': ('Letter Recognition', 'Integer'),
-    'InitialSounds': ('Initial Sounds', 'Integer'),
-    'HighFrequencyWords': ('High Frequency Words', 'Integer'),
-    'RhymingAssessment': ('Rhyming Assessment', 'Integer')
-    } %}
+{# --- Check if there is at least one score  --- #}
+{# Scores #}
+{%- set vars = {'any_score': False} -%} 
+{%- for reportingKey, reportingMethod, reportingDataType in reportingMethodsScores -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+   {%- if vars.update({'any_score': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
 
-  {# SourceFileColumnName : (ReportingMethodDescriptorCodeValue, ResultTypeDescriptorCodeValue) #}
-  {% set comprehensionObjectiveScores = {
-  'Comprehension' : ('Comprehension Accuracy', 'Percentile'),
-  'Meaning': ('Meaning', 'Integer'),
-  'Visual': ('Visual', 'Integer'),
-  'WordWriting': ('Word Writing', 'Integer')
-  } %}
+{%- if vars.any_score  -%}
+,"scoreResults": [
+  {%- set comma = joiner(",") -%}
+  {%- for reportingKey, reportingMethod, reportingDataType in reportingMethodsScores -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+  {{ comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{reportingDataType}}",
+      "result": "{{val}}"
+    }
+  {%- endif -%}
+  {%- endfor -%}
+]
+{%- endif -%}
 
-  {# identificationCode : <Dictionaries defined above> #}
-  {% set objective_dict_mappings = {
-    'Text Reading': textReadingObjectiveScores,
-    'Comprehension' : comprehensionObjectiveScores
-  } %}
 
+{%- set reportingMethodsPerformance = [
+  ['LexileLevel','Lexile Level'],
+  ['ComprehensionLevel','Comprehension Level']
+  ] -%}
 
-  "studentObjectiveAssessments": [ 
-      {
-        "administrationEndDate": "{{DateTaken}}",
-        "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{assessmentIdentifier}}",
-            "identificationCode": "{{identificationCode}}",
-            "namespace": "{{namespace}}"
-        },
-        "performanceLevels": [
-          {% if identificationCode == "Comprehension" %}
-            {% if ComprehensionLevel == "NULL" or ComprehensionLevel|length == 0 %}
-            {
-              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
-              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#N/A",
-              "performanceLevelIndicatorName": "N/A"
-            }
-            {% else %}
-            {
-              "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Comprehension Level",
-              "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{ComprehensionLevel}}",
-              "performanceLevelIndicatorName": "{{ComprehensionLevel}}"
-            }
-            {% endif %}
-          {% else %}
-          {
-            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#Lexile Level",
-            "performanceLevelDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/PerformanceLevelDescriptor#{{LexileLevel}}",
-            "performanceLevelIndicatorName": "{{LexileLevel}}"
-          }
-          {% endif %}
-        ],
-        "scoreResults": [
-          {% set mapping_dictionary = objective_dict_mappings[identificationCode] %}
-          {% for (colName,colValue) in mapping_dictionary.items() %}
-            {
-            "assessmentReportingMethodDescriptor": "{{descriptor_namespace_override}}/FountasAndPinnell/AssessmentReportingMethodDescriptor#{{colValue[0]}}",
-            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{colValue[1]}}",
-            "result": "{{__row_data__[colName]}}"
-            }
-            {% if loop.index < loop.length %}
-              ,
-            {% endif %}
-          {% endfor %}
-        ]
-      }    
-  ],
-  "whenAssessedGradeLevelDescriptor": "{{GradeLevel}}" 
+{# --- Check if there is at least one performance  --- #}
+{# Performance #}
+{%- set vars = {'any_performance': False} -%} 
+{%- for  reportingKey, reportingMethod in reportingMethodsPerformance -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+   {%- if vars.update({'any_performance': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if vars.any_performance  -%}
+,"performanceLevels": [
+  {%- set comma = joiner(",") -%}
+  {%- for reportingKey, reportingMethod in reportingMethodsPerformance -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+  {{ comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{val}}",
+      "performanceLevelMet": true
+    }
+  {%- endif -%}
+  {%- endfor -%}
+]
+{%- endif -%}
 }
