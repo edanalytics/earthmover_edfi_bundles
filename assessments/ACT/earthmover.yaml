@@ -21,9 +21,6 @@ sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
-    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -124,7 +121,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -140,35 +137,6 @@ transformations:
       - operation: modify_columns
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-
-  assessment_category_descriptors:
-    source: $sources.assessmentCategoryDescriptors
-    operations:
-      # keep the highest level assessment only
-      - operation: filter_rows
-        query: identificationCode = ""
-        behavior: include
-      - operation: add_columns
-        columns:
-          category_json: >
-              {%raw-%}  
-              {
-                "assessmentCategoryDescriptor": "{{edfi_descriptor}}"
-              },
-              {%-endraw%}
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{category_json | replace('\n', '')-}}{%endraw%}"
-        # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns: 
-          category_json: agg(category_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -212,12 +180,6 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $transformations.assessment_category_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -225,16 +187,6 @@ transformations:
   objective_assessments:
     source: $sources.objectiveAssessments
     operations:
-      - operation: join
-        sources:
-          - $sources.academicSubjectDescriptors
-        join_type: inner
-        left_keys:
-          - identificationCode
-          - assessmentIdentifier
-        right_keys:
-          - identificationCode
-          - assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}

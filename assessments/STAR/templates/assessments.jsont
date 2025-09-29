@@ -4,7 +4,9 @@
   "namespace": "{{namespace}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "academicSubjects": [{{subject_json}}],
+  "academicSubjects": [{
+    "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+  }],
   "scores": [
     {
       "assessmentReportingMethodDescriptor":"uri://renaissance.com/AssessmentReportingMethodDescriptor#Test Name",

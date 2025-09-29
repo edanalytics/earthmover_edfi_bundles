@@ -3,7 +3,11 @@
   "assessmentTitle": "{{assessmentTitle}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "academicSubjects": [{{subject_json}}],
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+    }
+  ],
   "scores": [
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score",

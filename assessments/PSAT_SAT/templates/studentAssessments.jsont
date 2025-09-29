@@ -122,8 +122,8 @@
       "studentUniqueId": "{{studentUniqueId}}"
     },
     "administrationDate": "{{administrationDate}}",
-    {% if edfi_descriptor != '' and edfi_descriptor is not none and edfi_descriptor | length %}
-    "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
+    {% if gradeLevelDescriptor != '' and gradeLevelDescriptor is not none and gradeLevelDescriptor | length %}
+    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
     {% endif %}
     "scoreResults": [
       {% for score in all_scores %}

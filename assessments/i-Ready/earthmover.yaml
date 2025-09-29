@@ -17,9 +17,6 @@ sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
-    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -185,7 +182,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -208,7 +205,7 @@ transformations:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{edfi_descriptor}}"
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -235,12 +232,6 @@ transformations:
       - operation: join
         sources:
           - $transformations.academic_subject_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $sources.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier

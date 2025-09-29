@@ -25,7 +25,7 @@
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
       }
     ],
-    "scores": [
+    "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Section Score",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
@@ -40,7 +40,7 @@
       }
     ]
     {% else %}
-    "scores": [
+    "scoreResults": [
     {% if identificationCode in ('Reading Test', 'Writing and Language Test', 'Math Test') %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Test Score",

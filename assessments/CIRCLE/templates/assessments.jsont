@@ -2,10 +2,24 @@
   "assessmentIdentifier": "{{ assessmentIdentifier }}",
   "assessmentTitle": "{{ assessmentTitle }}",
   "namespace": "{{ namespace }}",
-  "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{ edfi_descriptor }}",
+  "assessedGradeLevels": [
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Preschool/Prekindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Early Education"
+    }
+  ],
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
   "assessmentFamily": "{{ assessmentFamily }}",
-  "academicSubjects": [{{subject_json}}],
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
+    } 
+  ],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "uri://www.cliengage.org/circle/assessment/AssessmentReportingMethodDescriptor#Score",

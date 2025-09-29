@@ -128,7 +128,7 @@
   ]
   {%- endif -%}
 
-  {% if edfi_descriptor and edfi_descriptor != "NA" %}
-  , "whenAssessedGradeLevel": "{{ edfi_descriptor }}"
+  {% if gradeLevelDescriptor and gradeLevelDescriptor != "NA" %}
+  , "whenAssessedGradeLevel": "{{ gradeLevelDescriptor }}"
   {% endif %}
 }

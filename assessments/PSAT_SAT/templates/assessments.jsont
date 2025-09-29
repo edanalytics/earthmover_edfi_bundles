@@ -4,9 +4,9 @@
     "assessmentFamily": "{{assessmentFamily}}",
     "namespace": "{{namespace}}",
     "assessedGradeLevels": [{{grade_json}}],
-    "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+    "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
     "academicSubjects": [{{subject_json}}],
-    "scores": [
+    "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Total Score",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"

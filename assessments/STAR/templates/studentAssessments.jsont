@@ -96,6 +96,6 @@
   {% endif %}
 
   {%- if Grade and Grade != 'No grade level' -%}
-  , "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  , "whenAssessedGradeLevelDescriptor": "{{descriptor_namespace}}/GradeLevelDescriptor#{{Grade}}"
   {%- endif -%}
 }
