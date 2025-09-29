@@ -159,7 +159,7 @@ transformations:
           {% endfor %}
 
   {% for edfi_student_id_column in edfi_student_id_types -%}
-  {{edfi_student_id_column}}_debug_backticks:
+  {{edfi_student_id_column}}_filtered:
     source: $transformations.unpacked_edfi_roster
     operations:
       - operation: add_columns
@@ -167,17 +167,13 @@ transformations:
           debug_query: "`{{edfi_student_id_column}}` != ''"
           debug_column: "{{edfi_student_id_column}}"
           debug_raw: "{{edfi_student_id_column}}"
-    debug: True
-
-  {{edfi_student_id_column}}_filtered:
-    source: $transformations.unpacked_edfi_roster
-    operations:  
       - operation: filter_rows
         query:  "`{{edfi_student_id_column}}` != ''"
         behavior: include
       - operation: distinct_rows
         columns:
           - "{{edfi_student_id_column}}"
+    debug: True
   {% for source_student_id_column in possible_student_id_columns -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
     source: $transformations.joins_base
