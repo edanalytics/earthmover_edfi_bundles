@@ -3,8 +3,8 @@
 * **Title:** Fountas and Pinnell
 * **Description:**  Assessments that provide a comprehensive and precise measure of students' reading abilities
 * **API version:** 5.3
-* **Submitter name:** Shailendra Singh
-* **Submitter organization:** Double Line Inc.
+* **Submitter name:** Mariela Suárez
+* **Submitter organization:** Crocus LLC.
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
@@ -20,7 +20,6 @@ Sample file: `data/sample_anonymized_file_FnP.csv`)
 - **STATE_FILE**: Where to store the earthmover runs.csv file
 - **INPUT_FILE**: The student assessment file to be mapped
 - **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the 'StudentID' from the vendor layour file.
-- **SCHOOL_YEAR**: The year of the assessment file (format as 'YYYY' e.g. '2024', etc).
 
 ### Examples
 Using an ID column from the assessment file:
@@ -42,8 +41,3 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 "EDFI_API_CLIENT_SECRET": "<yourSecret>",
 "SCHOOL_YEAR": "<yourAPIYear>" }'
 ```
-### Dataflow Graph
-
-![DAG view of transformations](graph.png)
-
-(**Above**: a graphical depiction of the dataflow.)
