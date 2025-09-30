@@ -29,6 +29,7 @@ Namespace: uri://fountasandpinnell.com/bas
  - Meaning
  - Visual
  - Comprehension Level
+ - Genre
 
 
 # Overall Performance levels
@@ -51,20 +52,6 @@ For Comprehension Level reporting method
  - Limited
  - Unsatisfactory
  
-## Genre  how to map?  SerialNumber of eventDescription?     or SCORE directly
-- Fiction
-- Nonfiction
-- 
-<!-- ## Assessments Score Method Descriptors
- - Lexile
- - Level
- - Percent
- - Rate
- - Rubric
- - Raw score -->
-  
-
-
 ## Reasoning
 The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide educators with a comprehensive and systematic approach to assess a student's reading proficiency. Rooted in the belief that effective literacy instruction begins with deep insight into each student's reading behaviors and comprehension strategies, the assessment emphasizes individualized evaluation through authentic reading tasks.
 
@@ -75,11 +62,11 @@ The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide e
 ## Bundle Seeds
   - assessmentReportingMethodDescriptors.csv
   - assessments.csv
-  - gradeMappings.csv
+  - mapping_grade.csv
   - performanceLevelDescriptors.csv
+  - assessmentCategoryDescriptors.csv
 
 ## Template Files
-  - assessmentCategoryDescriptors
   - assessmentReportingMethodDescriptors
   - assessments.jsont
   - descriptors.jsont
@@ -100,12 +87,10 @@ The Fountas & Pinnell Benchmark Assessment System (BAS) is designed to provide e
 
 
 ### assessmentCategoryDescriptor:
-- uri://fountasandpinnell.com/bas/AssessmentCategoryDescriptor#Performance assessment
+- uri://fountasandpinnell.com/bas/AssessmentCategoryDescriptor#Early Learning - Language and literacy development
   
 ### assessmentReportingMethodDescriptor:
 - Namespace: uri://fountasandpinnell.com/bas/AssessmentReportingMethodDescriptor
-
-
 
 # Output Files
 - assessmentCategoryMethodDescriptors.jsonl
