@@ -1,0 +1,23 @@
+{% if result is not none and result | length %}
+{ 
+ "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
+  "periods": [{"assessmentPeriodDescriptor": "uri://renaissance.com/products/AssessmentPeriodDescriptor#{{assessmentPeriodDescriptor}}"}],
+  "scoreResults": [{
+    "assessmentReportingMethodDescriptor": "{{namespace}}#{{codeValue}}",
+    "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+    "result": "{{ result }}"
+    }]
+}
+{%- endif -%}
