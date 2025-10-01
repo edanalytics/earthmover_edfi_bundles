@@ -201,7 +201,7 @@ transformations:
         right_key: joinKey
       - operation: add_columns
         columns:
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DateTaken}}-{{assessmentIdentifier}}{%endraw%}"  
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DateTaken}}-{{assessmentIdentifier}}-{{TextReading}}{%endraw%}"  
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
 
   prepare_student_assessment_valid_school:
