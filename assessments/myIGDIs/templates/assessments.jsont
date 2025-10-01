@@ -1,0 +1,18 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "myIGDIs",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{namespace}}/AssessmentCategoryDescriptor#{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [  {"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ScaleScore",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+   {{ performance_json }}
+  ]
+}
