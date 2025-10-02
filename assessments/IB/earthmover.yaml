@@ -10,6 +10,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'student_unique_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   macros: > 
       {% macro group_number_with_language(value) -%}
       {%- if group_number == '1' -%}
@@ -25,6 +26,8 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    expect:
+      - "GROUP_NUMBER != ''"
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -33,6 +36,8 @@ sources:
     header_rows: 1
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
 
@@ -44,6 +49,9 @@ transformations:
   ib_student_results:
     source: $transformations.input
     operations:
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_id
       - operation: snake_case_columns
       - operation: combine_columns
         columns:
@@ -61,11 +69,8 @@ transformations:
           assessment_family: "International Baccalaureate"
           namespace: "uri://ibo.org"
           school_year: ${API_YEAR}
-          administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
+          administration_date: "{%raw%}{{year}}-{%- if month|upper == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
-      - operation: rename_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_id
   
   student_assessments:
     source: $transformations.ib_student_results
@@ -110,6 +115,7 @@ transformations:
           - subject
       - operation: add_columns
         columns:
+          join_key: "1"
           mod_group_number: "{%raw%}{{ group_number_with_language(group_number) }}{%endraw%}"
       - operation: join
         sources:
@@ -117,7 +123,12 @@ transformations:
         join_type: inner
         left_key: mod_group_number
         right_key: group_id
-
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
 
 destinations:
   assessments:
