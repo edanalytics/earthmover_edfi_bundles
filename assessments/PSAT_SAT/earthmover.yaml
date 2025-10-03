@@ -30,6 +30,8 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    expect:
+      - LATEST_{{test}}_DATE != ''
     optional_fields:
       # reading/writing
       - LATEST_{{test}}_READING
