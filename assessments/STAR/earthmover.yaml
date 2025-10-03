@@ -34,6 +34,9 @@ definitions:
   separator: &separator '/'
 
 sources:
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -352,11 +355,16 @@ transformations:
   star_with_obj_assessment_grade_mapped:
     source: $transformations.star_with_obj_assessment
     operations:
-      - operation: map_values
-        columns: 
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: 
+          - assessmentIdentifier
           - Grade
-          - CurrentGrade
-        map_file: ./seeds/grade_level_mapping.csv
+        right_keys: 
+          - assessmentIdentifier
+          - originalGrade
         
 
   standards_exist:
@@ -403,12 +411,16 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      # exclude rows with originalGrade == "0" to avoid duplicates
+      - operation: filter_rows
+        query: originalGrade == "0"
+        behavior: exclude
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -424,6 +436,31 @@ transformations:
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
   
   assessments:
     source: $transformations.star_student_assessment_overall
@@ -441,6 +478,12 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier

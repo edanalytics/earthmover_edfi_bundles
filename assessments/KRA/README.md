@@ -21,10 +21,11 @@ This bundle works with KRA files in the format provided by the assessment vendor
 
 Using an ID column from the assessment file:
 ```bash
-earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/KRA_Data_File.csv",
-  "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "PS_StudentID"
+earthmover run -c earthmover.yaml -p '{
+"INPUT_FILE": "data/KRA_sample_file_deidentified.csv",
+"STATE_FILE": "./runs.csv",
+"OUTPUT_DIR": "./output",
+"STUDENT_ID_NAME": "PS_StudentID",
 }'
 ```
 

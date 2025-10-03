@@ -60,7 +60,7 @@
   ,"administrationEndDate": "{{administrationEndDate}}"
    {%- endif -%}
   {%- if administrationLanguage is not none and administrationLanguage | length -%}
-  ,"administrationLanguageDescriptor": "{{namespace}}#{{administrationLanguage}}"
+  ,"administrationLanguageDescriptor": "{{administrationLanguage}}"
   {%- endif -%}
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
   ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
