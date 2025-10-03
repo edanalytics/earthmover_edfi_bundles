@@ -25,7 +25,7 @@ sources:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ./seeds/gradeLevelMapping.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
@@ -64,8 +64,17 @@ transformations:
       - operation: rename_columns
         columns:
           Grade: GradeLevel
-          CodeValue: Grade_CodeValue
-          Namespace: Grade_Namespace 
+          edfi_descriptor: grade_edfi_descriptor
+
+  stage_assessment_subjects:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: filter_rows
+        query: "subject != 'Composite'"
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
 
   stage_student_assessments:
     source: $transformations.input
@@ -110,8 +119,10 @@ transformations:
         left_key: Language
         right_key: STAMPLanguage
         right_keep_columns:
-          - LanguageCode
-          - namespace 
+          - edfi_descriptor
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: language_edfi_descriptor
 
   stage_objective_assessments:
     source: $sources.objectiveAssessments
@@ -169,15 +180,14 @@ transformations:
     operations:
       - operation: distinct_rows
         columns:
-          - Grade_CodeValue
-          - Grade_Namespace 
+          - grade_edfi_descriptor 
       - operation: add_columns
         columns:
           joinKey: "Key"
           grade_json: >
-              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {%raw-%} {%- if grade_edfi_descriptor is not none and grade_edfi_descriptor | length -%} 
               {
-                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
+                "gradeLevelDescriptor": "{{grade_edfi_descriptor}}"
               }
               {%-endif-%}
               {%-endraw%}
@@ -196,19 +206,17 @@ transformations:
       - operation: keep_columns
         columns:
           - assessmentIdentifier
-          - LanguageCode
-          - namespace
+          - language_edfi_descriptor
       - operation: distinct_rows
         columns:
           - assessmentIdentifier
-          - LanguageCode
-          - namespace
+          - language_edfi_descriptor
       - operation: add_columns
         columns:
           language_json: >
-              {%raw-%}  {%- if LanguageCode is not none and LanguageCode | length -%} 
+              {%raw-%}  {%- if language_edfi_descriptor is not none and language_edfi_descriptor | length -%} 
               {
-                "languageDescriptor": "{{namespace}}#{{LanguageCode}}"
+                "languageDescriptor": "{{language_edfi_descriptor}}"
               }
               {%-endif-%}
               {%-endraw%}
@@ -262,7 +270,6 @@ transformations:
         join_type: inner
         left_key: joinKey
         right_key: joinKey
-
       - operation: join
         sources:
           - $transformations.assessment_languages
@@ -271,10 +278,15 @@ transformations:
           - assessmentIdentifier
         right_keys: 
           - assessmentIdentifier
-        
       - operation: join
         sources:
           - $transformations.assessment_periods
+        join_type: left
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_subjects
         join_type: left
         left_key: joinKey
         right_key: joinKey
@@ -295,8 +307,7 @@ transformations:
         left_key: identificationCode
         right_key: subject
         right_keep_columns:
-          - code
-          - academicsubjectNamespace
+          - edfi_descriptor
 
   stage_student_assessment_grade:
     source: $transformations.stage_student_assessments
@@ -310,8 +321,7 @@ transformations:
         right_keys: 
           - GradeLevel
         right_keep_columns:
-          - Grade_CodeValue
-          - Grade_Namespace
+          - grade_edfi_descriptor
 
   prepare_student_assessments:
     source: $transformations.stage_student_assessment_grade
@@ -319,16 +329,13 @@ transformations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: modify_columns
-        columns:
-          Grade_CodeValue: "{%raw%}{{Grade_CodeValue|string}}{%endraw%}"
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{StartDate[-4:]}}{%endraw%}"
           school_year_month: "{%raw%}{{StartDate[0:2]}}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
           assessedMinutes: "{%raw%}{{TestLength.split()[0]}}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if Grade_CodeValue is not none and Grade_CodeValue|length and Grade_CodeValue != 'nan'-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{% endif %}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if grade_edfi_descriptor is not none and grade_edfi_descriptor|length and grade_edfi_descriptor != 'nan'-%} {{grade_edfi_descriptor}}{% endif %}{%endraw%}"
           Reading_Length: "{%raw%}{{ReadingLengthOfTime.split()[0]}}{%endraw%}"
           Writing_Length: "{%raw%}{{WritingLengthOfTime.split()[0]}}{%endraw%}"
           Listening_Length: "{%raw%}{{ListeningLengthOfTime.split()[0]}}{%endraw%}"
@@ -341,7 +348,7 @@ transformations:
           TestingGroup: serialNumber
           District: districtId
           School: schoolId
-          LanguageCode: administrationLanguage
+          language_edfi_descriptor: administrationLanguage
           ReadingScaledScore: Reading_Score
           ReadingLevel: Reading_Level
           WritingLevel: Writing_Level
@@ -374,7 +381,6 @@ transformations:
           - school_year_month
           - schoolYear
           - assessmentNamespace
-          - namespace
           - whenAssessedGradeLevelDescriptor
           - assessedMinutes
           - districtId
