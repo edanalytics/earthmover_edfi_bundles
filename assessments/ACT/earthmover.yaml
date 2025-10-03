@@ -119,6 +119,10 @@ transformations:
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
     operations:
+      # keep the highest level assessment only
+      - operation: filter_rows
+        query: "identificationCode != ''"
+        behavior: exclude
       - operation: add_columns
         columns:
           subject_json: >
@@ -141,46 +145,21 @@ transformations:
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  assessment_category_descriptors:
-    source: $sources.assessmentCategoryDescriptors
-    operations:
-      # keep the highest level assessment only
-      - operation: filter_rows
-        query: identificationCode = ""
-        behavior: include
-      - operation: add_columns
-        columns:
-          category_json: >
-              {%raw-%}  
-              {
-                "assessmentCategoryDescriptor": "{{edfi_descriptor}}"
-              },
-              {%-endraw%}
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{category_json | replace('\n', '')-}}{%endraw%}"
-        # group and aggregate:
-      - operation: group_by
-        group_by_columns:
-          - assessmentIdentifier
-        create_columns: 
-          category_json: agg(category_json,)
-      # there will be a trailing comma, want to get rid of that
-      - operation: modify_columns
-        columns:
-          category_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+        - assessmentIdentifier
+        - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -214,7 +193,7 @@ transformations:
         right_key: assessmentIdentifier
       - operation: join
         sources:
-          - $transformations.assessment_category_descriptors
+          - $sources.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
