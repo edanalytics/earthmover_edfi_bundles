@@ -41,16 +41,30 @@ transformations:
       source: $sources.input
       operations: []
 
+  stage_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          to: Grade_Descriptor
+      - operation: keep_columns
+        columns: 
+          - Grade_Descriptor
+          - from
+      - operation: distinct_rows
+
   # modify input for basic mappings
   cleaned_input:
     source: $transformations.input
     operations:
-      
-      # map grades
-      - operation: map_values
-        column: GradeLevel
-        map_file: ./seeds/mapping_grade.csv
-      # convert date values
+      - operation: join
+        sources:
+          - $transformations.stage_grade_level
+        join_type: left
+        left_key: GradeLevel
+        right_key: from
+        right_keep_columns: 
+          - Grade_Descriptor
       - operation: date_format
         columns: 
           - DateTaken
@@ -80,18 +94,6 @@ transformations:
       - operation: filter_rows
         query: isScoreMetric == "1"
         behavior: include
-
- 
-  stage_grade_level:
-    source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: rename_columns
-        columns:
-          to: Grade_Descriptor
-      - operation: keep_columns
-        columns: 
-          - Grade_Descriptor
-      - operation: distinct_rows
 
   grade_level_descriptors:
     source: $transformations.stage_grade_level 

@@ -11,8 +11,8 @@
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   }
-  {%- if GradeLevel is not none and GradeLevel | length -%}
-  ,"whenAssessedGradeLevelDescriptor": "{{GradeLevel}}"
+  {%- if Grade_Descriptor is not none and Grade_Descriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{Grade_Descriptor}}"
   {% endif %}
 
  
