@@ -25,7 +25,7 @@ sources:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ./seeds/gradeLevelMapping.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
@@ -117,11 +117,12 @@ transformations:
           - $transformations.stage_assessment_language
         join_type: inner
         left_key: Language
-        #TODO CHANGE
         right_key: STAMPLanguage
         right_keep_columns:
-          - LanguageCode
-          - namespace 
+          - edfi_descriptor
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: language_edfi_descriptor
 
   stage_objective_assessments:
     source: $sources.objectiveAssessments
@@ -205,19 +206,17 @@ transformations:
       - operation: keep_columns
         columns:
           - assessmentIdentifier
-          - LanguageCode
-          - namespace
+          - language_edfi_descriptor
       - operation: distinct_rows
         columns:
           - assessmentIdentifier
-          - LanguageCode
-          - namespace
+          - language_edfi_descriptor
       - operation: add_columns
         columns:
           language_json: >
-              {%raw-%}  {%- if LanguageCode is not none and LanguageCode | length -%} 
+              {%raw-%}  {%- if language_edfi_descriptor is not none and language_edfi_descriptor | length -%} 
               {
-                "languageDescriptor": "{{namespace}}#{{LanguageCode}}"
+                "languageDescriptor": "{{language_edfi_descriptor}}"
               }
               {%-endif-%}
               {%-endraw%}
@@ -349,7 +348,7 @@ transformations:
           TestingGroup: serialNumber
           District: districtId
           School: schoolId
-          LanguageCode: administrationLanguage
+          language_edfi_descriptor: administrationLanguage
           ReadingScaledScore: Reading_Score
           ReadingLevel: Reading_Level
           WritingLevel: Writing_Level
@@ -382,7 +381,6 @@ transformations:
           - school_year_month
           - schoolYear
           - assessmentNamespace
-          - namespace
           - whenAssessedGradeLevelDescriptor
           - assessedMinutes
           - districtId

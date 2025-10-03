@@ -22,9 +22,10 @@ This bundle works with STAMP 4S, STAMP WS, STAMP Monolingual, STAMP Latin and ST
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/STAMP_deidentified_sample_file.csv",
-  "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "Test Taker ID"
+"INPUT_FILE": "./data/STAMP_deidentified_sample_file.csv",
+"OUTPUT_DIR": "./output",
+"STATE_FILE": "./runs.csv",
+"STUDENT_ID_NAME": "Test Taker ID"
 }'
 ```
 
