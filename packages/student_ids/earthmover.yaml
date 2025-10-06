@@ -204,8 +204,6 @@ transformations:
         sources:
           {% for source_student_id_column in possible_student_id_columns -%}
           {% for edfi_student_id_column in edfi_student_id_types -%}
-          {# Avoid adding two copies of the first combination: #}
-          {% if source_student_id_column!=possible_student_id_columns[0] or edfi_student_id_column!=edfi_student_id_types[0] %}
           - $transformations.{{source_student_id_column}}_{{edfi_student_id_column}}_join
           {% endif %}
           {% endfor %}
