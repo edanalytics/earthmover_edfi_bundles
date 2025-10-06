@@ -50,7 +50,7 @@ transformations:
         columns:
           SchoolYear: schoolYear
           TestDate: adminDate
-          TestID: testId
+          TestName: testName
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
@@ -58,7 +58,7 @@ transformations:
         columns:
           - StudentID
           - adminDate
-          - testId
+          - testName
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
@@ -70,7 +70,7 @@ transformations:
           - $sources.assessments
         join_type: left
         left_keys:
-          - TestName
+          - testName
         right_keys:
           - assessmentTitle
 
