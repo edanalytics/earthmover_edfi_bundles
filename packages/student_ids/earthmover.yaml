@@ -205,7 +205,6 @@ transformations:
           {% for source_student_id_column in possible_student_id_columns -%}
           {% for edfi_student_id_column in edfi_student_id_types -%}
           - $transformations.{{source_student_id_column}}_{{edfi_student_id_column}}_join
-          {% endif %}
           {% endfor %}
           {% endfor %}
   id_match_rates:
