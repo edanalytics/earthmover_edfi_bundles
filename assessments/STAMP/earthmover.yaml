@@ -70,7 +70,7 @@ transformations:
     source: $sources.academicSubjectDescriptors
     operations:
       - operation: filter_rows
-        query: "subject != 'Composite'"
+        query: "is_overall != '1'"
         behavior: exclude
       - operation: add_columns
         columns:
