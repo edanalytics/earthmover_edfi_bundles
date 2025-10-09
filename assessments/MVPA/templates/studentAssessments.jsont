@@ -55,10 +55,8 @@
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
