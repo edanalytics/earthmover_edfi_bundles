@@ -12,7 +12,7 @@
       "identificationCode": "{{parentIdentificationCode}}"
     },
     {% endif %}
-    "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
+    "academicSubjectDescriptor": "{{ edfi_descriptor }}",
     "scores": [
       {
         "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#US Rank",

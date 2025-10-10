@@ -4,10 +4,8 @@
   "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [
-    {"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}
-    ],
+  "assessmentCategoryDescriptor": "{{ edfi_descriptor }}",
+  "academicSubjects": [{{subject_json}}],
   "platformTypes": [{{platform_json}}],
   "scores": [
     {

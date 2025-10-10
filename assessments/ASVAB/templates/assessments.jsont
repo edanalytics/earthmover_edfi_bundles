@@ -4,16 +4,14 @@
   "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [
-  {% for grade_descriptor in grade_descriptors.split(';') %}
+  {% for edfi_descriptor in grade_descriptors.split(';') %}
     {
-      "gradeLevelDescriptor": "{{grade_descriptor}}"
+      "gradeLevelDescriptor": "{{edfi_descriptor}}"
     }{% if not loop.last %},{% endif %}
   {% endfor %}
   ],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [
-    {"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}
-    ],
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AFQT Score",

@@ -198,7 +198,19 @@ transformations:
   {% endfor %}
 
   stacked_joins:
+    {# Suppose
+          `possible_student_id_columns` = ['A', 'B']
+          `edfi_student_id_types` = ['x', 'y', 'z']
+       then we have nodes `A_x_join`, `B_x_join`, `A_y_join`, `B_y_join`, `A_z_join`, and `B_z_join`
+       (each representing the inner join of assessment and roster data on that pair of IDs).
+       This node stacks them all together so we can compute a match rate for each pair.
+    #}
     source: $transformations.{{possible_student_id_columns[0]}}_{{edfi_student_id_types[0]}}_join
+    {#
+      `possible_student_id_columns` and `edfi_student_id_types` may each have only one elment;
+      this prevents an empty `union` operation from being output in that case:
+    #}
+    {% if possible_student_id_columns|length > 1 or edfi_student_id_types|length > 1 %}
     operations:
       - operation: union
         sources:
@@ -210,6 +222,9 @@ transformations:
           {% endif %}
           {% endfor %}
           {% endfor %}
+  {% else %}
+    operations: []
+  {% endif %}
   id_match_rates:
     source: $transformations.stacked_joins
     operations:
