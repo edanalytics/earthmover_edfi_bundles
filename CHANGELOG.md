@@ -5,6 +5,23 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v.0.3.2
+## New features
+- STAMP Bundle
+- myIGDIs Bundle
+- PALS Bundle
+- KRA Bundle
+
+## Under the hood
+- Rename studentAssessments.jsont file for STAAR Summative
+- Addition of ACT Readme file and sample file
+
+## Fixes
+- Fix ACCESS gradeLevelDescriptors namespace
+- Update WIN objectiveAssessment possible performance levels
+- Modified IB bundle to match bundle best-practices
+- Handle empty `edfi_student_id_types` array or spaces in `edfi_student_id` in student ID package
+
 # earthmover_edfi_bundles v0.3.1
 ## Fixes
 - Modified ACCESS / Alt-ACCESS bundle to match bundle best-practices
