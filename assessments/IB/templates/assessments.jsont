@@ -4,11 +4,7 @@
     "assessmentFamily": "{{assessment_family}}",
     "namespace": "{{namespace}}",
     "assessedGradeLevels": [{{grade_json}}],
-    "academicSubjects": [
-        {
-            "academicSubjectDescriptor": "{{edfi_subject}}"
-        }
-    ],
+    "academicSubjects": [{{subject_json}}],
     "scores": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Category",

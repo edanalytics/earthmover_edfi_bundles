@@ -4,12 +4,8 @@
   "namespace": "{{namespace}}",
   "assessmentFamily": "{{assessmentIdentifier}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [
-    {
-      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
-    }
-  ],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency Level",

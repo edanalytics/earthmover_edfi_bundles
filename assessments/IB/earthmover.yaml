@@ -34,11 +34,10 @@ sources:
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
-    header_rows: 1
-  subject_group_mappings:
-    file: ./seeds/subject_group_mappings.csv
     header_rows: 1
 
 
@@ -78,10 +77,35 @@ transformations:
     operations:
       - operation: join
         sources:
-          - $sources.subject_group_mappings
+          - $sources.academicSubjectDescriptors
         join_type: inner
         left_key: group_number
         right_key: group_id
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - group_id
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -92,7 +116,7 @@ transformations:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -121,7 +145,7 @@ transformations:
           mod_group_number: "{%raw%}{{ group_number_with_language(group_number) }}{%endraw%}"
       - operation: join
         sources:
-          - $sources.subject_group_mappings
+          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: mod_group_number
         right_key: group_id

@@ -13,7 +13,7 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'UniqueDRCStudentID,StateStudentID,DistrictStudentID'
-    ALTERNATE: ''
+    FORMAT: 'Standard'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
@@ -22,8 +22,8 @@ sources:
     header_rows: 1
     rename_cols: True
     columns:
-      {% if "${SCHOOL_YEAR}"|int > 2021 %}
-        {% if "${ALTERNATE}" == "N" %}
+      {% if "${API_YEAR}"|int > 2021 %}
+        {% if "${FORMAT}" == "Standard" %}
         # Standard (post-2021)
         - StateNameAbbreviation
         - DistrictName
@@ -192,7 +192,7 @@ sources:
         - UniqueRecordID
         - DSRUpdated
         {% endif %}
-        {% if "${ALTERNATE}" == "Y" %}
+        {% if "${FORMAT}" == "Alternate" %}
         # Alternate (post-2021)
         - StateNameAbbreviation
         - DistrictName
@@ -376,8 +376,8 @@ sources:
         - UniqueRecordID
         - DSRUpdated
         {% endif %}
-      {% elif "${SCHOOL_YEAR}"|int <= 2021 %}
-        {% if "${ALTERNATE}" == "N" %}
+      {% elif "${API_YEAR}"|int <= 2021 %}
+        {% if "${FORMAT}" == "Standard" %}
         # Standard (pre-2021)
         - UniqueDRCStudentID
         - ReportedRecord
@@ -544,7 +544,7 @@ sources:
         - TierSelectionOverrideSpeaking
         - TierSelectionOverrideWriting
         {% endif %}
-        {% if "${ALTERNATE}" == "Y" %}
+        {% if "${FORMAT}" == "Alternate" %}
         # Alternate (pre-2021)
         - UniqueDRCStudentID
         - ReportedRecord
@@ -727,6 +727,9 @@ sources:
         - UniqueRecordID
         {% endif %} 
       {% endif %}
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   accommodationDescriptors:
     file: ./seeds/accommodationDescriptors.csv
     header_rows: 1
@@ -735,6 +738,9 @@ sources:
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -763,11 +769,16 @@ transformations:
       - operation: add_columns
         columns:
           namespace: "uri://wida.wisc.edu/assess/access"
-          defaultTestStartDateTime: "${SCHOOL_YEAR}-04-01 00:00:00"
-          school_year: ${SCHOOL_YEAR}
-          alternate_assessment: ${ALTERNATE}
+          defaultTestStartDateTime: "${API_YEAR}-04-01 00:00:00"
+          school_year: ${API_YEAR}
+          alternate_assessment:
+            {% if "${FORMAT}" == "Standard" %}
+              "N"
+            {% else %}
+              "Y"
+            {% endif %}
           assessment_identifier:
-            {% if "${ALTERNATE}" == "N" %}
+            {% if "${FORMAT}" == "Standard" %}
               "ACCESS"
             {% else %}
               "Alternate-ACCESS"
@@ -802,7 +813,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{grade_descriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -819,6 +830,31 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   assessments:
     source: $sources.assessments
     operations:
@@ -828,6 +864,18 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessment_identifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 
 destinations:

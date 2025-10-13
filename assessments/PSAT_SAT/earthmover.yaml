@@ -105,6 +105,9 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
@@ -120,7 +123,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  
+
   psat_sat_student_assessment:
     source: $transformations.input
     operations:
@@ -230,7 +233,6 @@ transformations:
           schoolYear: ${API_YEAR}
           assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(administrationDate)}}{%endraw%}"
           namespace: "uri://collegeboard.org"
-          assessmentCategoryDescriptor: "${DESCRIPTOR_NAMESPACE}/AssessmentCategoryDescriptor#College entrance exam"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
       - operation: join
         sources:
@@ -247,7 +249,7 @@ transformations:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -262,19 +264,27 @@ transformations:
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  grade_level_descriptors:
+  # Extra filter operation to remove undefined grade levels and ensure assessedGradeLevels array does not include nulls 
+  grade_level_descriptors__filtered:
     source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: filter_rows
+        query: edfi_descriptor != ""
+        behavior: include
+
+  grade_level_descriptors:
+    source: $transformations.grade_level_descriptors__filtered
     operations:
       - operation: distinct_rows
         columns:
           - assessmentIdentifier
-          - gradeLevelDescriptor
+          - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -307,6 +317,12 @@ transformations:
       - operation: add_columns
         columns:
           assessmentFamily: "{%raw%}{{ assessmentIdentifier.split('_')[0] }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 
 destinations:
@@ -331,3 +347,4 @@ destinations:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
+
