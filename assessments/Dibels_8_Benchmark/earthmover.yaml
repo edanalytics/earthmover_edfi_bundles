@@ -61,7 +61,6 @@ transformations:
           student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
           assessmentIdentifier: "Dibels-8"
           namespace: "uri://dibels.uoregon.edu/assessment/dibels"
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: modify_columns
         columns:
           school_year: *year_mapping
@@ -73,6 +72,9 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+          - gradeLevelDescriptor
       - operation: add_columns
         columns:
           grade_json: >
