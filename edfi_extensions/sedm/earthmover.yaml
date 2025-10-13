@@ -1,0 +1,43 @@
+# See accompanying README.md for details about this file.
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+
+sources:
+  idea_events:
+    file: ${IDEA_EVENTS_FILE}
+    header_rows: 1
+  iep_goals:
+    file: ${IEP_GOALS_FILE}
+    header_rows: 1
+  iep_service_prescriptions:
+    file: ${IEP_SERIVCE_PRESCRIPTIONS_FILE}
+    header_rows: 1
+  student_iep_associations:
+    file: ${STUDENT_IEP_ASSOCIATIONS_FILE}
+    header_rows: 1
+
+transformations:
+
+destinations:
+  iDEAEvents:
+    source: $transformations.idea_events
+    template: ./templates/iDEAEvents.jsont
+    extension: jsonl
+  iEPGoals:
+    source: $transformations.iep_goals
+    template: ./templates/iEPGoals.jsont
+    extension: jsonl
+  iEPServicePrescriptions:
+    source: $transformations.iep_service_prescriptions
+    template: ./templates/iEPServicePrescriptions.jsont
+    extension: jsonl
+  studentIEPAssociations:
+    source: $transformations.student_iep_associations
+    template: ./templates/studentIEPAssociations.jsont
+    extension: jsonl
