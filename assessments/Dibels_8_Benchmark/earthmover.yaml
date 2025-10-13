@@ -72,6 +72,9 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+          - gradeLevelDescriptor
       - operation: add_columns
         columns:
           grade_json: >
