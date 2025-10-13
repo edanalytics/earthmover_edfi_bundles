@@ -5,12 +5,6 @@
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "namespace": "{{namespace}}"
   },
-  {% if schoolId is not none and schoolId | length %}
-  "reportedSchoolReference": {
-      "schoolId": {{schoolId}}
-          
-  },
-  {% endif %}
   "schoolYearTypeReference": {
     "schoolYear": {{SchoolYear | int}}
   },
@@ -18,7 +12,7 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{administrationDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
   "scoreResults": [
     {% if OverallScore is not none and OverallScore | length %}
     {

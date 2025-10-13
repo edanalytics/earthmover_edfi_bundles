@@ -21,6 +21,9 @@ sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -116,12 +119,16 @@ transformations:
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
     operations:
+      # keep the highest level assessment only
+      - operation: filter_rows
+        query: "identificationCode != ''"
+        behavior: exclude
       - operation: add_columns
         columns:
           subject_json: >
               {%raw-%}  
               {
-                "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
               },
               {%-endraw%}
       - operation: modify_columns
@@ -143,12 +150,16 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+        - assessmentIdentifier
+        - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -180,6 +191,12 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -187,6 +204,16 @@ transformations:
   objective_assessments:
     source: $sources.objectiveAssessments
     operations:
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_keys:
+          - identificationCode
+          - assessmentIdentifier
+        right_keys:
+          - identificationCode
+          - assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}

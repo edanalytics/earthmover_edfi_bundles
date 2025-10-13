@@ -26,6 +26,9 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -108,18 +111,44 @@ transformations:
           maximumScore: max(maximumScore)
           minimumScore: min(minimumScore)
    
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      # keep the highest level assessment only
+      - operation: filter_rows
+        query: "identificationCode != ''"
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+        # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
       - operation: add_columns
         columns:
-          assessmentIdentifier: "KRA"
-      - operation: add_columns
-        columns:
           grade_json: >
               {%raw-%}  
               {
-                "gradeLevelDescriptor": "{{namespace}}#{{codeValue}}"
+                "gradeLevelDescriptor": "{{edfi_descriptor}}"
               }
               {%-endraw%}
       - operation: modify_columns
@@ -152,7 +181,12 @@ transformations:
       - operation: join
         sources:
           - $transformations.performance_levels
-
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
@@ -179,6 +213,16 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_keys:
+          - identificationCode
+          - assessmentIdentifier
+        right_keys:
+          - identificationCode
+          - assessmentIdentifier
       - operation: join
         sources:
           - $transformations.performance_level_max_min_score
@@ -212,7 +256,15 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
       - operation: add_columns
         columns:
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
@@ -242,7 +294,7 @@ transformations:
           - administrationDate
           - SchoolYear
           - namespace
-          - whenAssessedGradeLevelDescriptor
+          - gradeLevelDescriptor
           - OverallScore
           - PerformanceLevelDescriptor
           - SFScore
