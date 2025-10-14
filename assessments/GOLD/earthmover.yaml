@@ -86,7 +86,7 @@ transformations:
         columns:
           assessment: {{assessment}}
           assessment_id: {{assessments.get(assessment)}}
-          namespace: "uri://www.teachingstrategies.com/product/gold"
+          namespace: "uri://teachingstrategies.com/product/gold"
           # The inner  `__row_data__` reference creates the original date column name: "[school_year] [assesssment] Date Finalized"
           # The outer `__row_data__` reference refers to the values under the original date column 
           admin_date: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " Date Finalized"}}{%raw%}"]}}{%endraw%}' 
