@@ -1,7 +1,7 @@
 {%- set possible_scores = [
     ["Assessment Measure Score", assessment_measure_composite_score_score, "Integer"],
     ["Benchmark Period", benchmark_period, "Integer"],
-    ["Enrolled Grade Level", enrollment_grade, "Level"]
+    ["Enrolled Grade Level", grade, "Level"]
 ] -%}
 
 {%- set scores = [] -%}
@@ -52,7 +52,7 @@
     {%- for score in scores -%}
     {
       "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": "{{score[1]}}"
     }
     {%- if not loop.last -%},
@@ -102,7 +102,7 @@
       "scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
-          "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{obj[2][1]}}"
         }
       ]
