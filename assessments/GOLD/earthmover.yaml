@@ -177,9 +177,6 @@ transformations:
       - operation: filter_rows
         query: educationOrganizationId != ''
         behavior: include
-      - operation: debug
-        columns: [source_site_id, educationOrganizationId, educationOrganizationAssociationTypeDescriptor]
-
 
 
 
@@ -245,10 +242,6 @@ destinations:
   studentAssessments:
     source: $transformations.final_result
     template: ./templates/studentAssessments.jsont
-    extension: jsonl
-  input_with_school_year:
-    source: $transformations.final_result
-    template: ./templates/draft.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
     source: $transformations.student_assessment_education_organization_associations
