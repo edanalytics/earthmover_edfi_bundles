@@ -144,6 +144,7 @@ transformations:
           - namespace
           - descriptor_namespace
           - grade_level_descriptor
+          - SourceSiteID
           {%- for reporting_method in reporting_methods %}
           - {{reporting_method}}
           {%- endfor %}
@@ -165,7 +166,22 @@ transformations:
           - $transformations.{{(assessments.keys()|list)[i] | replace(" ", "_") }}
           {%- endfor %}
 
-  
+  # studentAssessmentEducationOrganizationAssociations
+  student_assessment_education_organization_associations:
+    source: $transformations.final_result
+    operations:
+      - operation: add_columns
+        columns:
+          educationOrganizationId: "{%raw%}{{ source_site_id }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "{%raw%}{{ descriptor_namespace }}/EducationOrganizationAssociationTypeDescriptor#Attribution{%endraw%}"
+      - operation: filter_rows
+        query: educationOrganizationId != ''
+        behavior: include
+      - operation: debug
+        columns: [source_site_id, educationOrganizationId, educationOrganizationAssociationTypeDescriptor]
+
+
+
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -233,4 +249,8 @@ destinations:
   input_with_school_year:
     source: $transformations.final_result
     template: ./templates/draft.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_education_organization_associations
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
