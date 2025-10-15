@@ -85,8 +85,6 @@ transformations:
       - operation: add_columns
         columns:
           school_year_int: "{%raw%}{{ school_year.split('/')[1] }}{%endraw%}"
-      - operation: debug
-        keep_columns: [school_year, school_year_int]
       - operation: add_columns
         columns:
           assessment: {{assessment}}
