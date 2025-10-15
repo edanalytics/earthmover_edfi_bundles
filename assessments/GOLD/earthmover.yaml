@@ -84,6 +84,11 @@ transformations:
           school_year: "{% raw %}{{__row_data__['school_year'].split(' ')[1]}} {{__row_data__['school_year'].split(' ')[2]}}{% endraw %}"
       - operation: add_columns
         columns:
+          school_year_int: "{%raw%}{{ school_year.split('/')[1] }}{%endraw%}"
+      - operation: debug
+        keep_columns: [school_year, school_year_int]
+      - operation: add_columns
+        columns:
           assessment: {{assessment}}
           assessment_id: {{assessments.get(assessment)}}
           namespace: "uri://teachingstrategies.com/product/gold"
@@ -125,6 +130,7 @@ transformations:
           - ChildID
           - student_assessment_id
           - school_year
+          - school_year_int
           - admin_date
           - assessment
           - assessment_id

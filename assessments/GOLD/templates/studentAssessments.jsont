@@ -5,7 +5,7 @@
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
-    "schoolYear": "{{school_year}}"
+    "schoolYear": {{school_year_int}}
   },
   "studentReference": {
     "studentUniqueId": "{{child_id}}"
@@ -38,7 +38,7 @@
   {%endif%}
 
    {%- set possible_perf_levels = [
-        [wh, "WH"],
+        [whe, "WHE"],
         [nn, "NN"],
         [k_readiness, "K-Readiness"]
     ] -%}
@@ -57,8 +57,8 @@
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-        "result": "{{perf_level[0]}}"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ perf_level[0] }}",
+        "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
