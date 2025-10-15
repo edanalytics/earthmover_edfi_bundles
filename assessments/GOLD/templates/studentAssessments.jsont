@@ -1,3 +1,28 @@
+{%- set possible_scores = [
+    [raw_score, "Raw Score", "Integer"],
+    [scale_score, "Scale Score", "Integer"]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = [
+    [whe, "WHE"],
+    [nn, "NN"],
+    [k_readiness, "K-Readiness"]
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+  
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
@@ -13,21 +38,9 @@
   "administrationDate": "{{admin_date}}",
   "whenAssessedGradeLevelDescriptor": "{{grade_level_descriptor}}"
 
-  {%- set possible_scores = [
-      [raw_score, "Raw Score", "Integer"],
-      [scale_score, "Scale Score", "Integer"]
-  ] -%}
-
-  {%- set scores = [] -%}
-  {%- for score in possible_scores -%}
-    {%- if score[0] is not none and score[0] | length -%}
-      {%- set _ = scores.append(score) -%}
-    {%- endif -%}
-  {%- endfor -%}
   
   {% if scores %}
   ,"scoreResults": [
-    
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
@@ -38,23 +51,8 @@
   ]
   {%endif%}
 
-   {%- set possible_perf_levels = [
-        [whe, "WHE"],
-        [nn, "NN"],
-        [k_readiness, "K-Readiness"]
-    ] -%}
-
-    {%- set perf_levels = [] -%}
-    {%- for perf_level in possible_perf_levels -%}
-      {%- if perf_level[0] is not none and perf_level[0] | length -%}
-        {%- set _ = perf_levels.append(perf_level) -%}
-      {%- endif -%}
-    {%- endfor -%}
-  
   {% if perf_levels %}
   ,"performanceLevels": [
-
-
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
