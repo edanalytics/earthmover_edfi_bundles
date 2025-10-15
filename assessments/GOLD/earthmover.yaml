@@ -98,10 +98,14 @@ transformations:
           # Fall back values for cases where admin_date is null
           standard_admin_date_1: '10/1/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[0]}}{%endraw%}' 
           standard_admin_date_2: '03/01/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[1]}}{%endraw%}'
+          grade_level_descriptor: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " Age/Grade"]}}{%endraw%}'
           # Same double-referencing logic as above for each reporting method
           {%- for reporting_method in reporting_methods %}
           {{reporting_method}}: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " " ~ reporting_method}}{%raw%}"]}}{%endraw%}'
           {%- endfor %}
+      - operation: map_values
+        column: grade_level_descriptor
+        map_file: 'seeds/gradeLevelDescriptors.csv'
       - operation: modify_columns
         columns:
           admin_date: '{%raw%}
@@ -135,6 +139,7 @@ transformations:
           - assessment
           - assessment_id
           - namespace
+          - grade_level_descriptor
           {%- for reporting_method in reporting_methods %}
           - {{reporting_method}}
           {%- endfor %}
@@ -154,7 +159,7 @@ transformations:
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
-  grade_level_descriptors:
+  distinct_grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
       - operation: add_columns
@@ -165,13 +170,18 @@ transformations:
               "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
             {%-endraw%}
+          dummy_group_key: "group"
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # Seed file can have multiple Ed-Fi descriptors per original grade
+      - operation: distinct_rows
+        columns:
+          - grade_json
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - dummy_group_key
         create_columns: 
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
@@ -182,12 +192,15 @@ transformations:
   assessments:
     source: $sources.assessments
     operations:
+      - operation: add_columns
+        columns:
+          dummy_group_key: "group"
       - operation: join
         sources:
-          - $transformations.grade_level_descriptors
+          - $transformations.distinct_grade_level_descriptors
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: dummy_group_key
+        right_key: dummy_group_key
 
 destinations:
   assessments:

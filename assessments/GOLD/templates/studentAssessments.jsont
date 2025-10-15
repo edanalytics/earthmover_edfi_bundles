@@ -10,7 +10,8 @@
   "studentReference": {
     "studentUniqueId": "{{child_id}}"
   },
-  "administrationDate": "{{admin_date}}"
+  "administrationDate": "{{admin_date}}",
+  "whenAssessedGradeLevelDescriptor": "{{grade_level_descriptor}}"
 
   {%- set possible_scores = [
       [raw_score, "Raw Score", "Integer"],
