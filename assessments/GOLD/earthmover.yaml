@@ -11,6 +11,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'ChildID,SourceChildID,Identifier,Student ID#'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 
 sources:
@@ -90,6 +91,7 @@ transformations:
           assessment: {{assessment}}
           assessment_id: {{assessments.get(assessment)}}
           namespace: "uri://teachingstrategies.com/product/gold"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           # The inner  `__row_data__` reference creates the original date column name: "[school_year] [assesssment] Date Finalized"
           # The outer `__row_data__` reference refers to the values under the original date column 
           admin_date: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " Date Finalized"}}{%raw%}"]}}{%endraw%}' 
@@ -137,6 +139,7 @@ transformations:
           - assessment
           - assessment_id
           - namespace
+          - descriptor_namespace
           - grade_level_descriptor
           {%- for reporting_method in reporting_methods %}
           - {{reporting_method}}
@@ -199,6 +202,7 @@ transformations:
       - operation: add_columns
         columns:
           dummy_group_key: "group"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: join
         sources:
           - $transformations.distinct_grade_level_descriptors
