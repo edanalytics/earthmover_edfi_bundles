@@ -70,6 +70,9 @@ transformations:
     source: $transformations.input
     operations:
       # Because each input file comes per school year and we don't have that information beforehand these transformations dynamically create a `school_year` column based on the data itself.
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: add_columns
         columns:
           school_year: '{%raw%}
@@ -124,14 +127,14 @@ transformations:
           - school_year
           - admin_date
           - assessment_id
-          - ChildID
+          - student_unique_id
         new_column: student_assessment_id
       - operation: modify_columns
         columns:
           student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
       - operation: keep_columns
         columns:
-          - ChildID
+          - student_unique_id
           - student_assessment_id
           - school_year
           - school_year_int
