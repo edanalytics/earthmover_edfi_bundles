@@ -141,7 +141,13 @@ transformations:
           {%- for reporting_method in reporting_methods %}
           - {{reporting_method}}
           {%- endfor %}
+      - operation: filter_rows
+        query: "{%- for reporting_method in reporting_methods -%}
+          (`{{ reporting_method }}` != ''){% if not loop.last %} or {% endif %}
+        {%- endfor -%}"
+        behavior: include
       - operation: snake_case_columns
+
 {%-endfor%}
 
   final_result:
