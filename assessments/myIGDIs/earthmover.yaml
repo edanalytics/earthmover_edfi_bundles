@@ -9,11 +9,17 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
     POSSIBLE_STUDENT_ID_COLUMNS: "StudentId"
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    
+
 sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    optional_fields:
+      - State Name  # Found in Enrich-sourced data but not in district-delivered files
+      - Early Literacy  # Some assessment types are optional. This forces the keep_columns to succeed, and they're dropped at the end.
+      - Early Numeracy
+      - Español
+      - ProLADR
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -32,12 +38,102 @@ sources:
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
+
 transformations:
   input:
     source: $sources.input
     operations: []
-  source_assessment:
+
+  pre_exec_assessment:
     source: $transformations.input
+    operations:
+      # Keep only necessary header columns and wide columns to melt
+      - operation: keep_columns
+        columns:
+          - School Year
+          - State Name
+          - District Name
+          - School Name
+          - Classroom Name
+          - Init District Id
+          - Student Id
+          - Early Literacy*
+          - Early Numeracy*
+          - Español*
+          - ProLADR*
+      # Wide to Tall (e.g., Early Literacy+/Picture Naming/Fall Screening/Scaled Score, melt_value)
+      - operation: melt
+        id_vars:
+          - School Year
+          - State Name
+          - District Name
+          - School Name
+          - Classroom Name
+          - Init District Id
+          - Student Id
+        var_name: BaseMetric
+        value_name: melt_value
+      # Filter nulls to drastically reduce size of input before pivot.
+      - operation: filter_rows
+        query: "melt_value.notnull() & melt_value != ''"
+        behavior: include
+      # Split BaseMetric into its constituent columns
+      - operation: add_columns
+        columns:
+          Assessment: "{%raw%}{{ BaseMetric.split('/')[0] }}{%endraw%}"
+          Objective: "{%raw%}{{ BaseMetric.split('/')[1] }}{%endraw%}"
+          TimeWindow: "{%raw%}{{ BaseMetric.split('/')[2] }}{%endraw%}"
+          MetricType: "{%raw%}{{ BaseMetric.split('/')[3] }}{%endraw%}"
+          AssessmentIdentifier: "{%raw%}{{ '{}_{}'.format(BaseMetric.split('/')[0], BaseMetric.split('/')[1]).replace(' ', '') }}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - BaseMetric
+      # Tall to Wide (e.g., Early Literacy+, Picture Naming, Fall Screening, Scale Score)
+      - operation: pivot
+        rows_by:
+          - School Year
+          - State Name
+          - District Name
+          - School Name
+          - Classroom Name
+          - Init District Id
+          - Student Id
+          - Assessment
+          - Objective
+          - TimeWindow
+          - AssessmentIdentifier
+        cols_by: MetricType
+        values: melt_value
+      # Final column renames; coalesce Scaled Score into Score
+      - operation: rename_columns
+        columns:
+          School Year: SchoolYear
+          State Name: StateName
+          District Name: DistrictName
+          School Name: SchoolName
+          Classroom Name: ClassroomName
+          Init District Id: InitDistrictId
+          Student Id: StudentId
+          Scaled Score: ScaledScore
+          Date Of Administration: AdministrationDate
+      - operation: 'modify_columns'
+        columns:
+          Score: "{%raw%}{{ ScaledScore or Score }}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - ScaledScore
+      # Filter records that are missing any of the three required score results
+      - operation: filter_rows
+        query: "Score.notnull() & Tier.notnull() & AdministrationDate.notnull()"
+        behavior: include
+      - operation: distinct_rows
+        columns:
+          - StudentId
+          - AssessmentIdentifier
+          - AdministrationDate
+
+  source_assessment:
+    source: $transformations.pre_exec_assessment
     operations:
       - operation: duplicate_columns
         columns:
