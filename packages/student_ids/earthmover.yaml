@@ -129,18 +129,7 @@ transformations:
           studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
           # TODO: could maybe use a flatten operation for this?
           {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
-          "{{id_code}}": >
-            {% raw %}
-              {% set codes = fromjson(studentIdentificationCodes) if studentIdentificationCodes is string else studentIdentificationCodes %}
-              {% set found_code = "" %}
-              {% for c in codes %}
-                {% if c.studentIdentificationSystemDescriptor.split('#')[-1] == id_code %}
-                  {% set found_code = c.identificationCode %}
-                  {% set loop.break = true %}
-                {% endif %}
-              {% endfor %}
-              {{ found_code }}
-              {% endraw %}
+          "{{id_code}}": "{% raw %}{% set codes = fromjson(studentIdentificationCodes) if studentIdentificationCodes is string else studentIdentificationCodes %}{% set found_code = '' %}{% set done = false %}{% for c in codes if not done %}{% if c.studentIdentificationSystemDescriptor.split('#')[1]|string == '{%endraw%}{{id_code}}{%raw%}' %}{% set found_code = c[identificationCode] %}{% set done = true %}{% endif %}{% endfor %}{{ found_code }}{% endraw %}"
           {% endfor %}
       - operation: keep_columns
         columns:
