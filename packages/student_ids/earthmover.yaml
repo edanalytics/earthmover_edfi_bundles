@@ -121,7 +121,6 @@ sources:
 transformations:
   unpacked_edfi_roster:
     source: $sources.edfi_roster
-    debug: True
     operations:
       - operation: add_columns
         columns:
@@ -158,7 +157,6 @@ transformations:
   # this makes a smaller (narrower) dataframe for all the joins that follow, which significantly improves performance:
   joins_base:
     source: ${EARTHMOVER_NODE_TO_XWALK}
-    debug: True
     operations:
       - operation: keep_columns
         columns:
@@ -179,7 +177,6 @@ transformations:
   {% for source_student_id_column in possible_student_id_columns -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
     source: $transformations.joins_base
-    debug: True
     operations:
       - operation: modify_columns
         columns:
