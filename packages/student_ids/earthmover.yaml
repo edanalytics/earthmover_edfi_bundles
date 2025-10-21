@@ -129,7 +129,7 @@ transformations:
           studentUniqueId: '{%raw%}{% if studentReference is string %}{{fromjson(studentReference).studentUniqueId}}{% else %}{{studentReference.studentUniqueId}}{% endif %}{%endraw%}'
           # TODO: could maybe use a flatten operation for this?
           {% for id_code in "${EDFI_STUDENT_ID_TYPES}".split(",") %}
-          "{{id_code}}": "{% raw %}{% set codes = fromjson(studentIdentificationCodes) if studentIdentificationCodes is string else studentIdentificationCodes %}{% set ns = namespace(found='', done=false) %}{# Compare full descriptor. Build target once with first-pass id_code injected. #}{% set target = 'uri://ed-fi.org/StudentIdentificationSystemDescriptor#' ~ '{% endraw %}{{ id_code }}{% raw %}' %}{% for c in codes if not ns.done %}{% if c.studentIdentificationSystemDescriptor == target %}{% set ns.found = c['identificationCode'] %}{% set ns.done = true %}{% endif %}{% endfor %}{{ ns.found }}{% endraw %}"
+          "{{id_code}}": "{% raw %}{% set codes = fromjson(studentIdentificationCodes) if studentIdentificationCodes is string else studentIdentificationCodes %}{% set ns = namespace(found='', done=false) %}{% for c in codes if not ns.done %}{% set code_name = (c.studentIdentificationSystemDescriptor.split('#'))[1] %}{% if code_name == '{% endraw %}{{ id_code }}{% raw %}' %}{% set ns.found = c['identificationCode'] %}{% set ns.done = true %}{% endif %}{% endfor %}{{ ns.found }}{% endraw %}"
         {% endfor %}
       - operation: keep_columns
         columns:
