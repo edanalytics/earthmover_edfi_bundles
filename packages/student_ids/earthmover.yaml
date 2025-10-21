@@ -319,7 +319,6 @@ transformations:
           - source_column_name
           - edfi_column_name
         descending: True
-              - operation: sort_rows
       - operation: limit_rows
         count: 1
       # this should (hopefully) result in zero or one rows
@@ -451,12 +450,6 @@ destinations:
 
     extension: csv
     linearize: True
-  
-  student_best_id_match:
-    source: $transformations.best_id_match
-    template: ./best_id_match.txtt
-    extension: txt
-    linearize: False
 
   {% if compute_match_rates %}
   student_id_match_rates:
