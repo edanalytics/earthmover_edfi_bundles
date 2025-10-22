@@ -12,12 +12,10 @@ config:
 
 packages:
   ${ASSESSMENT_BUNDLE}:
-#     local: ../../assessments/STAMP
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     branch: ${ASSESSMENT_BUNDLE_BRANCH}
     subdirectory: assessments/${ASSESSMENT_BUNDLE}
   student_ids:
-#     local: ../student_ids
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     branch: feature/student_id_updates
     subdirectory: packages/student_ids
