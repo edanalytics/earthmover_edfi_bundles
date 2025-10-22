@@ -45,6 +45,8 @@ config:
           -- and api_year=${SNOWFLAKE_API_YEAR}
           -- and assessment='${ASSESSMENT_BUNDLE}'
       )
+
+    NO_MATCH_VALUE: __no_match__
     # and SNOWFLAKE_CONNECTION, SNOWFLAKE_TENANT_CODE, and SNOWFLAKE_API_YEAR (as above)
     # ----------------------------------------------------
 
@@ -109,6 +111,10 @@ sources:
       ${MATCH_RATES_SNOWFLAKE_QUERY}
   {% endif %}
 
+  # Set up a no-match CSV line to add to match-rates table.
+  no_match:
+    file: no_match.csv
+    header_rows: 1
 
 {% set edfi_student_id_types = (("${EDFI_STUDENT_ID_TYPES}" | trim) and "${EDFI_STUDENT_ID_TYPES}".split(",") or []) + ["studentUniqueId"] %}
 
@@ -288,6 +294,10 @@ transformations:
       - operation: drop_columns
         columns:
           - meets_filter_criteria
+      # Union the zero-match-rate values to ensure this table is always populated.
+      - operation: union
+        sources:
+          - $sources.no_match
       # Ensure the row selected is the highest match.
       - operation: modify_columns
         columns:
@@ -327,6 +337,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: "${NO_MATCH_VALUE}"
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -356,6 +367,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
+          __no_match__: ""
       - operation: join
         sources:
           - $transformations.best_id_match
@@ -388,6 +400,7 @@ transformations:
           - __num_matches
           - __num_rows
           - __match_rate
+          - __no_match__
 
   input_no_student_id_match:
     source: $transformations.input_base
