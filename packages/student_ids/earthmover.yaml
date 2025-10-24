@@ -74,7 +74,7 @@ sources:
               seoa.api_year,
               seoa.k_student,
               seoa.ed_org_id,
-              object_construct_keep_null('assigningOrganizationIdentificationCode', seo_ids.id_system,
+              object_construct_keep_null('studentIdentificationSystemDescriptor', seo_ids.id_system,
                   'identificationCode', seo_ids.id_code) as stu_id_code,
           from ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__student_education_organization_associations seoa
               left join  ${SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__stu_ed_org__identification_codes seo_ids on seoa.k_student=seo_ids.k_student
