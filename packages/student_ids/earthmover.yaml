@@ -46,7 +46,6 @@ config:
           -- and assessment='${ASSESSMENT_BUNDLE}'
       )
 
-    NO_MATCH_VALUE: __no_match__
     # and SNOWFLAKE_CONNECTION, SNOWFLAKE_TENANT_CODE, and SNOWFLAKE_API_YEAR (as above)
     # ----------------------------------------------------
 
@@ -337,7 +336,7 @@ transformations:
       - operation: add_columns
         columns:
           __join_id: "1"
-          __no_match__: "${NO_MATCH_VALUE}"
+          __no_match__: "__no_match__"
       - operation: join
         sources:
           - $transformations.best_id_match
