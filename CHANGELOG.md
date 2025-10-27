@@ -5,6 +5,21 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v.0.4.0
+
+## Under the hood
+- Restructured the ACCESS, ACT, ASVAB, CIRCLE, DIBELS 8, DIBELS Next, SC EOCEP, IB, KRA, MAP Growth, PSAT/SAT, SC Alt, SCREADY, STAMP, STAR, TX KEA, WIN, and i-Ready bundles for Runway needs.
+    - Adds `_metadata.yaml` files used by Runway app.
+    - Updates the seed structure to work with descriptor mapping feature in Runway.
+        - NOTE: This is considered a breaking change for any implementations that use project composition to override descriptor values. 
+    - Other standardizations.
+- Updated the student ID bundle to:
+    1. Compare the edfi student ID types to the `studentIdentificationSystemDescriptor` instead of the `assigningOrganizationIdentificationCode` when `EDFI_ROSTER_TYPE` = 'File'.
+    2. Remove the error when no matches reach the 50% threshold. Instead, all records will be moved to the student no match file.
+
+## Fixes
+- Modifies the student ID package to handle when there is only 1 roster ID type _and_ only 1 possible ID type from the assessment source.
+
 # earthmover_edfi_bundles v.0.3.2
 ## New features
 - STAMP Bundle
