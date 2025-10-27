@@ -1,0 +1,137 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STUDENT_STATE_ID' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    EDFI_DS_VERSION: 3
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_id
+      # governance decision: removing rows without an achieved level because we have no other way to assign their identifier
+      - operation: filter_rows
+        query: LEVEL_ACHIEVED == '-'
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}cambridge_{%- if QUALIFICATION == 'ADIP' and LEVEL_ACHIEVED == 'ADIP' -%}aice_diploma{%- elif QUALIFICATION != 'ADIP' and LEVEL_ACHIEVED != '-' -%}{{ LEVEL_ACHIEVED.split(' ')[0] }}_{{ SYLLABUS }}{%- endif -%}{%endraw%}"
+          namespace: uri://cambridgeinternational.org
+          schoolYear: ${SCHOOL_YEAR}
+          testMonth:  >
+            {%raw%}
+              {%- if 'Apr' in SERIES -%}
+                04
+              {%- elif 'May' in SERIES -%}
+                05
+              {%- elif 'Jun' in SERIES -%}
+                06
+              {%- elif 'Sep' in SERIES -%}
+                09
+              {%- elif 'Oct' in SERIES -%}
+                10
+              {%- elif 'Nov' in SERIES -%}
+                11
+              {%- endif -%}
+            {%endraw%}
+          testYear: > 
+            {%raw%}
+              {%- if testMonth|int < 7 -%}
+                {{ schoolYear }}
+              {%- else -%}
+                {{ schoolYear | int - 1 }}
+              {%- endif -%}
+            {%endraw%}
+          testDay: "{%raw%}{{'%02d' % SERIES.split('-')[0]|int}}{%endraw%}"
+          administrationDate: "{%raw%}{{ testYear | string }}-{{ testMonth }}-{{ testDay }}{%endraw%}"
+          edfi_ds_version: ${EDFI_DS_VERSION}
+      - operation: combine_columns
+        columns:
+          - student_id
+          - administrationDate
+          - SYLLABUS
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: group_by
+        group_by_columns:
+          - assessmentFamily
+        create_columns:
+          grade_descriptors: agg(gradeLevelDescriptor,;)
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentFamily
+        right_key: assessmentFamily
+
+
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl

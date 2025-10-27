@@ -1,0 +1,56 @@
+{%- set possible_scores = [] -%}
+
+{%- set _ = possible_scores.append([GRADE, "Grade", "Level"]) -%}
+{%- set _ = possible_scores.append([SERIES, "Series", "Integer"]) -%}
+{%- set _ = possible_scores.append([LEVEL_ENTERED, "Level Entered", "Level"]) -%}
+{%- set _ = possible_scores.append([LEVEL_ACHIEVED, "Level Achieved", "Level"]) -%}
+{%- set _ = possible_scores.append([SYLLABUS, "Syllabus", "Level"]) -%}
+{%- set _ = possible_scores.append([SYLLABUS_NAME, "Syllabus Name", "Level"]) -%}
+
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != '-' -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_id}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {% endif %}  
+  {% if scores | length %}
+  "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+  {% if assessmentIdentifier == 'cambridge_aice_diploma' %},
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AICE Diploma Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{GRADE}}"
+      {%- if edfi_ds_version|int < 4 -%}
+        ,"performanceLevelMet": true
+      {% endif %}
+    }
+  ]
+  {% endif %}
+}
