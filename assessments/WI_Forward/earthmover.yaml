@@ -1,0 +1,220 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: WISEID,Local Student ID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See data/sample_anonymized_file.csv
+
+# The following maps out scores and PLs for objective assessments
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  unique_grade_levels:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - originalGrade
+          - gradeLevelDescriptor
+      - operation: keep_columns
+        columns:
+          - originalGrade
+          - gradeLevelDescriptor
+        
+
+  # pivot wide to long
+  {% for assessment in assessments %}
+  {{ assessment.affix | lower }}:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      # build assessment metadata
+      - operation: add_columns
+        columns: 
+          assessmentIdentifier: "WIForward_{{ assessment.affix }}"
+          namespace: "uri://datarecognitioncorp.com"
+      - operation: duplicate_columns
+        columns:
+          Year: schoolYear
+          Test_End_Date_{{ assessment.affix }}: adminDate
+          {{ assessment.affix }}_Attempted_Status: attemptStatus # needed?
+          # TODO: school for edOrg associations
+      - operation: join
+        sources:
+          - $transformations.unique_grade_levels
+        join_type: inner
+        left_key: Grade
+        right_key: originalGrade
+      - operation: filter_rows
+        # query: adminDate != '' # is this ever missing for valid rows?
+        query: attemptStatus == 'Y' # is this ever missing for valid rows?
+        behavior: include
+      - operation: duplicate_columns
+        columns:
+          # assessment-level scores handled here
+          {{ assessment.affix }}_Performance_Level: performanceLevel 
+          Scale_Score_{{ assessment.affix }}: scaleScore
+          Std_Error_Scale_Score_{{ assessment.affix }}: stdErrorScaleScore
+          WI_Percentile_{{ assessment.affix }}: percentile
+          Total_Points_Earned_{{ assessment.affix }}: totalPoints
+      - operation: combine_columns
+        columns:
+          # might be overkill; minimum is probably student ID, assessment, and the unique DB key
+          - studentUniqueId
+          - Grade
+          - assessmentIdentifier
+          - adminDate
+          - Unique_DB_KEY
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: '{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}'
+      - operation: keep_columns
+        columns:
+          - studentUniqueId
+          - assessmentIdentifier
+          - studentAssessmentIdentifier
+          - namespace
+          - schoolYear
+          - adminDate
+          - attemptStatus
+          - gradeLevelDescriptor
+          # overall scores
+          - performanceLevel
+          - scaleScore
+          - stdErrorScaleScore
+          - percentile
+          - totalPoints
+          # objective assessment scores
+          {% for obj_assessment in assessment.objectiveAssessments %}
+          {% set outer_loop = loop %}
+          {% for score in obj_assessment.scoreResults %}
+          - {{ score.col }}
+          {% endfor %}
+          {% for pl in obj_assessment.performanceLevels %}
+          - {{ pl.col }}
+          {% endfor %}
+          {% endfor %}
+  {% endfor %}
+
+  # restack
+  student_assessments_stacked:
+    source: $transformations.{{ (assessments | first)['affix'] | lower }}
+    operations:
+      - operation: union
+        sources:
+        {% for assessment in assessments %} 
+          {% if not loop.first %}
+          - $transformations.{{ assessment.affix | lower }}
+          {% endif %}
+        {% endfor %}
+        fill_missing_columns: true # variable columns depending on subject
+      - operation: modify_columns
+        columns:
+          adminDate: '{%raw%}{% if value %}{{ value[-4:] }}-{{ value[:2] }}-{{ value[2:4] }}{% endif %}{%endraw%}'
+
+
+
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  temp: 
+    source: $transformations.student_assessments_stacked
+    template: ./templates/temp.jsont
+    extension: jsonl
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.student_assessments_stacked
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl

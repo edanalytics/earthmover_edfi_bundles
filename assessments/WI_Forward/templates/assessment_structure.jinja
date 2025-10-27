@@ -1,0 +1,302 @@
+{% set assessments = [
+  {
+    'affix': 'ELA',
+    'assessmentIdentifier': 'WIForward_ELA',
+    'name': 'English Language Arts',
+    'scoreResults': [
+      {'col': 'scaleScore', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'stdErrorScaleScore', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'percentile', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+    ],
+    'performanceLevels': [
+      {'col': 'performanceLevel', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+    ],
+    'objectiveAssessments': [
+      {
+        'name': 'Reading', 
+        'scoreResults': [
+          {'col': 'Scale_Score_Reading', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+          {'col': 'Std_Error_Scale_Score_Reading', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+          {'col': 'WI_Percentile_Reading', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+        ],
+        'performanceLevels': [
+          {'col': 'Reading_Performance_Level', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Writing',
+        'scoreResults': [
+          {'col': 'Scale_Score_Writing_Language', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+          {'col': 'Std_Error_Scale_Score_Writing_Language', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+          {'col': 'WI_Percentile_Writing_Language', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+        ],
+        'performanceLevels': [
+          {'col': 'Writing_Language_Performance_Level', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Reading_KI',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Reading_KI', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Reading_KI', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Reading_CS',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Reading_CS', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Reading_CS', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Reading_VU',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Reading_VU', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Reading_VU', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Writing_Lang_TT',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Writing_Lang_TT', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Writing_Lang_TT', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Writing_Lang_IB',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Writing_Lang_IB', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Writing_Lang_IB', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }, {
+        'name': 'Writing_Lang_LC',
+        'scoreResults': [
+          {'col': 'Progress_Score_ELA_Writing_Lang_LC', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_ELA_Writing_Lang_LC', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }
+    ]
+  },
+  {
+    'affix': 'MTH',
+    'assessmentIdentifier': 'WIForward_MTH',
+    'name': 'Mathematics',
+    'scoreResults': [
+      {'col': 'scaleScore', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'stdErrorScaleScore', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'percentile', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+    ],
+    'performanceLevels': [
+      {'col': 'performanceLevel', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+    ],
+    'objectiveAssessments': [
+      {
+        'name': 'MTH_Gr3-5_OA', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr3-5_OA', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr3-5_OA', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr3-5_NBT', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr3-5_NBT', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr3-5_NBT', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr3-5_NF', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr3-5_NF', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr3-5_NF', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr3-5_MD', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr3-5_MD', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr3-5_MD', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr3-8_GEO', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr3-8_GEO', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr3-8_GEO', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr6-7_RP', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr6-7_RP', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr6-7_RP', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr6-8_NS', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr6-8_NS', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr6-8_NS', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr6-8_EE', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr6-8_EE', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr6-8_EE', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr6-8_SP', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr6-8_SP', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr6-8_SP', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'MTH_Gr8_FNC', 
+        'scoreResults': [
+          {'col': 'Progress_Score_MTH_Gr8_FNC', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_MTH_Gr8_FNC', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }
+    ]
+  },
+  {
+    'affix': 'SCN',
+    'assessmentIdentifier': 'WIForward_SCN',
+    'name': 'Science',
+    'scoreResults': [
+      {'col': 'scaleScore', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'stdErrorScaleScore', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'percentile', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+    ],
+    'performanceLevels': [
+      {'col': 'performanceLevel', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+    ],
+    'objectiveAssessments': [
+      {
+        'name': 'SCN_LS', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SCN_LS', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SCN_LS', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SCN_PS', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SCN_PS', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SCN_PS', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SCN_ES', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SCN_ES', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SCN_ES', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SCN_ET', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SCN_ET', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SCN_ET', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }
+    ]
+  },
+  {
+    'affix': 'SS',
+    'assessmentIdentifier': 'WIForward_SS',
+    'name': 'Social Studies',
+    'scoreResults': [
+      {'col': 'scaleScore', 'reportingMethod': 'Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'stdErrorScaleScore', 'reportingMethod': 'Std Error Scale Score', 'typeDescriptor': 'Integer'},
+      {'col': 'percentile', 'reportingMethod': 'WI Percentile', 'typeDescriptor': 'Percentile'}
+    ],
+    'performanceLevels': [
+      {'col': 'performanceLevel', 'reportingMethod': 'Performance Level', 'levels': [1, 2, 3, 4]}
+    ],
+    'objectiveAssessments': [
+      {
+        'name': 'SS_BH', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SS_BH', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SS_BH', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SS_Econ', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SS_Econ', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SS_Econ', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SS_Geog', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SS_Geog', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SS_Geog', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SS_Hist', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SS_Hist', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SS_Hist', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      },
+      {
+        'name': 'SS_PS', 
+        'scoreResults': [
+          {'col': 'Progress_Score_SS_PS', 'reportingMethod': 'Progress Score', 'typeDescriptor': 'Integer'}
+        ],
+        'performanceLevels': [
+          {'col': 'Progress_Level_SS_PS', 'reportingMethod': 'Progress Level', 'levels': [1, 2, 3, 4]}
+        ]
+      }
+    ]
+  }
+] %}

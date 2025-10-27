@@ -1,0 +1,44 @@
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+{# match the assessment spec on assessment identifier #}
+{%- set assessment = assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
+
+{# match the objective assessment spec on code #}
+{%- set objectiveAssessment = assessment.objectiveAssessments | selectattr('name', 'equalto', identificationCode) | first -%}
+
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "scores": [
+    {% for score in objectiveAssessment.scoreResults %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.reportingMethod}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score.typeDescriptor}}"
+      } {% if not loop.last %},{% endif%}
+    {% endfor %}
+    ],
+    "performanceLevels": [
+    {% set leading_comma = joiner(",") %}
+    {% for pl in objectiveAssessment.performanceLevels %}
+      {% for level in pl.levels %}
+      {{ leading_comma() }}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl.reportingMethod}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+      } 
+      {% endfor %}
+    {% endfor %}
+    ]
+  }
