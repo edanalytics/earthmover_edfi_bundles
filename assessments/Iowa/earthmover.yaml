@@ -63,9 +63,26 @@ transformations:
           "Secondary Student ID": "Secondary_Student_Id"
           "Norm Year": "Norm_Year"
           "Programs String": "Programs_String"
-          "Number Attempted (NA)": "Number_Attempted"
           "Completion Criteria (CC)": "Completion_Criteria"
+          "Number Attempted (NA)": "Number_Attempted"          
           "Raw Score (RS)": "Raw_Score"
+          "Grade Equivalent (GE)": "Grade_Equivalent"
+          "National Curve Equivalent (NCE)": "National_Curve_Equivalent"
+          "Predicted Standard Score (PSS)": "Predicted_Standard_Score"
+          "Predicted Grade Equivalent (PGE)": "Predicted_Grade_Equivalent"
+          "Predicted National Percentile Rank (PNPR)": "Predicted_National_Percentile_Rank"
+          "Predicted Standard Score Diffs": "Predicted_Standard_Score_Diffs"
+          "Predicted Grade Equivalent Diffs": "Predicted_Grade_Equivalent_Diffs"
+          "College Readiness": "College_Readiness"
+          "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct": "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct"
+          "State Predicted Scale Score: Low Score of Range": "State_Predicted_Scale_Score_Low_Score_of_Range"
+          "State Predicted Scale Score: High Score of Range": "State_Predicted_Scale_Score_High_Score_of_Range"
+          "State Predicted Scale Score": "State_Predicted_Scale_Score"
+          "PR Valid Flag": "PR_Valid_Flag"
+          "Significant Diff Indicators": "Significant_Diff_Indicators"
+          "Catholic - Private PR": "Catholic_Private_PR"
+          "HSES PR": "HSES_PR"
+          "LSES PR": "LSES_PR"
       # Simplify column names
       - operation: add_columns
         columns:
@@ -126,6 +143,92 @@ transformations:
       - operation: rename_columns
         columns:
           to: Grade_Descriptor
+
+  reporting_methods_base:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isComposite == "0" or isComposite == 0
+        behavior: include
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: keep_columns
+        columns:
+          - isComposite
+          - codeValue
+          - description
+          - namespace
+          - shortDescription
+          - datatype
+          - joinKey
+
+  extract_reporting_methods_composites:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isComposite == "1" or isComposite == 1
+        behavior: include
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          "codeValue": "codeValueComposite"
+          "description": "descriptionComposite"
+          "shortDescription": "shortDescriptionComposite"
+          "isComposite": "isCompositeComposite"
+          "datatype": "datatypeComposite"
+      - operation: keep_columns
+        columns:
+          - isCompositeComposite
+          - codeValueComposite
+          - descriptionComposite
+          - shortDescriptionComposite
+          - datatypeComposite
+          - joinKey
+
+  reporting_methods_composites:
+    source: $transformations.reporting_methods_base
+    operations:
+      - operation: filter_rows
+        query: codeValue in ["Completion Criteria"]
+        behavior: exclude
+      - operation: join
+        sources:
+          - $transformations.extract_reporting_methods_composites
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: add_columns
+        columns:
+          isComposite: "1"
+      - operation: modify_columns
+        columns:
+          codeValue: "{%raw%}{{ codeValue }}/{{ codeValueComposite }}{%endraw%}"
+          shortDescription: "{%raw%}{{ shortDescription }} - {{ shortDescriptionComposite }}{%endraw%}"
+          description: "{%raw%}{{ description }} - {{ descriptionComposite }}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - isComposite
+          - codeValue
+          - description
+          - namespace
+          - shortDescription
+
+  reporting_methods_all:
+    source: $transformations.reporting_methods_base
+    operations:
+      - operation: keep_columns
+        columns:
+          - codeValue
+          - description
+          - namespace
+          - shortDescription
+          - isComposite
+      - operation: union
+        sources:
+          - $transformations.reporting_methods_composites
 
   performance_levels:
     source: $sources.performanceLevelDescriptors
@@ -210,10 +313,11 @@ transformations:
           - grade_json
 
   scores_json:
-    source: $sources.assessmentReportingMethodDescriptors
+    #source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.reporting_methods_all
     operations:
       - operation: filter_rows
-        query: codeValue in ["Predicted SAT Critical Reading High", "Predicted SAT Critical Reading Low","Predicted SAT Math High","Predicted SAT Math Low","Predicted ACT Composite High","Predicted ACT Composite Low"]
+        query: isComposite=="1"
         behavior: include
       - operation: add_columns
         columns:
@@ -309,7 +413,7 @@ transformations:
         join_type: outer
         left_key: join_key
         right_key: join_key
-    # Cleanup level-slot combination as per appendix a.
+    # Cleanup level-slot combination as per appendix A and C.
     {% for i in range(5,19) %}
       {% if i > 8 %}
       - operation: filter_rows
@@ -332,6 +436,10 @@ transformations:
         behavior: exclude
       {% endif %}
     {% endfor %}
+      #Exclude the overall scores from objective list
+      - operation: filter_rows
+        query: 'test_slot == "15" or test_slot == "16" or test_slot == "17" or test_slot == "18" or test_slot == "21" or test_slot == "22" or test_slot == "23" or test_slot == "24" '
+        behavior: exclude
       - operation: add_columns
         columns:
           rowsOrder: 1
@@ -388,7 +496,7 @@ transformations:
     operations:
       - operation: modify_columns
         columns:
-          Building_Code: "{% raw -%}{{ (Building_Code | int) | string if Building_Code is not none and Level|string|trim != '' else '' }}{%- endraw %}"
+          Building_Code: "{% raw -%}{{ (Building_Code | int) | string if Building_Code is not none and Building_Code|string|trim != '' else '' }}{%- endraw %}"
       - operation: filter_rows
         query: Building_Code != "" and Building_Code != None
         behavior: include
@@ -419,7 +527,7 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.reporting_methods_all
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
