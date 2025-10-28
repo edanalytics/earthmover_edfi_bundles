@@ -5,12 +5,16 @@
 
 ## Model
 
+Data model is based on information in the DPI [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf](User's Guide to Interpreting Reports 2024-25) as well as the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf](Wisconsin Forward Exam Spring 2024 Technical Report). 
+
+Namespace is `uri://datarecognitioncorp.com` due to the underlying vendor.
+
 ## Assessments
 Split into four by academic subject; TBD on whether official integration will split by grade as well:
-- WIForward_ELA
-- WIForward_MTH
-- WIForward_SCN
-- WIForward_SS
+- WIForward_ELA: English Language Arts 
+- WIForward_MTH: Mathematics
+- WIForward_SCN: Science
+- WIForward_SS: Social Studies
 
 For each of the subjects, the following scores/PLs are available:
 - Scale score (can be "compared for individual students and groups in a given grade and content area" and "over time for all.. content areas for which the assessment scores are reported on the same year-to-year scale")
@@ -23,10 +27,10 @@ For each of the subjects, the following scores/PLs are available:
 ## Objective assessments
 
 ### Domains
-ELA is the primary assessment split into domains, 1) Reading and 2) Writing/Language. Each of these has:
+ELA is the only assessment split into domains, 1) Reading and 2) Writing/Language. Each of these has, like the top-level assessments:
 - Scale score
 - Scale score standard error
-- Performance level
+- Performance level, 1-4
 - WI percentile
 
 
