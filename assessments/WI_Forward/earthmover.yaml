@@ -78,6 +78,11 @@ transformations:
           Test_End_Date_{{ assessment.affix }}: adminDate
           {{ assessment.affix }}_Attempted_Status: attemptStatus # needed?
           # TODO: school for edOrg associations
+      - operation: modify_columns
+        columns:
+          # Enforce zero-padded grade to length 2 to match seed
+          # Zero pad may be removed with manual manipulation
+          Grade: '{%raw%}{{ Grade.zfill(2) }}{%endraw%}'
       - operation: join
         sources:
           - $transformations.unique_grade_levels
@@ -194,10 +199,6 @@ transformations:
         right_key: assessmentIdentifier
 
 destinations:
-  temp: 
-    source: $transformations.student_assessments_stacked
-    template: ./templates/temp.jsont
-    extension: jsonl
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
