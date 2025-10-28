@@ -83,6 +83,12 @@ transformations:
           "Catholic - Private PR": "Catholic_Private_PR"
           "HSES PR": "HSES_PR"
           "LSES PR": "LSES_PR"
+          "Predicted SAT Critical Reading High": "Predicted_SAT_Critical_Reading_High"
+          "Predicted SAT Critical Reading Low": "Predicted_SAT_Critical_Reading_Low"
+          "Predicted SAT Math High": "Predicted_SAT_Math_High"
+          "Predicted SAT Math Low": "Predicted_SAT_Math_Low"
+          "Predicted ACT Composite High": "Predicted_ACT_Composite_High"
+          "Predicted ACT Composite Low": "Predicted_ACT_Composite_Low"
       # Simplify column names
       - operation: add_columns
         columns:
@@ -413,7 +419,7 @@ transformations:
         join_type: outer
         left_key: join_key
         right_key: join_key
-    # Cleanup level-slot combination as per appendix A and C.
+    # Cleanup level-slot combination as per appendix A.
     {% for i in range(5,19) %}
       {% if i > 8 %}
       - operation: filter_rows

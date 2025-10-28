@@ -61,11 +61,14 @@
     ],
   {% endif %}
 {% endif %}
-  {#-----------------------------------------------------------------------------------------------------------#}
-  {# === Composite slots === #}
+
+
+{#-----------------------------------------------------------------------------------------------------------#}
+
+{# Composite slots #}
 {% set nonobjective_slots = [15,16,17,18,21,22,23,24] %}
 
-{# === slot → composite description === #}
+{# Slot -> Composite description #}
 {% set slot_description_map = {
   15: "CT",
   16: "XCT",
@@ -367,10 +370,11 @@
         {% endif %}
     {% endfor %}
   ]
-  {% if valid_composite_scores %}
+  {% if valid_composite_scores or valid_scores %}
 ,"scoreResults": [
   {%- set comma = joiner(",") -%}
-  {% for item in valid_composite_scores %}
+  {% set all_scores = valid_composite_scores + valid_scores %}
+  {% for item in all_scores %}
   {
     "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ item.assessmentReportingMethodDescriptor }}",
     "resultDatatypeTypeDescriptor": "{{ descriptor_namespace_override }}/ResultDatatypeTypeDescriptor#{{ item.resultDatatypeTypeDescriptor }}",
