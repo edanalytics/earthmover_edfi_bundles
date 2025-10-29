@@ -23,8 +23,7 @@
   ],
   "scoreResults": [
     {% set scores_present = [] %}
-    {% set all_scores = {'Subject':['Level',subject],
-                         'Course': ['Level',course_abbrev],
+    {% set all_scores = {'Course': ['Level',course_abbrev],
                          'Total Scale Score':['Integer',scale_score],
                          'Overall Raw Score':['Integer',raw_score],
                          'Score Code':['Level',score_code],
