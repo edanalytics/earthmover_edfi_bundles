@@ -1,7 +1,7 @@
 {
   "identificationCode": "{{ identificationCode[:60] }}",
   "assessmentReference": {
-    "assessmentIdentifier": "staar_interim",
+    "assessmentIdentifier": "{{ assessmentIdentifier }}",
     "namespace": "uri://tea.texas.gov/student-assessment"
   },
   "scores": [
