@@ -68,7 +68,7 @@ transformations:
       # ADD assess_id & overall_pl
       - operation: add_columns
         columns:
-          assessment_identifier: staar_summative_eoc_alt
+          assessment_identifier: 'staar_summative_eoc_alt_{{course_academic_subject | replace(" ", "_")}}'
           school_year: "${API_YEAR}"
           subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
           {% if ${API_YEAR} <= 2021 %}

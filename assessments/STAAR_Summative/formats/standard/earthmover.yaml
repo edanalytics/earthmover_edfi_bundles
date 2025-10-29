@@ -82,7 +82,6 @@ transformations:
       # ADD assess_id and missing cols
       - operation: add_columns
         columns:
-          assessment_identifier: staar_summative
           school_year: "${API_YEAR}"
           # no staar 3-8 tests are linked to a course. add this value so 3-8 and EOC can have similar score structure in Ed-Fi
           course_abbrev: "no_course"
@@ -153,6 +152,7 @@ transformations:
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
         columns:
+          assessment_identifier: 'staar_summative_{{descriptor_subject | replace(" ", "_")}}'
           subject: {{descriptor_subject}}
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
