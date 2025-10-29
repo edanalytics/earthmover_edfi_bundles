@@ -153,7 +153,7 @@ transformations:
       - operation: add_columns
         columns:
           api_year: "${API_YEAR}" #NOTE, this is passed by the user/airflow as an env variable
-          assessment_identifier: staar_interim
+          assessment_identifier: '{%raw%}staar_interim_{{subject | replace(" ", "_")}}{%endraw%}'
       # join objective assessment descriptive names
       - operation: join
         sources:
@@ -174,6 +174,7 @@ transformations:
         column: TEST_DATE
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
+    debug: true
   assessments:
     source: $sources.assessments
     operations:
