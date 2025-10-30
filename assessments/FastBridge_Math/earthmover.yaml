@@ -135,12 +135,13 @@ transformations:
       - operation: add_columns
         columns:
           base_namespace: "uri://fastbridge.org/assessment"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           performance_level_json: >
             {%raw-%}
             {
               "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
               "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
       - operation: modify_columns
