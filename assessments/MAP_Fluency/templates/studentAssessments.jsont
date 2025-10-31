@@ -94,7 +94,7 @@
     },
     "administrationDate": "{{ TestCompletionDate }}",
 
-    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+    "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
 
     {% if administrationLanguageDescriptor is not none and administrationLanguageDescriptor | length %}
     , "administrationLanguageDescriptor" : "{{languageDescriptor}}"

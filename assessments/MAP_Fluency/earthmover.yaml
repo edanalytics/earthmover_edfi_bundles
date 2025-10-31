@@ -34,6 +34,12 @@ sources:
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -53,6 +59,13 @@ transformations:
   input:
     source: $sources.input
     operations: []
+
+  language_descriptors:
+    source: $sources.languageDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: languageDescriptor
 
   nwea_map_student_assessment:
     source: $transformations.input
@@ -103,7 +116,7 @@ transformations:
         right_key: grade
       - operation: join
         sources:
-          - $sources.languageDescriptors
+          - $transformations.language_descriptors
         join_type: left
         left_key: language
         right_key: language
@@ -134,7 +147,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%endraw%}
       - operation: modify_columns
@@ -151,6 +164,29 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   assessments:
     source: $sources.assessments
     operations:
@@ -160,6 +196,18 @@ transformations:
         join_type: inner
         left_key: assessmentFamily
         right_key: assessmentFamily
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
