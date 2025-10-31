@@ -28,8 +28,8 @@
     "studentUniqueId": "{{student_id}}"
   },
   "administrationDate": "{{administrationDate}}",
-  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
   {% endif %}  
   {% if scores | length %}
   "scoreResults": [
