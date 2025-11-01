@@ -5,7 +5,9 @@
 
 ## Model
 
-Data model is based on information in the DPI [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf](User's Guide to Interpreting Reports 2024-25) as well as the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf](Wisconsin Forward Exam Spring 2024 Technical Report). 
+Data model is based on information in the DPI [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf](User's Guide to Interpreting Reports 2024-25) as well as the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf](Wisconsin Forward Exam Spring 2024 Technical Report) for 2023-2025.
+
+For 2022-23 and prior, the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/EWI270_WIFW_SPRG_23_TECH.pdf](2023 Technical Report) covers the content standards and different scores.
 
 Namespace is `uri://datarecognitioncorp.com` due to the underlying vendor.
 
@@ -22,6 +24,7 @@ For each of the subjects, the following scores/PLs are available:
 	- Science scale same since 2019, social studies scale same since 2022
 - Scale score standard error
 - Performance level, 1-4/Developing-Advanced, based on scale score (different cuts by grade and by subject)
+    - This is called 'Proficiency' in 2022-23 and prior but is also a four-category performance level. The categories then are called 'Below Basic', 'Basic', 'Proficient', and 'Advanced'
 - WI percentile
 
 ## Objective assessments
@@ -34,7 +37,7 @@ ELA is the only assessment split into domains, 1) Reading and 2) Writing/Languag
 - WI percentile
 
 
-### Reporting categories
+### Reporting categories / content standards
 Separate from domains, Forward also provides raw points, progress scores, and progress performance levels for each of the following reporting categories. Each category is targeted at specific knowledge areas, skills, or concepts. These differ by subject and can differ by grade for certain subjects.
 
 ELA:

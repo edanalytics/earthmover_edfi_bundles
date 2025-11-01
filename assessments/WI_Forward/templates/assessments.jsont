@@ -13,22 +13,34 @@
   "academicSubjects": [{"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}],
   "scores": [
   {% set leading_comma = joiner(",") %}
-  {% for score in assessment.scoreResults %} {{ leading_comma() }}
+  {% for score in assessment.scoreResults %} 
+  {% if 
+    ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+    ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+  %}
+  {{ leading_comma() }}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ score.reportingMethod }}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{ score.typeDescriptor }}"
     }
-  {% endfor%}
+  {% endif %}
+  {% endfor %}
   ],
   "performanceLevels": [
   {% set leading_comma = joiner(",") %}
   {% for pl in assessment.performanceLevels %} 
-    {% for level in pl.levels %} {{ leading_comma() }}
+    {% for level in pl.levels %} 
+    {% if 
+      ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+      ${API_YEAR} >= (pl.min_year | default(${API_YEAR})) 
+    %}
+    {{ leading_comma() }}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ pl.reportingMethod }}",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ level }}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     }
+    {% endif %}
     {% endfor %}
   {% endfor %}
   ]
