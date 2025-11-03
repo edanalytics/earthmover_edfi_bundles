@@ -47,6 +47,9 @@ sources:
   reasonNotTestedDescriptors:
     file: ./seeds/reasonNotTestedDescriptors.csv
     header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
 
 
   # nonstandard sources for building out assessment structure spec
@@ -55,6 +58,9 @@ sources:
     header_rows: 1
   columnsToAssessmentFields:
     file: ./seeds/columns_to_assessment_fields.csv
+    header_rows: 1
+  columnsToAccommodations:
+    file: ./seeds/columns_to_accommodations.csv
     header_rows: 1
 
   input:
@@ -74,6 +80,7 @@ sources:
     {% set _ = current_assessment.update(scoreResults=[]) %}
     {% set _ = current_assessment.update(performanceLevels=[]) %}
     {% set _ = current_assessment.update(objectiveAssessments=[]) %}
+    {% set _ = current_assessment.update(accommodations=[]) %}
 
     {# filter down high-level scores/PLs to current year #}
     {% for score in assessment.scoreResults %}
@@ -90,6 +97,14 @@ sources:
         ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
       %}
         {% set _ = current_assessment.performanceLevels.append(pl) %}
+      {% endif %}
+    {% endfor %}
+    {% for acc in assessment.accommodations %}
+      {% if 
+        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.accommodations.append(acc) %}
       {% endif %}
     {% endfor %}
 
@@ -171,6 +186,11 @@ transformations:
           {{ field.raw_col }}: {{ field.col }}
         {% endif %}
         {% endfor %}
+        {% for acc in assessment.accommodations %}
+        {% if acc.raw_col %}
+          {{ acc.raw_col }}: {{ acc.col }}
+        {% endif %}
+        {% endfor %}
         # TODO: school for edOrg associations
       - operation: modify_columns
         columns:
@@ -199,6 +219,15 @@ transformations:
           {{ pl.raw_col }}: {{ pl.col }}
         {% endif %}
         {% endfor %}
+      # null out accommodations that are 'N'
+      - operation: map_values
+        columns:
+        {% for acc in assessment.accommodations %}
+          - {{ acc.col }}
+        {% endfor %}
+        mapping:
+          Y: 'Y'
+          N: ''
       - operation: combine_columns
         columns:
           # might be overkill; minimum is probably student ID, assessment, and the unique DB key
@@ -221,6 +250,9 @@ transformations:
           - gradeLevelDescriptor
           {% for field in assessment.topLevelFields %}
           - {{ field.col }}
+          {% endfor %}
+          {% for acc in assessment.accommodations %}
+          - {{ acc.col }}
           {% endfor %}
           # overall scores
           {% for score in assessment.scoreResults %}
@@ -300,28 +332,10 @@ transformations:
       - operation: join
         sources:
           - $transformations.assessments__scoreResults
-        join_type: left
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-        right_drop_columns: 
-          - objectiveAssessment__identificationCode
-      - operation: join
-        sources:
           - $transformations.assessments__performanceLevels
-        join_type: left
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-        right_drop_columns: 
-          - objectiveAssessment__identificationCode
-      - operation: join
-        sources:
           - $transformations.assessments__objectiveAssessments
-        join_type: left
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
           - $transformations.assessments__topLevelFields
+          - $transformations.assessments__accommodations
         join_type: left
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
@@ -342,6 +356,7 @@ transformations:
           performanceLevels_json: performanceLevels
           objectiveAssessments_json: objectiveAssessments
           topLevelFields_json: topLevelFields
+          accommodations_json: accommodations
       # force JSON columns to string to catch NaNs due to left join
       # replace with empty array
       - operation: modify_columns
@@ -350,15 +365,17 @@ transformations:
           performanceLevels: '{%raw%}{{ value }}{%endraw%}'
           objectiveAssessments: '{%raw%}{{ value }}{%endraw%}'
           topLevelFields: '{%raw%}{{ value }}{%endraw%}'
+          accommodations: '{%raw%}{{ value }}{%endraw%}'
       - operation: modify_columns
         columns:
           scoreResults: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           objectiveAssessments: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           topLevelfields: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          accommodations: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
       - operation: add_columns
         columns:
-          assessment_json: "{%raw%}{{ em_row_to_json(exclude=[], literal=['scoreResults', 'performanceLevels', 'objectiveAssessments', 'topLevelFields']) }}{%endraw%}"
+          assessment_json: "{%raw%}{{ em_row_to_json(exclude=[], literal=['scoreResults', 'performanceLevels', 'objectiveAssessments', 'topLevelFields', 'accommodations']) }}{%endraw%}"
           dummy: '1'
       - operation: group_by
         group_by_columns: ['dummy']
@@ -428,6 +445,18 @@ transformations:
         create_columns:
           topLevelFields_json: json_array_agg(topLevelField_json)
 
+  assessments__accommodations:
+    source: $sources.columnsToAccommodations
+    operations:
+      - operation: add_columns
+        columns:
+          accommodation_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['min_year', 'max_year']) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          accommodations_json: json_array_agg(accommodation_json)
+
   all__reportingMethods:
     source: $sources.columnsToReportingMethods
     operations:
@@ -493,6 +522,9 @@ transformations:
       - operation: filter_rows
         query: objectiveAssessment__identificationCode == ''
         behavior: include
+      - operation: drop_columns
+        columns:
+          - objectiveAssessment__identificationCode
 
   assessments__performanceLevels:
     source: $transformations.all__performanceLevels
@@ -500,6 +532,9 @@ transformations:
       - operation: filter_rows
         query: objectiveAssessment__identificationCode == ''
         behavior: include
+      - operation: drop_columns
+        columns:
+          - objectiveAssessment__identificationCode
 
   objectiveAssessments__scoreResults:
     source: $transformations.all__scoreResults
@@ -516,10 +551,6 @@ transformations:
         behavior: include
 
 destinations:
-  temp:
-    source: $transformations.all__reportingMethods
-    template: ./templates/temp.jsont
-    extension: jsonl
   assessment_spec:
     source: $transformations.assessments_spec
     template: ./templates/assessment_spec.jinja
@@ -534,6 +565,10 @@ destinations:
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   reasonNotTestedDescriptors:

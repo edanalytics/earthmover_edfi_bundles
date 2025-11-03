@@ -3,12 +3,13 @@
 {# TODO: combine current-year logic and existing scores logic to avoid looping twice? #}
 {# Or keep separate so this logic is identical to the one in earthmover.yaml? #}
 {% set current_assessments = [] %}
-{%- for assessment in assessments -%}
+{% for assessment in assessments %}
     {# make a copy, emptying out the arrays to be filtered #}
     {% set current_assessment = assessment.copy() %}
     {% set _ = current_assessment.update(scoreResults=[]) %}
     {% set _ = current_assessment.update(performanceLevels=[]) %}
     {% set _ = current_assessment.update(objectiveAssessments=[]) %}
+    {% set _ = current_assessment.update(accommodations=[]) %}
 
     {# filter down high-level scores/PLs to current year #}
     {% for score in assessment.scoreResults %}
@@ -25,6 +26,14 @@
         ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
       %}
         {% set _ = current_assessment.performanceLevels.append(pl) %}
+      {% endif %}
+    {% endfor %}
+    {% for acc in assessment.accommodations %}
+      {% if 
+        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.accommodations.append(acc) %}
       {% endif %}
     {% endfor %}
 
@@ -62,7 +71,7 @@
     {% endfor %}
     
     {% set _ = current_assessments.append(current_assessment) %}
-{%- endfor -%}
+{% endfor %}
 
 {# match the assessment spec on assessment identifier #}
 {%- set assessment = current_assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
@@ -84,6 +93,15 @@
   {%- set _ = pl.update({'val': __row_data__[pl.col]}) -%}
   {%- if pl.val is not none and pl.val | length -%}
     {%- set _ = actual_perf_levels.append(pl) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set actual_accommodations = [] -%}
+{%- for acc in assessment.accommodations -%}
+  {%- set val = __row_data__[acc.col] -%} 
+  {%- set _ = acc.update({'val': __row_data__[acc.col]}) -%}
+  {%- if acc.val is not none and acc.val | length -%}
+    {%- set _ = actual_accommodations.append(acc) -%}
   {%- endif -%}
 {%- endfor -%}
 
@@ -129,6 +147,13 @@
   {%- if reasonNotTested -%}
   , "reasonNotTestedDescriptor": "{{reasonNotTested}}"
   {%- endif -%}
+  {% if actual_accommodations | length %}
+  , "accommodations": [
+    {% for acc in actual_accommodations %}
+    {"accommodationDescriptor": "{{ namespace }}/AccommodationDescriptor#{{ acc.col }}"}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
   {% if actual_scores | length %}
   , "scoreResults": [
     {% for score in actual_scores %}
