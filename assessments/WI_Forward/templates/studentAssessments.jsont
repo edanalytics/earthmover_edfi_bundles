@@ -142,8 +142,10 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{adminDate}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- if adminDate -%}
+  , "administrationDate": "{{adminDate}}"
+  {%- endif -%}
   {%- if reasonNotTested -%}
   , "reasonNotTestedDescriptor": "{{reasonNotTested}}"
   {%- endif -%}

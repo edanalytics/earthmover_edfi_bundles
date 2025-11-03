@@ -333,7 +333,7 @@ transformations:
         to_format: '%Y-%m-%d'
       - operation: modify_columns
         columns:
-          reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/reasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
+          reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/ReasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
 
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
