@@ -27,6 +27,122 @@ config:
     }
     {%- endmacro %}
 
+# The following maps out scores and PLs for objective assessments
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+# Imported templates don't get env variables substituted, so filter down the spec here based on API_YEAR
+{% set current_assessments = [] %}
+{% set columns_in_spec = [] %}
+{% for assessment in assessments %}
+    {# make a copy, emptying out the arrays to be filtered #}
+    {% set current_assessment = assessment.copy() %}
+    {% set _ = current_assessment.update(scoreResults=[]) %}
+    {% set _ = current_assessment.update(performanceLevels=[]) %}
+    {% set _ = current_assessment.update(objectiveAssessments=[]) %}
+    {% set _ = current_assessment.update(accommodations=[]) %}
+    {% set _ = current_assessment.update(topLevelFields=[]) %}
+
+    {# filter down high-level scores/PLs to current year #}
+    {% for score in assessment.scoreResults %}
+      {% if 
+        ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.scoreResults.append(score) %}
+        {% if score.raw_col %}
+            {% set _ = columns_in_spec.append(score.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(score.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for pl in assessment.performanceLevels %}
+      {% if 
+        ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+      %}
+        {% set _ = current_assessment.performanceLevels.append(pl) %}
+        {% if pl.raw_col %}
+            {% set _ = columns_in_spec.append(pl.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(pl.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for field in assessment.topLevelFields %}
+      {% if 
+        ${API_YEAR} <= (field.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (field.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.topLevelFields.append(field) %}
+        {% if field.raw_col %}
+            {% set _ = columns_in_spec.append(field.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(field.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for acc in assessment.accommodations %}
+      {% if 
+        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.accommodations.append(acc) %}
+        {% if acc.raw_col %}
+            {% set _ = columns_in_spec.append(acc.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(acc.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {# filter down objectives to current year #}
+    {% for obj in assessment.objectiveAssessments %}
+      {% if 
+        ${API_YEAR} <= (obj.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (obj.min_year | default(${API_YEAR}))  
+      %}
+        
+        {% set current_obj = obj.copy() %}
+        {% set _ = current_obj.update(scoreResults=[]) %}
+        {% set _ = current_obj.update(performanceLevels=[]) %}
+      
+        {# filter down objective scores/PLs to current year #}
+        {% for score in obj.scoreResults %}
+          {% if 
+            ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+          %}
+            {% set _ = current_obj.scoreResults.append(score) %}
+            {% if score.raw_col %}
+                {% set _ = columns_in_spec.append(score.raw_col) %}
+            {% else %}
+                {% set _ = columns_in_spec.append(score.col) %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% for pl in obj.performanceLevels %}
+          {% if 
+            ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+          %}
+            {% set _ = current_obj.performanceLevels.append(pl) %}
+            {% if pl.raw_col %}
+                {% set _ = columns_in_spec.append(pl.raw_col) %}
+            {% else %}
+                {% set _ = columns_in_spec.append(pl.col) %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% set _ = current_assessment.objectiveAssessments.append(current_obj) %}
+      {% endif %}
+    {% endfor %}
+    
+    {% set _ = current_assessments.append(current_assessment) %}
+{% endfor %}
+
+
 sources:
   # TODO: filter seeds by current year
   assessments:
@@ -68,83 +184,10 @@ sources:
     file: ${INPUT_FILE}
     header_rows: 1
     # See data/sample_anonymized_file.csv
-
-# The following maps out scores and PLs for objective assessments
-{% from 'templates/assessment_structure.jinja' import assessments %}
-
-# Imported templates don't get env variables substituted, so filter down the spec here based on API_YEAR
-{% set current_assessments = [] %}
-{% for assessment in assessments %}
-    {# make a copy, emptying out the arrays to be filtered #}
-    {% set current_assessment = assessment.copy() %}
-    {% set _ = current_assessment.update(scoreResults=[]) %}
-    {% set _ = current_assessment.update(performanceLevels=[]) %}
-    {% set _ = current_assessment.update(objectiveAssessments=[]) %}
-    {% set _ = current_assessment.update(accommodations=[]) %}
-
-    {# filter down high-level scores/PLs to current year #}
-    {% for score in assessment.scoreResults %}
-      {% if 
-        ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
-        ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
-      %}
-        {% set _ = current_assessment.scoreResults.append(score) %}
-      {% endif %}
-    {% endfor %}
-    {% for pl in assessment.performanceLevels %}
-      {% if 
-        ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
-        ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
-      %}
-        {% set _ = current_assessment.performanceLevels.append(pl) %}
-      {% endif %}
-    {% endfor %}
-    {% for acc in assessment.accommodations %}
-      {% if 
-        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
-        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
-      %}
-        {% set _ = current_assessment.accommodations.append(acc) %}
-      {% endif %}
-    {% endfor %}
-
-    {# filter down objectives to current year #}
-    {% for obj in assessment.objectiveAssessments %}
-      {% if 
-        ${API_YEAR} <= (obj.max_year | default(${API_YEAR})) and
-        ${API_YEAR} >= (obj.min_year | default(${API_YEAR}))  
-      %}
-        
-        {% set current_obj = obj.copy() %}
-        {% set _ = current_obj.update(scoreResults=[]) %}
-        {% set _ = current_obj.update(performanceLevels=[]) %}
-      
-        {# filter down objective scores/PLs to current year #}
-        {% for score in obj.scoreResults %}
-          {% if 
-            ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
-            ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
-          %}
-            {% set _ = current_obj.scoreResults.append(score) %}
-          {% endif %}
-        {% endfor %}
-        {% for pl in obj.performanceLevels %}
-          {% if 
-            ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
-            ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
-          %}
-            {% set _ = current_obj.performanceLevels.append(pl) %}
-          {% endif %}
-        {% endfor %}
-
-        {% set _ = current_assessment.objectiveAssessments.append(current_obj) %}
-      {% endif %}
-    {% endfor %}
-    
-    {% set _ = current_assessments.append(current_assessment) %}
-{% endfor %}
-
-
+    optional_fields:
+      {% for col in columns_in_spec %}
+      - col
+      {% endfor %}
 
 
 transformations:
