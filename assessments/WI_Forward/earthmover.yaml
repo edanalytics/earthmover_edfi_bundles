@@ -28,6 +28,7 @@ config:
     {%- endmacro %}
 
 sources:
+  # TODO: filter seeds by current year
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -43,11 +44,17 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  reasonNotTestedDescriptors:
+    file: ./seeds/reasonNotTestedDescriptors.csv
+    header_rows: 1
 
 
   # nonstandard sources for building out assessment structure spec
   columnsToReportingMethods:
     file: ./seeds/columns_to_reporting_methods.csv
+    header_rows: 1
+  columnsToAssessmentFields:
+    file: ./seeds/columns_to_assessment_fields.csv
     header_rows: 1
 
   input:
@@ -156,12 +163,15 @@ transformations:
         columns: 
           assessmentIdentifier: "WIForward_{{ assessment.affix }}"
           namespace: "uri://datarecognitioncorp.com"
+      # map top-level assessment fields per subject
       - operation: duplicate_columns
         columns:
-          Year: schoolYear
-          Test_End_Date_{{ assessment.affix }}: adminDate
-          {{ assessment.affix }}_Attempted_Status: attemptStatus # needed?
-          # TODO: school for edOrg associations
+        {% for field in assessment.topLevelFields %}
+        {% if field.raw_col %}
+          {{ field.raw_col }}: {{ field.col }}
+        {% endif %}
+        {% endfor %}
+        # TODO: school for edOrg associations
       - operation: modify_columns
         columns:
           # Enforce zero-padded grade to length 2 to match seed
@@ -174,7 +184,7 @@ transformations:
         right_key: originalGrade
       - operation: filter_rows
         # query: adminDate != '' # is this ever missing for valid rows?
-        query: attemptStatus == 'Y' # is this ever missing for valid rows?
+        query: (attemptStatus == 'Y') or (reasonNotTested != '') # is this ever missing for valid rows?
         behavior: include
       - operation: duplicate_columns
         columns:
@@ -208,10 +218,10 @@ transformations:
           - assessmentIdentifier
           - studentAssessmentIdentifier
           - namespace
-          - schoolYear
-          - adminDate
-          - attemptStatus
           - gradeLevelDescriptor
+          {% for field in assessment.topLevelFields %}
+          - {{ field.col }}
+          {% endfor %}
           # overall scores
           {% for score in assessment.scoreResults %}
           - {{ score.col }}
@@ -246,6 +256,9 @@ transformations:
         column: adminDate
         from_format: '%m%d%Y'
         to_format: '%Y-%m-%d'
+      - operation: modify_columns
+        columns:
+          reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/reasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
 
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
@@ -306,6 +319,12 @@ transformations:
         join_type: left
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessments__topLevelFields
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
   assessments_spec:
     source: $transformations.assessments
@@ -322,6 +341,7 @@ transformations:
           scoreResults_json: scoreResults
           performanceLevels_json: performanceLevels
           objectiveAssessments_json: objectiveAssessments
+          topLevelFields_json: topLevelFields
       # force JSON columns to string to catch NaNs due to left join
       # replace with empty array
       - operation: modify_columns
@@ -329,14 +349,16 @@ transformations:
           scoreResults: '{%raw%}{{ value }}{%endraw%}'
           performanceLevels: '{%raw%}{{ value }}{%endraw%}'
           objectiveAssessments: '{%raw%}{{ value }}{%endraw%}'
+          topLevelFields: '{%raw%}{{ value }}{%endraw%}'
       - operation: modify_columns
         columns:
           scoreResults: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           objectiveAssessments: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          topLevelfields: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
       - operation: add_columns
         columns:
-          assessment_json: "{%raw%}{{ em_row_to_json(exclude=[], literal=['scoreResults', 'performanceLevels', 'objectiveAssessments']) }}{%endraw%}"
+          assessment_json: "{%raw%}{{ em_row_to_json(exclude=[], literal=['scoreResults', 'performanceLevels', 'objectiveAssessments', 'topLevelFields']) }}{%endraw%}"
           dummy: '1'
       - operation: group_by
         group_by_columns: ['dummy']
@@ -394,6 +416,17 @@ transformations:
         create_columns:
           objectiveAssessments_json: json_array_agg(objectiveAssessment_json)
          
+  assessments__topLevelFields:
+    source: $sources.columnsToAssessmentFields
+    operations:
+      - operation: add_columns
+        columns:
+          topLevelField_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=[]) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          topLevelFields_json: json_array_agg(topLevelField_json)
 
   all__reportingMethods:
     source: $sources.columnsToReportingMethods
@@ -501,6 +534,10 @@ destinations:
     extension: jsonl
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  reasonNotTestedDescriptors:
+    source: $sources.reasonNotTestedDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   objectiveAssessments:

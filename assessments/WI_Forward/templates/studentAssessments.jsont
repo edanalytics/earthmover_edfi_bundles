@@ -126,6 +126,9 @@
   },
   "administrationDate": "{{adminDate}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- if reasonNotTested -%}
+  , "reasonNotTestedDescriptor": "{{reasonNotTested}}"
+  {%- endif -%}
   {% if actual_scores | length %}
   , "scoreResults": [
     {% for score in actual_scores %}
