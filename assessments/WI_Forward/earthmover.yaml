@@ -429,6 +429,8 @@ transformations:
   assessments__objectiveAssessments:
     source: $sources.objectiveAssessments
     operations:
+      - operation: drop_columns
+        columns: [namespace] # not needed for spec
       - operation: join
         sources:
           - $transformations.objectiveAssessments__scoreResults
