@@ -263,6 +263,7 @@ transformations:
         {% endif %}
         {% endfor %}
       # null out accommodations that are 'N'
+      {% if assessment.accommodations %}
       - operation: map_values
         columns:
         {% for acc in assessment.accommodations %}
@@ -271,6 +272,7 @@ transformations:
         mapping:
           Y: 'Y'
           N: ''
+      {% endif %}
       - operation: combine_columns
         columns:
           # might be overkill; minimum is probably student ID, assessment, and the unique DB key
@@ -414,7 +416,7 @@ transformations:
           scoreResults: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           objectiveAssessments: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
-          topLevelfields: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          topLevelFields: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
           accommodations: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
       - operation: add_columns
         columns:
