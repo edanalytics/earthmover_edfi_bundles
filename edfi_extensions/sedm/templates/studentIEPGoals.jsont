@@ -1,10 +1,10 @@
 {
-    "iEPGoalId": "{{}}",
+    "iEPGoalId": "{{goal_id}}",
     "studentIEPAssociationReference": {
-      "studentIEPAssociationId": "{{}}"
+      "studentIEPAssociationId": "{{iepid}}"
     },
-    "goalDescriptor": "{{namespace}}/GoalDescriptor#{{}}",
-    "iEPGoalDetails": "{{}}",
-    "goalAchievementPeriodBeginDate": "{{}}",
-    "goalAchievementPeriodEndDate": "{{}}"
+    "goalDescriptor": "${DESCRIPTOR_NAMESPACE}/GoalDescriptor#{{goal_domain_goal_area}}",
+    "iEPGoalDetails": "{{annual_goal}}",
+    "goalAchievementPeriodBeginDate": "{{event_begin_date}}",
+    "goalAchievementPeriodEndDate": "{{event_end_date}}"
 }

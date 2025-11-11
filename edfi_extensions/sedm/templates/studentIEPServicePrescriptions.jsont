@@ -1,9 +1,14 @@
 {
-    "iEPServiceId": "{{}}",
+    "iEPServiceId": "{{student_service_id}}",
     "studentIEPAssociationReference": {
-      "studentIEPAssociationId": "{{}}"
+      "studentIEPAssociationId": "{{iepid}}"
     },
-    "servicePrescriptionDescriptor": "{{namespace}}/IDEAServicePrescriptionDescriptor#{{}}",
-    "beginDate": "{{}}",
-    "endDate": "{{}}"
+    "servicePrescriptionDescriptor": "${DESCRIPTOR_NAMESPACE}/IDEAServicePrescriptionDescriptor#{{service}}",
+    "beginDate": "{{event_begin_date}}",
+    "endDate": "{{event_end_date}}",
+    "durationMinutes": "{{duration}}",
+    "durationPeriod": "{{duration_time_period}}",
+    "frequencyValue": "{{sessions}}",
+    "frequencyPeriod": "{{duration_time_period}}",
+    "serviceLocationType": "{{location}}"
 }

@@ -1,11 +1,14 @@
 {
-    "iDEAEventId": "{{}}",
+    "iDEAEventId": "{{idea_event_id}}",
     "studentReference": {
       "studentUniqueId": "{{state_code}}"
     },
-    "iDEAEventDescriptor": "{{namespace}}/IDEAEventDescriptor#{{}}",
-    "eventBeginDate": "{{}}",
-    "eventEndDate": "{{}}",
-    "eventReasonDescriptor": "{{namespace}}/EventReasonDescriptor#{{}}",
-    "eventNarrative": "{{}}"
+    "iDEAEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IDEAEventDescriptor#{{event_type}}",
+    {% if event_begin_date is not none and event_begin_date | length %}
+    "eventBeginDate": "{{event_begin_date}}",
+    "eventEndDate": "{{event_end_date}}"
+    {% else %}
+    "eventBeginDate": "{{event_date}}",
+    "eventEndDate": "{{event_date}}"
+    {% endif %}
 }
