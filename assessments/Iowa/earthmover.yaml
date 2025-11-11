@@ -62,7 +62,6 @@ transformations:
           "Student ID": "Student_Id"
           "Secondary Student ID": "Secondary_Student_Id"
           "Norm Year": "Norm_Year"
-          "Programs String": "Programs_String"
           "Completion Criteria (CC)": "Completion_Criteria"
           "Number Attempted (NA)": "Number_Attempted"          
           "Raw Score (RS)": "Raw_Score"
@@ -111,6 +110,7 @@ transformations:
         columns:
           Level: "{% raw -%}{{ (Level | int) | string if Level is not none and Level|string|trim != '' else '' }}{%- endraw %}"
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          Class_Grade: "{%raw%}{{Class_Grade|string|trim}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
