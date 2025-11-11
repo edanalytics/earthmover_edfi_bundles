@@ -30,10 +30,8 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/IOWA_deidentified_sample_file.csv",
 "STATE_FILE": "./tmp/runs.csv",
 "OUTPUT_DIR": "output/",
-"STUDENT_ID_NAME": "Student_Id",
-"SCHOOL_YEAR": "2024"}'
+"STUDENT_ID_NAME": "Student_Id"}'
 ```
-# ,"DESCRIPTOR_NAMESPACE_OVERRIDE":"uri://ed.sc.gov"
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash
