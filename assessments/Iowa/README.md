@@ -19,7 +19,9 @@ Sample file: `data/IOWA_deidentified_sample_file.csv`)
 - **OUTPUT_DIR**: Where output files will be written
 - **STATE_FILE**: Where to store the earthmover runs.csv file
 - **INPUT_FILE**: The student assessment file to be mapped
-- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Candidate columns are _Student_Id_ and _Secondary_Student_Id_ from the vendor layour file.
+- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Candidate columns are Student ID
+ and Secondary Student ID from the vendor layout file. 
+- **SECONDARY_STUDENT_ID_NAME**: 'Secondary Student ID'. If 'Student ID' is empty, the bundle uses 'Secondary Student ID'.
 - **SCHOOL_YEAR**: The year of the assessment file (format as 'YYYY' e.g. '2024', etc).
 - **DESCRIPTOR_NAMESPACE_OVERRIDE**: Default namespace prefix: `uri://ed-fi.org` (can be **overridden**)
 
@@ -30,7 +32,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/IOWA_deidentified_sample_file.csv",
 "STATE_FILE": "./tmp/runs.csv",
 "OUTPUT_DIR": "output/",
-"STUDENT_ID_NAME": "Student_Id"}'
+"STUDENT_ID_NAME": "Student ID"}'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
