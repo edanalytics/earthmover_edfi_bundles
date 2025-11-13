@@ -12,7 +12,8 @@ config:
     STATE_FILE: ./tmp/.earthmover/runs.csv
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: Student_Id,Secondary_Student_Id
+    SECONDARY_STUDENT_ID_NAME: 'Secondary Student ID'
+    POSSIBLE_STUDENT_ID_COLUMNS: Student ID,Secondary Student ID
     DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
 
 sources:
@@ -68,6 +69,8 @@ transformations:
           "Grade Equivalent (GE)": "Grade_Equivalent"
           "National Curve Equivalent (NCE)": "National_Curve_Equivalent"
           "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct": "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct"
+          ${STUDENT_ID_NAME}: student_unique_id
+          ${SECONDARY_STUDENT_ID_NAME}: secondary_student_unique_id
       # Simplify column names
       - operation: add_columns
         columns:
@@ -112,6 +115,14 @@ transformations:
           Level: "{% raw -%}{{ (Level | int) | string if Level is not none and Level|string|trim != '' else '' }}{%- endraw %}"
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
           Class_Grade: "{%raw%}{{Class_Grade|string|trim}}{%endraw%}"
+          student_unique_id: >
+            {% raw -%}
+            {{
+              student_unique_id if (student_unique_id is not none and student_unique_id|string|trim != '')
+              else (secondary_student_unique_id if (secondary_student_unique_id is not none and secondary_student_unique_id|string|trim != '')
+              else '')
+            }}
+            {%- endraw %}
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
@@ -129,10 +140,6 @@ transformations:
           "1": Fall
           "2": MidYear
           "3": Spring
-      # rename student id column after x-walk operation
-      - operation: rename_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
 
   appendix_a:
     source: $sources.appendix_a
