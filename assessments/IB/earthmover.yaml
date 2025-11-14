@@ -53,6 +53,9 @@ transformations:
         columns: 
           ${STUDENT_ID_NAME}: student_id
       - operation: snake_case_columns
+      - operation: modify_columns
+        columns:
+          subject: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: combine_columns
         columns:
           - year
