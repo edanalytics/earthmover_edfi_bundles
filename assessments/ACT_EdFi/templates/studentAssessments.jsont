@@ -121,7 +121,15 @@
            "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
            "namespace": "{{ namespace }}"
          },
-         "performanceLevels": {{ item.performanceLevels }},
+         {%- if item.performanceLevels -%}
+         "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+              "performanceLevelDescriptor": "{{ item.performanceLevels[0].performanceLevelDescriptor }}",
+              "performanceLevelMet": true
+            }
+         ],
+         {% endif %}
          "scoreResults": {{ item.scoreResults }}
         }{% if not loop.last %},{% endif %}
        {% endfor %}
