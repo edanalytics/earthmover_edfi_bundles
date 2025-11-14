@@ -31,8 +31,7 @@
   {% endif %}
   "scoreResults": [
     {% set scores_present = [] %}
-    {% set all_scores = {'Subject':['Level',subject],
-                         'Course':['Level',course],
+    {% set all_scores = {'Course':['Level',course],
                          'Total Scale Score':['Integer',Total_Scale_Score],
                          'Probability Of Achieving Approaches Grade Level':['Integer',PROBABILITY_OF_ACHIEVING_APPROACHES_GRADE_LEVEL],
                          'Probability Of Achieving Meets Grade Level':['Integer',PROBABILITY_OF_ACHIEVING_MEETS_GRADE_LEVEL],

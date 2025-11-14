@@ -85,7 +85,6 @@ transformations:
       # ADD assess_id and missing cols
       - operation: add_columns
         columns:
-          assessment_identifier: staar_summative_alt
           school_year: "${API_YEAR}"
           # TODO confirm whether this placeholder is necessary
           course_abbrev: "no_course"
@@ -155,6 +154,7 @@ transformations:
       - operation: add_columns
         columns:
           subject: {{descriptor_subject}}
+          assessment_identifier: 'staar_summative_alt_{{descriptor_subject | replace(" ", "_")}}'
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
           stu_assess_id: "{%raw%}{{tx_unique_student_id}}_{{subject}}{%endraw%}"
