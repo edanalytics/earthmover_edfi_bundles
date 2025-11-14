@@ -226,7 +226,7 @@ transformations:
       - operation: modify_columns
         columns:
          administrationDate: "{%raw%}
-                              {%- if '/' in administrationDate -%}{{value.split('/')[2]}}-{{value.split('/')[0]}}-{{value.split('/')[1]}}
+                              {%- if '/' in administrationDate -%}{{('20' + value.split('/')[2])[-4:]}}-{{value.split('/')[0]}}-{{value.split('/')[1]}}
                               {%- else -%}{{administrationDate}}
                               {%- endif -%}
                               {%endraw%}"
