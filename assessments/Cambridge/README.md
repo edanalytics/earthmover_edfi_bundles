@@ -17,7 +17,7 @@ Or use the sample file (data/sample_anonymized_file.csv).
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the ASVAB .csv file you want to transform
-- SCHOOL_YEAR: The school year associated with the results file
+- API_YEAR: The school year associated with the results file
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
 - EDFI_DS_VERSION: The Ed-Fi data standard major version for your ODS. Integer only; supported versions are 3, 4, and 5
 
@@ -28,7 +28,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "./data/sample_anonymized_file.csv",
-"SCHOOL_YEAR": "2025",
+"API_YEAR": "2025",
 "STUDENT_ID_NAME": "STUDENT_STATE_ID",
 "EDFI_DS_VERSION": 3 }'
 ```

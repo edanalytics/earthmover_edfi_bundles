@@ -16,6 +16,9 @@ sources:
     optional_fields:
       - ID
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1 
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1 
@@ -44,17 +47,6 @@ transformations:
         columns:
           joinKey: "Key"
 
-  stage_grade_level:
-    source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          joinKey: "Key"
-      - operation: rename_columns
-        columns:
-          codeValue: Grade_CodeValue
-          namespace: Grade_Namespace
-
   stage_period:
     source: $sources.assessmentPeriodDescriptors
     operations:
@@ -62,16 +54,15 @@ transformations:
         columns:
           joinKey: "Key"
   
-  assessment_grade_level_descriptors:
-    source: $transformations.stage_grade_level
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
     operations:
       - operation: add_columns
         columns:
-          joinKey: "Key"
           grade_json: >
               {%raw-%}  
               {
-                "gradeLevelDescriptor": "{{ Grade_Namespace }}#{{Grade_CodeValue}}"
+                "gradeLevelDescriptor": "{{edfi_descriptor}}"
               }
               {%-endraw%}
       - operation: modify_columns
@@ -79,9 +70,32 @@ transformations:
           grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
       - operation: group_by
         group_by_columns:
-          - joinKey
+          - assessmentIdentifier
         create_columns: 
           grade_json: agg(grade_json,,)
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessment_reporting_method:
     source: $transformations.stage_reporting_method
@@ -187,16 +201,15 @@ transformations:
         right_key: joinKey
       - operation: join
         sources:
-          - $transformations.stage_grade_level
+          - $sources.gradeLevelDescriptors
         join_type: inner
-        left_key: joinKey
-        right_key: joinKey
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           administrationDate: "{%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}{% elif SEMESTER | lower == 's' %}{{YEAR[-4:]}}-05-01{% elif SEMESTER | lower == 'm' %}{{YEAR[-4:]}}-02-01{% elif SEMESTER | lower == 'f' %}{{YEAR[:4]}}-09-01{% endif %}{%endraw%}"
           schoolYear: "{%raw%}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{%endraw%}"
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{{Grade_Namespace}}#{{Grade_CodeValue}}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: keep_columns
         columns:
@@ -210,7 +223,7 @@ transformations:
             - "result"
             - "namespace"
             - "codeValue"
-            - "whenAssessedGradeLevelDescriptor"
+            - "edfi_descriptor"
             - "assessmentPeriodDescriptor" 
             - "assessmentNamespace"
       - operation: filter_rows
@@ -240,7 +253,6 @@ transformations:
           joinKey: "Key"
       - operation: join
         sources:
-          - $transformations.assessment_grade_level_descriptors
           - $transformations.assessment_reporting_method
         join_type: inner
         left_key: joinKey
@@ -251,6 +263,18 @@ transformations:
         join_type: inner
         left_key: joinKey
         right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
