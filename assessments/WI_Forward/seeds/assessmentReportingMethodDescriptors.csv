@@ -1,40 +1,49 @@
-codeValue,description,namespace,shortDescription,reportingType,typeDescriptor,levels
-Scale Score,Scale Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Scale Score,score,Integer,
-Std Error Scale Score,Standard Error Scale Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Std Error Scale Score,score,Integer,
-WI Percentile,WI Percentile,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,WI Percentile,score,Percentile,
-Performance Level,Performance Level,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Performance Level,performance,,"[1,2,3,4]"
-Proficiency,Proficiency,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Proficiency,performance,,"[1,2,3,4]"
-Progress Score,Progress Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Progress Score,score,Integer,
-Progress Level,Progress Level,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Progress Level,performance,,"[1,2,3,4]"
-Total Points Earned,Total Points Earned,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Total Points Earned,score,Integer,
-Points Earned MC,Points Earned MC,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned MC,score,Integer,
-Points Earned Autoscored,Points Earned Autoscored,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned Autoscored,score,Integer,
-Points Earned TDA,Points Earned TDA,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned TDA,score,Integer,
-Points Earned,Points Earned,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned,score,Integer,
-CESA,CESA,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,CESA,score,Level
-School_Type,School_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Type,score,Level
-District_Name,District_Name,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Name,score,Level
-District_Agency_Type,District_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Agency_Type,score,Level
-District_Agency_Key,District_Agency_Key,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Agency_Key,score,Level
-School_Name,School_Name,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Name,score,Level
-School_Number,School_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Number,score,Level
-School_Agency_Type,School_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Agency_Type,score,Level
-School_Agency_Key,School_Agency_Key,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Agency_Key,score,Level
-District_of_Residence_Number,District_of_Residence_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_of_Residence_Number,score,Level
-District_of_Residence_Agency_Type,District_of_Residence_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_of_Residence_Agency_Type,score,Level
-School_of_Residence_Number,School_of_Residence_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_of_Residence_Number,score,Level
-School_of_Residence_Agency_Type,School_of_Residence_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_of_Residence_Agency_Type,score,Level
-Local_Student_ID,Local_Student_ID,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Local_Student_ID,score,Level
-Date_of_Birth,Date_of_Birth,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Date_of_Birth,score,Level
-Gender,Gender,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Gender,score,Level
-Ethnicity,Ethnicity,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Ethnicity,score,Level
-Enrolled_in_School_FAY,Enrolled_in_School_FAY,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Enrolled_in_School_FAY,score,Level
-Enrolled_in_District_FAY,Enrolled_in_District_FAY,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Enrolled_in_District_FAY,score,Level
-Out_of_District_IEP_Placement,Out_of_District_IEP_Placement,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Out_of_District_IEP_Placement,score,Level
-EL_Student_New_to_Country,EL_Student_New_to_Country,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,EL_Student_New_to_Country,score,Level
-Disability_Status,Disability_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Disability_Status,score,Level
-Primary_Disability_Code,Primary_Disability_Code,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Primary_Disability_Code,score,Level
-English_Proficiency_Status,English_Proficiency_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,English_Proficiency_Status,score,Level
-English_Proficiency,English_Proficiency,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,English_Proficiency,score,Level
-Economic_Status,Economic_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Economic_Status,score,Level
-Migrant_Status,Migrant_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Migrant_Status,score,Level
+codeValue,description,namespace,shortDescription,reportingType,typeDescriptor,levels,min_year,max_year
+Scale Score,Scale Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Scale Score,score,Integer,,,
+Std Error Scale Score,Standard Error Scale Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Std Error Scale Score,score,Integer,,,
+WI Percentile,WI Percentile,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,WI Percentile,score,Percentile,,,
+WI NCE,WI NCE,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,WI NCE,score,Percentile,,,2023
+Performance Level,Performance Level,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Performance Level,performance,,"[1,2,3,4]",,
+Proficiency,Proficiency,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Proficiency,performance,,"[1,2,3,4]",,
+Progress Score,Progress Score,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Progress Score,score,Integer,,2024,
+Progress Level,Progress Level,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Progress Level,performance,,"[1,2,3,4]",2024,
+Total Points Earned,Total Points Earned,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Total Points Earned,score,Integer,,,
+Points Earned MC,Points Earned MC,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned MC,score,Integer,,,
+Points Earned Autoscored,Points Earned Autoscored,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned Autoscored,score,Integer,,,
+Points Earned TDA,Points Earned TDA,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned TDA,score,Integer,,,
+Points Earned Short Write,Points Earned Short Write,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned Short Write,score,Integer,,,
+Points Earned,Points Earned,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Points Earned,score,Integer,,,
+SPI,Standard Performance Index,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,SPI,score,Integer,,,2023
+SPI Level,Standard Performance Index Level,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,SPI Level,performance,Level,"[1,2,3,4]",,2023
+SPI Lower Limit,Standard Performance Index Lower Limit,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,SPI Lower Limit,score,Integer,,,2023
+SPI Upper Limit,Standard Performance Index Upper Limit,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,SPI Upper Limit,score,Integer,,,2023
+CESA,CESA,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,CESA,score,Level,,,
+School_Type,School_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Type,score,Level,,,
+District_Name,District_Name,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Name,score,Level,,,
+District_Agency_Type,District_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Agency_Type,score,Level,,,
+District_Agency_Key,District_Agency_Key,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_Agency_Key,score,Level,,,
+School_Name,School_Name,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Name,score,Level,,,
+School_Number,School_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Number,score,Level,,,
+School_Agency_Type,School_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Agency_Type,score,Level,,,
+School_Agency_Key,School_Agency_Key,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_Agency_Key,score,Level,,,
+District_of_Residence_Number,District_of_Residence_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_of_Residence_Number,score,Level,,,
+District_of_Residence_Agency_Type,District_of_Residence_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,District_of_Residence_Agency_Type,score,Level,,,
+School_of_Residence_Number,School_of_Residence_Number,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_of_Residence_Number,score,Level,,,
+School_of_Residence_Agency_Type,School_of_Residence_Agency_Type,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,School_of_Residence_Agency_Type,score,Level,,,
+Local_Student_ID,Local_Student_ID,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Local_Student_ID,score,Level,,,
+Date_of_Birth,Date_of_Birth,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Date_of_Birth,score,Level,,,
+Gender,Gender,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Gender,score,Level,,,
+Ethnicity,Ethnicity,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Ethnicity,score,Level,,,
+Enrolled_in_School_FAY,Enrolled_in_School_FAY,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Enrolled_in_School_FAY,score,Level,,,
+Enrolled_in_District_FAY,Enrolled_in_District_FAY,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Enrolled_in_District_FAY,score,Level,,,
+Out_of_District_IEP_Placement,Out_of_District_IEP_Placement,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Out_of_District_IEP_Placement,score,Level,,,
+EL_Student_New_to_Country,EL_Student_New_to_Country,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,EL_Student_New_to_Country,score,Level,,,
+Disability_Status,Disability_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Disability_Status,score,Level,,,
+Primary_Disability_Code,Primary_Disability_Code,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Primary_Disability_Code,score,Level,,,
+English_Proficiency_Status,English_Proficiency_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,English_Proficiency_Status,score,Level,,,
+English_Proficiency,English_Proficiency,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,English_Proficiency,score,Level,,,
+Economic_Status,Economic_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Economic_Status,score,Level,,,
+Migrant_Status,Migrant_Status,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Migrant_Status,score,Level,,,
+Optional_Field_PreID,Optional_Field_PreID,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Optional_Field_PreID,score,Level,,2024,
+Choice_Program_Participant,Choice_Program_Participant,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Choice_Program_Participant,score,Level,,,
+Precode_Record_Source,Precode_Record_Source,uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor,Precode_Record_Source,score,Level,,,

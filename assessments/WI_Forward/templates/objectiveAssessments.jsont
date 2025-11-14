@@ -4,7 +4,7 @@
 {%- set assessment = assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
 
 {# match the objective assessment spec on code #}
-{%- set objectiveAssessment = assessment.objectiveAssessments | selectattr('identificationCode', 'equalto', identificationCode) | first -%}
+{%- set objectiveAssessment = assessment.objectiveAssessments | selectattr('identificationCode', 'equalto', identificationCode) | first | default({}) -%}
 
 {
     "identificationCode": "{{identificationCode}}",

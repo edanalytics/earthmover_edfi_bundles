@@ -273,6 +273,25 @@ transformations:
           Y: 'Y'
           N: ''
       {% endif %}
+      # clean out NAs from key scores/PLs
+      - operation: map_values
+        columns:
+        {% for score in assessment.scoreResults %}
+          - {{ score.col }}
+        {% endfor %}
+        {% for pl in assessment.performanceLevels %}
+          - {{ pl.col }}
+        {% endfor %}
+        {% for obj in assessment.objectiveAssessments%}
+          {% for score in obj.scoreResults %}
+          - {{ score.col }}
+          {% endfor %}
+          {% for pl in obj.performanceLevels %}
+          - {{ pl.col }}
+          {% endfor %}
+        {% endfor %}
+        mapping: 
+          NA: ''
       - operation: combine_columns
         columns:
           # might be overkill; minimum is probably student ID, assessment, and the unique DB key
@@ -473,7 +492,7 @@ transformations:
           performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
       - operation: add_columns
         columns:
-          objectiveAssessment_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['scoreResults', 'performanceLevels']) }}{%endraw%}"
+          objectiveAssessment_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['scoreResults', 'performanceLevels', 'min_year', 'max_year']) }}{%endraw%}"
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
@@ -517,6 +536,8 @@ transformations:
           - namespace
           - description
           - shortDescription
+          - min_year # override with min_year on columnsToReportingMethods
+          - max_year # override with max_year on columnsToReportingMethods
       - operation: rename_columns
         columns:
           reportingMethod__codeValue: reportingMethod

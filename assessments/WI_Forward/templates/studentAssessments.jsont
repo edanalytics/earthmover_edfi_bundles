@@ -188,9 +188,9 @@
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "identificationCode": "{{obj.identificationCode}}",
       "namespace": "{{namespace}}"
-    },
+    }
     {%- if obj.scoreResults | length -%}
-    "scoreResults": [
+    , "scoreResults": [
       {%- for score in obj.scoreResults -%}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.reportingMethod}}",
@@ -198,10 +198,10 @@
         "result": "{{score.val[:35]}}"
       }{% if not loop.last %},{% endif %}
       {%- endfor -%}
-    ],
+    ]
     {%- endif -%}
     {%- if obj.performanceLevels | length -%}
-    "performanceLevels": [
+    , "performanceLevels": [
       {%- for pl in obj.performanceLevels -%}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl.reportingMethod}}",
