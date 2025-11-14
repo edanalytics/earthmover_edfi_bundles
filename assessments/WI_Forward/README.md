@@ -5,11 +5,11 @@
 
 ## Model
 
-Data model is based on information in the DPI [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf](User's Guide to Interpreting Reports 2024-25) as well as the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf](Wisconsin Forward Exam Spring 2024 Technical Report) for 2023-2025. For historical data, information was sourced from:
-- For 2022-23, the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/EWI270_WIFW_SPRG_23_TECH.pdf](2023 Technical Report) covers the content standards and different scores, especially for major column name and score differences prior to changes in 2024.
-- For 2021-22, the [https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/2022_Technical_Report_Final.pdf](Spring 2022 Technical Report) includes past reporting categories and the old Listening domain for ELA, as well as mappings of letter codes to reporting categories to interpret column names.
-- For 2020-21, the [https://www.wistatedocuments.org/digital/collection/p267601coll4/id/34743/](2021 Technical Report) covers past column names, especially for SS prior to renaming that occurred in 2021-22.
-- For 2017-18, the [https://dpi.state.wi.us/sites/default/files/imce/assessment/pdf/Forward_Exam_Tech_Report_2018.pdf](2018 Technical Report) covers historical content standards and scores, especially for 
+Data model is based on information in the [User's Guide to Interpreting Reports 2024-25](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf) as well as the [Wisconsin Forward Exam Spring 2024 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf) for 2023-2025. For historical data, information was sourced from:
+- For 2022-23, the [2023 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/EWI270_WIFW_SPRG_23_TECH.pdf) covers the content standards and different scores, especially for major column name and score differences prior to changes in 2024.
+- For 2021-22, the [Spring 2022 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/2022_Technical_Report_Final.pdf) includes past reporting categories and the old Listening domain for ELA, as well as mappings of letter codes to reporting categories to interpret column names.
+- For 2020-21, the [2021 Technical Report](https://www.wistatedocuments.org/digital/collection/p267601coll4/id/34743/) covers past column names, especially for SS prior to renaming that occurred in 2021-22.
+- For 2017-18, the [2018 Technical Report](https://dpi.state.wi.us/sites/default/files/imce/assessment/pdf/Forward_Exam_Tech_Report_2018.pdf) covers historical content standards and scores, especially for 
 storical SCN objective assessments and scores prior to the 2019 update.  
 
 Namespace is `uri://datarecognitioncorp.com` due to the underlying vendor.
