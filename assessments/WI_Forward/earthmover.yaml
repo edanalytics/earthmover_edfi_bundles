@@ -142,7 +142,6 @@ config:
     {% set _ = current_assessments.append(current_assessment) %}
 {% endfor %}
 
-
 sources:
   # TODO: filter seeds by current year
   assessments:
@@ -186,7 +185,7 @@ sources:
     # See data/sample_anonymized_file.csv
     optional_fields:
       {% for col in columns_in_spec %}
-      - col
+      - {{ col }}
       {% endfor %}
 
 
@@ -213,9 +212,6 @@ transformations:
   {{ assessment.affix | lower }}:
     source: $transformations.input
     operations:
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
       # build assessment metadata
       - operation: add_columns
         columns: 
@@ -224,6 +220,7 @@ transformations:
       # map top-level assessment fields per subject
       - operation: duplicate_columns
         columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
         {% for field in assessment.topLevelFields %}
         {% if field.raw_col %}
           {{ field.raw_col }}: {{ field.col }}
@@ -523,6 +520,23 @@ transformations:
         create_columns:
           accommodations_json: json_array_agg(accommodation_json)
 
+  current_reporting_methods:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          min_year: "{%raw%}{% if min_year == '' %}${API_YEAR}{% else %}{{ min_year }}{% endif %} {%endraw%}"
+          max_year: "{%raw%}{% if max_year == '' %}${API_YEAR}{% else %}{{ max_year }}{% endif %} {%endraw%}"
+      - operation: add_columns
+        columns:
+          is_current: "{%raw%}{% if (${API_YEAR} >= min_year | int ) and (${API_YEAR} <= max_year | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "is_current == 'true'"
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - is_current
+
   all__reportingMethods:
     source: $sources.columnsToReportingMethods
     operations:
@@ -536,10 +550,26 @@ transformations:
           - namespace
           - description
           - shortDescription
-          - min_year # override with min_year on columnsToReportingMethods
-          - max_year # override with max_year on columnsToReportingMethods
+      # handle many-to-many joins; equivalent of joining on column mapping year range within descriptor year range
+      - operation: modify_columns
+        columns:
+          "min_year_?": "{%raw%}{% if value == '' %}2016{% else %}{{ value }}{% endif %} {%endraw%}" 
+          "max_year_?": "{%raw%}{% if value == '' %}2100{% else %}{{ value }}{% endif %} {%endraw%}" 
+      - operation: add_columns
+        columns:
+          year_range_filter: "{%raw%}{% if (min_year_x | int) >= (min_year_y | int) and (max_year_x | int) <= (max_year_y | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "year_range_filter == 'true'"
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - min_year_y
+          - max_year_y
+          - year_range_filter
       - operation: rename_columns
         columns:
+          min_year_x: min_year
+          max_year_x: max_year
           reportingMethod__codeValue: reportingMethod
 
   all__scoreResults:
@@ -628,7 +658,7 @@ destinations:
     template: ./templates/assessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.current_reporting_methods
     template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
