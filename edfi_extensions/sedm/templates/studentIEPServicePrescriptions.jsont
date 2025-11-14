@@ -1,7 +1,10 @@
 {
-    "iEPServiceId": "{{student_service_id}}",
-    "studentIEPAssociationReference": {
-      "studentIEPAssociationId": "{{iepid}}"
+    "iepServiceId": "{{student_service_id}}",
+    "studentIEPReference": {
+      "educationOrganizationId": {{lea_code}},
+      "iepFinalizedDate": "{{event_date}}",
+      "studentIEPAssociationID": "{{iepid}}",
+      "studentUniqueId": "{{student_id}}"
     },
     "servicePrescriptionDescriptor": "${DESCRIPTOR_NAMESPACE}/IDEAServicePrescriptionDescriptor#{{service}}",
     "beginDate": "{{event_begin_date}}",

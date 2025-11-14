@@ -1,10 +1,13 @@
 {
-    "iEPGoalId": "{{goal_id}}",
-    "studentIEPAssociationReference": {
-      "studentIEPAssociationId": "{{iepid}}"
+    "iepGoalID": "{{goal_id}}",
+    "studentIEPReference": {
+      "educationOrganizationId": {{lea_code}},
+      "iepFinalizedDate": "{{event_date}}",
+      "studentIEPAssociationID": "{{iepid}}",
+      "studentUniqueId": "{{state_code}}"
     },
-    "goalDescriptor": "${DESCRIPTOR_NAMESPACE}/GoalDescriptor#{{goal_domain_goal_area}}",
-    "iEPGoalDetails": "{{annual_goal}}",
+    "iepGoalDescriptor": "${DESCRIPTOR_NAMESPACE}/GoalDescriptor#{{goal_domain_goal_area}}",
+    "iepGoalDetails": "{{annual_goal}}",
     "goalAchievementPeriodBeginDate": "{{event_begin_date}}",
     "goalAchievementPeriodEndDate": "{{event_end_date}}"
 }

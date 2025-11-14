@@ -8,29 +8,27 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   parameter_defaults:
-    DESCRIPTOR_NAMESPACE: uri://ed.sc.gov
+    DESCRIPTOR_NAMESPACE: uri://sedm.sc.gov
+
 
 sources:
   idea_events:
-    file: /mnt/n/etc/sedm/to_load/IDEAEvent.csv
+    file: /mnt/n/etc/sedm/to_load/mini_subset/IDEAEvent.csv
     #file: ${IDEA_EVENTS_FILE}
     header_rows: 1
   iep_goals:
-    file: /mnt/n/etc/sedm/to_load/IEPGoals.csv
+    file: /mnt/n/etc/sedm/to_load/mini_subset/IEPGoals.csv
     #file: ${IEP_GOALS_FILE}
     header_rows: 1
   iep_service_prescriptions:
-    file: /mnt/n/etc/sedm/to_load/IEPServicePrescription.csv
+    file: /mnt/n/etc/sedm/to_load/mini_subset/IEPServicePrescription.csv
     #file: ${IEP_SERIVCE_PRESCRIPTIONS_FILE}
     header_rows: 1
   student_ieps:
-    file: /mnt/n/etc/sedm/to_load/StudentIEP.csv
+    file: /mnt/n/etc/sedm/to_load/mini_subset/StudentIEP.csv
     #file: ${STUDENT_IEPS_FILE}
     header_rows: 1
 
-  # iep_status_descriptors:
-  #   file: ./seeds/iEPStatusDescriptors.csv
-  #   header_rows: 1
 
 transformations:
   idea_events:
@@ -40,26 +38,6 @@ transformations:
       - operation: date_format
         columns: 
           - event_date
-          - event_begin_date
-          - event_end_date
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
-  iep_goals:
-    source: $sources.iep_goals
-    operations:
-      - operation: snake_case_columns
-      - operation: date_format
-        columns: 
-          - event_begin_date
-          - event_end_date
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
-  iep_service_prescriptions:
-    source: $sources.iep_service_prescriptions
-    operations:
-      - operation: snake_case_columns
-      - operation: date_format
-        columns: 
           - event_begin_date
           - event_end_date
         from_format: "%m/%d/%Y"
@@ -79,18 +57,60 @@ transformations:
         column: placement
         mapping:
           ' -none-': ''
+      - operation: map_values
+        column: placement
+        map_file: ./seeds/special_ed_setting_mapping.csv
+  iep_goals:
+    source: $sources.iep_goals
+    operations:
+      - operation: snake_case_columns
+      - operation: date_format
+        columns: 
+          - event_begin_date
+          - event_end_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: join
+        sources:
+          - $transformations.student_ieps
+        join_type: left
+        left_key: iepid
+        right_key: student_iep_association_id
+        right_keep_columns:
+          - lea_code
+          - event_date
+          - state_code
+  iep_service_prescriptions:
+    source: $sources.iep_service_prescriptions
+    operations:
+      - operation: snake_case_columns
+      - operation: date_format
+        columns: 
+          - event_begin_date
+          - event_end_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: join
+        sources:
+          - $transformations.student_ieps
+        join_type: left
+        left_key: iepid
+        right_key: student_iep_association_id
+        right_keep_columns:
+          - lea_code
+          - event_date
 
 
 destinations:
-  iDEAEvents:
+  ideaEvents:
     source: $transformations.idea_events
     template: ./templates/iDEAEvents.jsont
     extension: jsonl
-  iEPGoals:
+  studentIEPGoals:
     source: $transformations.iep_goals
     template: ./templates/studentIEPGoals.jsont
     extension: jsonl
-  iEPServicePrescriptions:
+  studentIEPServicePrescriptions:
     source: $transformations.iep_service_prescriptions
     template: ./templates/studentIEPServicePrescriptions.jsont
     extension: jsonl
@@ -98,8 +118,3 @@ destinations:
     source: $transformations.student_ieps
     template: ./templates/studentIEPs.jsont
     extension: jsonl
-
-  # iEPStatusDescriptors:
-  #   source: $sources.iep_status_descriptors
-  #   template: ./templates/descriptors.jsont
-  #   extension: jsonl

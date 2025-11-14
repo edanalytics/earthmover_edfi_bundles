@@ -1,15 +1,14 @@
 {
-    "studentIEPAssociationId": "{{student_iep_association_id}}",
-    "iEPServicingEducationOrganization": {
-      "educationOrganizationId": "{{lea_code}}"
+    "studentIEPAssociationID": "{{student_iep_association_id}}",
+    "educationOrganizationReference": {
+      "educationOrganizationId": {{lea_code}}
     },
-    "iEPFinalizedDate": "{{event_date}}",
+    "iepFinalizedDate": "{{event_date}}",
     "studentReference": {
       "studentUniqueId": "{{state_code}}"
     },
-    "iEPBeginDate": "{{event_begin_date}}",
-    "iEPEndDate": "{{event_end_date}}",
-    "iEPStatusDescriptor": "${DESCRIPTOR_NAMESPACE}/IEPStatusDescriptor#{{event_status}}",
-    "reasonExitedDescriptor": "${DESCRIPTOR_NAMESPACE}/ReasonExitedDescriptor#{{exit_reason_code}}",
+    "iepBeginDate": "{{event_begin_date}}",
+    "iepEndDate": "{{event_end_date}}",
+    "iepStatusDescriptor": "${DESCRIPTOR_NAMESPACE}/IepStatusDescriptor#{{event_status}}",
     "specialEducationSettingDescriptor": "${DESCRIPTOR_NAMESPACE}/SpecialEducationSettingDescriptor#{{placement}}"
 }
