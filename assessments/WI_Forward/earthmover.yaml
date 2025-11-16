@@ -270,18 +270,22 @@ transformations:
           Y: 'Y'
           N: ''
       {% endif %}
-      # clean out NAs from key scores/PLs
+      # clean out NAs from key scores/PLs: integers, percentiles, and all PLS
       - operation: map_values
         columns:
         {% for score in assessment.scoreResults %}
+          {% if score.typeDescriptor in ['Integer', 'Percentile'] %}
           - {{ score.col }}
+          {% endif %}
         {% endfor %}
         {% for pl in assessment.performanceLevels %}
           - {{ pl.col }}
         {% endfor %}
         {% for obj in assessment.objectiveAssessments%}
           {% for score in obj.scoreResults %}
+            {% if score.typeDescriptor in ['Integer', 'Percentile'] %}
           - {{ score.col }}
+            {% endif %}
           {% endfor %}
           {% for pl in obj.performanceLevels %}
           - {{ pl.col }}
@@ -352,7 +356,6 @@ transformations:
       - operation: modify_columns
         columns:
           reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/ReasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
-
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
