@@ -74,7 +74,8 @@
 {% endfor %}
 
 {# match the assessment spec on assessment identifier #}
-{%- set assessment = current_assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
+{%- set assessment = current_assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first | default({}) -%}
+{% if assessment == {} %}ERROR{% endif %}
 
 {# for possible scores and PLs, see assessment spec #}
 {# filter down to existing top-level scores and PLs #}
