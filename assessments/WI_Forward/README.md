@@ -24,7 +24,9 @@ Split into four by academic subject; TBD on whether official integration will sp
 For each of the subjects, the following scores/PLs are available:
 - Scale score (can be "compared for individual students and groups in a given grade and content area" and "over time for all.. content areas for which the assessment scores are reported on the same year-to-year scale")
 	- ELA, math retooled in 2024;
+        - "Scale scores for ELA and mathematics for 2023-24 cannot be directly compared to prior years" according to a DPI [press release](https://dpi.wi.gov/news/releases/2024/student-assessment-results-forward). 
 	- Science scale same since 2019, social studies scale same since 2022
+
 - Scale score standard error
 - Performance level, 1-4/Developing-Advanced, based on scale score (different cuts by grade and by subject)
     - This is called 'Proficiency' in 2022-23 and prior but is also a four-category performance level. The categories then are called 'Below Basic', 'Basic', 'Proficient', and 'Advanced'
