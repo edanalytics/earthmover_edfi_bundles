@@ -241,7 +241,6 @@ transformations:
           {{ acc.raw_col }}: {{ acc.col }}
         {% endif %}
         {% endfor %}
-        # TODO: school for edOrg associations
       - operation: modify_columns
         columns:
           # Enforce zero-padded grade to length 2 to match seed
@@ -366,6 +365,14 @@ transformations:
       - operation: modify_columns
         columns:
           reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/ReasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
+
+  student_assessment_ed_org_association__attribution:
+    source: $transformations.student_assessments_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          # educationOrganizationId mapped in top-level assessment fields seed
+          educationOrganizationAssociationTypeDescriptor: '${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Attribution'
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -713,4 +720,8 @@ destinations:
   studentAssessments:
     source: $transformations.student_assessments_stacked
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_ed_org_association__attribution
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
