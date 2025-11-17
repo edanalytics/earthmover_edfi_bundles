@@ -12,6 +12,7 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: WISEID,Local Student ID,Wisconsin Student Number
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    REGENERATE_ASSESSMENT_SPEC: false
   macros: >
     {% macro em_row_to_json(exclude, literal) -%}
     {# Converts an Earthmover row into a JSON object #}
@@ -403,16 +404,6 @@ transformations:
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
       - operation: join
-        sources:
-          - $transformations.assessments__scoreResults
-          - $transformations.assessments__performanceLevels
-          - $transformations.assessments__objectiveAssessments
-          - $transformations.assessments__topLevelFields
-          - $transformations.assessments__accommodations
-        join_type: left
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
         join_type: inner
         sources:
           - $sources.academicSubjectDescriptors
@@ -434,6 +425,16 @@ transformations:
   assessments_spec:
     source: $transformations.assessments
     operations:
+      - operation: join
+        sources:
+          - $transformations.assessments__scoreResults
+          - $transformations.assessments__performanceLevels
+          - $transformations.assessments__objectiveAssessments
+          - $transformations.assessments__topLevelFields
+          - $transformations.assessments__accommodations
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       # drop top-level columns used mostly for the assessments Ed-Fi output
       - operation: drop_columns
         columns:
@@ -679,10 +680,12 @@ transformations:
         behavior: include
 
 destinations:
+  {% if ${REGENERATE_ASSESSMENT_SPEC} %}
   assessment_spec:
     source: $transformations.assessments_spec
     template: ./templates/assessment_spec.jinja
     extension: jinja
+  {% endif %}
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont

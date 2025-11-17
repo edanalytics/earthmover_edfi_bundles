@@ -148,7 +148,7 @@ Each field mapping is currently structured with the following entries:
 - `min_year` and `max_year` contain the year limits of a column-to-field mapping, inclusive. A mapping valid from the 2023-24 school year onwards, for example, would have `min_year` of 2024 and a `max_year` of 2100 (this is an empty string in the seed file, but is filled with an arbitrarily high value in earthmover). 
 - `levels` contains the possible levels for a performance level mapping, currently only used in the `assessments` and `objectiveAssessments` templates.
 
-The object itself is in source control in `templates/assessment_structure.jinja`. For convenience in editing this object in the future, mappings are stored in tabular form in seeds, and the assessment structure object can be reconstructed by earthmover itself and output to `output/assessment_spec.jinja`. 
+The object itself is in source control in `templates/assessment_structure.jinja`. For convenience in editing this object in the future, mappings are stored in tabular form in seeds, and the assessment structure object can be reconstructed by earthmover itself and output to `output/assessment_spec.jinja`. Provide the parameter `"REGENERATE_ASSESSMENT_SPEC": true` when running earthmover to turn this output on.
 
 ## Running this bundle without Student ID Xwalking
 To run this bundle without implementing the student ID xwalking packages:
