@@ -127,7 +127,7 @@
       }
       {%- endif -%}
     ]
-    {%- if obj[5] -%}
+    {%- if obj[5] is not none and obj[5] | length -%}
     , "performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
