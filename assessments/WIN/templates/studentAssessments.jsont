@@ -126,8 +126,9 @@
         "result": "{{obj[4]}}"
       }
       {%- endif -%}
-    ],
-    "performanceLevels": [
+    ]
+    {%- if obj[5] -%}
+    , "performanceLevels": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[5]}}"
@@ -135,7 +136,8 @@
         ,"performanceLevelMet": true
         {% endif %}
       }
-    ] 
+    ]
+    {%- endif -%} 
   } {% if not loop.last %},{% endif %}
   {% endfor %}
   ]
