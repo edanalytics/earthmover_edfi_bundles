@@ -4,7 +4,7 @@ valid_edfi: ">=3.0"
 report_resources: ["studentAssessments"]
 input_files:
   - display_name: "Assessment data"
-    env_var: "INPUT_FILE_OVERALL"
+    env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
   - display_name: "Dashboard standards"
