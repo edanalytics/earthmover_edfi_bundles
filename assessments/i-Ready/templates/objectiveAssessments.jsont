@@ -84,15 +84,15 @@
     ] %}
     {%- for level in placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Placement",
+      "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#{{level}}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {%- endfor -%}
     {%- for rel_level in rel_placement_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{rel_level}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Relative Placement",
+      "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#{{rel_level}}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     }
     {%- if not loop.last -%},
@@ -100,7 +100,7 @@
   ],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+      "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Scale Score",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
     }
   ]
