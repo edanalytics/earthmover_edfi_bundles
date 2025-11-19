@@ -3,7 +3,7 @@ path: "assessments/STAR"
 valid_edfi: ">=3.0"
 report_resources: ["studentAssessments"]
 input_files:
-  - display_name: "Assessment data"
+  - display_name: "Overall assessment data"
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
