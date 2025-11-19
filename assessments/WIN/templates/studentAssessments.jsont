@@ -69,7 +69,11 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{TestDate}}",
+
+  {%- if platformTypeDescriptor is not none and platformTypeDescriptor | length -%}
   "platformTypeDescriptor": "{{platformTypeDescriptor}}",
+  {%- endif -%}
+
   "scoreResults": [
     {% for score in scores %}
       {
