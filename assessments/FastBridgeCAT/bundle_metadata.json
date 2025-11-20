@@ -1,0 +1,87 @@
+{
+    "earthmover_config_file": "earthmover.yaml",
+    "edfi_data_model_version_range": [">=0.3.0", "<0.4.0"],
+    "assessment_year_validated_range": [">=2022", "<=2024"],
+    "student_id_names": ["studentId"],
+    "input_files": {
+        "INPUT_FILE": {"optional": "False",
+                       "required_fields": ["studentId", "adminDate", "grade", "scaleScore"],
+                       "optional_fields": ["studentName"]}
+                    },
+    "params": {
+        "INPUT_FILE": 
+            {
+                "description": "The assessment file to be processed.",
+                "optional": "False"
+            },
+        "OUTPUT_DIR":
+            {
+                "description": "The directory to output the resulting jsonl files.",
+                "optional": "True",
+                "default": "./"
+            },
+        "STATE_FILE":
+            {
+                "description": "The file which maintains the tool state.",
+                "optional": "True",
+                "default": "~/.earthmover.csv"
+            },
+        "STUDENT_ID_NAME":
+            {
+                "description": "The student ID column from the assessment file to use as the studentUniqueId. This will only be used if the parameter 'COMPUTE_MATCH_RATES' == 'False' and the parameter 'STUDENT_ID_MATCH_RATES' is empty.",
+                "optional": "True",
+                "default": "studentId"
+            },
+        "COMPUTE_MATCH_RATES":
+            {
+                "description": "A flag for whether you want to compute match rates of all student ID columns from the file against all possible student ID types from a studentEducationOrganizationAssociation Ed-Fi source.",
+                "optional": "True",
+                "default": "False" 
+            },
+        "STUDENT_ID_MATCH_RATES":
+            {
+                "description": "A file with the match rates of all student ID columns from the file against all possible student ID types from a studentEducationOrganizationAssociation Ed-Fi source.",
+                "optional": "True",
+                "default": ""
+            },
+        "EDFI_ROSTER_QUERY":
+            {
+                "description": "A SQL query to mimick an Ed-Fi studentEducationOrganizationAssociation file.",
+                "optional": "Conditional",
+                "condition": "False if COMPUTE_MATCH_RATES == True and EDFI_ROSTER_FILE == '' else True",
+                "default": ""
+            },
+        "DATABASE_CONNECTION":
+            {
+                "description": "A database connection for the EDFI_ROSTER_QIERY.",
+                "optional": "Conditional",
+                "condition": "False if EDFI_ROSTER_QUERY != '' else True",
+                "default": "None"
+            },
+        "EDFI_ROSTER_FILE":
+            {
+                "description": "An Ed-Fi studentEducationOrganizationAssociation file.",
+                "optional": "Conditional",
+                "condition": "False if COMPUTE_MATCH_RATES == True and EDFI_ROSTER_QUERY == '' else True",
+                "default": "None"
+            },
+        "POSSIBLE_STUDENT_ID_COLUMNS":
+            {
+                "description": "The set of student ID columns from the assessment file to compare to Ed-Fi student IDs using the compute_match_rates package",
+                "optional": "True",
+                "default": "studentId"
+            },
+        "EDFI_STUDENT_ID_TYPES":
+            {
+                "description": "The set of Ed-Fi student ID types to compare to the student IDs from the assessment file using the compute_match_rates package",
+                "optional": "True",
+                "default": "Local,School,District,State"
+            },
+        "EARTHMOVER_NODE_TO_XWALK":
+            {
+                "description": "The name of the source node of the input file for the apply_xwalk package to use.",
+                "optional": "True",
+                "default": "$sources.input"
+            }
+    }
+}
