@@ -13,6 +13,8 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: WISEID,Local Student ID,Wisconsin Student Number
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     REGENERATE_ASSESSMENT_SPEC: false
+    API_YEAR: ''
+    INPUT_FILE: ''
   macros: >
     {% macro em_row_to_json(exclude, literal) -%}
     {# Converts an Earthmover row into a JSON object #}
