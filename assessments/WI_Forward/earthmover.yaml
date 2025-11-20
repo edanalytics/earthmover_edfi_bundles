@@ -13,7 +13,7 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: WISEID,Local Student ID,Wisconsin Student Number
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     REGENERATE_ASSESSMENT_SPEC: false
-    API_YEAR: ''
+    API_YEAR: 2000 # set to arbitrary number
     INPUT_FILE: ''
   macros: >
     {% macro em_row_to_json(exclude, literal) -%}
