@@ -3,17 +3,9 @@
   "assessmentTitle": "{{assessmentTitle}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
-  "assessedGradeLevels": [
-  {% for grade_descriptor in grade_descriptors.split(';') %}
-    {
-      "gradeLevelDescriptor": "{{grade_descriptor}}"
-    }{% if not loop.last %},{% endif %}
-  {% endfor %}
-  ],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": [
-    {"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}
-  ],
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+  "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Grade",
