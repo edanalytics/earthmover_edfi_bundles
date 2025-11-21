@@ -9,13 +9,12 @@ config:
   show_graph: False
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: student_state_id
-    EARTHMOVER_NODE_TO_XWALK: $transformations.input_normalized
+    POSSIBLE_STUDENT_ID_COLUMNS: Student_State_ID
 
 sources:
   input:
     file: ${INPUT_FILE}
-    super_header_rows: 3
+    sparse_header_rows: 3
     optional_fields:
       - TXKEA_Vocabulary Results__TXKEA_Vocabulary
       - TXKEA_Letter_Names Results__TXKEA_Letter_Names
@@ -709,12 +708,8 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  input_normalized:
-    source: $sources.input
-    operations:
-      - operation: snake_case_columns
   cli_tx_kea_student_assessment:
-    source: $transformations.input_xwalked
+    source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns: 
