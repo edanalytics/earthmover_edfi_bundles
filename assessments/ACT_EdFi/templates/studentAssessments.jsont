@@ -18,7 +18,7 @@
       {% for item in fromjson(v_performance_levels | default('[]')) %}
         {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
           {
-            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward College Readiness Indicator",
+            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
             "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}}",
             "performanceLevelMet": true
           }
@@ -92,7 +92,7 @@
           {%- for level in fromjson(v_performance_levels | default('[]')) -%}
             {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
               {
-                "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward College Readiness Indicator",
+                "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#College Readiness Benchmark",
                 "performanceLevelDescriptor": "{{ level.performanceLevelDescriptor }}",
                 "performanceLevelMet": true
               }
@@ -124,7 +124,7 @@
          {%- if item.performanceLevels -%}
          "performanceLevels": [
             {
-              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+              "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#College Readiness Benchmark",
               "performanceLevelDescriptor": "{{ item.performanceLevels[0].performanceLevelDescriptor }}",
               "performanceLevelMet": true
             }
