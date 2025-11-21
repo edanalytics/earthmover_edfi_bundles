@@ -1,17 +1,25 @@
 {
-    "iepServiceId": "{{student_service_id}}",
     "studentIEPReference": {
       "educationOrganizationId": {{lea_code}},
       "iepFinalizedDate": "{{event_date}}",
       "studentIEPAssociationID": "{{iepid}}",
       "studentUniqueId": "{{student_id}}"
     },
-    "servicePrescriptionDescriptor": "${DESCRIPTOR_NAMESPACE}/IDEAServicePrescriptionDescriptor#{{service}}",
+    "servicePrescriptionDate": "{{event_begin_date}}",
+    "servicePrescriptionDescriptor": "${DESCRIPTOR_NAMESPACE}/ServicePrescriptionDescriptor#{{service}}",
     "beginDate": "{{event_begin_date}}",
     "endDate": "{{event_end_date}}",
-    "durationMinutes": "{{duration}}",
-    "durationPeriod": "{{duration_time_period}}",
-    "frequencyValue": "{{sessions}}",
-    "frequencyPeriod": "{{duration_time_period}}",
-    "serviceLocationType": "{{location}}"
+    {% if duration is not none and duration | length %}
+    "durationMinutes": {{duration}},
+    {% else %}
+    "durationMinutes": 0,
+    {% endif %}
+    "durationPeriodDescriptor": "${DESCRIPTOR_NAMESPACE}/DurationPeriodDescriptor#{{duration_time_period}}",
+    {% if sessions is not none and sessions | length %}
+    "frequencyValue": {{sessions}},
+    {% else %}
+    "frequencyValue": 0,
+    {% endif %}
+    "frequencyPeriodDescriptor": "${DESCRIPTOR_NAMESPACE}/FrequencyPeriodDescriptor#{{duration_time_period}}",
+    "serviceLocationTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ServiceLocationTypeDescriptor#{{location}}"
 }
