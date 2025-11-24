@@ -12,7 +12,6 @@ config:
     STATE_FILE: ./tmp/.earthmover/runs.csv
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    SECONDARY_STUDENT_ID_NAME: 'Secondary Student ID'
     POSSIBLE_STUDENT_ID_COLUMNS: Student ID,Secondary Student ID
     DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
 
@@ -69,8 +68,6 @@ transformations:
           "Grade Equivalent (GE)": "Grade_Equivalent"
           "National Curve Equivalent (NCE)": "National_Curve_Equivalent"
           "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct": "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct"
-          ${STUDENT_ID_NAME}: student_unique_id
-          ${SECONDARY_STUDENT_ID_NAME}: secondary_student_unique_id
       # Simplify column names
       - operation: add_columns
         columns:
@@ -115,14 +112,6 @@ transformations:
           Level: "{% raw -%}{{ (Level | int) | string if Level is not none and Level|string|trim != '' else '' }}{%- endraw %}"
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
           Class_Grade: "{%raw%}{{Class_Grade|string|trim}}{%endraw%}"
-          student_unique_id: >
-            {% raw -%}
-            {{
-              student_unique_id if (student_unique_id is not none and student_unique_id|string|trim != '')
-              else (secondary_student_unique_id if (secondary_student_unique_id is not none and secondary_student_unique_id|string|trim != '')
-              else '')
-            }}
-            {%- endraw %}
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
@@ -140,6 +129,10 @@ transformations:
           "1": Fall
           "2": MidYear
           "3": Spring
+      # rename student id column after x-walk operation
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
 
   appendix_a:
     source: $sources.appendix_a
@@ -177,11 +170,12 @@ transformations:
           - datatype
           - joinKey
 
+# To join with base scores
   extract_reporting_methods_composites:
     source: $sources.assessmentReportingMethodDescriptors
     operations:
       - operation: filter_rows
-        query: isComposite == "1" or isComposite == 1
+        query: (isComposite == "1" or isComposite == 1) and (codeValue not in ["Battery","Level","Form","Norm Year"])
         behavior: include
       - operation: add_columns
         columns:
@@ -229,6 +223,25 @@ transformations:
           - description
           - namespace
           - shortDescription
+          - datatype
+
+  reporting_methods_composites2:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: (isComposite == "1" or isComposite == 1) and (codeValue in ["Battery","Level","Form","Norm Year"])
+        behavior: include
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: keep_columns
+        columns:
+          - isComposite
+          - codeValue
+          - description
+          - namespace
+          - shortDescription
+          - datatype
 
   reporting_methods_all:
     source: $transformations.reporting_methods_base
@@ -240,9 +253,14 @@ transformations:
           - namespace
           - shortDescription
           - isComposite
+          - datatype
       - operation: union
         sources:
           - $transformations.reporting_methods_composites
+      - operation: union
+        sources:
+          - $transformations.reporting_methods_composites2
+          
 
   performance_levels:
     source: $sources.performanceLevelDescriptors
@@ -327,7 +345,6 @@ transformations:
           - grade_json
 
   scores_json:
-    #source: $sources.assessmentReportingMethodDescriptors
     source: $transformations.reporting_methods_all
     operations:
       - operation: filter_rows
@@ -501,9 +518,9 @@ transformations:
           # Information regarding Form and Level for the assessment
           serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
       # filter out rows with missing student IDs
-      - operation: filter_rows
-        query: "student_unique_id  != ''"
-        behavior: include
+      # - operation: filter_rows
+      #   query: "student_unique_id  != ''"
+      #   behavior: include
 
   prepare_student_assessment_valid_school:
     source: $transformations.student_assessments
