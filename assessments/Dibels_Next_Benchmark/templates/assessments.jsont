@@ -1,94 +1,95 @@
 {
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "academicSubjects": [{{subject_json}}],
   "scores": [
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Score",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   "performanceLevels":[
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Achieved",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Well Below",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Achieved",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Below",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Achieved",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Typical",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Achieved",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Above",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Achieved",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Well Above",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Set",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Well Below",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Set",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Below",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Set",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Typical",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Set",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Above",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Pathway Set",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Well Above",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Well Below Benchmark",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Below Benchmark",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Benchmark",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Above Benchmark",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     },
     {
       "assessmentReportingMethodDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Assessment Measure Level",
       "performanceLevelDescriptor":"uri://dibels.uoregon.edu/assessment/dibels/PerformanceLevelDescriptor#Not Determined",
-      "resultDatatypeTypeDescriptor":"uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+      "resultDatatypeTypeDescriptor":"${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     }
   ]
 }
