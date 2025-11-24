@@ -1,0 +1,84 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{ edfi_descriptor }}",
+  "academicSubjects": [{{subject_json}}],
+  "platformTypes": [{{platform_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Retake",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Accommodations",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- if assessmentIdentifier == 'WIN_Soft_Skills' -%},
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RS",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SS",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Duration",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+    {%- endif -%}
+  ],
+  "performanceLevels": [
+    {%- if assessmentIdentifier == 'WIN_Academic_Skills' -%}
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 5",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 4",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 3",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Achievement Level 2",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Certificate Level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Did not earn a credential",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    }
+    {%- else -%}
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Pass",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Score",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Fail",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Incomplete",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Complete",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    }
+  {%- endif -%}
+  ]
+}

@@ -1,5 +1,116 @@
+{% set composite_score_results = [
+  ["Total Score", "Integer", total_score],
+  ["Nationally Rep Sample Pctl Total Score", "Level", nationally_representative_total_score],
+  ["User Percentile Total Score", "Level", user_percentile_total_score]
+] %}
+
+{% set all_scores = [] %}
+{% for score in composite_score_results %}
+  {% if score[2] != '' and score[2] is not none and score[2] | length %}
+    {% set _= all_scores.append(score) %}
+  {% endif %}
+{% endfor %}
+
+{% set obj_assessments = [
+  ['Evidence Based Reading and Writing Section',
+    [['Section Score', reading_writing_section_score],
+      ['Nationally Rep Sample Pctl Section Score', nationally_representative_reading_writing_section_score],
+      ['User Percentile Section Score', user_percentile_reading_writing_section_score]],
+    reading_writing_ccr_benchmark_indicator],
+  ['Reading Test', 
+    [['Test Score', reading_test_score],
+      ['Nationally Rep Sample Pctl Test Score', nationally_representative_reading_test_score],
+      ['User Percentile Test Score', user_percentile_reading_test_score],
+      ['Number of Reading Test Questions', number_of_reading_test_questions],
+      ['Correct Answers to Reading Test Questions', student_correct_answers_to_reading_test_questions],
+      ['Incorrect Answers to Reading Test Questions', student_incorrect_answers_to_reading_test_questions],
+      ['Omitted Reading Test Questions', student_omitted_reading_test_questions]]],
+  ['Writing and Language Test', 
+    [['Test Score', writing_lang_test_score],
+      ['Nationally Rep Sample Pctl Test Score', nationally_representative_writing_lang_test_score],
+      ['User Percentile Test Score', user_percentile_writing_lang_test_score],
+      ['Number of Writing Test Questions', number_of_writing_and_lang_test_questions],
+      ['Correct Answers to Writing Test Questions', student_correct_answers_to_writing_and_lang_test_questions],
+      ['Incorrect Answers to Writing Test Questions', student_incorrect_answers_to_writing_and_lang_test_questions],
+      ['Omitted Writing Test Questions', student_omitted_writing_and_lang_test_questions]]],
+  ['Relevant Words in Context', 
+    [['Subscore', relevant_words_in_context_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_relevant_words_in_context_subscore],
+      ['User Percentile Subscore', user_percentile_relevant_words_in_context_subscore]]],
+  ['Command of Evidence', 
+    [['Subscore', command_of_evidence_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_command_of_evidence_subscore],
+      ['User Percentile Subscore', user_percentile_command_of_evidence_subscore]]],
+  ['Expression of Ideas', 
+    [['Subscore', expression_of_ideas_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_expression_of_ideas_subscore],
+      ['User Percentile Subscore', user_percentile_expression_of_ideas_subscore]]],
+  ['Standard English Conventions', 
+    [['Subscore', standard_english_conventions_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_standard_english_conventions_subscore],
+      ['User Percentile Subscore', user_percentile_standard_english_conventions_subscore]]],
+  ['Math Section',
+    [['Section Score', math_section_score],
+      ['Nationally Rep Sample Pctl Section Score', nationally_representative_math_section_score],
+      ['User Percentile Section Score', user_percentile_math_section_score]],
+    math_ccr_benchmark_indicator],
+  ['Math Test', 
+    [['Test Score', math_test_score],
+      ['Nationally Rep Sample Pctl Test Score', nationally_representative_math_test_score],
+      ['User Percentile Test Score', user_percentile_math_test_score],
+      ['Number of Math No Calc Test MC Questions', number_of_math_no_calc_test_mult_choice_questions],
+      ['Number of Math No Calc Test PR Questions', number_of_math_no_calc_test_produced_response_questions],
+      ['Correct Answers to Math No Calc Test Questions', student_correct_answers_to_math_no_calc_test_questions],
+      ['Incorrect Answers to Math No Calc Test Questions', student_incorrect_answers_to_math_no_calc_test_questions],
+      ['Omitted Math No Calc Test Questions', student_omitted_math_no_calc_test_questions],
+      ['Number of Math Calc Test MC Questions', number_of_math_calc_test_mult_choice_questions],
+      ['Number of Math Calc Test PR Questions', number_of_math_calc_test_produced_response_questions],
+      ['Correct Answers to Math Calc Test Questions', student_correct_answers_to_math_calc_test_questions],
+      ['Incorrect Answers to Math Calc Test Questions', student_incorrect_answers_to_math_calc_test_questions],
+      ['Omitted Math Calc Test Questions', student_omitted_math_calc_test_questions]]],
+  ['Heart of Algebra', 
+    [['Subscore', heart_of_algebra_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_heart_of_algebra_subscore],
+      ['User Percentile Subscore', user_percentile_heart_of_algebra_subscore]]],
+  ['Problem Solving and Data Analysis', 
+    [['Subscore', problem_solving_and_data_analysis_subscore],
+      ['Nationally Rep Sample Pctl Subscore', nationally_representative_problem_solving_and_data_analysis_subscore],
+      ['User Percentile Subscore', user_percentile_problem_solving_and_data_analysis_subscore]]],
+  ['Science Cross Test', 
+    [['Cross Test Score', analysis_in_science_xtest_score],
+      ['Nationally Rep Sample Pctl Cross Test Score', nationally_representative_analysis_in_science_xtest_score],
+      ['User Percentile Cross Test Score', user_percentile_analysis_in_science_xtest_score]]],
+  ['Social Studies Cross Test', 
+    [['Cross Test Score', analysis_in_history_xtest_score],
+      ['Nationally Rep Sample Pctl Cross Test Score', nationally_representative_analysis_in_history_xtest_score],
+      ['User Percentile Cross Test Score', user_percentile_analysis_in_history_xtest_score]]]
+] %}
+
+{% if "SAT" in assessmentIdentifier and essay_reading_subscore != '' and essay_reading_subscore is not none and essay_reading_subscore | length %}
+  {% set _= obj_assessments.append(['Essay', 
+                                      [['Essay Reading Subscore', essay_reading_subscore], 
+                                        ['Essay Analysis Subscore', essay_analysis_subscore], 
+                                        ['Essay Writing Subscore', essay_writing_subscore]]
+                                    ]) %}
+{% endif %}
+
+{% if "SAT" in assessmentIdentifier and passport_to_advanced_math_subscore != '' and passport_to_advanced_math_subscore is not none and passport_to_advanced_math_subscore | length%}
+  {% set _= obj_assessments.append(['Passport to Advanced Mathematics', 
+                                      [['Subscore', passport_to_advanced_math_subscore],
+                                        ['Nationally Rep Sample Pctl Subscore', nationally_representative_passport_to_advanced_math_subscore],
+                                        ['User Percentile Subscore', user_percentile_passport_to_advanced_math_subscore]]
+                                    ]) %}
+{% endif %}
+
+{% set all_obj_assessments = [] %}
+{% for obj in obj_assessments %}
+  {% if obj[1][0][1] and obj[1][0][1] != '' and obj[1][0][1] is not none and obj[1][0][1] | length %}
+    {% set _= all_obj_assessments.append(obj) %}
+  {% endif %}
+{% endfor %}
+
 {
-    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+    "studentAssessmentIdentifier": "{{  md5(studentAssessmentIdentifier) }}",
     "assessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}"
@@ -11,181 +122,58 @@
       "studentUniqueId": "{{studentUniqueId}}"
     },
     "administrationDate": "{{administrationDate}}",
-    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
-    "performanceLevels": [
-      {% set all_pls = [] %}
-      {% if reading_writing_ccr_benchmark_indicator != '' %}
-        {% set _= all_pls.append(["CCR Benchmark Indicator", reading_writing_ccr_benchmark_indicator]) %}
-      {% endif %}
-      {% if math_ccr_benchmark_indicator != '' %}
-        {% set _= all_pls.append(["CCR Benchmark Indicator", math_ccr_benchmark_indicator]) %}
-      {% endif %}
-    
-      {%- for pl in all_pls -%}
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{pl[1]}}",
-        "performanceLevelMet": true
-      }
-      {%- if not loop.last -%},
-      {%- else %}{% endif %}{%- endfor -%}
-    ],
+    {% if edfi_descriptor != '' and edfi_descriptor is not none and edfi_descriptor | length %}
+    "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
+    {% endif %}
     "scoreResults": [
-      {% set all_scores = [] %}
-      {% if total_score != '' %}
-        {% set _= all_scores.append(["Total Score", total_score]) %}
-      {% endif %}
-      {% if reading_writing_section_score != '' %}
-        {% set _= all_scores.append(["Section Score", reading_writing_section_score]) %}
-      {% endif %}
-      {% if math_section_score != '' %}
-        {% set _= all_scores.append(["Section Score", math_section_score]) %}
-      {% endif %}
-      {% if nationally_representative_total_score != '' %}
-        {% set _= all_scores.append(["Nationally Rep Sample Pctl Total Score", nationally_representative_total_score]) %}
-      {% endif %}
-      {% if nationally_representative_reading_writing_section_score != '' %}
-        {% set _= all_scores.append(["Nationally Rep Sample Pctl Section Score", nationally_representative_reading_writing_section_score]) %}
-      {% endif %}
-      {% if nationally_representative_math_section_score != '' %}
-        {% set _= all_scores.append(["Nationally Rep Sample Pctl Section Score", nationally_representative_math_section_score]) %}
-      {% endif %}
-      {% if user_percentile_total_score != '' %}
-        {% set _= all_scores.append(["User Percentile Total Score", user_percentile_total_score]) %}
-      {% endif %}
-      {% if user_percentile_reading_writing_section_score != '' %}
-        {% set _= all_scores.append(["User Percentile Section Score", user_percentile_reading_writing_section_score]) %}
-      {% endif %}
-      {% if user_percentile_math_section_score != '' %}
-        {% set _= all_scores.append(["User Percentile Section Score", user_percentile_math_section_score]) %}
-      {% endif %}
-      {% if analysis_in_science_xtest_score != '' %}
-        {% set _= all_scores.append(["Analysis in Science Cross-Test Score", analysis_in_science_xtest_score]) %}
-      {% endif %}
-      {% if analysis_in_history_xtest_score != '' %}
-        {% set _= all_scores.append(["Analysis in History Social Sci Cross-Test Score", analysis_in_history_xtest_score]) %}
-      {% endif %}
-      {% if subject != '' %}
-        {% set _= all_scores.append(["Subject", subject]) %}
-      {% endif %}
-      
-      {%- for score in all_scores -%}
+      {% for score in all_scores %}
       {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-            "result": "{{score[1]}}"
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+          "result": "{{score[2]}}"
       }
-      {%- if not loop.last -%},
-      {%- else %}{% endif %}{%- endfor -%}
-    ],
+      {% if not loop.last %},
+      {% else %}{% endif %}{% endfor %}
+    ]
+
+    {% if all_obj_assessments|length > 0 %},
     "studentObjectiveAssessments": [
-      {% set obj_assess_ela = [['Reading Test', 
-                                   {'Section Score':reading_test_score,
-                                   'Nationally Rep Sample Pctl Section Score':nationally_representative_reading_test_score,
-                                   'User Percentile Section Score':user_percentile_reading_test_score,
-                                   'Number of Reading Test Questions':number_of_reading_test_questions,
-                                   'Correct Answers to Reading Test Questions':student_correct_answers_to_reading_test_questions,
-                                   'Incorrect Answers to Reading Test Questions':student_incorrect_answers_to_reading_test_questions,
-                                   'Omitted Reading Test Questions':student_omitted_reading_test_questions}],
-                               ['Writing and Language Test', 
-                                   {'Section Score':writing_lang_test_score,
-                                   'Nationally Rep Sample Pctl Section Score':nationally_representative_writing_lang_test_score,
-                                   'User Percentile Section Score':user_percentile_writing_lang_test_score,
-                                   'Number of Writing Test Questions':number_of_writing_and_lang_test_questions,
-                                   'Correct Answers to Writing Test Questions':student_correct_answers_to_writing_and_lang_test_questions,
-                                   'Incorrect Answers to Writing Test Questions':student_incorrect_answers_to_writing_and_lang_test_questions,
-                                   'Omitted Writing Test Questions':student_omitted_writing_and_lang_test_questions}],
-                               ['Relevant Words in Context', 
-                                   {'Subscore':relevant_words_in_context_subscore,
-                                   'Nationally Rep Sample Pctl Subscore':nationally_representative_relevant_words_in_context_subscore,
-                                   'User Percentile Subscore':user_percentile_relevant_words_in_context_subscore}],
-                               ['Command of Evidence', 
-                                   {'Subscore':command_of_evidence_subscore,
-                                   'Nationally Rep Sample Pctl Subscore':nationally_representative_command_of_evidence_subscore,
-                                   'User Percentile Subscore':user_percentile_command_of_evidence_subscore}],
-                               ['Expression of Ideas', 
-                                   {'Subscore':expression_of_ideas_subscore,
-                                   'Nationally Rep Sample Pctl Subscore':nationally_representative_expression_of_ideas_subscore,
-                                   'User Percentile Subscore':user_percentile_expression_of_ideas_subscore}],
-                               ['Standard English Conventions', 
-                                   {'Subscore':standard_english_conventions_subscore,
-                                   'Nationally Rep Sample Pctl Subscore':nationally_representative_standard_english_conventions_subscore,
-                                   'User Percentile Subscore':user_percentile_standard_english_conventions_subscore}]
-                               ] %}
-
-      {% if assessmentIdentifier == "SAT" and essay_reading_subscore != '' %}
-      {% set _= obj_assess_ela.append(['Essay', 
-                                        {'Essay Reading Subscore':essay_reading_subscore, 
-                                        'Essay Analysis Subscore':essay_analysis_subscore, 
-                                        'Essay Writing Subscore':essay_writing_subscore}
-                                        ]) %}
-      {% endif %}
-
-      {% set obj_assess_math = [['Math Test', 
-                                    {'Section Score':math_test_score,
-                                    'Nationally Rep Sample Pctl Section Score':nationally_representative_math_test_score,
-                                    'User Percentile Section Score':user_percentile_math_test_score,
-                                    'Number of Math No Calc Test MC Questions':number_of_math_no_calc_test_mult_choice_questions,
-                                    'Number of Math No Calc Test PR Questions':number_of_math_no_calc_test_produced_response_questions,
-                                    'Correct Answers to Math No Calc Test Questions':student_correct_answers_to_math_no_calc_test_questions,
-                                    'Incorrect Answers to Math No Calc Test Questions':student_incorrect_answers_to_math_no_calc_test_questions,
-                                    'Omitted Math No Calc Test Questions':student_omitted_math_no_calc_test_questions,
-                                    'Number of Math Calc Test MC Questions':number_of_math_calc_test_mult_choice_questions,
-                                    'Number of Math Calc Test PR Questions':number_of_math_calc_test_produced_response_questions,
-                                    'Correct Answers to Math Calc Test Questions':student_correct_answers_to_math_calc_test_questions,
-                                    'Incorrect Answers to Math Calc Test Questions':student_incorrect_answers_to_math_calc_test_questions,
-                                    'Omitted Math Calc Test Questions':student_omitted_math_calc_test_questions}],
-                                ['Heart of Algebra', 
-                                    {'Subscore':heart_of_algebra_subscore,
-                                    'Nationally Rep Sample Pctl Subscore':nationally_representative_heart_of_algebra_subscore,
-                                    'User Percentile Subscore':user_percentile_heart_of_algebra_subscore}],
-                                ['Problem Solving and Data Analysis', 
-                                    {'Subscore':problem_solving_and_data_analysis_subscore,
-                                    'Nationally Rep Sample Pctl Subscore':nationally_representative_problem_solving_and_data_analysis_subscore,
-                                    'User Percentile Subscore':user_percentile_problem_solving_and_data_analysis_subscore}]
-                                ] %}
-
-      {% if assessmentIdentifier in ("SAT", "PSAT/NMSQT", "PSAT 10") %}
-      {% set _= obj_assess_math.append(['Passport to Advanced Mathematics', 
-                                        {'Subscore':passport_to_advanced_math_subscore,
-                                        'Nationally Rep Sample Pctl Subscore':nationally_representative_passport_to_advanced_math_subscore,
-                                        'User Percentile Subscore':user_percentile_passport_to_advanced_math_subscore}
-                                        ]) %}
-      {% endif %}
-  
-      {% set obj_assess = obj_assess_ela %}
-      {% if '_mathematics' in  student_assessment_id %}
-      {% set obj_assess = obj_assess_math %}
-      {% endif %}
-  
-      {%- for obj in obj_assess -%}
-      {% set all_score_obj = [] %}
-        {% for score_name, score_result in obj[1].items() %}
-          {% if score_result != '' %}
-            {% set _= all_score_obj.append([score_name, score_result]) %}
-          {% endif %}
-        {% endfor %}
-  
-      {% if all_score_obj|length > 0 %}
+      {% for obj_asses in all_obj_assessments %}
       {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessmentIdentifier}}",
-          "identificationCode": "{{obj[0]}}",
+          "identificationCode": "{{obj_asses[0]}}",
           "namespace": "{{namespace}}"
-        }
-        ,
-        "scoreResults": [
-         {%- for score in all_score_obj -%}
+        },
+        {% if obj_asses[0] in ('Evidence Based Reading and Writing Section', 'Math Section') and obj_asses[2] != '' and obj_asses[2] is not none and obj_asses[2] | length %}
+        "performanceLevels": [
           {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-            "result": "{{score[1]}}"
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#CCR Benchmark Indicator",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj_asses[2]}}",
+            "performanceLevelMet": true
           }
-          {%- if not loop.last -%},
-          {%- else %}{% endif %}{%- endfor -%}
+        ],
+        {% endif %}
+
+        {% set all_obj_scores = [] %}
+          {% for obj_assess_score in obj_asses[1] %}
+            {% if obj_assess_score[1] != '' and obj_assess_score[1] is not none and obj_assess_score[1] | length %}
+              {% set _= all_obj_scores.append(obj_assess_score) %}
+            {% endif %}
+          {% endfor %}
+        "scoreResults": [
+          {% for obj_assess_score in all_obj_scores %}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_assess_score[0]}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+              "result": "{{obj_assess_score[1]}}"
+            }
+          {% if not loop.last %},
+          {% else %}{% endif %}{% endfor %}
         ]
-      }{%- if not loop.last -%},
-      {%- else %}{% endif %} 
-      {% endif %}{%- endfor -%}
+      }
+      {% if not loop.last %},
+      {% else %}{% endif %}{% endfor %}
     ]
+    {% endif %}
   }

@@ -11,9 +11,348 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     INPUT_FILE: ''
-    API_YEAR: ''
+    API_YEAR: 2024
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
+
+definitions:
+  - &scd2-year-fill-nas
+    operation: modify_columns
+    columns:
+      start_year: "{%raw%}{{ start_year or 2024}}{%endraw%}"
+      end_year: "{%raw%}{{ end_year or 2100 }}{%endraw%}"
+  - &scd2-flag-current-rows
+    operation: add_columns
+    columns:
+      current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+  - &scd2-filter-to-current-rows
+    operation: filter_rows
+    query: "current == 'true'"
+    behavior: include
+  
+
+# Define columns list as anchor to pass to keep-cols and optional_fields.
+columns_list: &columns_list
+  # Generic fields
+  - student_unique_id  # Initialized empty and renamed in first transformation.
+  - StateID
+  {% if ${API_YEAR} < 2025 %}
+  - SchoolID
+  {% else %}
+  - TSchoolID
+  - RSchoolID
+  {% endif %}
+  - TestAdmin
+  - UID
+  - Grade
+  - DOB
+  - District
+  - English
+  - FName
+  - FallCode
+  - FedReport
+  - G3RTSFlag
+  - Gender
+  - Generation
+  - Gifted
+  - GriddedFName
+  - GriddedLName
+  - GriddedMI
+  - Hispanic
+  - HomeSch
+  - IEP
+  - IEP_AU
+  - IEP_DB
+  - IEP_DD
+  - IEP_EH
+  - IEP_EM
+  - IEP_HH
+  - IEP_LD
+  - IEP_MD
+  - IEP_OH
+  - IEP_OHI
+  - IEP_PMD
+  - IEP_SP
+  - IEP_TBI
+  - IEP_TM
+  - IEP_VH
+  - IEP_ID
+  - IEP_HI
+  - IEP_TB
+  - EFA_DB
+  - EFA_MD
+  - InstrSetting
+  - LName
+  - MName
+  - Migrant
+  - PermID
+  - Plan504
+  - Precoded
+  - RaceA
+  - RaceB
+  - RaceI
+  - RaceP
+  - RaceW
+  - School
+  - TrueGrade
+  - VSchool
+
+  # ELA-specific fields
+  - ELAGrade
+  - ELASS
+  - ELAVSS
+  - ELALev
+  - ELARS10
+  - ELALev1 
+  - ELALev2
+  - ELALev3
+  - ELALev4
+  - ELALev5
+  - ELALev6
+  - ELALev7
+  - ELALev8
+  - ELALev9
+  - ELALev11
+  - Lex
+  - LexLow
+  - LexUp
+  - LexNPR
+
+  - ELAAg
+  - ELAAttempt
+  - ELABRType
+  - ELADNS1
+  - ELADNS2
+  - ELAFormType
+  - ELALevRead
+  - ELAMode
+  - ELANPR
+  - ELARCWAbs
+  - ELARCWGro
+  - ELARSMaxHOSS
+  - ELASPR
+  - ELASSRead
+  - ELASameSchool
+  - ELASectionID
+  - ELASecurityNum
+  - ELATDANoScore
+  - ELATeachFName
+  - ELATeachLName
+  - ELATeachMName
+  - ELATeachNbr
+
+  - ELA1FTime
+  - ELA1IEPInv
+  - ELA1STime
+  - ELA1SpecReq
+  - ELA1TAInitials
+  - ELA1TestDuration
+  - ELA1Acc1
+  - ELA1Acc2
+  - ELA1Acc3
+  - ELA1Acc4
+  - ELA1Acc5
+  - ELA1Acc6
+  - ELA1Acc7
+  - ELA1Acc8
+  - ELA1Acc9
+  - ELA1Acc10
+  - ELA1Acc11
+  - ELA1ESLAcc1
+  - ELA1ESLAcc2
+  - ELA1ESLAcc3
+  - ELA1ESLAcc4
+  - ELA1ESLAcc5
+  - ELA1ESLAcc6
+
+  - ELA2FTime
+  - ELA2IEPInv
+  - ELA2STime
+  - ELA2SpecReq
+  - ELA2TAInitials
+  - ELA2TestDuration
+  - ELA2Acc1
+  - ELA2Acc2
+  - ELA2Acc3
+  - ELA2Acc4
+  - ELA2Acc5
+  - ELA2Acc6
+  - ELA2Acc7
+  - ELA2Acc8
+  - ELA2Acc9
+  - ELA2Acc10
+  - ELA2ESLAcc1
+  - ELA2ESLAcc2
+  - ELA2ESLAcc3
+  - ELA2ESLAcc4
+  - ELA2ESLAcc5
+
+  # Math-specific fields
+  - MathGrade
+  - MathSS
+  - MathVSS
+  - MathLev
+  - MathLev1
+  - MathLev2
+  - MathLev3
+  - MathLev4
+  - MathLev5
+  - Quant
+  - QuantLow
+  - QuantUp
+  - QuantNPR
+
+  - MathAg
+  - MathAttempt
+  - MathBRType
+  - MathDNS
+  - MathFormType
+  - MathMode
+  - MathNPR
+  - MathRCWAbs
+  - MathRCWGro
+  - MathRSMaxHOSS
+  - MathSPR
+  - MathSameSchool
+  - MathSectionID
+  - MathSecurityNum
+  - MathTeachFName
+  - MathTeachLName
+  - MathTeachMName
+  - MathTeachNbr
+
+  - Math1FTime
+  - Math1STime
+  - MathIEPInv
+  - MathSpecReq
+  - MathTAInitials
+  - Math1TestDuration
+  - MathAcc1
+  - MathAcc2
+  - MathAcc3
+  - MathAcc4
+  - MathAcc5
+  - MathAcc6
+  - MathAcc7
+  - MathAcc8
+  - MathAcc9
+  - MathAcc10
+  - MathESLAcc1
+  - MathESLAcc2
+  - MathESLAcc3
+  - MathESLAcc4
+  - MathESLAcc5
+  - MathESLAcc6
+
+  - Math2FTime
+  - Math2STime
+  - Math2TestDuration
+
+  # Science-specific fields
+  - SciGrade
+  - SciSS
+  - SciVSS
+  - SciLev
+  - SciLev1
+  - SciLev2
+  - SciLev3
+  - SciLev4
+  - SciLev5
+  - SciLev6
+
+  - SciFTime
+  - SciSTime
+  - SciIEPInv
+  - SciSocFlag
+  - SciSpecReq
+  - SciTAInitials
+  - SciTestDuration
+  - SciAcc1
+  - SciAcc2
+  - SciAcc3
+  - SciAcc4
+  - SciAcc5
+  - SciAcc6
+  - SciAcc7
+  - SciAcc8
+  - SciAcc9
+  - SciAcc10
+  - SciESLAcc1
+  - SciESLAcc2
+  - SciESLAcc3
+  - SciESLAcc4
+  - SciESLAcc5
+  - SciESLAcc6
+
+  - SciAg
+  - SciAttempt
+  - SciBRType
+  - SciDNS
+  - SciFormType
+  - SciMode
+  - SciRCWAbs
+  - SciRCWGro
+  - SciRSMaxHOSS
+  - SciSameSchool
+  - SciSectionID
+  - SciSecurityNum
+  - SciTeachFName
+  - SciTeachLName
+  - SciTeachMName
+  - SciTeachNbr
+
+  # Social Studies-specific fields
+  - SocGrade
+  - SocSS
+  - SocVSS
+  - SocLev
+  - SocLev1
+  - SocLev2
+  - SocLev3
+  - SocLev4
+  - SocLev5
+  - SocLev6
+  - SocLev7
+
+  - SocFTime
+  - SocIEPInv
+  - SocSTime
+  - SocSpecReq
+  - SocTAInitials
+  - SocAcc1
+  - SocAcc2
+  - SocAcc3
+  - SocAcc4
+  - SocAcc5
+  - SocAcc6
+  - SocAcc7
+  - SocAcc8
+  - SocAcc9
+  - SocAcc10
+  - SocESLAcc1
+  - SocESLAcc2
+  - SocESLAcc3
+  - SocESLAcc4
+  - SocESLAcc5
+  - SocESLAcc6
+
+  - SocAg
+  - SocAttempt
+  - SocBRType
+  - SocDNS
+  - SocFormType
+  - SocMode
+  - SocRCWAbs
+  - SocRCWGro
+  - SocRSMaxHOSS
+  - SocSameSchool
+  - SocSectionID
+  - SocSecurityNum
+  - SocTeachFName
+  - SocTeachLName
+  - SocTeachMName
+  - SocTeachNbr
+  - SocTestDuration
 
 sources:
   assessmentReportingMethodDescriptors:
@@ -35,7 +374,7 @@ sources:
   input:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
-#    encoding: ${source_encoding}
+    optional_fields: *columns_list
 
 
 transformations:
@@ -46,324 +385,21 @@ transformations:
   scready_student_assessment:
     source: $transformations.input
     operations:
-      - operation: keep_columns
+      # Roundabout way to circumvent being unable to append to YAML array aliases.
+      - operation: drop_columns
         columns:
-          # Generic fields
-          - ${STUDENT_ID_NAME}
-          {% if '${STUDENT_ID_NAME}' != 'StateID' %}
-          - StateID
-          {% endif %}
-          - SchoolID
-          - TestAdmin
-          - UID
-          - Grade
-          - DOB
-          - District
-          - English
-          - FName
-          - FallCode
-          - FedReport
-          - G3RTSFlag
-          - Gender
-          - Generation
-          - Gifted
-          - GriddedFName
-          - GriddedLName
-          - GriddedMI
-          - Hispanic
-          - HomeSch
-          - IEP
-          - IEP_AU
-          - IEP_DB
-          - IEP_DD
-          - IEP_EH
-          - IEP_EM
-          - IEP_HH
-          - IEP_LD
-          - IEP_MD
-          - IEP_OH
-          - IEP_OHI
-          - IEP_PMD
-          - IEP_SP
-          - IEP_TBI
-          - IEP_TM
-          - IEP_VH
-          - InstrSetting
-          - LName
-          - MName
-          - Migrant
-          - PermID
-          - Plan504
-          - Precoded
-          - RaceA
-          - RaceB
-          - RaceI
-          - RaceP
-          - RaceW
-          - School
-          - TrueGrade
-          - VSchool
-
-          # ELA-specific fields
-          - ELAGrade
-          - ELASS
-          - ELAVSS
-          - ELALev
-          - ELARS10
-          - ELALev1 
-          - ELALev2
-          - ELALev3
-          - ELALev4
-          - ELALev5
-          - ELALev6
-          - ELALev7
-          - ELALev8
-          - ELALev9
-          - ELALev11
-          - Lex
-          - LexLow
-          - LexUp
-          - LexNPR
-
-          - ELAAg
-          - ELAAttempt
-          - ELABRType
-          - ELADNS1
-          - ELADNS2
-          - ELAFormType
-          - ELALevRead
-          - ELAMode
-          - ELANPR
-          - ELARCWAbs
-          - ELARCWGro
-          - ELARSMaxHOSS
-          - ELASPR
-          - ELASSRead
-          - ELASameSchool
-          - ELASectionID
-          - ELASecurityNum
-          - ELATDANoScore
-          - ELATeachFName
-          - ELATeachLName
-          - ELATeachMName
-          - ELATeachNbr
-
-          - ELA1FTime
-          - ELA1IEPInv
-          - ELA1STime
-          - ELA1SpecReq
-          - ELA1TAInitials
-          - ELA1TestDuration
-          - ELA1Acc1
-          - ELA1Acc2
-          - ELA1Acc3
-          - ELA1Acc4
-          - ELA1Acc5
-          - ELA1Acc6
-          - ELA1Acc7
-          - ELA1Acc8
-          - ELA1Acc9
-          - ELA1Acc10
-          - ELA1Acc11
-          - ELA1ESLAcc1
-          - ELA1ESLAcc2
-          - ELA1ESLAcc3
-          - ELA1ESLAcc4
-          - ELA1ESLAcc5
-          - ELA1ESLAcc6
-
-          - ELA2FTime
-          - ELA2IEPInv
-          - ELA2STime
-          - ELA2SpecReq
-          - ELA2TAInitials
-          - ELA2TestDuration
-          - ELA2Acc1
-          - ELA2Acc2
-          - ELA2Acc3
-          - ELA2Acc4
-          - ELA2Acc5
-          - ELA2Acc6
-          - ELA2Acc7
-          - ELA2Acc8
-          - ELA2Acc9
-          - ELA2Acc10
-          - ELA2ESLAcc1
-          - ELA2ESLAcc2
-          - ELA2ESLAcc3
-          - ELA2ESLAcc4
-          - ELA2ESLAcc5
-
-          # Math-specific fields
-          - MathGrade
-          - MathSS
-          - MathVSS
-          - MathLev
-          - MathLev1
-          - MathLev2
-          - MathLev3
-          - MathLev4
-          - MathLev5
-          - Quant
-          - QuantLow
-          - QuantUp
-          - QuantNPR
-
-          - MathAg
-          - MathAttempt
-          - MathBRType
-          - MathDNS
-          - MathFormType
-          - MathMode
-          - MathNPR
-          - MathRCWAbs
-          - MathRCWGro
-          - MathRSMaxHOSS
-          - MathSPR
-          - MathSameSchool
-          - MathSectionID
-          - MathSecurityNum
-          - MathTeachFName
-          - MathTeachLName
-          - MathTeachMName
-          - MathTeachNbr
-
-          - Math1FTime
-          - Math1STime
-          - MathIEPInv
-          - MathSpecReq
-          - MathTAInitials
-          - Math1TestDuration
-          - MathAcc1
-          - MathAcc2
-          - MathAcc3
-          - MathAcc4
-          - MathAcc5
-          - MathAcc6
-          - MathAcc7
-          - MathAcc8
-          - MathAcc9
-          - MathAcc10
-          - MathESLAcc1
-          - MathESLAcc2
-          - MathESLAcc3
-          - MathESLAcc4
-          - MathESLAcc5
-          - MathESLAcc6
-
-          - Math2FTime
-          - Math2STime
-          - Math2TestDuration
-
-          # Science-specific fields
-          - SciGrade
-          - SciSS
-          - SciVSS
-          - SciLev
-          - SciLev1
-          - SciLev2
-          - SciLev3
-          - SciLev4
-          - SciLev5
-          - SciLev6
-
-          - SciFTime
-          - SciSTime
-          - SciIEPInv
-          - SciSocFlag
-          - SciSpecReq
-          - SciTAInitials
-          - SciTestDuration
-          - SciAcc1
-          - SciAcc2
-          - SciAcc3
-          - SciAcc4
-          - SciAcc5
-          - SciAcc6
-          - SciAcc7
-          - SciAcc8
-          - SciAcc9
-          - SciAcc10
-          - SciESLAcc1
-          - SciESLAcc2
-          - SciESLAcc3
-          - SciESLAcc4
-          - SciESLAcc5
-          - SciESLAcc6
-
-          - SciAg
-          - SciAttempt
-          - SciBRType
-          - SciDNS
-          - SciFormType
-          - SciMode
-          - SciRCWAbs
-          - SciRCWGro
-          - SciRSMaxHOSS
-          - SciSameSchool
-          - SciSectionID
-          - SciSecurityNum
-          - SciTeachFName
-          - SciTeachLName
-          - SciTeachMName
-          - SciTeachNbr
-
-          # Social Studies-specific fields
-          - SocGrade
-          - SocSS
-          - SocVSS
-          - SocLev
-          - SocLev1
-          - SocLev2
-          - SocLev3
-          - SocLev4
-          - SocLev5
-          - SocLev6
-          - SocLev7
-
-          - SocFTime
-          - SocIEPInv
-          - SocSTime
-          - SocSpecReq
-          - SocTAInitials
-          - SocAcc1
-          - SocAcc2
-          - SocAcc3
-          - SocAcc4
-          - SocAcc5
-          - SocAcc6
-          - SocAcc7
-          - SocAcc8
-          - SocAcc9
-          - SocAcc10
-          - SocESLAcc1
-          - SocESLAcc2
-          - SocESLAcc3
-          - SocESLAcc4
-          - SocESLAcc5
-          - SocESLAcc6
-
-          - SocAg
-          - SocAttempt
-          - SocBRType
-          - SocDNS
-          - SocFormType
-          - SocMode
-          - SocRCWAbs
-          - SocRCWGro
-          - SocRSMaxHOSS
-          - SocSameSchool
-          - SocSectionID
-          - SocSecurityNum
-          - SocTeachFName
-          - SocTeachLName
-          - SocTeachMName
-          - SocTeachNbr
-          - SocTestDuration
-
-      - operation: rename_columns
+          - student_unique_id
+      - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: keep_columns
+        columns: *columns_list
+      - operation: modify_columns
+        columns:
+          ELAGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          MathGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SciGrade: "{%raw%}{{ value | trim }}{%endraw%}"
+          SocGrade: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: filter_rows
         query: student_unique_id.notnull() & (student_unique_id != "") & (student_unique_id != "0")
         behavior: include
@@ -371,7 +407,11 @@ transformations:
         columns:
           school_year:  ${API_YEAR}
           administration_date: "{%raw%}{{${API_YEAR} ~ '-05-15'}}{%endraw%}"
+          {% if ${API_YEAR} < 2025 %}
           lea_id: "{%raw%}{{SchoolID[0:-3]}}{%endraw%}"
+          {% else %}
+          lea_id: "{%raw%}{{RSchoolID[0:-3]}}{%endraw%}"
+          {% endif %}
           namespace: "uri://datarecognitioncorp.com/Assessment"
     
   scready_student_assessment_ela:
@@ -418,12 +458,10 @@ transformations:
           - $transformations.scready_student_assessment_math
           - $transformations.scready_student_assessment_science
           - $transformations.scready_student_assessment_social_studies
-
       # Only populated assessments have `{Subject}Grade` column populated
       - operation: filter_rows
         query: assessment_grade != ''
         behavior: include
-      
       - operation: add_columns
         columns:
           student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
@@ -456,6 +494,38 @@ transformations:
           SocLev5_name: "{%raw%}{{assessment_grade | int}}_SocLev5{%endraw%}"
           SocLev6_name: "{%raw%}{{assessment_grade | int}}_SocLev6{%endraw%}"
           SocLev7_name: "{%raw%}{{assessment_grade | int}}_SocLev7{%endraw%}"
+  
+  ## StudentAssessmentEducationOrganizationAssociations
+  # Stack reported school ID (RSchoolID 2025 and later, SchoolID before 2025)
+  # and tested school ID (TSchoolID 2025 and later)
+
+  student_assessment_edu_org_associations__administration:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          educationOrganizationId: "{%raw%}{{ TSchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
+
+  student_assessment_edu_org_associations__attribution:
+    source: $transformations.scready_student_assessment_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          # TSchoolID added in 2025
+          educationOrganizationId: "{%raw%}{{ RSchoolID or SchoolID }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Attribution"
+
+  student_assessment_edu_org_associations_stacked:
+    source: $transformations.student_assessment_edu_org_associations__administration
+    operations:
+      - operation: union
+        sources:
+          - $transformations.student_assessment_edu_org_associations__attribution
+      - operation: filter_rows
+        query: "educationOrganizationId.notnull() and (educationOrganizationId != '') and (educationOrganizationId != 'None')"
+        behavior: include
+
 
   objective_assessments:
     source: $sources.objectiveAssessments
@@ -463,6 +533,9 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
           
   assessments:
@@ -471,7 +544,21 @@ transformations:
       - operation: modify_columns
         columns:
           assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
-      
+  
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
 
 
 destinations:
@@ -492,17 +579,22 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+    source: $transformations.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   accommodationDescriptors:
-    source: $sources.accommodationDescriptors
+    source: $transformations.accommodationDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   studentAssessments:
     source: $transformations.scready_student_assessment_stacked
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_edu_org_associations_stacked
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
     linearize: True
