@@ -1,3 +1,34 @@
+{%- set possible_scores = [
+    ["Composite Score", composite_score, "Integer"],
+    ["Composite National Norm Percentile", composite_national_norm_percentile, "Integer"],
+    ["Composite Score Lexile", dibels_composite_score_lexile, "Level"],
+    ["Benchmark Period", benchmark_period, "Level"],
+    ["Enrolled Grade Level", enrollment_grade, "Level"]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% set possible_pls = [
+
+    ["Composite Level", composite_level],
+    ["Composite Semester Growth", composite_semester_growth],
+    ["Composite Year Growth", composite_year_growth],
+    ["Risk Indicator", risk_indicator_level]
+
+] %}
+
+{%- set pls = [] -%}
+{%- for pl in possible_pls -%}
+  {%- if pl[1] is not none and pl[1] | length -%}
+    {%- set _ = pls.append(pl) -%}
+  {%- endif -%}
+{%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{student_assessment_id}}",
   "assessmentReference": {
@@ -12,22 +43,6 @@
   },
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
-
-    {% set possible_pls = [
-
-      ["Composite Level", composite_level],
-      ["Composite Semester Growth", composite_semester_growth],
-      ["Composite Year Growth", composite_year_growth],
-      ["Risk Indicator", risk_indicator_level]
-
-    ] %}
-
-    {%- set pls = [] -%}
-    {%- for pl in possible_pls -%}
-      {%- if pl[1] is not none and pl[1] | length -%}
-        {%- set _ = pls.append(pl) -%}
-      {%- endif -%}
-    {%- endfor -%}
   
     {%- for pl in pls -%}
     {
@@ -39,30 +54,15 @@
     {%- else %}{% endif %}{%- endfor -%}
   ],
   "scoreResults": [
+
+    {%- for score in scores -%}
     {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{composite_score}}"
-    },
-    {% if composite_national_norm_percentile != '' %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite National Norm Percentile",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{composite_national_norm_percentile}}"
-    },
-    {% endif %}
-    {% if dibels_composite_score_lexile != '' %}
-    {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Composite Score Lexile",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{dibels_composite_score_lexile}}"
-    },
-    {% endif %} 
-    {
-      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#Benchmark Period",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{benchmark_period}}"
+      "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[1]}}"
     }
+    {%- if not loop.last -%},
+    {%- else %}{% endif %}{%- endfor -%}
   ],
   "studentObjectiveAssessments": [
     {% set possible_obj_assess = [['Letter-Names-LNF', ['Assessment Measure Level', letter_names_lnf_level], ['Assessment Measure Score', letter_names_lnf_score], ['Assessment Measure National Norm Percentile', letter_names_lnf_national_norm_percentile], ['Assessment Measure Semester Growth', letter_names_lnf_semester_growth], ['Assessment Measure Year Growth', letter_names_lnf_year_growth]],
@@ -119,21 +119,21 @@
         {% if obj[2] is defined and obj[2][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[2][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[2][1]}}"
         }
           {% if obj[3] is defined and obj[3][1] != '' %}
           ,
           {
             "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
-            "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+            "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
             "result": "{{obj[3][1]}}"
           }
           {% endif %}
         {% elif obj[3] is defined and obj[3][1] != '' %}
         {
           "assessmentReportingMethodDescriptor": "uri://dibels.uoregon.edu/assessment/dibels/AssessmentReportingMethodDescriptor#{{obj[3][0]}}",
-          "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
           "result": "{{obj[3][1]}}"
         }
         {% endif %}
@@ -141,5 +141,5 @@
     }{%- if not loop.last -%},
     {%- else %}{% endif %} {%- endfor -%}
   ],
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
 }

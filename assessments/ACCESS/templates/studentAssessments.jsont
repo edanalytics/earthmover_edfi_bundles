@@ -1,3 +1,146 @@
+{% set possible_accommodations = [
+  [AccommodationMC, 'MC'],
+  [AccommodationRA, 'RA'],
+  [AccommodationES, 'ES'],
+  [AccommodationLP, 'LP'],
+  [AccommodationBR, 'BR'],
+  [AccommodationSD, 'SD'],
+  [AccommodationIR, 'IR'],
+  [AccommodationRP, 'RP'],
+  [AccommodationHR, 'HR'],
+  [AccommodationRR, 'RR'],
+  [AccommodationHI, 'HI'],
+  [AccommodationRI, 'RI'],
+  [AccommodationSR, 'SR'],
+  [AccommodationWD, 'WD'],
+  [AccommodationRD, 'RD'],
+  [AccommodationNS, 'NS'],
+  [AccommodationET, 'ET'],
+  [AccommodationEM, 'EM']
+] %}
+{% set accommodations = [] %}
+{% for acc in possible_accommodations %}
+  {% if acc[0] == 'Y' and acc[0] is not none and acc[0] | length and acc[0]|trim != 'NA' %}{% set _ = accommodations.append(acc) %}{% endif %}
+{% endfor %}
+
+{% if alternate_assessment == 'Y' %}
+  {# These accommodation fields are specific to the alternate assessment#}
+  {% set possible_alternate_accommodations = [
+    [TestEnvironmentFamiliarenvironmenttostudent, 'Familiar environment to student'],
+    [TestEnvironmentQuietEnvironment, 'Quiet Environment'],
+    [TestEnvironmentMinimaldistractions, 'Minimal distractions'],
+    [TestEnvironmentOnetooneinteractionwithtestadministrator, 'One-to-one interaction with test administrator'],
+    [AccommodationsTestdirections, 'Test directions'],
+    [AccommodationsPresentationFormat, 'Presentation Format'],
+    [AccommodationsResponseFormat, 'Response Format'],
+    [AccommodationsSettingformatenvironment, 'Setting format/environment'],
+    [AccommodationsTimingscheduling, 'Timing/scheduling'],
+    [AccommodationsOther, 'Other']
+  ] %}
+  {% for acc in possible_alternate_accommodations %}
+    {% if acc[0] is not none and acc[0] | length and acc[0]|trim != 'NA' %}
+      {% set _ = accommodations.append(acc) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{%- set possible_scores = [
+    ['Proficiency Level', 'Decimal', ProficiencyLevelOverall],
+    ['Scale Score', 'Integer', ScaleScoreOverall],
+    ['Confidence Low Score', 'Integer', ConfidenceLowScoreOverall],
+    ['Confidence High Score', 'Integer', ConfidenceHighScoreOverall],
+    ['Tier', 'Level', Tier]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[2] is not none and score[2] | length and score[2]|trim != 'NA' -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% set possible_objective_assessments = [
+  {
+    "identificationCode": "Listening",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelListening},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreListening},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreListening},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreListening},
+      {"descriptor": "Cluster", "datatype": "Integer", "value": ClusterListening},
+      {"descriptor": "Tier", "datatype": "Level", "value": TierListening},
+      {"descriptor": "Domain Termination", "datatype": "Level", "value": DomainTerminationListening},
+      {"descriptor": "Status", "datatype": "Level", "value": StatusListening}
+    ]
+  },
+  {
+    "identificationCode": "Reading",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelReading},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreReading},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreReading},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreReading},
+      {"descriptor": "Cluster", "datatype": "Integer", "value": ClusterReading},
+      {"descriptor": "Tier", "datatype": "Level", "value": TierReading},
+      {"descriptor": "Domain Termination", "datatype": "Level", "value": DomainTerminationReading},
+      {"descriptor": "Status", "datatype": "Level", "value": StatusReading}
+    ]
+  },
+  {
+    "identificationCode": "Speaking",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelSpeaking},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreSpeaking},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreSpeaking},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreSpeaking},
+      {"descriptor": "Cluster", "datatype": "Integer", "value": ClusterSpeaking},
+      {"descriptor": "Tier", "datatype": "Level", "value": TierSpeaking},
+      {"descriptor": "Domain Termination", "datatype": "Level", "value": DomainTerminationSpeaking},
+      {"descriptor": "Status", "datatype": "Level", "value": StatusSpeaking}
+    ]
+  },
+  {
+    "identificationCode": "Writing",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelWriting},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreWriting},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreWriting},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreWriting},
+      {"descriptor": "Cluster", "datatype": "Integer", "value": ClusterWriting},
+      {"descriptor": "Tier", "datatype": "Level", "value": TierWriting},
+      {"descriptor": "Domain Termination", "datatype": "Level", "value": DomainTerminationWriting},
+      {"descriptor": "Status", "datatype": "Level", "value": StatusWriting}
+    ]
+  },
+  {
+    "identificationCode": "Comprehension",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelComprehension},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreComprehension},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreComprehension},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreComprehension}
+    ]
+  },
+  {
+    "identificationCode": "Literacy",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelLiteracy},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreLiteracy},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreLiteracy},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreLiteracy}
+    ]
+  },
+  {
+    "identificationCode": "Oral",
+    "results": [
+      {"descriptor": "Proficiency Level", "datatype": "Level", "value": ProficiencyLevelOral},
+      {"descriptor": "Scale Score", "datatype": "Integer", "value": ScaleScoreOral},
+      {"descriptor": "Confidence Low Score", "datatype": "Integer", "value": ConfidenceLowScoreOral},
+      {"descriptor": "Confidence High Score", "datatype": "Integer", "value": ConfidenceHighScoreOral}
+    ]
+  }
+] %}
+
 {
   "studentAssessmentIdentifier": "{{UniqueRecordID}}",
   "assessmentReference": {
@@ -10,287 +153,132 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-
-
-  {% set accommodations = [] %}
-
+  {% if accommodations | length %}
   "accommodations": [
-    {% if AccommodationMC == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#MC")%}{% endif %}
-    {% if AccommodationRA == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RA")%}{% endif %}
-    {% if AccommodationES == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#ES")%}{% endif %}
-    {% if AccommodationLP == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#LP")%}{% endif %}
-    {% if AccommodationBR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#BR")%}{% endif %}
-    {% if AccommodationSD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#SD")%}{% endif %}
-    {% if AccommodationIR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#IR")%}{% endif %}
-    {% if AccommodationRP == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RP")%}{% endif %}
-    {% if AccommodationHR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#HR")%}{% endif %}
-    {% if AccommodationRR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RR")%}{% endif %}
-    {% if AccommodationHI == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#HI")%}{% endif %}
-    {% if AccommodationRI == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RI")%}{% endif %}
-    {% if AccommodationSR == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#SR")%}{% endif %}
-    {% if AccommodationWD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#WD")%}{% endif %}
-    {% if AccommodationRD == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#RD")%}{% endif %}
-    {% if AccommodationNS == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#NS")%}{% endif %}
-    {% if AccommodationET == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#ET")%}{% endif %}
-    {% if AccommodationEM == 'Y' %}{% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#EM")%}{% endif %}
-    {% if alternate_assessment == 'Y' %}
-      {# These accommodation fields are specific to the alternate assessment#}
-      {% if TestEnvironmentFamiliarenvironmenttostudent is not none and TestEnvironmentFamiliarenvironmenttostudent | length %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Familiar environment to student")%}{% endif %}
-      {% if TestEnvironmentQuietEnvironment is not none and TestEnvironmentQuietEnvironment | length %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Quiet Environment")%}{% endif %}
-      {% if TestEnvironmentMinimaldistractions is not none and TestEnvironmentMinimaldistractions | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Minimal distractions")%}{% endif %}
-      {% if TestEnvironmentOnetooneinteractionwithtestadministrator is not none and TestEnvironmentOnetooneinteractionwithtestadministrator | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#One-to-one interaction with test administrator")%}{% endif %}
-      {% if AccommodationsTestdirections is not none and AccommodationsTestdirections | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Test directions")%}{% endif %}
-      {% if AccommodationsPresentationFormat is not none and zAccommodationsPresentationFormatzz | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Presentation Format")%}{% endif %}
-      {% if AccommodationsResponseFormat is not none and AccommodationsResponseFormat | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Response Format")%}{% endif %}
-      {% if AccommodationsSettingformatenvironment is not none and AccommodationsSettingformatenvironment | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Setting format/environment")%}{% endif %}
-      {% if AccommodationsTimingscheduling is not none and AccommodationsTimingscheduling | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Timing/scheduling")%}{% endif %}
-      {% if AccommodationsOther is not none and AccommodationsOther | length  %}
-        {% set _ = accommodations.append("{{namespace}}/AccommodationDescriptor#Other")%}{% endif %}
-    {% endif %}
-    {% if accommodations | length %}
       {% for accommodation in accommodations %}
       {
-        "accommodationDescriptor": "{{accommodation}}"
+        "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{accommodation[1]}}"
       } {% if not loop.last %},{% endif %}
       {% endfor %}
-    {% endif %}
-
   ],
+  {% endif %}
   
-  {% if TestCompletionDate is not none and TestCompletionDate | length %}
+  {% if TestCompletionDate is not none and TestCompletionDate | length and TestCompletionDate|trim != 'NA' %}
     "administrationDate": "{{TestCompletionDate}}",
   {% else %}
     "administrationDate": "{{defaultTestStartDateTime}}",
   {% endif %}
 
   {% if alternate_assessment == 'N' %}
-    {% if ReportedMode is not none and ReportedMode | length %}
+    {% if ReportedMode is not none and ReportedMode | length and ReportedMode|trim != 'NA' %}
       "administrationEnvironmentDescriptor": "{{namespace}}/AdministrationEnvironmentDescriptor#{{ReportedMode}}",
     {% endif %}
   {% endif %}
 
-  {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length %}
+  {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length and DoNotScoreCodeListening|trim != 'NA' %}
     "reasonNotTestedDescriptor": "{{namespace}}/ReasonNotTestedDescriptor#{{DoNotScoreCodeListening}}",
-  {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length %}
+  {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length and DoNotScoreCodeReading|trim != 'NA' %}
     "reasonNotTestedDescriptor": "{{namespace}}/ReasonNotTestedDescriptor#{{DoNotScoreCodeReading}}",
-  {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length %}
+  {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length and DoNotScoreCodeSpeaking|trim != 'NA' %}
     "reasonNotTestedDescriptor": "{{namespace}}/ReasonNotTestedDescriptor#{{DoNotScoreCodeSpeaking}}",
-  {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length %}
+  {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length and DoNotScoreCodeWriting|trim != 'NA' %}
     "reasonNotTestedDescriptor": "{{namespace}}/ReasonNotTestedDescriptor#{{DoNotScoreCodeWriting}}",
   {% endif %}
 
-  "whenAssessedGradeLevelDescriptor": "{{grade_descriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
 
   "scoreResults": [
-  {% set scores = [] %}
-
-    {% if ProficiencyLevelOverall|float(none) is not none and ProficiencyLevelOverall | length %}
-      {% set _ = scores.append(['Proficiency Level', 'Decimal', ProficiencyLevelOverall]) %}
-    {% endif %}
-
-    {% if ScaleScoreOverall|int(none) is not none and ScaleScoreOverall | length %}
-      {% set _ = scores.append(['Scale Score', 'Integer', ScaleScoreOverall]) %}
-    {% endif %}
-
-    {% if ConfidenceLowScoreOverall|int(none) is not none and ConfidenceLowScoreOverall | length %}
-      {% set _ = scores.append(['Confidence Low Score', 'Integer', ConfidenceLowScoreOverall]) %}
-    {% endif %}
-
-    {% if ConfidenceHighScoreOverall|int(none) is not none and ConfidenceHighScoreOverall | length %}
-      {% set _ = scores.append(['Confidence High Score', 'Integer', ConfidenceHighScoreOverall]) %}
-    {% endif %}
-
-    {% if Tier is not none and Tier | length %}
-      {% set _ = scores.append(['Tier', 'Level', Tier]) %}
-    {% endif %}
-
+    {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length and DoNotScoreCodeListening|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Listening",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeListening}}"
+      }
+    {% elif DoNotScoreCodeReading is not none and DoNotScoreCodeReading | length and DoNotScoreCodeReading|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Reading",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeReading}}"
+      }
+    {% elif DoNotScoreCodeSpeaking is not none and DoNotScoreCodeSpeaking | length and DoNotScoreCodeSpeaking|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Speaking",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeSpeaking}}"
+      }
+    {% elif DoNotScoreCodeWriting is not none and DoNotScoreCodeWriting | length and DoNotScoreCodeWriting|trim != 'NA' %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Do Not Score Code Writing",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{DoNotScoreCodeWriting}}"
+      }
+    {% elif scores|length == 0 %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Overall Score",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "No Score"
+      }
+    {% else %}
     {% for score in scores %}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}",
       "result": "{{score[2]}}"
     } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+    {% endif %}
+  ]
 
-  "performanceLevels": [
-    {% if alternate_assessment == 'N' %}
+  {% if alternate_assessment == 'N' and PerformanceLevelOverall != '' and PerformanceLevelOverall is not none and PerformanceLevelOverall | length and PerformanceLevelOverall|trim != 'NA' %}
+  ,"performanceLevels": [
     {# Standard assessment has a numeric performance level #}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ PerformanceLevelOverall|float()|round(1, 'floor')|int }}",
         "performanceLevelMet": true
       }
-    {% else %}
+
+  ]
+  {% elif alternate_assessment == 'Y' and ProficiencyLevelOverall != '' and ProficiencyLevelOverall is not none and ProficiencyLevelOverall | length and ProficiencyLevelOverall|trim != 'NA' %}
+  ,"performanceLevels": [
     {# Alternate assessment has an alphanumeric performance (proficiency) level #}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ProficiencyLevelOverall}}",
         "performanceLevelMet": true
       }
+  ]
     {% endif %}
-    ],
 
-    "studentObjectiveAssessments": [
-      {% set all_obj_assess = [] %}
-      {% if alternate_assessment == 'N' %}
-        {# Scores specific to standard assessment #}
-          {% if ProficiencyLevelListening|float(none) is not none and ProficiencyLevelListening | length %}
-            {% set _ = all_obj_assess.append(['Listening', ProficiencyLevelListening, ScaleScoreListening, ConfidenceLowScoreListening, ConfidenceHighScoreListening, ClusterListening, TierListening, DomainTerminationListening, StatusListening, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
+    {% if DoNotScoreCodeListening is not none and DoNotScoreCodeListening | length and DoNotScoreCodeListening|trim != 'NA' %}
+    {% else %}
+    ,"studentObjectiveAssessments": [
+      {% for obj in possible_objective_assessments %}
+        {% set scores = [] %}
+        {% for res in obj.results %}
+          {% if res.value is not none and res.value|length and res.value|trim != 'NA' %}
+            {% set _ = scores.append(res) %}
           {% endif %}
-          {% if ProficiencyLevelReading|float(none) is not none and ProficiencyLevelReading | length %}
-            {% set _ = all_obj_assess.append(['Reading', ProficiencyLevelReading, ScaleScoreReading, ConfidenceLowScoreReading, ConfidenceHighScoreReading, ClusterReading, TierReading, DomainTerminationReading, StatusReading, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-          {% endif %}
-          {% if ProficiencyLevelSpeaking|float(none) is not none and ProficiencyLevelSpeaking | length %}
-            {% set _ = all_obj_assess.append(['Speaking', ProficiencyLevelSpeaking, ScaleScoreSpeaking, ConfidenceLowScoreSpeaking, ConfidenceHighScoreSpeaking, ClusterSpeaking, TierSpeaking, DomainTerminationSpeaking, StatusSpeaking, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-          {% endif %}
-          {% if ProficiencyLevelWriting|float(none) is not none and ProficiencyLevelWriting | length %}
-            {% set _ = all_obj_assess.append(['Writing', ProficiencyLevelWriting, ScaleScoreWriting, ConfidenceLowScoreWriting, ConfidenceHighScoreWriting, ClusterWriting, TierWriting, DomainTerminationWriting, StatusWriting, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-          {% endif %}
-
-        {% else %}
-        {# Scores specific to alternate assessment #}
-          {% if ProficiencyLevelListening != 'NA' and ProficiencyLevelListening | length %}
-            {% set _ = all_obj_assess.append(['Listening', ProficiencyLevelListening, ScaleScoreListening, ConfidenceLowScoreListening, ConfidenceHighScoreListening, ClusterListening, 'N/A', 'N/A', StatusListening, NumberofCorrectResponsesListening, CueANumberCorrectListening, CueAPercentCorrectListening, CueBNumberCorrectListening, CueBPercentCorrectListening, CueCNumberCorrectListening, CueCPercentCorrectListening]) %}
-          {% endif %}
-          {% if ProficiencyLevelReading != 'NA' and ProficiencyLevelReading | length %}
-            {% set _ = all_obj_assess.append(['Reading', ProficiencyLevelReading, ScaleScoreReading, ConfidenceLowScoreReading, ConfidenceHighScoreReading, ClusterReading, 'N/A', 'N/A', StatusReading, NumberofCorrectResponsesReading, CueANumberCorrectReading, CueAPercentCorrectReading, CueBNumberCorrectReading, CueBPercentCorrectReading, CueCNumberCorrectReading, CueCPercentCorrectReading]) %}
-          {% endif %}
-          {% if ProficiencyLevelSpeaking != 'NA' and ProficiencyLevelSpeaking | length %}
-            {% set _ = all_obj_assess.append(['Speaking', ProficiencyLevelSpeaking, ScaleScoreSpeaking, ConfidenceLowScoreSpeaking, ConfidenceHighScoreSpeaking, ClusterSpeaking, 'N/A', 'N/A', StatusSpeaking, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-          {% endif %}
-          {% if ProficiencyLevelWriting != 'NA' and ProficiencyLevelWriting | length %}
-            {% set _ = all_obj_assess.append(['Writing', ProficiencyLevelWriting, ScaleScoreWriting, ConfidenceLowScoreWriting, ConfidenceHighScoreWriting, ClusterWriting, 'N/A', 'N/A', StatusWriting, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-          {% endif %}
-        {% endif %}
-
-        {# Scores that are the same fields for both standard and alternate assessments #}
-        {% if ProficiencyLevelComprehension != 'NA' and ProficiencyLevelComprehension | length %}
-          {% set _ = all_obj_assess.append(['Comprehension', ProficiencyLevelComprehension, ScaleScoreComprehension, ConfidenceLowScoreComprehension, ConfidenceHighScoreComprehension, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-        {% endif %}
-        {% if ProficiencyLevelLiteracy != 'NA' and ProficiencyLevelLiteracy | length %}
-          {% set _ = all_obj_assess.append(['Literacy', ProficiencyLevelLiteracy, ScaleScoreLiteracy, ConfidenceLowScoreLiteracy, ConfidenceHighScoreLiteracy, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-        {% endif %}
-        {% if ProficiencyLevelOral != 'NA' and ProficiencyLevelOral | length %}
-          {% set _ = all_obj_assess.append(['Oral', ProficiencyLevelOral, ScaleScoreOral, ConfidenceLowScoreOral, ConfidenceHighScoreOral, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']) %}
-        {% endif %}
-
-        {% for obj_assess in all_obj_assess %}
-        {
-          "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{assessment_identifier}}",
-            "identificationCode": "{{ obj_assess[0] }}",
-            "namespace": "{{namespace}}"
-          },
-          "scoreResults": [
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency Level",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-              "result": "{{ obj_assess[1] }}"
-            },
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-              "result": "{{ obj_assess[2] }}"
-            },
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Confidence Low Score",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-              "result": "{{ obj_assess[3] }}"
-            },
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Confidence High Score",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-              "result": "{{ obj_assess[4] }}"
-            }
-            {% if obj_assess[5] != 'N/A' and obj_assess[5] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cluster",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-                "result": "{{ obj_assess[5] }}"
-              }
-            {% endif %}
-            {% if obj_assess[6] != 'N/A' and obj_assess[6] | length %}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Tier",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[6] }}"
-              }
-            {% endif %}
-            {% if obj_assess[7] != 'N/A'  and obj_assess[7] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Domain Termination",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[7] }}"
-              }
-            {% endif %}
-            {% if obj_assess[8] != 'N/A'  and obj_assess[8] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Status",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[8] }}"
-              }
-            {% endif %}
-            {% if obj_assess[9] != 'N/A'  and obj_assess[9] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Number of Correct Responses",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[9] }}"
-              }
-            {% endif %}
-            {% if obj_assess[10] != 'N/A'  and obj_assess[10] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue A Number Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[10] }}"
-              }
-            {% endif %}
-            {% if obj_assess[11] != 'N/A'  and obj_assess[11] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue A Percent Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[11] }}"
-              }
-            {% endif %}
-            {% if obj_assess[12] != 'N/A'  and obj_assess[12] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue B Number Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[12] }}"
-              }
-            {% endif %}
-            {% if obj_assess[13] != 'N/A'  and obj_assess[13] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue B Percent Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[13] }}"
-              }
-            {% endif %}
-            {% if obj_assess[14] != 'N/A'  and obj_assess[14] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue C Number Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[14] }}"
-              }
-            {% endif %}
-            {% if obj_assess[15] != 'N/A'  and obj_assess[15] | length%}
-              ,{
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Cue C Percent Correct",
-                "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-                "result": "{{ obj_assess[15] }}"
-              }
-            {% endif %}
-          ]
-        } {% if not loop.last %},{% endif %}
         {% endfor %}
+        {% if scores | length %}
+          {
+            "objectiveAssessmentReference": {
+              "assessmentIdentifier": "{{assessment_identifier}}",
+              "identificationCode": "{{ obj.identificationCode }}",
+              "namespace": "{{namespace}}"
+            },
+            "scoreResults": [
+              {% for score in scores %}
+                  {
+                    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.descriptor}}",
+                    "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score.datatype}}",
+                    "result": "{{score.value}}"
+                  } {% if not loop.last %},{% endif %}
+              {% endfor %}
+            ]
+          }{% if not loop.last %},{% endif %}
+        {% endif %}
+      {% endfor %}
     ]
+    {% endif %}
 }

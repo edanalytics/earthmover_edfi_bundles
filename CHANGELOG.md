@@ -5,6 +5,71 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v.0.4.0
+## New features
+- Cambridge bundle
+
+## Under the hood
+- Restructured the ACCESS, ACT, ASVAB, CIRCLE, DIBELS 8, DIBELS Next, SC EOCEP, IB, KRA, MAP Growth, PSAT/SAT, SC Alt, SCREADY, STAMP, STAR, TX KEA, WIN, and i-Ready bundles for Runway needs.
+    - Adds `_metadata.yaml` files used by Runway app.
+    - Updates the seed structure to work with descriptor mapping feature in Runway.
+        - NOTE: This is considered a breaking change for any implementations that use project composition to override descriptor values. 
+    - Other standardizations.
+- Updated the student ID bundle to:
+    1. Compare the edfi student ID types to the `studentIdentificationSystemDescriptor` instead of the `assigningOrganizationIdentificationCode` when `EDFI_ROSTER_TYPE` = 'File'.
+    2. Remove the error when no matches reach the 50% threshold. Instead, all records will be moved to the student no match file.
+- Modified the template bundle to match up-to-date best-practices.
+
+## Fixes
+- Modifies the student ID package to handle when there is only 1 roster ID type _and_ only 1 possible ID type from the assessment source.
+
+# earthmover_edfi_bundles v.0.3.2
+## New features
+- STAMP Bundle
+- myIGDIs Bundle
+- PALS Bundle
+- KRA Bundle
+
+## Under the hood
+- Rename studentAssessments.jsont file for STAAR Summative
+- Addition of ACT Readme file and sample file
+
+## Fixes
+- Fix ACCESS gradeLevelDescriptors namespace
+- Update WIN objectiveAssessment possible performance levels
+- Modified IB bundle to match bundle best-practices
+- Handle empty `edfi_student_id_types` array or spaces in `edfi_student_id` in student ID package
+
+# earthmover_edfi_bundles v0.3.1
+## Fixes
+- Modified ACCESS / Alt-ACCESS bundle to match bundle best-practices
+- Removed deprecated performance level from objective assessment template in ACT bundle
+
+## Under the hood
+- Updated the SCREADY bundle for 2025 changes
+- Updated the SC-Alt bundle for 2025 changes
+- Updated the SC EOCEP bundle for 2025 changes
+- Changed the student id package sort for highest match to include `source_column_name` and `edfi_column_name` columns to ensure a consistent winner
+
+
+# earthmover_edfi_bundles v0.3.0
+## New features
+- i-Ready Bundle
+- ASVAB Bundle
+- WIN Bundle
+- SC EOCEP Bundle
+- ACT (file-based) Bundle
+- ACT (Ed-Fi) Bundle
+- STAAR Summative 2025 compatibility updates
+
+## Fixes
+- Updated data model for PSAT/SAT bundle to follow governance best-practices
+- Updated data model for MAP Growth bundle to follow governance best-practices
+- Updated data model for STAR bundle to follow governance best-practices
+- Change MAP Fluency testing language to optional
+- Switch assessed grade in SCREADY
+- Remove null subjects in SC Alt
+
 # earthmover_edfi_bundles v0.2.2
 ## New features
 - South Carolina Alternate Assessment Bundle

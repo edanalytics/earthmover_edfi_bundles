@@ -1,0 +1,147 @@
+ {% if OverallScore is not none and OverallScore | length and studentUniqueId is not none and studentUniqueId | length %}
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "scoreResults": [
+    {% if OverallScore is not none and OverallScore | length %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+      "result": "{{OverallScore}}"
+    }
+    {% endif %}
+  ],
+  "performanceLevels": [
+    {% set perf_levels = [] %}
+
+    {% if PerformanceLevelDescriptor is not none and PerformanceLevelDescriptor | length %}
+      {% set _ = perf_levels.append([PerformanceLevelDescriptor, 'Proficiency level']) %}
+    {% endif %}
+
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "studentObjectiveAssessments": [
+
+   {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "SFScore",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ SFScore }}"
+      }
+    ]
+     {% if PerformanceLevel_SFScore is not none and PerformanceLevel_SFScore | length %}
+    ,
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_SFScore}}",
+        "performanceLevelMet": true
+      }
+      
+    ] 
+    {% endif %}
+  },
+    {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "LLScore",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ LLScore }}"
+      }
+    ]
+      {% if PerformanceLevel_LLScore is not none and PerformanceLevel_LLScore | length %}
+      ,
+    "performanceLevels": [
+    
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_LLScore}}",
+        "performanceLevelMet": true
+      }
+      
+    ] 
+    {% endif %}
+  },
+    {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "MAScore",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ MAScore }}"
+      }
+    ]
+     {% if PerformanceLevel_MAScore is not none and PerformanceLevel_MAScore | length %}
+     ,
+    "performanceLevels": [
+     
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_MAScore}}",
+        "performanceLevelMet": true
+      }
+      
+    ] 
+    {% endif %}
+  },
+    {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "PDScore",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "result": "{{ PDScore }}"
+      }
+    ]
+     {% if PerformanceLevel_PDScore is not none and PerformanceLevel_PDScore | length %}
+     
+    ,
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{PerformanceLevel_PDScore}}",
+        "performanceLevelMet": true
+      }
+      
+    ] 
+    {% endif %}
+  }  ]
+}
+{% endif %}

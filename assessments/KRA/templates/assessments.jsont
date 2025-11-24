@@ -1,0 +1,20 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",  
+  "assessmentFamily": "{{assessmentIdentifier}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethodDescriptor}}",
+      "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer", 
+      "minimumScore":"{{ minimumScore }}",
+      "maximumScore":"{{ maximumScore }}"
+    }
+  ],
+  "performanceLevels": [
+   {{ performance_json }}
+  ]
+}

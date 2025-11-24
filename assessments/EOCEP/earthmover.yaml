@@ -1,0 +1,277 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  macros: >
+      {% macro clean_administration_date(value) -%}
+      {%- if value | length == 6 -%}{{ value ~ '01' }}
+      {%- elif value[-2:] == '00' -%}{{ value[:6] ~ '01' }}
+      {%- else -%}{{ value }}
+      {%- endif -%}
+      {%- endmacro %}
+  parameter_defaults:
+    source_encoding: latin-1
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    INPUT_FILE: ''
+    API_YEAR: ''
+    INPUT_FILETYPE: csv
+    POSSIBLE_STUDENT_ID_COLUMNS: StateID
+
+definitions:
+  - &scd2-year-fill-nas
+    operation: modify_columns
+    columns:
+      # set min and max defaults if null in seed
+      start_year: "{%raw%}{{start_year or 2024}}{%endraw%}"
+      end_year: "{%raw%}{{end_year or 2100}}{%endraw%}"
+  - &scd2-flag-current-rows
+    operation: add_columns
+      # add "boolean" column to filter down to matching rows in seed
+    columns:
+      current: "{%raw%}{% if ${API_YEAR} >= (start_year | int) and ${API_YEAR} <= (end_year | int) %}true{% endif %}{%endraw%}"
+  - &scd2-filter-to-current-rows
+    operation: filter_rows
+    query: "current == 'true'"
+    behavior: include
+    # string comparison works; trying to cast to int with Series.astype
+    # causes issues with Dask meta
+    # query: "'${API_YEAR}' >= start_year and '${API_YEAR}' <= end_year"
+
+sources:
+
+  accommodation_descriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+
+  assessment_reporting_method_descriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+
+  performance_level_descriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+  objective_assessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+
+  # academic_subject_descriptors:
+  #   file: ./seeds/academicSubjectDescriptors.csv
+  #   header_rows: 1
+
+  grade_level_descriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    optional_fields:
+    - AlgLev1
+    - AlgLev2
+    - AlgLev3
+    - BioLev1
+    - BioLev2
+    - BioLev3
+    - BioLev4
+    - BioLev5
+    - BioLev6
+    - Eng1Lev1
+    - Eng1Lev2
+    - Eng1Lev3
+    - Eng2Lev1
+    - Eng2Lev2
+    - Eng2Lev3
+    - Level
+    - USHCLev1
+    - USHCLev2
+    - USHCLev3
+    - USHCLev4
+    - USHCLev5
+
+#
+
+transformations:
+
+  input: 
+    source: $sources.input
+    operations: []
+
+  eocep_student_assessments:
+    source: $transformations.input
+    operations:
+    - operation: duplicate_columns
+      columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+          # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
+          RSchoolID: educationOrganizationId
+    - operation: modify_columns
+      columns: 
+          '*': "{%raw%}{{ value | trim }}{%endraw%}"
+    - operation: map_values
+      columns: 
+      - AlgLev1
+      - AlgLev2
+      - AlgLev3
+      - BioLev1
+      - BioLev2
+      - BioLev3
+      - BioLev4
+      - BioLev5
+      - BioLev6
+      - Eng2Lev1
+      - Eng2Lev2
+      - Eng2Lev3
+      - USHCLev1
+      - USHCLev2
+      - USHCLev3
+      - USHCLev4
+      - USHCLev5
+      map_file: ./seeds/perf_level_xwalk.csv
+    - operation: add_columns
+      columns:
+        namespace: "uri://datarecognitioncorp.com/Assessment"
+        school_year: "${API_YEAR}"
+        assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
+        # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
+        educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
+    # Some dates are missing day-of-year. Force these to the first of the month.
+    - operation: modify_columns
+      columns:
+        TestDate: "{%raw%}{{ clean_administration_date(TestDate) }}{%endraw%}"
+    - operation: date_format
+      column: TestDate
+      from_format: "%Y%m%d"
+      to_format: "%Y-%m-%d"
+      # Empty administration dates are rare but must be removed.
+    - operation: filter_rows
+      query: TestDate.notnull() & (TestDate != '')
+      behavior: include
+    - operation: join
+      sources:
+        - $sources.grade_level_descriptors
+      join_type: inner
+      left_key: Grade
+      right_key: grade
+
+  grade_level_descriptors:
+    source: $sources.grade_level_descriptors
+    operations:
+      - operation: filter_rows
+        query: gradeLevelDescriptor.notnull() & (gradeLevelDescriptor != '')
+        behavior: include
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentFamily
+        create_columns:
+          grade_json: agg(grade_json)
+      # get rid of trailing comma
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  objective_assessments:
+    source: $sources.objective_assessments
+    operations: 
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+  
+  assessment_reporting_method_descriptors:
+    source: $sources.assessment_reporting_method_descriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+
+  accommodation_descriptors:
+    source: $sources.accommodation_descriptors
+    operations:
+      - *scd2-year-fill-nas
+      - *scd2-flag-current-rows
+      - *scd2-filter-to-current-rows
+       
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentFamily
+        right_key: assessmentFamily
+      - operation: modify_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{value}}_${API_YEAR}{%endraw%}"
+      - operation: add_columns
+        columns:
+          api_year: "${API_YEAR}"
+
+
+destinations:
+
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  accommodationDescriptors:
+    source: $transformations.accommodation_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  assessmentReportingMethodDescriptors:
+    source: $transformations.assessment_reporting_method_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  performanceLevelDescriptors:
+    source: $sources.performance_level_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessments:
+    source: $transformations.eocep_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.eocep_student_assessments
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
