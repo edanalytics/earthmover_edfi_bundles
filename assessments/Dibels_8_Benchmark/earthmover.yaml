@@ -77,7 +77,7 @@ transformations:
     operations:
       - operation: distinct_rows
         columns:
-          - gradeLevelDescriptor
+          - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
