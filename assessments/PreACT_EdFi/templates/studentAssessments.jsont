@@ -1,0 +1,131 @@
+{
+    "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessment_identifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{school_year}}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{studentUniqueId}}"
+    },
+    "administrationDate": "{{administration_date}}",
+    "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+    
+    {% set pls_to_keep = ['uri://act.org/AssessmentReportingMethodDescriptor#Composite Score'] %}
+    "performanceLevels": [
+      {% for item in fromjson(v_performance_levels | default('[]')) %}
+        {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+            "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}}",
+            "performanceLevelMet": true
+          }
+        {% endif %}
+      {% endfor %}
+    ],
+
+    {% set subscores_to_remove_from_scores = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM State Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super STEM Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Standard Error of Measurement',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA US Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA State Rank',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super ELA Score',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Standard Error of Measurement'
+                                           ] %}
+    "scoreResults": [
+      {% for item in fromjson(v_score_results | default('[]')) %}
+        {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
+         {
+            "assessmentReportingMethodDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('Composite ', '').replace('Super Score', 'Superscore')}}",
+            "resultDatatypeTypeDescriptor": "{{item.resultDatatypeTypeDescriptor.replace('uri://ed-fi.org',descriptor_namespace)}}",
+            "result": "{{item.result}}"
+         }
+          {% if not loop.last %},{% endif %}
+        {% endif %}
+      {% endfor %}
+    ],
+
+    "studentObjectiveAssessments": [
+      {% set topline_obj_assess = [['ACT_ELA', 
+                                   {
+                                    'Score':ACT_ELA_scale_score,
+                                    'Standard Error of Measurement':ACT_ELA_sem,
+                                    'US Rank':ACT_ELA_us_rank,
+                                    'State Rank':ACT_ELA_state_rank,
+                                    'Superscore':ACT_ELA_super_score,
+                                   },
+                                   'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score'],
+                                   ['ACT_STEM',
+                                   {
+                                    'Score':ACT_STEM_scale_score,
+                                    'Standard Error of Measurement':ACT_STEM_sem,
+                                    'US Rank':ACT_STEM_us_rank,
+                                    'State Rank':ACT_STEM_state_rank,
+                                    'Superscore':ACT_STEM_super_score,
+                                   },
+                                   'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score']
+                               ] %}
+
+  
+      {%- for obj in topline_obj_assess -%}
+      {% set all_score_obj = [] %}
+        {% for score_name, score_result in obj[1].items() %}
+          {% if score_result != '' %}
+            {% set _= all_score_obj.append([score_name, score_result]) %}
+          {% endif %}
+        {% endfor %}
+  
+      {% if all_score_obj|length > 0 %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessment_identifier}}",
+          "identificationCode": "{{obj[0]}}",
+          "namespace": "{{namespace}}"
+        }
+        ,
+        "performanceLevels": [
+          {%- for level in fromjson(v_performance_levels | default('[]')) -%}
+            {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
+              {
+                "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+                "performanceLevelDescriptor": "{{ level.performanceLevelDescriptor }}",
+                "performanceLevelMet": true
+              }
+            {%- endif -%}
+          {%- endfor -%}
+        ],
+        "scoreResults": [
+         {%- for score in all_score_obj -%}
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{score[0]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+            "result": "{{score[1]}}"
+          }
+          {%- if not loop.last -%},
+          {%- else %}{% endif %}{%- endfor -%}
+        ]
+      }{%- if not loop.last -%},
+      {%- else %}{% endif %}
+      {% endif %}
+      {%- endfor -%}
+      {%- if v_student_objective_assessments -%}
+      ,{% for item in fromjson(v_student_objective_assessments | default('[]')) %}
+        {
+         "objectiveAssessmentReference": {
+           "assessmentIdentifier": "{{ item.objectiveAssessmentReference.assessmentIdentifier.replace('THE-', '').replace('-', '_') }}",
+           "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
+           "namespace": "{{ namespace }}"
+         },
+         "performanceLevels": {{ item.performanceLevels }},
+         "scoreResults": {{ item.scoreResults }}
+        }{% if not loop.last %},{% endif %}
+       {% endfor %}
+      {%- endif -%}
+    ]
+  }
+
