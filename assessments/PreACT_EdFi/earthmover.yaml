@@ -21,35 +21,35 @@ config:
 sources:
 # QUESTION - should my source here for assessments, pls, etc. all be from what ACT has, too, instead of seeds?
   input:
-    connection: "${ACT_SNOWFLAKE_CONNECTION}"
-    query: >
-      with act_stu_assess as (
-          select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-          where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-          and api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      ),
-      act_stu_ids as (
-          select 
-            stg_ef3__students.student_unique_id,
-            bld_ef3__wide_ids_student.registration_local_student_id,
-            bld_ef3__wide_ids_student.registration_state_student_id,
-            bld_ef3__wide_ids_student.registration_person_id
-          from ${ACT_SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
-          join ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
-            on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
-            and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
-            and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
-          where bld_ef3__wide_ids_student.tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-          and bld_ef3__wide_ids_student.api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      )
-      select 
-        act_stu_assess.*,
-        act_stu_ids.registration_local_student_id,
-        act_stu_ids.registration_state_student_id,
-        act_stu_ids.registration_person_id
-      from act_stu_assess
-      join act_stu_ids
-        on act_stu_assess.student_unique_id = act_stu_ids.student_unique_id
+    connection: "${PREACT_SNOWFLAKE_CONNECTION}"
+    query: #> 
+      #with act_stu_assess as (
+      #    select * from ${PREACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+      #    where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+      #    and api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      #),
+      #act_stu_ids as (
+      #    select 
+      #      stg_ef3__students.student_unique_id,
+      #      bld_ef3__wide_ids_student.registration_local_student_id,
+      #      bld_ef3__wide_ids_student.registration_state_student_id,
+      #      bld_ef3__wide_ids_student.registration_person_id
+      #    from ${PREACT_SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
+      #    join ${PREACT_SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
+      #      on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
+      #      and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
+      #      and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
+      #    where bld_ef3__wide_ids_student.tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+      #    and bld_ef3__wide_ids_student.api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      #)
+      #select 
+      #  act_stu_assess.*,
+      #  act_stu_ids.registration_local_student_id,
+      #  act_stu_ids.registration_state_student_id,
+      #  act_stu_ids.registration_person_id
+      #from act_stu_assess
+      #join act_stu_ids
+      #  on act_stu_assess.student_unique_id = act_stu_ids.student_unique_id
 
   assessments:
     file: ./seeds/assessments.csv
@@ -124,11 +124,11 @@ transformations:
       # overwrite assess ID to match governance decision
       - operation: modify_columns
         columns:
-          assessment_identifier: 'ACT'
+          assessment_identifier: 'PRE-ACT'
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-          namespace: "uri://act.org/"
+          namespace: "uri://act.org/" 
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
