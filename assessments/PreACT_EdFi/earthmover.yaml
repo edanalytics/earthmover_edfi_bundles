@@ -1,4 +1,4 @@
-# See accompanying README.md for details about this file.
+# See accompanying README.md for details about this file. This is a copy of the ACT file but will be used for PREACT
 version: 2
 
 config:
@@ -18,14 +18,14 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 
-sources:
+sources: # commenting out the query below that was custom for ACT, will not be using it for PREACT at this point but will retain it
 # QUESTION - should my source here for assessments, pls, etc. all be from what ACT has, too, instead of seeds?
   input:
-    connection: "${PREACT_SNOWFLAKE_CONNECTION}"
+    connection: "${ACT_SNOWFLAKE_CONNECTION}"
     query: #> 
       #with act_stu_assess as (
-      #    select * from ${PREACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-      #    where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+      #    select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+      #    where tenant_code = '${PREACT_SNOWFLAKE_TENANT_CODE}'
       #    and api_year = ${ACT_SNOWFLAKE_API_YEAR}
       #),
       #act_stu_ids as (
@@ -72,14 +72,7 @@ sources:
 
 # TODO can this be imported from a file at compile time?
 {% set unpackable_obj_assess = {
-  'ACT_ELA': {
-    'scale_score': 'ELA Score',
-    'us_rank': 'ELA US Rank',
-    'state_rank': 'ELA State Rank',
-    'sem': 'ELA Standard Error of Measurement',
-    'super_score': 'Super ELA Score',
-    },
-  'ACT_STEM': {
+  'PREACT_STEM': {
     'scale_score': 'STEM Score',
     'us_rank': 'STEM US Rank',
     'state_rank': 'STEM State Rank',
