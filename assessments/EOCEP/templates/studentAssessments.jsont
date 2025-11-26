@@ -220,14 +220,23 @@
   {%- endif %}
 
   {%- if Subject == 'B' -%}
-    {%- set possible_obj_assess = [
-        ['H.B.1 Science and Engineering Practices', BioLev1],
-        ['H.B.2 Cells as a System', BioLev2],
-        ['H.B.3 Energy Transfer', BioLev3],
-        ['H.B.4 Heredity-Inheritance and Variation of Traits', BioLev4],
-        ['H.B.5 Biological Evolution and the Diversity of Life', BioLev5],
-        ['H.B.6 Ecosystem Dynamics', BioLev6]
-    ] -%}
+    {%- if school_year | int < 2024 -%}
+      {%- set possible_obj_assess = [
+          ['H.B.1 Science and Engineering Practices', BioLev1],
+          ['H.B.2 Cells as a System', BioLev2],
+          ['H.B.3 Energy Transfer', BioLev3],
+          ['H.B.4 Heredity-Inheritance and Variation of Traits', BioLev4],
+          ['H.B.5 Biological Evolution and the Diversity of Life', BioLev5],
+          ['H.B.6 Ecosystem Dynamics', BioLev6]
+      ] -%}
+    {%- elif school_year | int >= 2024 -%}
+      {%- set possible_obj_assess = [
+        ['From Molecules to Organisms: Structures and Processes', BioLev1],
+        ['Ecosystems: Interactions Energy and Dynamics', BioLev2],
+        ['Heredity: Inheritance and Variation of Traits', BioLev3],
+        ['Biological Evolution: Unity and Diversity', BioLev4]
+      ] -%}
+    {%- endif -%}
   {%- endif %}
 
   {%- if Subject == 'H' -%}
