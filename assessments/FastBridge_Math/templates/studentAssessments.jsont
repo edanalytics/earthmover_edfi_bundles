@@ -292,8 +292,17 @@
           "identificationCode": "{{obj[0]}}",
           "namespace": "{{namespace}}"
         },
+
+        {%- set good_scores = [] -%}
+        {%- for score in obj[1] -%}
+          {%- if score[0] != 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---', ''] -%}
+            {%- set _ = good_scores.append(score) -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if good_scores -%}
         "scoreResults": [
-          {%- for score in obj[1] if score[0] != 'Risk Level' -%}
+          {%- for score in good_scores -%}
             {
               "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
@@ -301,6 +310,17 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor -%}
         ]
+        
+        {%- else -%}
+        "scoreResults": [
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Score",
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+              "result": "No Score"
+            }
+        ]
+        {%- endif -%}
+        
         {%- set objective_levels = objective_levels_map[obj[0]] -%}
         {%- if objective_levels -%}
         , "performanceLevels": [

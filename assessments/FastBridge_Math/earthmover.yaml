@@ -258,13 +258,6 @@ transformations:
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
-  #Prepare Student Assessment Educationorganization Association
-  student_assessment_edorg:
-    source: $transformations.cleaned_input
-    operations:
-      - operation: filter_rows
-        query: school != ''
-        behavior: include
 
 destinations:
   assessments:
@@ -278,10 +271,6 @@ destinations:
   studentAssessments:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
-    extension: jsonl
-  studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.student_assessment_edorg
-    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
