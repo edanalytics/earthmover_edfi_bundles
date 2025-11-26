@@ -2,7 +2,7 @@
 version: 2
 
 config:
-  log_level: INFO # TODO CHANGE TO INFO AFTER TESTING
+  log_level: DEBUG # TODO CHANGE TO INFO AFTER TESTING
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -25,7 +25,7 @@ sources: # commenting out the query below that was custom for ACT, will not be u
     query: #> 
       #with act_stu_assess as (
       #    select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-      #    where tenant_code = '${PREACT_SNOWFLAKE_TENANT_CODE}'
+      #    where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
       #    and api_year = ${ACT_SNOWFLAKE_API_YEAR}
       #),
       #act_stu_ids as (
@@ -75,9 +75,8 @@ sources: # commenting out the query below that was custom for ACT, will not be u
   'PREACT_STEM': {
     'scale_score': 'STEM Score',
     'us_rank': 'STEM US Rank',
-    'state_rank': 'STEM State Rank',
-    'sem': 'STEM Standard Error of Measurement',
-    'super_score': 'Super STEM Score'
+    'score_range_high': 'STEM Score Range High',
+    'score_range_low': 'STEM Score Range Low',
   }
 } %}
 transformations:

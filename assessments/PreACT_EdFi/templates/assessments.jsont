@@ -1,71 +1,99 @@
 {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
     "assessmentTitle": "{{assessmentTitle}}",
-    "assessmentFamily": "ACT",
+    "assessmentFamily": "PreACT",
     "namespace": "{{namespace}}",
     "assessedGradeLevels": [{{grade_json}}],
     "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
     "academicSubjects": [{{subject_json}}],
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Score",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Composite Score",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#US Rank",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Composite Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Composite Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Composite US Rank",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#State Rank",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Predicted ACT Composite Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Predicted ACT Composite Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Predicted ACT STEM Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Predicted ACT STEM Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#STEM Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#STEM Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#STEM Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#STEM US Rank",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Standard Error of Measurement",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Sum of Scale Scores",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Superscore",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Sum of Scale Scores",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Sum of Superscores",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
-      }
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "12",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "0",
+        "minimumScore": "0",
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#0"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "1",
         "minimumScore": "1",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Unlikely to obtain an NCRC"
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#1"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "16",
-        "minimumScore": "13",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Bronze level NCRC"
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "2",
+        "minimumScore": "2",
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#2"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "21",
-        "minimumScore": "17",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Silver level NCRC"
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "3",
+        "minimumScore": "3",
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#3"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "26",
-        "minimumScore": "22",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Gold level NCRC"
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "4",
+        "minimumScore": "4",
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#4"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "36",
-        "minimumScore": "27",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#Likely to obtain a Platinum level NCRC"
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#-"
       }
     ]
-  }
+}

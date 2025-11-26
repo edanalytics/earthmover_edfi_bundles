@@ -5,7 +5,7 @@
       "namespace": "{{namespace}}"
     },
     "description": "{{description}}",
-    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    {% if parentIdentificationCode | length %}
     "parentObjectiveAssessmentReference":{
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}",
@@ -15,45 +15,46 @@
     "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#US Rank",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#National Norms Score",
         "maximumScore": "100",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#State Rank",
-        "maximumScore": "100",
-        "minimumScore": "1",
-        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
-      },
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Standard Error of Measurement",
-        "maximumScore": "1",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Scale Score",
+        "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Score",
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Raw Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Scale Score",
+        "maximumScore": "30",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Scale Score",
+        "maximumScore": "30",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Superscore",
+         {
+        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       }
     ]
-    {% if has_pls|string == 'True' %}
-    ,"performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "maximumScore": "36",
-        "minimumScore": "22",
-        "performanceLevelDescriptor": "uri://act.org/PerformanceLevelDescriptor#At or Above Readiness Benchmark"
-      }
-    ]
-    {% endif %}
+
 
   }
