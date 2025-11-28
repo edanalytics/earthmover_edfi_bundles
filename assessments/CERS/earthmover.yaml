@@ -1,0 +1,232 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: StudentIdentifier # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentIdentifier
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentGradeLevelDescriptors:
+    file: ./seeds/assessmentGradeLevelDescriptors.csv
+    header_rows: 1
+  studentGradeLevelDescriptors:
+    file: ./seeds/studentGradeLevelDescriptors.csv
+    header_rows: 1
+  xwalkAssessmentsPerformanceLevels:
+    file: ./seeds/xwalkAssessmentsPerformanceLevels.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+          SchoolYear: schoolYear
+          SubmitDateTime: adminDate
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: >
+            {%raw-%}
+            {{
+              AssessmentName
+              | lower
+              | replace(' ', '_')
+              | replace(',', '_')
+              | replace('-', '_')
+              | replace('(', '_')
+              | replace(')', '_')
+              | replace(':', '_')
+              | trim('_')
+              | replace('__', '_')
+              | replace('__', '_')
+              | replace('__', '_')
+            }}
+            {%-endraw%}
+          namespace: "uri://www.caaspp-elpac.org"
+          # parse gradeLevelAssessed from AssessmentName to join on gradeLevelDescriptor
+          gradeLevelAssessed: >
+            {%raw-%}
+            {{
+              'High School' if 'High School' in AssessmentName
+              else 'Middle School' if 'Middle School' in AssessmentName
+              else 'Kindergarten' if 'Kindergarten' in AssessmentName
+              else (
+                (
+                  AssessmentName.split('Grade ')[1].split(' ')[0]
+                  if 'Grade ' in AssessmentName and AssessmentName.split('Grade ')[1]
+                  else ''
+                )
+              ) if 'Grade ' in AssessmentName
+              else ''
+            }}
+            {%-endraw%}
+      - operation: combine_columns
+        columns:
+          - StudentIdentifier
+          - AssessmentName
+          - TestSessionId
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.studentGradeLevelDescriptors
+        join_type: inner
+        # join on student grade level to get the grade level descriptor
+        left_keys: 
+          - GradeLevelWhenAssessed
+        right_keys: 
+          - originalGrade
+      - operation: join
+        sources:
+          - $sources.xwalkAssessmentsPerformanceLevels
+        join_type: left
+        # join on Subject, AssessmentSubType, and ScaleScoreAchievementLevel to get performanceLevelDescriptor
+        left_keys:
+          - Subject
+          - AssessmentSubType
+          - ScaleScoreAchievementLevel
+        right_keys:
+          - Subject
+          - AssessmentSubType
+          - ScaleScoreAchievementLevel
+      - operation: modify_columns
+        columns:
+          # Replace ScaleScoreAchievementLevel with the mapped performanceLevelDescriptor if it exists
+          ScaleScoreAchievementLevel: >
+            {%raw-%}
+            {{
+              performanceLevelDescriptor if performanceLevelDescriptor is not none and performanceLevelDescriptor | string | length else ScaleScoreAchievementLevel
+            }}
+            {%-endraw%}
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.assessmentGradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  performance_level_descriptors:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $sources.xwalkAssessmentsPerformanceLevels
+        join_type: inner
+        left_keys:
+          - originalSubject
+          - originalSubType
+        right_keys:
+          - Subject
+          - AssessmentSubType
+      - operation: add_columns
+        columns:
+          performance_level_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score Achievement Level",
+              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
+              "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{performance_level_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          performance_level_json: agg(performance_level_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          performance_level_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
