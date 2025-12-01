@@ -216,7 +216,7 @@ transformations:
           - GradeLevelDescriptor
       - operation: add_columns
         columns:
-          administrationDate: "{%raw-%} {%- if adminPeriod == 'SP' -%} {{schoolYear}}-03-15 {%-else-%} {{schoolYear}}-11-15 {%-endif-%} {%-endraw%}"
+          administrationDate: "{%raw-%} {%- if adminPeriod == 'SP' -%} {{schoolYear}}-03-15 {%-else-%} {{schoolYear|int - 1}}-11-15 {%-endif-%} {%-endraw%}"
           whenAssessedGradeLevelDescriptor: "{%raw%}{%- if GradeLevelDescriptor is not none and GradeLevelDescriptor|string|length -%} {{GradeLevelDescriptor}}{%- endif -%}{%-endraw%}"
       - operation: filter_rows
         query: studentUniqueId != ''
