@@ -242,7 +242,7 @@
     ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_6)
   ]],
   ['SentenceReading', sentence_reading_spanish_risk_level, [
-    ('Total Words Read', 'Integer', sentence_reading_spanish_total_words_read)
+    ('Total Words Read', 'Integer', sentence_reading_spanish_total_words_read),
     ('Words Read Correct', 'Integer', sentence_reading_spanish_words_read_correct),
     ('WRC per minute', 'Decimal', sentence_reading_spanish_wrc_per_minute),
     ('School Percentile', 'Percentile', sentence_reading_spanish_percentile_at_school),
@@ -270,7 +270,7 @@
     ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_8),
   ]],
   ['SightWords', sight_words_spanish_risk_level, [
-    ('Total Words Read', 'Integer', sight_words_spanish_total_words_read)
+    ('Total Words Read', 'Integer', sight_words_spanish_total_words_read),
     ('Words Correct', 'Integer', sight_words_spanish_words_correct),
     ('WRC per minute', 'Decimal', sight_words_spanish_wrc_per_minute),
     ('School Percentile', 'Percentile', sight_words_spanish_percentile_at_school),
@@ -298,7 +298,7 @@
     ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_9),
   ]],
   ['SyllableReading', syllable_reading_spanish_risk_level, [
-    ('Total Words Read', 'Integer', syllable_reading_spanish_total_words_read)
+    ('Total Words Read', 'Integer', syllable_reading_spanish_total_words_read),
     ('Words Correct', 'Integer', syllable_reading_spanish_words_correct),
     ('WRC per minute', 'Decimal', syllable_reading_spanish_wrc_per_minute),
     ('School Percentile', 'Percentile', syllable_reading_spanish_percentile_at_school),
@@ -457,8 +457,8 @@
   {%- if early_reading_spanish_risk_level is not none and early_reading_spanish_risk_level | length -%}
   , "performanceLevels": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{early_reading_spanish_risk_level}}",
       "performanceLevelMet": true
     }
   ]
