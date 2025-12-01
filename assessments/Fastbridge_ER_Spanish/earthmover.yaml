@@ -40,7 +40,7 @@ config:
   parameter_defaults:
     OUTPUT_DIR: ./output/
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: studentId
+    POSSIBLE_STUDENT_ID_COLUMNS: Local ID, State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     SCHOOL_YEAR: 2024
 
@@ -98,30 +98,33 @@ transformations:
     operations:
       - operation: duplicate_columns
         columns:
-          Final_Date: administrationDate
-          ${STUDENT_ID_NAME}: studentUniqueId
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
       - operation: melt
-        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade]
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
-        query: "season == '' or student_unique_id == ''"
+        query: season == ''
         behavior: exclude
       - operation: pivot
         cols_by: cleaned_variable
-        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
+      - operation: duplicate_columns
+        columns:
+          early_reading_spanish_final_date: administration_date
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_earlyReadingSpanish"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          school_year: ${SCHOOL_YEAR}
       - operation: combine_columns
         columns:
-          - final_date
+          - administration_date
           - student_unique_id
           - season
         new_column: studentAssessmentIdentifier
@@ -133,9 +136,6 @@ transformations:
         column: administration_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-      - operation: add_columns
-        columns:
-          school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
