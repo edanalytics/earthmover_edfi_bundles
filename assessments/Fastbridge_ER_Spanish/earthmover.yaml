@@ -45,22 +45,6 @@ config:
     SCHOOL_YEAR: 2024
 
 sources:
-  # assessments:
-  #   file: ./seeds/assessments.csv
-  #   header_rows: 1
-  # assessmentReportingMethodDescriptors:
-  #   file: ./seeds/assessmentReportingMethodDescriptors.csv
-  #   header_rows: 1
-  # objectiveAssessments:
-  #   file: ./seeds/objectiveAssessments.csv
-  #   header_rows: 1
-  # performanceLevelDescriptors:
-  #   file: ./seeds/performanceLevelDescriptors.csv
-  #   header_rows: 1
-  # gradeLevelDescriptors:
-  #   file: ./seeds/gradeLevelDescriptors.csv
-  #   header_rows: 1
-
   input:
     file: ${INPUT_FILE}
     header_rows: 1
