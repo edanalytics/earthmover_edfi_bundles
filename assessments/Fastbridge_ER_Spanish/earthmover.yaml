@@ -42,7 +42,6 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID, State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    SCHOOL_YEAR: 2024
 
 sources:
   input:
@@ -116,7 +115,7 @@ transformations:
           assessmentIdentifier: "FastBridge_earlyReadingSpanish"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-          school_year: ${SCHOOL_YEAR}
+          school_year: ${API_YEAR}
       - operation: combine_columns
         columns:
           - administration_date
