@@ -28,7 +28,7 @@
 
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
-  {%- if score[0] is not none and score[0] | length -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != 'N/A*' -%}
     {%- set _ = scores.append(score) -%}
   {%- endif -%}
 {%- endfor -%}
@@ -417,7 +417,7 @@
 {%- for obj in obj_assessments -%}
   {%- set valid_scores = [] -%}
   {%- for score in obj[2] -%}
-    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---', ''] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] != 'N/A*' -%}
       {%- set _ = valid_scores.append(score) -%}
     {%- endif -%}
   {%- endfor -%}
