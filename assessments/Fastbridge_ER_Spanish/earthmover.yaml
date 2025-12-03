@@ -97,9 +97,20 @@ transformations:
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
+      - operation: map_values
+        column: season
+        mapping:
+          fall: Fall
+          winter: Winter
+          spring: Spring
+          screening_period_4: Screening Period 4
+          screening_period_5: Screening Period 5
       - operation: duplicate_columns
         columns:
           early_reading_spanish_final_date: administration_date
+      - operation: filter_rows
+        query: administration_date == ''
+        behavior: exclude
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_earlyReadingSpanish"
@@ -314,7 +325,3 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
-  studentAssessments2:
-    source: $transformations.cleaned_input
-    template: ./templates/studentAssessments.jsont
-    extension: csv
