@@ -54,6 +54,10 @@ transformations:
           ${STUDENT_ID_NAME}: studentUniqueId
           SchoolYear: schoolYear
           SubmitDateTime: adminDate
+      - operation: date_format
+        column: adminDate
+        from_format: "%Y-%m-%d %H:%M:%S"
+        to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
           assessmentIdentifier: >
