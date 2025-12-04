@@ -19,38 +19,14 @@ config:
 
 
 sources: # commenting out the query below that was custom for ACT, will not be using it for PREACT at this point but will retain it
-# QUESTION - should my source here for assessments, pls, etc. all be from what ACT has, too, instead of seeds?
   input:
     connection: "${ACT_SNOWFLAKE_CONNECTION}"
-    query: #> 
-      #with act_stu_assess as (
-      #    select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-      #    where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-      #    and api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      #),
-      #act_stu_ids as (
-      #    select 
-      #      stg_ef3__students.student_unique_id,
-      #      bld_ef3__wide_ids_student.registration_local_student_id,
-      #      bld_ef3__wide_ids_student.registration_state_student_id,
-      #      bld_ef3__wide_ids_student.registration_person_id
-      #    from ${PREACT_SNOWFLAKE_EDU_BLD_SCHEMA}.bld_ef3__wide_ids_student
-      #    join ${PREACT_SNOWFLAKE_EDU_STG_SCHEMA}.stg_ef3__students
-      #      on bld_ef3__wide_ids_student.tenant_code = stg_ef3__students.tenant_code
-      #      and bld_ef3__wide_ids_student.api_year = stg_ef3__students.api_year
-      #      and bld_ef3__wide_ids_student.k_student = stg_ef3__students.k_student
-      #    where bld_ef3__wide_ids_student.tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-      #    and bld_ef3__wide_ids_student.api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      #)
-      #select 
-      #  act_stu_assess.*,
-      #  act_stu_ids.registration_local_student_id,
-      #  act_stu_ids.registration_state_student_id,
-      #  act_stu_ids.registration_person_id
-      #from act_stu_assess
-      #join act_stu_ids
-      #  on act_stu_assess.student_unique_id = act_stu_ids.student_unique_id
-
+    query: > 
+      select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+      where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+      and api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      and assessment_identifier = 'PREACT'  
+      limit 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -83,12 +59,12 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  # student-level transformation 1 - pull out top-level assessment scores for STEM/ELA, so they can be converted to objective assessments
+  # student-level transformation 1 - pull out top-level assessment scores for STEM, so they can be converted to objective assessments
   unpacked_scores:
     source: $transformations.input
     operations:
       # add wide score columns for certain scores that we want to eventually convert to objective assessments
-        # note, this is based on guidance from EA's assessment governance to map STEM & ELA as objective assessments rather than at the top level
+        # note, this is based on guidance from EA's assessment governance to map STEM as objective assessments rather than at the top level
       - operation: add_columns
         columns:
           {% set score_namespace_prefix = 'uri://act.org/AssessmentReportingMethodDescriptor#' %}
@@ -222,5 +198,10 @@ destinations:
   studentAssessments:
     source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments_csv:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.csvt
     extension: jsonl
     linearize: True
