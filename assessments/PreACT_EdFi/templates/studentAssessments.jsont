@@ -28,14 +28,8 @@
 
     {% set subscores_to_remove_from_scores = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
                                            'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM State Rank',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super STEM Score',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Standard Error of Measurement',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA US Rank',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA State Rank',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#Super ELA Score',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#ELA Standard Error of Measurement'
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score Range High',
+                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score Range Low',
                                            ] %}
     "scoreResults": [
       {% for item in fromjson(v_score_results | default('[]')) %}
@@ -51,22 +45,12 @@
     ],
 
     "studentObjectiveAssessments": [
-      {% set topline_obj_assess = [['ACT_ELA', 
+      {% set topline_obj_assess = [['PREACT_STEM',
                                    {
-                                    'Score':ACT_ELA_scale_score,
-                                    'Standard Error of Measurement':ACT_ELA_sem,
-                                    'US Rank':ACT_ELA_us_rank,
-                                    'State Rank':ACT_ELA_state_rank,
-                                    'Superscore':ACT_ELA_super_score,
-                                   },
-                                   'uri://act.org/AssessmentReportingMethodDescriptor#ELA Score'],
-                                   ['ACT_STEM',
-                                   {
-                                    'Score':ACT_STEM_scale_score,
-                                    'Standard Error of Measurement':ACT_STEM_sem,
-                                    'US Rank':ACT_STEM_us_rank,
-                                    'State Rank':ACT_STEM_state_rank,
-                                    'Superscore':ACT_STEM_super_score,
+                                    'Score':PREACT_STEM_scale_score,
+                                    'US Rank':PREACT_STEM_us_rank,
+                                    'Score Range High':PREACT_STEM_score_range_high,
+                                    'Score Range Low':PREACT_STEM_score_range_low
                                    },
                                    'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score']
                                ] %}
