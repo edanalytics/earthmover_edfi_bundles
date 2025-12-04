@@ -13,7 +13,7 @@ config:
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
-    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
 
@@ -72,7 +72,7 @@ transformations:
       - operation: add_columns
         columns:
           joinKey: "1"
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
           SchoolYear: "{%raw%}{{ DateTaken[:4] | int + 1 if DateTaken[5:7] | int >= 7 else DateTaken[:4] | int }}{%endraw%}"    
       # rename student id column after x-walk operation
       - operation: modify_columns
@@ -132,7 +132,7 @@ transformations:
               {%raw-%}  
               {
                 "assessmentReportingMethodDescriptor": "{{ namespace }}#{{codeValue}}",
-                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#{{datatype}}"  
+                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{datatype}}"  
               }
               {%-endraw%}
       - operation: modify_columns
