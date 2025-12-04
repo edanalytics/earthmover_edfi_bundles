@@ -106,7 +106,7 @@
            "namespace": "{{ namespace }}"
          },
          "performanceLevels": {{ item.performanceLevels }},
-         "scoreResults": {{ item.scoreResults }}
+         "scoreResults": {{ item.scoreResults | tojson }}
         }{% if not loop.last %},{% endif %}
        {% endfor %}
       {%- endif -%}
