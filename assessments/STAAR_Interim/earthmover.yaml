@@ -9,7 +9,7 @@ config:
   show_graph: False
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: TSDS UID
+    POSSIBLE_STUDENT_ID_COLUMNS: TSDS UID, TSDS ID
 
 
 
@@ -41,6 +41,9 @@ sources:
       - PROBABILITY OF ACHIEVING MASTERS GRADE LEVEL
       - Overall Performance Level
       - Predicted STAAR Performance Level
+      - TSDS UID
+      - TSDS ID
+      - Overall Raw Score
     # See the accompanying README.md for a list of required columns for this file
 
   test_code_xwalk:
@@ -65,7 +68,6 @@ transformations:
           "TIME TAKEN": TIME_TAKEN
           "ESC REGION NUMBER": ESC_REGION_NUMBER
           "COUNTY-DISTRICT-CAMPUS NUMBER": COUNTY-DISTRICT-CAMPUS_NUMBER
-          "DATE-OF-BIRTH (MMDDYYYY)": DATE-OF-BIRTH_(MMDDYYYY)
           "TSDS UID": TSDS_UID
           "ETHNICITY/RACE REPORTING CATEGORY": ETHNICITY/RACE_REPORTING_CATEGORY
           "LOCAL USE 1": LOCAL_USE_1
@@ -134,13 +136,26 @@ transformations:
           {% else %}
           "Predicted STAAR Performance Level": Predicted_STAAR_Performance_Level
           {% endif %}
+          {% if ("${API_YEAR}" | int) <= 2025 %}
           "Opportunity Key": Opportunity_Key
+          {% else %}
+          "Result ID": Result_ID
+          {% endif %}
           "END OF RECORD": END_OF_RECORD
       {% if ("${API_YEAR}" | int) > 2023 %}
       # remove whitespace at end of string
       - operation: modify_columns
         columns:
           Predicted_STAAR_Performance_Level: "{%raw%}{{ value.strip() }}{%endraw%}"
+      {% endif %}
+      {% if ("${API_YEAR}" | int) <= 2025 %}
+      - operation: rename_columns
+        columns:
+          Opportunity_Key: studentAssessmentId
+      {% else %}
+      - operation: rename_columns
+        columns:
+          Result_ID: studentAssessmentId
       {% endif %}
       # join test info (e.g. subject, grade level from test code xwalk)
       - operation: join
