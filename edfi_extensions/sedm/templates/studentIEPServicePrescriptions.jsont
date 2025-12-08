@@ -1,11 +1,11 @@
 {
     "studentIEPReference": {
       "educationOrganizationId": {{lea_code}},
-      "iepFinalizedDate": "{{event_date}}",
+      "iepFinalizedDate": "{{event_date_y}}",
       "studentIEPAssociationID": "{{iepid}}",
       "studentUniqueId": "{{student_id}}"
     },
-    "servicePrescriptionDate": "{{event_begin_date}}",
+    "servicePrescriptionDate": "{{event_date_x}}",
     "servicePrescriptionDescriptor": "${DESCRIPTOR_NAMESPACE}/ServicePrescriptionDescriptor#{{service}}",
     "beginDate": "{{event_begin_date}}",
     "endDate": "{{event_end_date}}",
@@ -20,6 +20,6 @@
     {% else %}
     "frequencyValue": 0,
     {% endif %}
-    "frequencyPeriodDescriptor": "${DESCRIPTOR_NAMESPACE}/FrequencyPeriodDescriptor#{{duration_time_period}}",
+    "frequencyPeriodDescriptor": "${DESCRIPTOR_NAMESPACE}/FrequencyPeriodDescriptor#{{session_time_period}}",
     "serviceLocationTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ServiceLocationTypeDescriptor#{{location}}"
 }
