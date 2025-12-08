@@ -243,6 +243,10 @@ transformations:
   gradeLevelDescriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct
+        columns:
+          - assessmentIdentifier
+          - gradeLevelDescriptor
       - operation: add_columns
         columns:
           grade_json: >
