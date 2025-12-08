@@ -1,0 +1,221 @@
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+{# TODO: combine current-year logic and existing scores logic to avoid looping twice? #}
+{# Or keep separate so this logic is identical to the one in earthmover.yaml? #}
+{% set current_assessments = [] %}
+{% for assessment in assessments %}
+    {# make a copy, emptying out the arrays to be filtered #}
+    {% set current_assessment = assessment.copy() %}
+    {% set _ = current_assessment.update(scoreResults=[]) %}
+    {% set _ = current_assessment.update(performanceLevels=[]) %}
+    {% set _ = current_assessment.update(objectiveAssessments=[]) %}
+    {% set _ = current_assessment.update(accommodations=[]) %}
+
+    {# filter down high-level scores/PLs to current year #}
+    {% for score in assessment.scoreResults %}
+      {% if 
+        ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.scoreResults.append(score) %}
+      {% endif %}
+    {% endfor %}
+    {% for pl in assessment.performanceLevels %}
+      {% if 
+        ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+      %}
+        {% set _ = current_assessment.performanceLevels.append(pl) %}
+      {% endif %}
+    {% endfor %}
+    {% for acc in assessment.accommodations %}
+      {% if 
+        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.accommodations.append(acc) %}
+      {% endif %}
+    {% endfor %}
+
+    {# filter down objectives to current year #}
+    {% for obj in assessment.objectiveAssessments %}
+      {% if 
+        ${API_YEAR} <= (obj.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (obj.min_year | default(${API_YEAR}))  
+      %}
+        
+        {% set current_obj = obj.copy() %}
+        {% set _ = current_obj.update(scoreResults=[]) %}
+        {% set _ = current_obj.update(performanceLevels=[]) %}
+      
+        {# filter down objective scores/PLs to current year #}
+        {% for score in obj.scoreResults %}
+          {% if 
+            ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+          %}
+            {% set _ = current_obj.scoreResults.append(score) %}
+          {% endif %}
+        {% endfor %}
+        {% for pl in obj.performanceLevels %}
+          {% if 
+            ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+          %}
+            {% set _ = current_obj.performanceLevels.append(pl) %}
+          {% endif %}
+        {% endfor %}
+
+        {% set _ = current_assessment.objectiveAssessments.append(current_obj) %}
+      {% endif %}
+    {% endfor %}
+    
+    {% set _ = current_assessments.append(current_assessment) %}
+{% endfor %}
+
+{# match the assessment spec on assessment identifier #}
+{%- set assessment = current_assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first | default({}) -%}
+{% if assessment == {} %}ERROR{% endif %}
+
+{# for possible scores and PLs, see assessment spec #}
+{# filter down to existing top-level scores and PLs #}
+{%- set actual_scores = [] -%}
+{%- for score in assessment.scoreResults -%}
+  {%- set val = __row_data__[score.col] -%} 
+  {%- set _ = score.update({'val': __row_data__[score.col]}) -%}
+  {%- if score.val is not none and score.val | length -%}
+    {%- set _ = actual_scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set actual_perf_levels = [] -%}
+{%- for pl in assessment.performanceLevels -%}
+  {%- set val = __row_data__[pl.col] -%} 
+  {%- set _ = pl.update({'val': __row_data__[pl.col]}) -%}
+  {%- if pl.val is not none and pl.val | length -%}
+    {%- set _ = actual_perf_levels.append(pl) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set actual_accommodations = [] -%}
+{%- for acc in assessment.accommodations -%}
+  {%- set val = __row_data__[acc.col] -%} 
+  {%- set _ = acc.update({'val': __row_data__[acc.col]}) -%}
+  {%- if acc.val is not none and acc.val | length -%}
+    {%- set _ = actual_accommodations.append(acc) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{# filter down to objective assessments with existing scores/PLs #}
+{%- set actual_obj_assessments = [] -%}
+{%- for obj_assessment in assessment.objectiveAssessments -%}
+  {% set actual = obj_assessment.copy() %}
+  {% set _ = actual.update(scoreResults=[], performanceLevels=[]) %}
+
+  {% for score in obj_assessment.scoreResults %}
+    {% set _ = score.update({'val': __row_data__[score.col]}) %}
+    {% if (score.val and score.val | length) %}
+      {% set _ = actual.scoreResults.append(score) %}
+    {% endif %}
+  {% endfor %}
+
+  {% for pl in obj_assessment.performanceLevels %}
+    {% set _ = pl.update({'val': __row_data__[pl.col]}) %}
+    {% if (pl.val and pl.val | length) %}
+      {% set _ = actual.performanceLevels.append(pl) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if actual.scoreResults | length or actual.performanceLevels | length %}
+    {% set _ = actual_obj_assessments.append(actual) %}
+  {% endif %}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- if adminDate -%}
+  , "administrationDate": "{{adminDate}}"
+  {%- endif -%}
+  {%- if reasonNotTested -%}
+  , "reasonNotTestedDescriptor": "{{reasonNotTested}}"
+  {%- endif -%}
+  {% if actual_accommodations | length %}
+  , "accommodations": [
+    {% for acc in actual_accommodations %}
+    {"accommodationDescriptor": "{{ namespace }}/AccommodationDescriptor#{{ acc.col }}"}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+  {% if actual_scores | length %}
+  , "scoreResults": [
+    {% for score in actual_scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.reportingMethod}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score.typeDescriptor}}",
+        "result": "{{score.val[:35]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+  {% if actual_perf_levels | length %}
+  , "performanceLevels": [
+    {% for perf_level in actual_perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level.reportingMethod}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level.val}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+  {% if actual_obj_assessments | length %}
+  , "studentObjectiveAssessments": [
+  {%- for obj in actual_obj_assessments -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj.identificationCode}}",
+      "namespace": "{{namespace}}"
+    }
+    {%- if obj.scoreResults | length -%}
+    , "scoreResults": [
+      {%- for score in obj.scoreResults -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.reportingMethod}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score.typeDescriptor}}",
+        "result": "{{score.val[:35]}}"
+      }{% if not loop.last %},{% endif %}
+      {%- endfor -%}
+    ]
+    {%- endif -%}
+    {%- if obj.performanceLevels | length -%}
+    , "performanceLevels": [
+      {%- for pl in obj.performanceLevels -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl.reportingMethod}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{pl.val}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      }{% if not loop.last %},{% endif %}
+      {%- endfor -%}
+    ] 
+    {% endif %}
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+  {% endif %}
+}
