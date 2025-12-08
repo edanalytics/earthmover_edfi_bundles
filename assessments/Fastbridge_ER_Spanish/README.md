@@ -20,18 +20,16 @@ Or use the sample file (data/sample_anonymized_file_fastbridge_er_spanish.csv).
 - INPUT_FILE: The path to the FastBridge Early Reading - Spanish .csv file you want to transform
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
 - SCHOOL_YEAR: The school year associated with the results file
-- EDFI_DS_VERSION: The Ed-Fi data standard major version for your ODS. Integer only; supported versions are 3, 4, and 5
 
 ### Examples
-Running earthmover for an ASVAB file:
+Running earthmover:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "output/" ,
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file_fastbridge_er_spanish.csv",
 "STUDENT_ID_NAME": "Local ID",
-"SCHOOL_YEAR": "2024",
-"EDFI_DS_VERSION": "4"
+"SCHOOL_YEAR": "2024"
 }'
 ```
 
