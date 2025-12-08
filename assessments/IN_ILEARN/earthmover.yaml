@@ -242,9 +242,9 @@ transformations:
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
     source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: distinct
-        columns:
+    operations:    
+      - operation: group_by
+        group_by_columns:
           - assessmentIdentifier
           - gradeLevelDescriptor
       - operation: add_columns
