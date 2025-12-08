@@ -13,20 +13,16 @@ config:
 
 sources:
   idea_events:
-    file: /mnt/n/etc/sedm/to_load/mini_subset/IDEAEvent.csv
-    #file: ${IDEA_EVENTS_FILE}
+    file: ${IDEA_EVENTS_FILE}
     header_rows: 1
   iep_goals:
-    file: /mnt/n/etc/sedm/to_load/mini_subset/IEPGoals.csv
-    #file: ${IEP_GOALS_FILE}
+    file: ${IEP_GOALS_FILE}
     header_rows: 1
   iep_service_prescriptions:
-    file: /mnt/n/etc/sedm/to_load/mini_subset/IEPServicePrescription.csv
-    #file: ${IEP_SERIVCE_PRESCRIPTIONS_FILE}
+    file: ${IEP_SERIVCE_PRESCRIPTIONS_FILE}
     header_rows: 1
   student_ieps:
-    file: /mnt/n/etc/sedm/to_load/mini_subset/StudentIEP.csv
-    #file: ${STUDENT_IEPS_FILE}
+    file: ${STUDENT_IEPS_FILE}
     header_rows: 1
 
 
@@ -42,6 +38,7 @@ transformations:
           - event_end_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
+  
   student_ieps:
     source: $sources.student_ieps
     operations:
@@ -55,15 +52,18 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: map_values
         column: placement
-        mapping:
-          ' -none-': ''
-      - operation: map_values
-        column: placement
         map_file: ./seeds/special_ed_setting_mapping.csv
+      - operation: map_values
+        column: exit_reason
+        map_file: ./seeds/exit_reason_mapping.csv
+  
   iep_goals:
     source: $sources.iep_goals
     operations:
       - operation: snake_case_columns
+      - operation: modify_columns
+        columns: 
+          annual_goal: "{%raw%}{{ value|replace('\"',\"'\") }}{%endraw%}"
       - operation: date_format
         columns: 
           - event_begin_date
@@ -80,12 +80,14 @@ transformations:
           - lea_code
           - event_date
           - state_code
+  
   iep_service_prescriptions:
     source: $sources.iep_service_prescriptions
     operations:
       - operation: snake_case_columns
       - operation: date_format
         columns: 
+          - event_date
           - event_begin_date
           - event_end_date
         from_format: "%m/%d/%Y"
