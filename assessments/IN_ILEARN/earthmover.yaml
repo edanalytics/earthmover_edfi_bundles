@@ -243,8 +243,8 @@ transformations:
   gradeLevelDescriptors:
     source: $sources.gradeLevelDescriptors
     operations:    
-      - operation: group_by
-        group_by_columns:
+      - operation: distinct_rows
+        columns:
           - assessmentIdentifier
           - gradeLevelDescriptor
       - operation: add_columns
