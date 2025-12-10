@@ -58,25 +58,19 @@ transformations:
         column: adminDate
         from_format: "%Y-%m-%d %H:%M:%S"
         to_format: "%Y-%m-%d"
+      # get assessment ids
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: left
+        left_keys:
+          - AssessmentName
+        right_keys:
+          - assessmentTitle
+        right_keep_columns:
+          - assessmentIdentifier
       - operation: add_columns
         columns:
-          assessmentIdentifier: >
-            {%raw-%}
-            {{
-              AssessmentName
-              | lower
-              | replace(' ', '_')
-              | replace(',', '_')
-              | replace('-', '_')
-              | replace('(', '_')
-              | replace(')', '_')
-              | replace(':', '_')
-              | trim('_')
-              | replace('__', '_')
-              | replace('__', '_')
-              | replace('__', '_')
-            }}
-            {%-endraw%}
           namespace: "uri://www.caaspp-elpac.org"
           # parse gradeLevelAssessed from AssessmentName to join on gradeLevelDescriptor
           gradeLevelAssessed: >
@@ -133,7 +127,7 @@ transformations:
           ScaleScoreAchievementLevel: >
             {%raw-%}
             {{
-              performanceLevelDescriptor if performanceLevelDescriptor is not none and performanceLevelDescriptor | string | length else ScaleScoreAchievementLevel
+              performanceLevelDescriptor if performanceLevelDescriptor is not none and performanceLevelDescriptor | string | length and performanceLevelDescriptor | string | lower != 'nan' else 'No score'
             }}
             {%-endraw%}
 
