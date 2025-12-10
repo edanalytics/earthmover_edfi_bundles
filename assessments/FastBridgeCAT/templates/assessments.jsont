@@ -1,41 +1,55 @@
+
+{% set quantile_lexile = "Quantile" if assessmentIdentifier == "aMath" else "Lexile" %}
+
+{%- set possible_scores = [
+  ["District Growth Percentile from Fall", "Percentile"],
+  ["District Growth Percentile from SP 4", "Percentile"],
+  ["District Growth Percentile from Spring", "Percentile"],
+  ["District Growth Percentile from Winter", "Percentile"],
+  ["Growth Percentile by Start Score from Fall", "Percentile"],
+  ["Growth Percentile by Start Score from SP 4", "Percentile"],
+  ["Growth Percentile by Start Score from Spring", "Percentile"],
+  ["Growth Percentile by Start Score from Winter", "Percentile"],
+  ["Growth Score from Fall", "Decimal"],
+  ["Growth Score from SP 4", "Decimal"],
+  ["Growth Score from Spring", "Decimal"],
+  ["Growth Score from Winter", "Decimal"],
+  ["National Growth Percentile from Fall", "Percentile"],
+  ["National Growth Percentile from SP 4", "Percentile"],
+  ["National Growth Percentile from Spring", "Percentile"],
+  ["National Growth Percentile from Winter", "Percentile"],
+  ["LEA Percentile", "Percentile"],
+  ["National Percentile", "Percentile"],
+  ["School Percentile", "Percentile"],
+  ["School Growth Percentile from Fall", "Percentile"],
+  ["School Growth Percentile from SP 4", "Percentile"],
+  ["School Growth Percentile from Spring", "Percentile"],
+  ["School Growth Percentile from Winter", "Percentile"],
+  ["Test Theta", "Decimal"],
+  [quantile_lexile, quantile_lexile]
+] -%}
+
 {
-  "assessmentIdentifier": "{{assessmentIdentifier}}",
-  "assessmentTitle": "{{assessmentTitle}}",
-  "assessmentFamily": "{{assessmentFamily}}",
-  "namespace": "{{namespace}}",
-  "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
-  "academicSubjects": ["{{academicSubjectDescriptor}}"],
-  "scores": [
+  "academicSubjects": [
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SEM",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Decimal"
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
     }
   ],
-  "performanceLevels": [
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "namespace": "{{assessmentNamespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentFamily": "FastBridge",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "performanceLevels": [{{performance_level_json}}],
+  "periods": [{{period_json}}],
+  "scores": [
+    {% for score in possible_scores %}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Did not yet meet expectations",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Met expectations",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Goal Met",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Goal Met",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+      "assessmentReportingMethodDescriptor": "{{reportingMethodNamespace}}/AssessmentReportingMethodDescriptor#{{ score[0] }}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
     }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
   ]
 }

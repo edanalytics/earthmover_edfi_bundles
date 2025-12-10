@@ -1,8 +1,31 @@
-{%- set possible_scores = 
-  [
-    [scaleScore, "Scale Score", "Integer"],
-    [sem, "SEM", "Integer"]
-  ] -%}
+{%- set possible_scores = [
+  [district_growth_percentile_from_fall, "District Growth Percentile from Fall", "Percentile"],
+  [district_growth_percentile_from_screening_period_4, "District Growth Percentile from SP 4", "Percentile"],
+  [district_growth_percentile_from_spring, "District Growth Percentile from Spring", "Percentile"],
+  [district_growth_percentile_from_winter, "District Growth Percentile from Winter", "Percentile"],
+  [growth_percentile_by_start_score_from_fall, "Growth Percentile by Start Score from Fall", "Percentile"],
+  [growth_percentile_by_start_score_from_screening_period_4, "Growth Percentile by Start Score from SP 4", "Percentile"],
+  [growth_percentile_by_start_score_from_spring, "Growth Percentile by Start Score from Spring", "Percentile"],
+  [growth_percentile_by_start_score_from_winter, "Growth Percentile by Start Score from Winter", "Percentile"],
+  [growth_score_from_fall, "Growth Score from Fall", "Decimal"],
+  [growth_score_from_screening_period_4, "Growth Score from SP 4", "Decimal"],
+  [growth_score_from_spring, "Growth Score from Spring", "Decimal"],
+  [growth_score_from_winter, "Growth Score from Winter", "Decimal"],
+  [national_growth_percentile_from_fall, "National Growth Percentile from Fall", "Percentile"],
+  [national_growth_percentile_from_screening_period_4, "National Growth Percentile from SP 4", "Percentile"],
+  [national_growth_percentile_from_spring, "National Growth Percentile from Spring", "Percentile"],
+  [national_growth_percentile_from_winter, "National Growth Percentile from Winter", "Percentile"],
+  [percentile_at_lea, "LEA Percentile", "Percentile"],
+  [percentile_at_nation, "National Percentile", "Percentile"],
+  [percentile_at_school, "School Percentile", "Percentile"],
+  [school_growth_percentile_from_fall, "School Growth Percentile from Fall", "Percentile"],
+  [school_growth_percentile_from_screening_period_4, "School Growth Percentile from SP 4", "Percentile"],
+  [school_growth_percentile_from_spring, "School Growth Percentile from Spring", "Percentile"],
+  [school_growth_percentile_from_winter, "School Growth Percentile from Winter", "Percentile"],
+  [test_theta, "Test Theta", "Decimal"],
+  [quantile, "Quantile", "Quantile"],
+  [lexile, "Lexile", "Lexile"],
+] -%}
 
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
@@ -11,34 +34,6 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- set possible_perf_levels = 
-  [
-    [performanceLevel, "Performance Level", "Level"],
-    [goalMet, "Goat Met", "Level"]
-  ] -%}
-
-{%- set perf_levels = [] -%}
-{%- for perf_level in possible_perf_levels -%}
-  {%- if perf_level[0] is not none and perf_level[0] | length -%}
-    {%- set _ = perf_levels.append(perf_level) -%}
-  {%- endif -%}
-{%- endfor -%}
-
-{% set possible_obj_assess = 
-  [
-    ['Math1', math1Percentage, math1Level],
-    ['Math2', math2Percentage, math2Level],
-    ['SubMath1', subMath1Percentage, subMath1Level]
-  ] %}
-
-{% set all_obj_assessment = [] %}
-{%- for obj in possible_obj_assess -%}
-  {% if (obj[1] is not none and obj[1] | length) or
-        (obj[2] is not none and obj[1] | length) %}
-    {% set _= all_obj_assessment.append(obj) %}
-  {% endif %}
-{% endfor %}
-
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -46,33 +41,32 @@
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
-    "schoolYear": "{{schoolYear}}"
+    "schoolYear": {{school_year}}
   },
   "studentReference": {
-    "studentUniqueId": "{{studentUniqueId}}"
+    "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationDate": "{{adminDate}}",
+  "administrationDate": "{{administration_date}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
-  {% if scores | length %}
+
+  {%- if scores -%}
   "scoreResults": [
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
-        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
-  {% endif %}
+  ]
+  {%- endif -%}
+
   {% if perf_levels | length %}
   "performanceLevels": [
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
@@ -89,7 +83,7 @@
     "scoreResults": [
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
-        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Decimal",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Decimal",
         "result": "{{obj[1]}}"
       }
     ],
@@ -97,11 +91,8 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
       }
-    ] 
+    ]
   } {% if not loop.last %},{% endif %}
   {% endfor %}
   ]
