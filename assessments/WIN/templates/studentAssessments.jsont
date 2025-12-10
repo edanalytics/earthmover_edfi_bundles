@@ -70,8 +70,8 @@
   },
   "administrationDate": "{{TestDate}}",
 
-  {%- if platformTypeDescriptor is not none and platformTypeDescriptor | length -%}
-  "platformTypeDescriptor": "{{platformTypeDescriptor}}",
+  {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
+  "platformTypeDescriptor": "{{edfi_descriptor}}",
   {%- endif -%}
 
   "scoreResults": [

@@ -234,7 +234,7 @@ transformations:
           platform_json: >
             {%raw-%}  
             {
-              "platformTypeDescriptor": "{{platformTypeDescriptor}}"
+              "platformTypeDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
