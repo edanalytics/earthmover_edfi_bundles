@@ -11,7 +11,7 @@
     "iepEndDate": "{{event_end_date}}",
     "iepStatusDescriptor": "${DESCRIPTOR_NAMESPACE}/IepStatusDescriptor#{{event_status}}"
     {% if exit_reason_code is not none and exit_reason_code | length %}
-    , "reasonExitedDescriptor": "uri://ed-fi.org/ReasonExitedDescriptor#{{exit_reason}}"
+    , "reasonExitedDescriptor": "${DESCRIPTOR_NAMESPACE}/ReasonExitedDescriptor#{{exit_reason_code}}"
     {% endif %}
     {% if placement is not none and placement | length and placement != ' -none-'%}
     , "specialEducationSettingDescriptor": "${DESCRIPTOR_NAMESPACE}/SpecialEducationSettingDescriptor#{{placement}}"

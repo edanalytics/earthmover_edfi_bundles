@@ -53,9 +53,6 @@ transformations:
       - operation: map_values
         column: placement
         map_file: ./seeds/special_ed_setting_mapping.csv
-      - operation: map_values
-        column: exit_reason
-        map_file: ./seeds/exit_reason_mapping.csv
   
   iep_goals:
     source: $sources.iep_goals
