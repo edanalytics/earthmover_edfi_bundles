@@ -38,7 +38,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "namespace": "{{assessmentNamespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#Screening",
   "assessmentFamily": "FastBridge",
   "assessmentTitle": "{{assessmentTitle}}",
   "performanceLevels": [{{performance_level_json}}],
@@ -46,8 +46,8 @@
   "scores": [
     {% for score in possible_scores %}
     {
-      "assessmentReportingMethodDescriptor": "{{reportingMethodNamespace}}/AssessmentReportingMethodDescriptor#{{ score[0] }}",
-      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
+      "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{ score[0] }}",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{ score[1] }}"
     }
     {% if not loop.last %},{% endif %}
     {% endfor %}

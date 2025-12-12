@@ -53,29 +53,36 @@ config:
 {% if "${TEST_TYPE}" == "aReading" %}
   {% set bucket_name = "lexile" %}
   {% set test_type = "a_reading" %}
+  {% set test_id = "aReading" %}
 {% else %}
   {% set bucket_name = "quantile" %}
   {% set test_type = "a_math" %}
+  {% set test_id = "aMath" %}
 {% endif %}
 
 sources:
+
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
-  assessmentPeriodDescriptors:
-    file: ./seeds/assessmentPeriodDescriptors.csv
-    header_rows: 1
-  assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
-    header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
+
+  # xwalks
+  academicSubjectDescriptors:
+    file: ./seeds/xwalks/academicSubjectDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ./seeds/gradeLevelDescriptors.csv
+    file: ./seeds/xwalks/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  # Custom Descriptors
+  assessmentPeriodDescriptors:
+    file: ./seeds/custom_descriptors/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/custom_descriptors/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/custom_descriptors/performanceLevelDescriptors.csv
     header_rows: 1
 
   input:
@@ -174,7 +181,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          assessmentIdentifier: ${TEST_TYPE}
+          assessmentIdentifier: "{{ test_id }}" 
           grade_json: >
             {%raw-%}
             {
@@ -203,6 +210,7 @@ transformations:
         columns:
           base_namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          # assessmentIdentifier: "{{ test_id }}" 
           performance_level_json: >
             {%raw-%}
             {
@@ -217,7 +225,7 @@ transformations:
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - codeValue
+          - assessmentIdentifier
         create_columns:
           performance_level_json: agg(performance_level_json,)
       # there will be a trailing comma, want to get rid of that
@@ -243,63 +251,70 @@ transformations:
       # group and aggregate:
       - operation: group_by
         group_by_columns:
-          - codeValue
+          - assessmentIdentifier
         create_columns:
           period_json: agg(period_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
         columns:
           period_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-  # Prepare assessments with proper structure
-  # TODO: These don't need to be joins
+
+{% set unique_descriptors = ["assessmentPeriodDescriptors", "performanceLevelDescriptors"] %}
+
+{% for descr in unique_descriptors %}
+  {{ descr }}_unique:
+    source: $sources.{{ descr }}
+    operations:
+      - operation: distinct_rows
+        columns:
+          - codeValue
+{% endfor %}
+
   assessments:
     source: $sources.assessments
-    operations: []
-    # operations:
-    #   - operation: join
-    #     sources:
-    #       - $transformations.grade_level_descriptors
-    #     join_type: inner
-    #     left_key: assessmentIdentifier
-    #     right_key: assessmentIdentifier
-    #   - operation: join
-    #     sources:
-    #       - $transformations.performance_level_descriptors
-    #     join_type: inner
-    #     left_key: assessmentIdentifier
-    #     right_key: assessmentIdentifier
-    #   - operation: join
-    #     sources:
-    #       - $transformations.assessment_period_descriptors
-    #     join_type: inner
-    #     left_key: assessmentIdentifier
-    #     right_key: assessmentIdentifier
-    #   - operation: add_columns
-    #     columns:
-    #       descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-    #       namespace: "uri://fastbridge.org/assessment"
+    # operations: []
+    operations:
+      # - operation: join
+      #   sources:
+      #     - $transformations.grade_level_descriptors
+      #   join_type: inner
+      #   left_key: assessmentIdentifier
+      #   right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # - operation: join
+      #   sources:
+      #     - $transformations.assessment_period_descriptors
+      #   join_type: inner
+      #   left_key: assessmentIdentifier
+      #   right_key: assessmentIdentifier
+
 
 destinations:
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
-  studentAssessments:
-    source: $transformations.cleaned_input
-    template: ./templates/studentAssessments.jsont
-    extension: jsonl
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+  # studentAssessments:
+  #   source: $transformations.cleaned_input
+  #   template: ./templates/studentAssessments.jsont
+  #   extension: jsonl
+
+  # TODO: I'm not using this yet
+  # assessmentReportingMethodDescriptors:
+  #   source: $sources.assessmentReportingMethodDescriptors
+  #   template: ./templates/descriptors.jsont
+  #   extension: jsonl
+  #   linearize: True
+
+{% for descr in unique_descriptors %}
+  {{ descr }}:
+    source: $transformations.{{ descr }}_unique
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
-  assessmentPeriodDescriptors:
-    source: $sources.assessmentPeriodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
+{% endfor %}
