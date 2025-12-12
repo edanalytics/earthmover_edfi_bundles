@@ -142,6 +142,15 @@ transformations:
 
 {% set possible_student_id_columns = "${POSSIBLE_STUDENT_ID_COLUMNS}".split(",") %}
   
+  disambiguate_edfi_ids:
+    # to prevent collisions with the source data, prefix all the Ed-Fi columns
+    source: $transformations.unpacked_edfi_roster
+    operations:
+      - operation: rename_columns
+        columns:
+          {% for id_code in edfi_student_id_types %}
+          "{{id_code}}": "__edfi_{{id_code}}"
+          {% endfor %}
   num_input_rows:
     source: ${EARTHMOVER_NODE_TO_XWALK}
     operations:
@@ -162,17 +171,23 @@ transformations:
           {% for source_student_id_column in possible_student_id_columns -%}
           - {{source_student_id_column}}
           {% endfor %}
+      - operation: rename_columns
+        # similarly prefix all the source data columns to avoid collisions when joining
+        columns:
+          {% for id_col in possible_student_id_columns -%}
+          "{{id_col}}": "__source_{{id_col}}"
+          {% endfor %}
 
   {% for edfi_student_id_column in edfi_student_id_types -%}
   {{edfi_student_id_column}}_filtered:
-    source: $transformations.unpacked_edfi_roster
+    source: $transformations.disambiguate_edfi_ids
     operations:  
       - operation: filter_rows
-        query: "`{{edfi_student_id_column}}` != ''"
+        query: "`__edfi_{{edfi_student_id_column}}` != ''"
         behavior: include
       - operation: distinct_rows
         columns:
-          - "{{edfi_student_id_column}}"
+          - "__edfi_{{edfi_student_id_column}}"
   {% for source_student_id_column in possible_student_id_columns -%}
   {{source_student_id_column}}_{{edfi_student_id_column}}_join:
     source: $transformations.joins_base
@@ -181,20 +196,20 @@ transformations:
         columns:
           # special handling for student ID values that come through as a string that ends in ".0"
           # (we can't cast student IDs to int because sometimes they contain letters)
-          {{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
+          __source_{{source_student_id_column}}: '{% raw %}{% if (value|string)[-2:]==".0" %}{{(value|string)[0:-2]}}{% else %}{{value}}{% endif %}{% endraw %}'
       - operation: join
         sources:
           - $transformations.{{edfi_student_id_column}}_filtered
         join_type: inner
-        left_key: {{source_student_id_column}}
-        right_key: "{{edfi_student_id_column}}"
+        left_key: "__source_{{source_student_id_column}}"
+        right_key: "__edfi_{{edfi_student_id_column}}"
       - operation: rename_columns
         columns:
-          {{source_student_id_column}}: value
+          __source_{{source_student_id_column}}: value
       - operation: keep_columns
         columns:
           - value
-          - studentUniqueId
+          - __edfi_studentUniqueId
       - operation: add_columns
         columns:
           source_column_name: {{source_student_id_column}}
@@ -332,7 +347,6 @@ transformations:
           # (since we will materialize those rows from INPUT_FILE where no student ID matches the xwalk we created)
           edOrgId: __edfi_edOrgId
           edOrgType: __edfi_edOrgType
-          studentUniqueId: __edfi_studentUniqueId
       - operation: add_columns
         columns:
           __join_id: "1"
@@ -348,16 +362,16 @@ transformations:
           - __join_id
       - operation: add_columns
         columns:
-          __xwalk_id_to: '{%raw%}{% if __edfi_column_name=="studentUniqueId" %}{{__edfi_studentUniqueId|string}}{% else %}{{__row_data__[__edfi_column_name]|string}}{% endif %}{%endraw%}'
+          __xwalk_id_to: '{%raw%}{% if __edfi_column_name=="studentUniqueId" %}{{studentUniqueId|string}}{% else %}{{__row_data__[__edfi_column_name]|string}}{% endif %}{%endraw%}'
       - operation: keep_columns
         columns:
           - __edfi_edOrgId
           - __edfi_edOrgType
-          - __edfi_studentUniqueId
+          - studentUniqueId
           - __xwalk_id_to
       - operation: distinct_rows
         columns:
-          - __edfi_studentUniqueId
+          - studentUniqueId
           - __xwalk_id_to
 
   input_base:
@@ -406,13 +420,13 @@ transformations:
     operations:
       # filter to rows where `to` is null:
       - operation: filter_rows
-        query:  '__edfi_studentUniqueId.isnull()'
+        query:  'studentUniqueId.isnull()'
         behavior: include
       - operation: drop_columns
         columns:
           - __edfi_edOrgId
           - __edfi_edOrgType
-          - __edfi_studentUniqueId
+          - studentUniqueId
 
   input_xwalked:
     # this will be a copy of the INPUT_FILE, but with an edFi_studentUniqueID column added
@@ -420,11 +434,11 @@ transformations:
     operations:
       # filter to rows where `to` is NOT null:
       - operation: filter_rows
-        query:  '__edfi_studentUniqueId.isnull()'
+        query:  'studentUniqueId.isnull()'
         behavior: exclude
       - operation: rename_columns
         columns:
-          __edfi_studentUniqueId: edFi_studentUniqueID
+          studentUniqueId: edFi_studentUniqueID
 
 destinations:
   input_no_student_id_match:
