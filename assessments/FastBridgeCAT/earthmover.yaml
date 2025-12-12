@@ -215,7 +215,7 @@ transformations:
             {%raw-%}
             {
               "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
-              "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
+              "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{codeValue}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
@@ -259,7 +259,7 @@ transformations:
         columns:
           period_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-{% set unique_descriptors = ["assessmentPeriodDescriptors", "performanceLevelDescriptors"] %}
+{% set unique_descriptors = ["assessmentPeriodDescriptors", "performanceLevelDescriptors", "assessmentReportingMethodDescriptors"] %}
 
 {% for descr in unique_descriptors %}
   {{ descr }}_unique:
