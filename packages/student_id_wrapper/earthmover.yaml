@@ -8,7 +8,7 @@ config:
   parameter_defaults:
     OUTPUT_DIR: output
     ASSESSMENT_BUNDLE_BRANCH: main
-    EDFI_STUDENT_ID_TYPES: Local,School,District,State
+    EDFI_STUDENT_ID_TYPES: Local,School,District,Test Taker ID
 
 packages:
   ${ASSESSMENT_BUNDLE}:
@@ -16,9 +16,7 @@ packages:
     branch: ${ASSESSMENT_BUNDLE_BRANCH}
     subdirectory: assessments/${ASSESSMENT_BUNDLE}
   student_ids:
-    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    branch: main
-    subdirectory: packages/student_ids
+    local: ../student_ids
 
 transformations:
   input:
