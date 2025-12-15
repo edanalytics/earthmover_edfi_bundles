@@ -1,17 +1,17 @@
-{% if districtId is not none and districtId | length and studentUniqueId is not none and studentUniqueId | length %}
+{% if schoolId is not none and schoolId | length and studentUniqueId is not none and studentUniqueId | length %}
  {
-      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration",
+      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
-        "educationOrganizationId": {{ districtId }}
+        "educationOrganizationId": {{schoolId|int}}
       },
       "schoolYearTypeReference": {
         "schoolYear": {{SchoolYear}}
       },
       "studentAssessmentReference": {
         "assessmentIdentifier": "{{assessmentIdentifier }}",
-        "namespace": "{{ namespace }}",
-        "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
-        "studentUniqueId": "{{ studentUniqueId }}"
+        "namespace": "{{namespace}}",
+        "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+        "studentUniqueId": "{{studentUniqueId}}"
       }
     }
    {% endif %} 

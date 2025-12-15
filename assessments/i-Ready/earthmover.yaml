@@ -165,7 +165,7 @@ transformations:
           school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
       - operation: add_columns
         columns:
-          namespace: 'uri://cainc.com'
+          namespace: 'uri://cainc.com/'
           subject: '{% raw %}{% if quantile_measure %}math{% endif %}{% if lexile_measure %}ela{% endif %}{% endraw %}'
           created_stu_assess_id: '{% raw %}{{student_unique_id}}_{{administration_date}}_{{subject}}{% endraw %}'
           student_assessment_id: '{% raw %}{% if activity_id %}{{activity_id}}{% else %}{{ md5(created_stu_assess_id) }}{% endif %}{% endraw %}'

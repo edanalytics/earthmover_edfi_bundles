@@ -7,8 +7,9 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
-    POSSIBLE_STUDENT_ID_COLUMNS: 'PS_StudentID,StudentSUNS'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'state_student_id,district_student_id'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    SCHOOL_YEAR: 2024
   
 sources:
   input:
@@ -41,7 +42,6 @@ transformations:
     source: $sources.input
     operations: []
   
-
   performance_level_descriptors:
     source: $sources.performanceLevelDescriptors
     operations:
@@ -56,8 +56,6 @@ transformations:
           - minimumScore
           - maximumScore
 
-
-          
   performance_levels:
     source: $sources.performanceLevelDescriptors
     operations:
@@ -92,7 +90,6 @@ transformations:
         create_columns: 
           performance_json: agg(performance_json,,)
         
-
   performance_level_max_min_score:
     source: $sources.performanceLevelDescriptors
     operations:
@@ -160,8 +157,6 @@ transformations:
         create_columns: 
           grade_json: agg(grade_json,,)
   
-
-
   stage_assessments:
     source: $sources.assessments
     operations:
@@ -200,7 +195,6 @@ transformations:
         columns:         
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
 
-
   prepare_objective_assessments:
     source: $sources.objectiveAssessments
     operations:
@@ -233,23 +227,32 @@ transformations:
         columns:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
     
-    
   prepare_student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-
       - operation: rename_columns
         columns:
-          SchoolCode: schoolId
-          DistrictCode: districtId
+          school_id: schoolId
+          district_id: districtId
+          overall_score: OverallScore
+          overall_sem: OverallSem
+          PLD: PerformanceLevelDescriptor
+          SF_score: SFScore
+          SF_sem: SFSem
+          LL_score: LLScore
+          LL_sem: LLSem
+          MA_score: MAScore
+          MA_sem: MASem
+          PD_score: PDScore
+          PD_sem: PDSem
       - operation: add_columns
         columns:
           assessmentIdentifier: "KRA"
-          administrationDate: "{%raw%}{{ DateTaken }}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          School_Year: ${SCHOOL_YEAR}
       - operation: join
         sources:
           - $transformations.stage_assessments
@@ -267,7 +270,9 @@ transformations:
           edfi_descriptor: gradeLevelDescriptor
       - operation: add_columns
         columns:
-          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  DateTaken) }}{% endraw %}"
+          SchoolYear: "{% raw %}{{School_Year|int}}{% endraw %}"
+          administrationDate: "{%raw%}{{SchoolYear ~ '-08-10'}}{%endraw%}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
       - operation: join
         sources:
           - $transformations.performance_level_descriptors
@@ -296,11 +301,16 @@ transformations:
           - namespace
           - gradeLevelDescriptor
           - OverallScore
+          - OverallSem
           - PerformanceLevelDescriptor
           - SFScore
           - LLScore
           - MAScore
           - PDScore
+          - SFSem
+          - LLSem
+          - MASem
+          - PDSem
           - schoolId
           - districtId
           - descriptorNamespace

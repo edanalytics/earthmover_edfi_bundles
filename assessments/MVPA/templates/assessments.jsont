@@ -1,0 +1,125 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#PercCorr",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Decimal"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SuggNMark",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#SuggLMark",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLev",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLev",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLev",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLev",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLev",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#5",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1-",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1+",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2-",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2+",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3-",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3+",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4-",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4+",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#5-",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#5",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#AchLevExt",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#5+",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}

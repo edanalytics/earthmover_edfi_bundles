@@ -27,7 +27,7 @@ Or use our sample files (`data/*`).
 ### Required
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- INPUT_FILE_OVERALL: The overall student assessment file to be mapped
+- INPUT_FILE: The overall student assessment file to be mapped
 - API_YEAR: The API year that the output of this template will send to
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file, or a value mapped from a crosswalk (must be supplied)
   
@@ -36,7 +36,7 @@ Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE_OVERALL": "./data/SR_sample_anonymized_file.csv",
+"INPUT_FILE": "./data/SR_sample_anonymized_file.csv",
 "INPUT_FILE_DS": "./data/SR_Dashboard_Standards_v2_sample_anonymized_file.csv",
 "INPUT_FILE_SA": "./data/SR_SkillArea_v1_sample_anonymized_file.csv",
 "API_YEAR": "2024",

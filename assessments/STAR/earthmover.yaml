@@ -30,7 +30,7 @@ config:
 
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
-  overall_file_name: &overall_file_name ${INPUT_FILE_OVERALL}
+  overall_file_name: &overall_file_name ${INPUT_FILE}
   separator: &separator '/'
 
 sources:
@@ -52,7 +52,7 @@ sources:
 
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ${INPUT_FILE_OVERALL}
+    file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     header_rows: 1
 

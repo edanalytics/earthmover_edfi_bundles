@@ -69,8 +69,8 @@
   , "performanceLevels": [
     {%- for perf_level in performance_levels -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ perf_level[0]}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#{{ perf_level[0]}}",
       "performanceLevelMet": true
     } {%- if not loop.last -%},{%- endif -%}
     {%- endfor -%}
@@ -81,7 +81,7 @@
   , "scoreResults": [
     {%- for score in score_results -%}
     {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{score[1]}}",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": {% if score[2] == 'Integer' -%}"{{score[0] | int}}"{%- else -%}"{{score[0]}}"{%- endif %}
     } {%- if not loop.last -%},{%- endif -%}
@@ -102,13 +102,13 @@
       {%- if obj_assess[1] and obj_assess[1] != 'NA' -%}
       "performanceLevels": [
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Placement",
-          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[1] }}",
+          "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Placement",
+          "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#{{ obj_assess[1] }}",
           "performanceLevelMet": true
         }{%- if obj_assess[2] and obj_assess[2] != 'NA' -%},
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Relative Placement",
-          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ obj_assess[2] }}",
+          "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Relative Placement",
+          "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#{{ obj_assess[2] }}",
           "performanceLevelMet": true
         }
         {%- endif -%}
@@ -117,7 +117,7 @@
 
       "scoreResults": [
         {
-          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+          "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Scale Score",
           "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer",
           "result": "{{ obj_assess[0] | int}}"
         }

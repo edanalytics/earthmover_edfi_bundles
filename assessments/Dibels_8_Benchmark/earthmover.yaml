@@ -11,6 +11,7 @@ config:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID)'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
@@ -56,7 +57,7 @@ transformations:
         sources:
           - $sources.gradeLevelDescriptors
         join_type: inner
-        left_key: assessment_grade
+        left_key: enrollment_grade
         right_key: original_grade
       - operation: add_columns
         columns:
@@ -74,6 +75,9 @@ transformations:
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+          - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
