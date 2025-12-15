@@ -841,3 +841,11 @@ destinations:
     template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
 
+  {# This overrides the no-match output header (if this bundle is being used with the `student_id` package) #}
+  {% if '${EDFI_ROSTER_SOURCE_TYPE}' == 'file' or '${EDFI_ROSTER_SOURCE_TYPE}' == 'snowflake' %}
+  input_no_student_id_match:
+    header: |
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,RLN_v1 Results,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,PA_v2 Results,,,Syllabication_v2 Results,,,,,,,,,,Onset-Rime_v2 Results,,,,,,,,Alliteration_v2 Results,,,,,,,,,,Rhyming_I_v2 Results,,,,,,,,,,,,Letter_Sound_v1 Results,,,,,,,,,,,,,,Story_Retell_Comp_v1 Results,,,,,,,,,Early_Writing_v1 Results,,,,,,,,,,,,,RLNA_spa_v1 Results,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,PA_spa_v2 Results,,,Syllabication_spa_v2 Results,,,,,,,,,,Alliteration_spa_v2 Results,,,,,,,,,,Rhyming_I_spa_v2 Results,,,,,,,,,,,,Letter_Sound_spa_v1 Results,,,,,,,,,,,,,,Story_Retell_Comp_spa_v1 Results,,,,,,,,,Early_Writing_spa_v1 Results,,,,,,,,,,,,
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+      {%raw%}{% for k in __row_data__.pop('__row_data__').keys() %}{{k}}{% if not loop.last %},{% endif %}{% endfor %}{%endraw%}
+  {% endif %}
