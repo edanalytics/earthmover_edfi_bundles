@@ -47,6 +47,7 @@
     "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{administration_date}}",
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
 
   {%- if scores -%}
@@ -61,14 +62,12 @@
   ]
   {%- endif -%}
 
-  {% if perf_levels | length %}
+  {%- if risk_level is not none and risk_level | length -%}
   , "performanceLevels": [
-    {% for perf_level in perf_levels %}
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{risk_level}}"
+    }
   ]
   {% endif %}
 }

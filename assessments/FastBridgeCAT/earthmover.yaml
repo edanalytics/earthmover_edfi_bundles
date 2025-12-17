@@ -92,11 +92,11 @@ transformations:
   cleaned_input:
     source: $sources.input
     operations:
-      - operation: snake_case_columns
-
       - operation: duplicate_columns
         columns:
-          fast_id: student_unique_id
+          ${STUDENT_ID_NAME}: student_unique_id
+      
+      - operation: snake_case_columns
 
       - operation: melt
         id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
@@ -119,6 +119,15 @@ transformations:
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
+
+      - operation: map_values
+        column: season
+        mapping:
+          fall: Fall
+          winter: Winter
+          spring: Spring
+          screening_period_4: Screening Period 4
+          screening_period_5: Screening Period 5
 
       - operation: filter_rows
         query: final_date == ''
@@ -156,8 +165,12 @@ transformations:
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
-        left_key: grade
-        right_key: original_grade
+        left_keys: 
+          - assessmentIdentifier
+          - grade
+        right_keys:
+          - assessmentIdentifier
+          - original_grade
         right_keep_columns:
         - gradeLevelDescriptor
 
@@ -273,6 +286,18 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier  
 
 destinations:
   assessments:
