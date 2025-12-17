@@ -34,16 +34,16 @@
     13: 'Reserved for future'
   } %}
 
-  {% set has_acc = false %}
+  {% set acc_vars = {'has_acc': false} %}
 {% if Mode_of_Administration %}
   {% for c in Mode_of_Administration %}
     {% if loop.index0 < 12 and c == '1' %}
-      {% set has_acc = true %}
+      {% if acc_vars.update({'has_acc': true}) %} {% endif %}
     {% endif %}
   {% endfor %}
 {% endif %}
 
-{% if has_acc %}
+{% if acc_vars.has_acc %}
   {% set vars = {'is_first_item': True} %}  
   {% if Mode_of_Administration|length > 0 and Mode_of_Administration != '0' %}
     "accommodations": [
