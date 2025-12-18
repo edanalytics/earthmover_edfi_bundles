@@ -798,6 +798,9 @@ transformations:
           ProficiencyLevelLiteracy: PerformanceLevelLiteracy
           ProficiencyLevelOral: PerformanceLevelOral
           ProficiencyLevelOverall: PerformanceLevelOverall
+      - operation: modify_columns
+        columns:
+          Grade: "{%raw%}{{ Grade.zfill(2) if Grade.isdigit() and Grade|length == 1 else Grade }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
