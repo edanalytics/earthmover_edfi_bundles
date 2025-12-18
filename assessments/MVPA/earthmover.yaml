@@ -21,6 +21,9 @@ sources:
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -157,6 +160,10 @@ destinations:
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
   performanceLevelDescriptors:
