@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -20,9 +20,6 @@ sources:
     header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
-    header_rows: 1
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -136,6 +133,7 @@ transformations:
           - assessmentTitle
           - assessmentFamily
           - namespace
+          - assessmentCategoryDescriptor
       - operation: modify_columns
         columns:
           assessmentTitle: "{%raw%}MVPA - {{assessmentTitle}}{%endraw%}"
@@ -148,12 +146,6 @@ transformations:
       - operation: join
         sources:
           - $transformations.academic_subject_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $sources.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
