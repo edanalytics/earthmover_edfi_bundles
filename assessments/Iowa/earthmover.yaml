@@ -512,7 +512,7 @@ transformations:
           - Level
       - operation: add_columns
         columns:
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Semester}}{%endraw%}" 
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Date_Tested}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
           # Information regarding Form and Level for the assessment
