@@ -1,0 +1,64 @@
+{% set assessment_map = {
+    'SC_PASS_Science' : '01',
+    'SC_PASS_Social_Studies' : '02'
+   } %}
+
+{% set performance_map = {
+    '01': ['1','2','3','4'],
+    '02' : ['1','2','3']
+   } %} 
+
+{% set scoresReportingMethods = [
+  ['SS','Integer'],['Ag','Level']
+  ] %}
+{
+  "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
+  "namespace": "{{ namespace }}",
+  "assessmentFamily": "{{ assessmentFamily }}",
+  "assessmentTitle": "{{ assessmentTitle }}",
+  "assessmentCategoryDescriptor": "{{ assessmentCategoryDescriptor }}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}"
+    }
+  ],
+  "periods": [{{period_json}}],
+  "assessedGradeLevels": [{{grade_json}}],
+  "platformTypes": [{{platform_type_json}}],
+  {% set assessment = assessment_map[assessmentIdentifier] %}
+
+  {#--------------- overall performance Level ---------------#}
+
+   "performanceLevels": [
+      {% set comma = joiner(",") %}
+      {% set performanceLevel = performance_map[assessment]  %}
+      {% for performanceKey in performanceLevel %}
+        {{ comma() }}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lev",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}"
+        }
+      {% endfor %}
+      {% for i in range(1, 6) %}
+        {{ comma() }}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RCWAbs",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{i}}"
+        }
+      {% endfor %} 
+    ],
+  "scores": [
+    {# The joiner will add a comma before every item except the first one that gets printed #}
+    {% set comma = joiner(",") %}
+
+    {% for reportingKey, reportingDataType in scoresReportingMethods %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set scoreName = reportingKey %}
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{reportingDataType}}"
+        }
+{% endfor %} 
+  ]
+}
