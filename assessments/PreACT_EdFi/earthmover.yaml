@@ -21,12 +21,12 @@ config:
 sources: # commenting out the query below that was custom for ACT, will not be using it for PREACT at this point but will retain it
   input:
     connection: "${ACT_SNOWFLAKE_CONNECTION}"
-    query: > 
-      select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-      where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-      and api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      and assessment_identifier = 'PREACT'  
-      limit 1
+    query: # > 
+      ## select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+      ## where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
+      ## and api_year = ${ACT_SNOWFLAKE_API_YEAR}
+      ## and assessment_identifier = 'PREACT'  
+      ## limit 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
