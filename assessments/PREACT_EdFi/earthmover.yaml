@@ -39,9 +39,6 @@ sources: # commenting out the query below that was custom for ACT, will not be u
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
-    header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
     header_rows: 1
@@ -177,11 +174,6 @@ transformations:
 destinations:
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
