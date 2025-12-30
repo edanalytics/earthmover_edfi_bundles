@@ -200,8 +200,3 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
-  studentAssessments_csv:
-    source: $transformations.student_assessments
-    template: ./templates/studentAssessments.csvt
-    extension: jsonl
-    linearize: True
