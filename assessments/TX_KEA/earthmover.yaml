@@ -14,7 +14,8 @@ config:
 sources:
   input:
     file: ${INPUT_FILE}
-    sparse_header_rows: 3
+    header_rows: [0,2]
+    fill_sparse_headers: True
     optional_fields:
       - TXKEA_Vocabulary Results__TXKEA_Vocabulary
       - TXKEA_Letter_Names Results__TXKEA_Letter_Names
@@ -29,7 +30,7 @@ sources:
       - TXKEA_Vocabulary_Sp Results__TXKEA_Vocabulary_Sp
       - TXKEA_Letter_Names_Sp Results__TXKEA_Letter_Names_Sp
       - TXKEA_Spelling_Sp Results__TXKEA_Spelling_Sp
-      - TXKEA_Literacy-reading_Composite_Sp Results__TXKEA_Literacy-reading_Composite_Sp
+      - TXKEA_Literacy-Reading_Composite_Sp Results__TXKEA_Literacy-Reading_Composite_Sp
       - KEA_Dyslexia_Screener_Sp Results__TXKEA_Letter_Sounds_Sp
       - TXKEA_Blending_1_Sp
       - TXKEA_Language_Composite_Sp Results__TXKEA_Language_Composite_Sp
@@ -265,8 +266,8 @@ sources:
       - TXKEA_Syllabication
       - KEA_Literacy_Screening_Sp Results__KEA_Literacy_Screening_Sp_Date
       - KEA_Literacy_Screening_Sp Results__CP_KEA_Literacy_Screening_Sp
-      - TXKEA_Literacy-reading_Composite_Sp Results__TXKEA_Literacy-reading_Composite_Sp_Date
-      - TXKEA_Literacy-reading_Composite_Sp Results__CP_TXKEA_Literacy-reading_Composite_Sp
+      - TXKEA_Literacy-Reading_Composite_Sp Results__TXKEA_Literacy-Reading_Composite_Sp_Date
+      - TXKEA_Literacy-Reading_Composite_Sp Results__CP_TXKEA_Literacy-Reading_Composite_Sp
       - TXKEA_Language_Composite_Sp Results__TXKEA_Language_Composite_Sp_Date
       - TXKEA_Language_Composite_Sp Results__CP_TXKEA_Language_Composite_Sp
       - KEA_Dyslexia_Screener_Sp Results__KEA_Dyslexia_Screener_Sp
@@ -713,7 +714,7 @@ transformations:
     operations:
       - operation: duplicate_columns
         columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
+          ${STUDENT_ID_NAME}: studentUniqueId 
       - operation: snake_case_columns
       - operation: modify_columns
         columns:
@@ -999,3 +1000,18 @@ destinations:
     source: $sources.performanceLevelDescriptors
     template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
+
+  {#
+    This overrides the no-match output header
+    (if this bundle is being used with the `student_id` package)
+
+    Note that this relies on the order of packages in the the `student_id_wrapper`
+    package being {ASSSESSMENT} _then_ `student_id`, not vice-versa.
+  #}
+  {% if '${EDFI_ROSTER_SOURCE_TYPE}' == 'file' or '${EDFI_ROSTER_SOURCE_TYPE}' == 'snowflake' %}
+  input_no_student_id_match:
+    header: |
+      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %}{%endraw%}
+      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %}{%endraw%}
+      {%raw%}{% for k in __row_data__.pop('__row_data__').keys() %}{{k}}{% if not loop.last %},{% endif %}{% endfor %}{%endraw%}
+  {% endif %}
