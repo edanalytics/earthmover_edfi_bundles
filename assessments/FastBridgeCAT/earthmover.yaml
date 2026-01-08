@@ -161,6 +161,14 @@ transformations:
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
 
+      # the Advanced risk level category has different abbreviations in different files
+      - operation: map_values
+        column: risk_level
+        mapping:
+          AD: Advanced
+          AV: Advanced
+          LI: Advanced
+
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
