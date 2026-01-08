@@ -12,7 +12,6 @@ config:
 
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    SCHOOL_YEAR: 2024
     TEST_TYPE: aMath
   macros: >
       {# Extract season from column name. If it's a season-to-season column, use the second season. #}
@@ -146,7 +145,7 @@ transformations:
           assessmentIdentifier: ${TEST_TYPE}
           namespace: "uri://fastbridge.org"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-          school_year: ${SCHOOL_YEAR}
+          school_year: ${API_YEAR}
 
       - operation: combine_columns
         columns:
