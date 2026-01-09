@@ -1,14 +1,17 @@
+name: Check assessment registry.json
+
 on:
   pull_request:
-    branches: [ main ]
-    # Only activate on changes to metadata files or the registry creation itself
+    branches:
+      - main
+      - development
     paths:
-      - 'assessments/**/_metadata.yaml'
-      - 'registry/create-registry.py'
-      - 'registry/requirements.txt'
+      - "assessments/**/_metadata.yaml"
+      - "registry.json"
+      - "create-registry.py"
 
 jobs:
-  check-registry:
+  check-assessment-registry:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,24 +23,24 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install generator requirements
+      - name: Install PyYAML
         run: |
           python -m pip install --upgrade pip
-          pip install -r registry/requirements.txt
+          pip install PyYAML
 
       - name: Generate registry.json
         run: |
-          python registry/generate-registry.py
-          test -f registry.json || (echo "::error::failed to generate registry.json" && exit 1)
+          python create-registry.py assessments --output /tmp/registry.generated.json
+          test -f /tmp/registry.generated.json || (echo "::error::failed to generate registry.json" && exit 1)
 
-      - name: Compare registry.json in branch to freshly-created copy
+      - name: Compare registry.json to generated copy
         run: |
-          if diff -u registry.json registry/registry.json > diff.txt; then
+          if diff -u registry.json /tmp/registry.generated.json > diff.txt; then
             echo "registry.json is correct"
-          else TODO: different text here...
-            echo "::error title=registry.json out of date::The generated registry.json does not match the committed registry/registry.json. Please run 'python registry/create-registry.py' locally and commit the updated registry/registry.json."
+          else
+            echo "::error::registry.json is out of sync with one or more bundle metadata files. Run 'python create-registry.py assessments' locally and commit the updated registry.json. Do not update registry.json directly."
             echo ""
-            echo "---- DIFF (generated vs committed) ----"
+            echo "---- DIFF (committed vs generated) ----"
             sed -n '1,400p' diff.txt
             exit 1
           fi
