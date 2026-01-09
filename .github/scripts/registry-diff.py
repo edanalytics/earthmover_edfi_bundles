@@ -65,7 +65,7 @@ def diff_json(a, b, max_diffs=200):
 
 def main():
     if len(sys.argv) != 3:
-        print("usage: registry_semantic_diff.py <committed.json> <generated.json>")
+        print("usage: registry-diff.py <committed.json> <generated.json>")
         return 2
 
     committed_path = Path(sys.argv[1])
