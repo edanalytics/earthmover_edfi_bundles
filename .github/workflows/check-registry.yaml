@@ -51,6 +51,11 @@ jobs:
                   normalized = [normalize(item) for item in value]
                   if all(isinstance(item, dict) for item in normalized):
                       normalized.sort(key=lambda item: json.dumps(item, sort_keys=True))
+                  elif all(isinstance(item, (str, int, float, bool)) or item is None for item in normalized):
+                      try:
+                          normalized.sort()
+                      except TypeError:
+                          normalized.sort(key=lambda item: str(item))
                   return normalized
               return value
 
