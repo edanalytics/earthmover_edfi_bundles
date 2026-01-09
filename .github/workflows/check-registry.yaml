@@ -34,4 +34,4 @@ jobs:
 
       - name: Compare registry.json to generated copy
         run: |
-          python .github/scripts/registry_semantic_diff.py registry.json /tmp/registry.generated.json
+          python .github/scripts/registry-diff.py registry.json /tmp/registry.generated.json
