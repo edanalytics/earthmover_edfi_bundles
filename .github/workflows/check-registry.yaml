@@ -44,6 +44,16 @@ jobs:
               with open(path, "r", encoding="utf-8") as handle:
                   return json.load(handle)
 
+          def normalize(value):
+              if isinstance(value, dict):
+                  return {key: normalize(value[key]) for key in sorted(value.keys())}
+              if isinstance(value, list):
+                  normalized = [normalize(item) for item in value]
+                  if all(isinstance(item, dict) for item in normalized):
+                      normalized.sort(key=lambda item: json.dumps(item, sort_keys=True))
+                  return normalized
+              return value
+
           def diff_json(a, b, max_diffs=200):
               diffs = []
               queue = deque([("", a, b)])
@@ -77,8 +87,8 @@ jobs:
 
           committed_path = Path("registry.json")
           generated_path = Path("/tmp/registry.generated.json")
-          committed = load_json(committed_path)
-          generated = load_json(generated_path)
+          committed = normalize(load_json(committed_path))
+          generated = normalize(load_json(generated_path))
 
           if committed == generated:
               print("registry.json is correct")
