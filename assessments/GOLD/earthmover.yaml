@@ -1,0 +1,249 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'ChildID,SourceChildID,Identifier,Student ID#'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See the accompanying bundle_metadata.json for a list of required columns for this file
+    # Or see data/sample_anonymized_file.csv
+
+
+{% set assessments = {
+  'Social-Emotional':'GOLD_SE',
+  'Physical': 'GOLD_PHY',
+  'Language': 'GOLD_LANG',
+  'Literacy': 'GOLD_LIT',
+  'Spanish Language': 'GOLD_LANG_Spanish',
+  'Spanish Literacy': 'GOLD_LIT_Spanish',
+  'Cognitive': 'GOLD_COG',
+  'Mathematics':'GOLD_MATH'}
+%}
+
+
+{% set reporting_methods = [
+  'Raw Score',
+  'Scale Score',
+  'WHE',
+  'NN',
+  'K-Readiness'
+]
+%}
+
+transformations:
+  input: #this initial transformation node should not be deleted in order for this bundle to be compatible with the student ID xwalking package
+    source: $sources.input
+    operations: []  
+
+# The original ingested data comes in a very wide format, with each observation containing all past assessment results for each student. We need to pivot the data longer by (1) creating 
+# separate "dataframes" in which each observation represents an assessment result for all reporting methods per student, (2) union them all together.
+
+{% for assessment in assessments.keys() %}
+  {{assessment | replace(" ","_")}}:
+    source: $transformations.input
+    operations:
+      # Because each input file comes per school year and we don't have that information beforehand these transformations dynamically create a `school_year` column based on the data itself.
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: add_columns
+        columns:
+          school_year: '{%raw%}
+            {%- for key in __row_data__.keys() %}
+              {%- if "Fall" in key or "Spring" in key %}
+                {{ key }}{%- if not loop.last %}, {%- endif %}
+              {%- endif %}
+            {%- endfor %}          
+          {%-endraw%}'
+      - operation: modify_columns
+        columns:
+          school_year: "{% raw %}{{__row_data__['school_year'].split(',')[0]|trim}} {% endraw %}"
+          school_year: "{% raw %}{{__row_data__['school_year'].split(' ')[1]}} {{__row_data__['school_year'].split(' ')[2]}}{% endraw %}"
+      - operation: add_columns
+        columns:
+          school_year_int: "{%raw%}{{ school_year.split('/')[1] }}{%endraw%}"
+      - operation: add_columns
+        columns:
+          assessment: {{assessment}}
+          assessment_id: {{assessments.get(assessment)}}
+          namespace: "uri://teachingstrategies.com/product/gold"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          # The inner  `__row_data__` reference creates the original date column name: "[school_year] [assesssment] Date Finalized"
+          # The outer `__row_data__` reference refers to the values under the original date column 
+          admin_date: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " Date Finalized"}}{%raw%}"]}}{%endraw%}' 
+          # Fall back values for cases where admin_date is null
+          standard_admin_date_1: '10/1/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[0]}}{%endraw%}' 
+          standard_admin_date_2: '03/01/{%raw%}{{__row_data__["school_year"].split(" ")[1].split("/")[1]}}{%endraw%}'
+          grade_level_descriptor: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " Age/Grade"]}}{%endraw%}'
+          # Same double-referencing logic as above for each reporting method
+          {%- for reporting_method in reporting_methods %}
+          {{reporting_method}}: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " " ~ reporting_method}}{%raw%}"]}}{%endraw%}'
+          {%- endfor %}
+      - operation: map_values
+        column: grade_level_descriptor
+        map_file: 'seeds/gradeLevelDescriptors.csv'
+      - operation: modify_columns
+        columns:
+          admin_date: '{%raw%}
+            {%- if admin_date != "" %}
+              {{value}}
+            {%- else %}
+              {%-if "Fall" in __row_data__["school_year"] %}
+                {{__row_data__["standard_admin_date_1"]}}
+              {%- else %}
+                {{__row_data__["standard_admin_date_2"]}}
+              {%-endif%}
+            {%-endif%}
+          {%endraw%}'
+      - operation: combine_columns
+        columns:
+          - school_year
+          - admin_date
+          - assessment_id
+          - student_unique_id
+        new_column: student_assessment_id
+      - operation: modify_columns
+        columns:
+          student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
+      - operation: keep_columns
+        columns:
+          - student_unique_id
+          - student_assessment_id
+          - school_year
+          - school_year_int
+          - admin_date
+          - assessment
+          - assessment_id
+          - namespace
+          - descriptor_namespace
+          - grade_level_descriptor
+          - SourceSiteID
+          {%- for reporting_method in reporting_methods %}
+          - {{reporting_method}}
+          {%- endfor %}
+      - operation: filter_rows
+        query: "{%- for reporting_method in reporting_methods -%}
+          (`{{ reporting_method }}` != ''){% if not loop.last %} or {% endif %}
+        {%- endfor -%}"
+        behavior: include
+      - operation: snake_case_columns
+
+{%-endfor%}
+
+  final_result:
+    source: $transformations.{{(assessments.keys())|list|first}}
+    operations:
+      - operation: union
+        sources:
+          {%- for i in range(1, (assessments.keys()|list) | length ) %} 
+          - $transformations.{{(assessments.keys()|list)[i] | replace(" ", "_") }}
+          {%- endfor %}
+
+  # studentAssessmentEducationOrganizationAssociations
+  student_assessment_education_organization_associations:
+    source: $transformations.final_result
+    operations:
+      - operation: add_columns
+        columns:
+          educationOrganizationId: "{%raw%}{{ source_site_id }}{%endraw%}"
+          educationOrganizationAssociationTypeDescriptor: "{%raw%}{{ descriptor_namespace }}/EducationOrganizationAssociationTypeDescriptor#Attribution{%endraw%}"
+      - operation: filter_rows
+        query: educationOrganizationId != ''
+        behavior: include
+
+
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  distinct_grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+          dummy_group_key: "group"
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # Seed file can have multiple Ed-Fi descriptors per original grade
+      - operation: distinct_rows
+        columns:
+          - grade_json
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - dummy_group_key
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          dummy_group_key: "group"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: join
+        sources:
+          - $transformations.distinct_grade_level_descriptors
+        join_type: inner
+        left_key: dummy_group_key
+        right_key: dummy_group_key
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.final_result
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_education_organization_associations
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
