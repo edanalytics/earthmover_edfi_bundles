@@ -1,0 +1,43 @@
+on:
+  pull_request:
+    branches: [ main ]
+    # Only activate on changes to metadata files or the registry creation itself
+    paths:
+      - 'assessments/**/_metadata.yaml'
+      - 'registry/create-registry.py'
+      - 'registry/requirements.txt'
+
+jobs:
+  check-registry:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install generator requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r registry/requirements.txt
+
+      - name: Generate registry.json
+        run: |
+          python registry/generate-registry.py
+          test -f registry.json || (echo "::error::failed to generate registry.json" && exit 1)
+
+      - name: Compare registry.json in branch to freshly-created copy
+        run: |
+          if diff -u registry.json registry/registry.json > diff.txt; then
+            echo "registry.json is correct"
+          else TODO: different text here...
+            echo "::error title=registry.json out of date::The generated registry.json does not match the committed registry/registry.json. Please run 'python registry/create-registry.py' locally and commit the updated registry/registry.json."
+            echo ""
+            echo "---- DIFF (generated vs committed) ----"
+            sed -n '1,400p' diff.txt
+            exit 1
+          fi

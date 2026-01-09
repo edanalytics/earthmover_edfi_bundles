@@ -1,0 +1,46 @@
+name: Check assessment registry.json
+
+on:
+  pull_request:
+    branches:
+      - main
+      - development
+    paths:
+      - "assessments/**/_metadata.yaml"
+      - "registry.json"
+      - "create-registry.py"
+
+jobs:
+  check-assessment-registry:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML
+
+      - name: Generate registry.json
+        run: |
+          python create-registry.py assessments --output /tmp/registry.generated.json
+          test -f /tmp/registry.generated.json || (echo "::error::failed to generate registry.json" && exit 1)
+
+      - name: Compare registry.json to generated copy
+        run: |
+          if diff -u registry.json /tmp/registry.generated.json > diff.txt; then
+            echo "registry.json is correct"
+          else
+            echo "::error::registry.json is out of sync with one or more bundle metadata files. Run 'python create-registry.py assessments' locally and commit the updated registry.json. Do not update registry.json directly."
+            echo ""
+            echo "---- DIFF (committed vs generated) ----"
+            sed -n '1,400p' diff.txt
+            exit 1
+          fi
