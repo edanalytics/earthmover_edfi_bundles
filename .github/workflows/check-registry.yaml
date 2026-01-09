@@ -34,19 +34,4 @@ jobs:
 
       - name: Compare registry.json to generated copy
         run: |
-          set -o pipefail
-          python .github/scripts/registry-diff.py registry.json /tmp/registry.generated.json | tee diff_output.txt
-          status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            {
-              echo "## Registry check failed"
-              echo ""
-              sed -n '1,200p' diff_output.txt
-            } >> "$GITHUB_STEP_SUMMARY"
-            exit "$status"
-          fi
-          {
-            echo "## Registry check passed"
-            echo ""
-            echo "Committed registry.json matches the generated output."
-          } >> "$GITHUB_STEP_SUMMARY"
+          python .github/scripts/registry-diff.py registry.json /tmp/registry.generated.json
