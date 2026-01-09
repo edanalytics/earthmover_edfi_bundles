@@ -7,4 +7,6 @@ input_files:
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
+    description: >
+      The accepted Curriculum Associates file types are diagnostic_results_<subject> or diagnostic_results_<subject>_CONFIDENTIAL, where the subject is math or ela.
 descriptor_mapping_files: ["academicSubjectDescriptors.csv", "assessmentCategoryDescriptors.csv", "gradeLevelDescriptors.csv"]

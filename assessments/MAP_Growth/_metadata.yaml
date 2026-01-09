@@ -7,4 +7,6 @@ input_files:
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
+    description: >
+      The accepted NWEA file types are AssessmentResults or ComboStudentAssessment.
 descriptor_mapping_files: ["academicSubjectDescriptors.csv", "assessmentCategoryDescriptors.csv", "gradeLevelDescriptors.csv"]
