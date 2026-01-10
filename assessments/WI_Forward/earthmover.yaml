@@ -228,7 +228,7 @@ transformations:
       - operation: add_columns
         columns: 
           assessmentIdentifier: "WIForward_{{ assessment.affix }}"
-          namespace: "uri://datarecognitioncorp.com"
+          namespace: "uri://wisedashlocal/datarecognitioncorp.com"
       # map top-level assessment fields per subject
       - operation: duplicate_columns
         columns:
