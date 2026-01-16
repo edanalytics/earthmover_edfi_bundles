@@ -18,50 +18,29 @@ sources:
 
 
 transformations:
-  mammal_species:
-    source: $sources.mammal_species
+  epp:
+    source: $sources.epp
     operations:
-      # before unioning, align the column names between the two files
+      # snake case column names
       - operation: snake_case_columns
-      # add a common name for the group of animals in this file
+      # display result of first operation. only column names should be changed
+      - operation: debug
+      # use a single operation to create a new column and populate it with the grade level range from "Program Name" column
       - operation: add_columns
         columns:
-          family: mammal
-      # ensure the included ID is still unique after the union
-      - operation: modify_columns
-        columns:
-          # transforms id=100 -> id=1_100
-          id: {%raw%}1_{{value}}{%endraw%}
-
-  fish_species:
-    source: $sources.fish_species
-    operations:
-      # remove duplicate rows present in the file
-      - operation: distinct_rows
-        columns: [ id, name, genus, species ]
-      # add a common name for the group of animals in this file
-      - operation: add_columns
-        columns:
-          family: fish
-      # ensure the included ID is still unique after the union
-      - operation: modify_columns
-        columns:
-          # transforms id=11 -> id=3_100
-          id: {%raw%}3_{{value}}{%endraw%}
-
-  animal_species:
-    source: $transformations.mammal_species
-    operations:
-      # perform a SQL-like union between the two source files
-      - operation: union
-        sources:
-          - $transformations.fish_species
+          grade_level_range: {%raw%}{{ program_name.split('_')[1] }}{%endraw%}
+      # display result of second operation. you should see a new column "grade_level_range"
+      - operation: debug
+      # map the column that was just created to valid descriptors
+      - operation: map_values
+        column: grade_level_range
+        map_file: ./seeds/mapping_grade_level_ranges.csv
 
 
 destinations:
-  animals:
-    # write the unioned animal data to a JSONL file
-    source: $transformations.animal_species
-    template: ${BASE_DIR}/templates/animal.jsont
+  epp:
+    # write the transformed educator preparation program data to a JSONL file
+    source: $transformations.epp
+    template: ${BASE_DIR}/templates/epp.jsont
     extension: jsonl
     linearize: True
