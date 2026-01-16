@@ -11,13 +11,9 @@ config:
 
 
 sources:
-  mammal_species:
-    file: ${BASE_DIR}/sources/mammals.csv
+  epp:
+    file: ${INPUT_FILE}
     # the first row in this file is taken to be column names
-    header_rows: 1
-
-  fish_species:
-    file: ${BASE_DIR}/sources/fishes.csv
     header_rows: 1
 
 
