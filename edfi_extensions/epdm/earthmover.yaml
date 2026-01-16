@@ -28,13 +28,15 @@ transformations:
       # use a single operation to create a new column and populate it with the grade level range from "Program Name" column
       - operation: add_columns
         columns:
-          grade_level_range: {%raw%}{{ program_name.split('_')[1] }}{%endraw%}
+          grade_level_range: "{%raw%}{{ program_name.split('_')[1] }}{%endraw%}"
       # display result of second operation. you should see a new column "grade_level_range"
       - operation: debug
       # map the column that was just created to valid descriptors
       - operation: map_values
         column: grade_level_range
         map_file: ./seeds/mapping_grade_level_ranges.csv
+      # display the mapped column
+      - operation: debug
 
 
 destinations:
