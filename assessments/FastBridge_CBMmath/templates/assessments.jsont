@@ -1,0 +1,64 @@
+{# [Reporting Method, Data type] #}
+{%- set possible_scores = [
+  ["District Growth Percentile from Fall", "Percentile"],
+  ["District Growth Percentile from SP 4", "Percentile"],
+  ["District Growth Percentile from Spring", "Percentile"],
+  ["District Growth Percentile from Winter", "Percentile"],
+  ["Growth Percentile by Start Score from Fall", "Percentile"],
+  ["Growth Percentile by Start Score from SP 4", "Percentile"],
+  ["Growth Percentile by Start Score from Spring", "Percentile"],
+  ["Growth Percentile by Start Score from Winter", "Percentile"],
+  ["Growth Score from Fall", "Decimal"],
+  ["Growth Score from SP 4", "Decimal"],
+  ["Growth Score from Spring", "Decimal"],
+  ["Growth Score from Winter", "Decimal"],
+  ["National Growth Percentile from Fall", "Percentile"],
+  ["National Growth Percentile from SP 4", "Percentile"],
+  ["National Growth Percentile from Spring", "Percentile"],
+  ["National Growth Percentile from Winter", "Percentile"],
+  ["LEA Percentile", "Percentile"],
+  ["National Percentile", "Percentile"],
+  ["School Percentile", "Percentile"],
+  ["School Growth Percentile from Fall", "Percentile"],
+  ["School Growth Percentile from SP 4", "Percentile"],
+  ["School Growth Percentile from Spring", "Percentile"],
+  ["School Growth Percentile from Winter", "Percentile"],
+  ["IC per ten minutes", "Decimal"]
+] -%}
+
+{%- set additional_scores = [
+  ["Level", "Level"],
+  ["Items Attempted", "Integer"],
+  ["Items Correct", "Integer"],
+  ["IC per minute", "Decimal"],
+  ["Error", "Integer"],
+] -%}
+
+{%- if assessmentIdentifier in ("FastBridge_CBMmath_Auto", "FastBridge_CBMmath_Process") -%}
+  {%- set possible_scores = additional_scores + possible_scores -%}
+{%- endif -%}
+
+{
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+    }
+  ],
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "performanceLevels": [{{performance_level_json}}],
+  "periods": [{{period_json}}],
+  "scores": [
+    {% for score in possible_scores %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://fastbridge.org/AssessmentReportingMethodDescriptor#{{ score[0] }}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
+    }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
