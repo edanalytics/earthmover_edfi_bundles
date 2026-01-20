@@ -1,0 +1,408 @@
+{%- set possible_scores = [
+  [aut_oreading_graded_response_composite_auto_scaled, "Scale Score", "Decimal"],
+  [aut_oreading_percentile_at_school, "School Percentile", "Percentile"],
+  [aut_oreading_percentile_at_lea, "LEA Percentile", "Percentile"],
+  [aut_oreading_percentile_at_nation, "National Percentile", "Percentile"],
+  [growth_score_from_fall, "Growth Score from Fall", "Decimal"],
+  [school_growth_percentile_from_fall, "School Growth Percentile from Fall", "Percentile"],
+  [district_growth_percentile_from_fall, "District Growth Percentile from Fall", "Percentile"],
+  [national_growth_percentile_from_fall, "National Growth Percentile from Fall", "Percentile"],
+  [growth_percentile_by_start_score_from_fall, "Growth Percentile by Start Score from Fall", "Percentile"],
+  [growth_score_from_winter, "Growth Score from Winter", "Decimal"],
+  [school_growth_percentile_from_winter, "School Growth Percentile from Winter", "Percentile"],
+  [district_growth_percentile_from_winter, "District Growth Percentile from Winter", "Percentile"],
+  [national_growth_percentile_from_winter, "National Growth Percentile from Winter", "Percentile"],
+  [growth_percentile_by_start_score_from_winter, "Growth Percentile by Start Score from Winter", "Percentile"],
+  [growth_score_from_spring, "Growth Score from Spring", "Decimal"],
+  [school_growth_percentile_from_spring, "School Growth Percentile from Spring", "Percentile"],
+  [district_growth_percentile_from_spring, "District Growth Percentile from Spring", "Percentile"],
+  [national_growth_percentile_from_spring, "National Growth Percentile from Spring", "Percentile"],
+  [growth_percentile_by_start_score_from_spring, "Growth Percentile by Start Score from Spring", "Percentile"],
+  [growth_score_from_screening_period_4, "Growth Score from SP 4", "Decimal"],
+  [school_growth_percentile_from_screening_period_4, "School Growth Percentile from SP 4", "Percentile"],
+  [district_growth_percentile_from_screening_period_4, "District Growth Percentile from SP 4", "Percentile"],
+  [national_growth_percentile_from_screening_period_4, "National Growth Percentile from SP 4", "Percentile"],
+  [growth_percentile_by_start_score_from_screening_period_4, "Growth Percentile by Start Score from SP 4", "Percentile"]
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != 'N/A*' -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set obj_assessments = [
+  ['Decoding', decoding_risk_level, [
+    ('Total Items', 'Integer', decoding_total_items),
+    ('Items Correct', 'Integer', decoding_items_correct),
+    ('IC per minute', 'Decimal', decoding_ic_per_minute),
+    ('Theta', 'Decimal', decoding_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', decoding_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', decoding_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', decoding_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', decoding_percentile_at_school),
+    ('LEA Percentile', 'Percentile', decoding_percentile_at_lea),
+    ('National Percentile', 'Percentile', decoding_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_1),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_1),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_1),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_1),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_1),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_1),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_1),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_1),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_1),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_1),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_1),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_1),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_1),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_1),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_1),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_1),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_1),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_1),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_1),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_1)
+  ]],
+  ['Encoding', encoding_risk_level, [
+    ('Total Items', 'Integer', encoding_total_items),
+    ('Items Correct', 'Integer', encoding_items_correct),
+    ('IC per minute', 'Decimal', encoding_ic_per_minute),
+    ('Theta', 'Decimal', encoding_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', encoding_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', encoding_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', encoding_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', encoding_percentile_at_school),
+    ('LEA Percentile', 'Percentile', encoding_percentile_at_lea),
+    ('National Percentile', 'Percentile', encoding_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_2),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_2),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_2),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_2),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_2),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_2),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_2),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_2),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_2),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_2),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_2),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_2),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_2),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_2),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_2),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_2),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_2),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_2),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_2),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_2)
+  ]],
+  ['Identification', identification_risk_level, [
+    ('Total Items', 'Integer', identification_total_items),
+    ('Items Correct', 'Integer', identification_items_correct),
+    ('IC per minute', 'Decimal', identification_ic_per_minute),
+    ('Theta', 'Decimal', identification_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', identification_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', identification_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', identification_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', identification_percentile_at_school),
+    ('LEA Percentile', 'Percentile', identification_percentile_at_lea),
+    ('National Percentile', 'Percentile', identification_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_3),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_3),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_3),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_3),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_3),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_3),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_3),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_3),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_3),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_3),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_3),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_3),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_3),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_3),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_3),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_3),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_3),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_3),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_3),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_3)
+  ]],
+  ['LetterNames', letter_names_risk_level, [
+    ('Total Items', 'Integer', letter_names_total_items),
+    ('Items Correct', 'Integer', letter_names_items_correct),
+    ('IC per minute', 'Decimal', letter_names_ic_per_minute),
+    ('Theta', 'Decimal', letter_names_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', letter_names_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', letter_names_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', letter_names_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', letter_names_percentile_at_school),
+    ('LEA Percentile', 'Percentile', letter_names_percentile_at_lea),
+    ('National Percentile', 'Percentile', letter_names_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_4),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_4),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_4),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_4),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_4),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_4),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_4),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_4),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_4),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_4),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_4),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_4),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_4),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_4),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_4),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_4),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_4),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_4),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_4),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_4)
+  ]],
+  ['LetterSounds', letter_sounds_risk_level, [
+    ('Total Items', 'Integer', letter_sounds_total_items),
+    ('Items Correct', 'Integer', letter_sounds_items_correct),
+    ('IC per minute', 'Decimal', letter_sounds_ic_per_minute),
+    ('Theta', 'Decimal', letter_sounds_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', letter_sounds_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', letter_sounds_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', letter_sounds_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', letter_sounds_percentile_at_school),
+    ('LEA Percentile', 'Percentile', letter_sounds_percentile_at_lea),
+    ('National Percentile', 'Percentile', letter_sounds_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_5),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_5),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_5),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_5),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_5),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_5),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_5),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_5),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_5),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_5),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_5),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_5),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_5),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_5),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_5),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_5),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_5),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_5),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_5),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_5)
+  ]],
+  ['Morphology', morphology_risk_level, [
+    ('Total Items', 'Integer', morphology_total_items),
+    ('Items Correct', 'Integer', morphology_items_correct),
+    ('IC per minute', 'Decimal', morphology_ic_per_minute),
+    ('Theta', 'Decimal', morphology_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', morphology_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', morphology_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', morphology_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', morphology_percentile_at_school),
+    ('LEA Percentile', 'Percentile', morphology_percentile_at_lea),
+    ('National Percentile', 'Percentile', morphology_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_6),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_6),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_6),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_6),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_6),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_6),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_6),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_6),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_6),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_6),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_6),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_6),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_6),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_6),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_6),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_6),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_6),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_6),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_6),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_6)
+  ]],
+  ['MatchingSynonyms', matching_synonyms_risk_level, [
+    ('Total Items', 'Integer', matching_synonyms_total_items),
+    ('Items Correct', 'Integer', matching_synonyms_items_correct),
+    ('IC per minute', 'Decimal', matching_synonyms_ic_per_minute),
+    ('Theta', 'Decimal', matching_synonyms_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', matching_synonyms_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', matching_synonyms_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', matching_synonyms_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', matching_synonyms_percentile_at_school),
+    ('LEA Percentile', 'Percentile', matching_synonyms_percentile_at_lea),
+    ('National Percentile', 'Percentile', matching_synonyms_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_7),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_7),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_7),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_7),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_7),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_7),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_7),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_7),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_7),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_7),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_7),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_7),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_7),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_7),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_7),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_7),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_7),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_7),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_7),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_7)
+  ]],
+  ['Vocabulary', vocabulary_risk_level, [
+    ('Total Items', 'Integer', vocabulary_total_items),
+    ('Items Correct', 'Integer', vocabulary_items_correct),
+    ('IC per minute', 'Decimal', vocabulary_ic_per_minute),
+    ('Theta', 'Decimal', vocabulary_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', vocabulary_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', vocabulary_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', vocabulary_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', vocabulary_percentile_at_school),
+    ('LEA Percentile', 'Percentile', vocabulary_percentile_at_lea),
+    ('National Percentile', 'Percentile', vocabulary_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_8),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_8),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_8),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_8),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_8),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_8),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_8),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_8),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_8),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_8),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_8),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_8),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_8),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_8),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_8),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_8),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_8),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_8),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_8),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_8)
+  ]],
+  ['WarmUp', warm_up_risk_level, [
+    ('Total Items', 'Integer', warm_up_total_items),
+    ('Items Correct', 'Integer', warm_up_items_correct),
+    ('IC per minute', 'Decimal', warm_up_ic_per_minute),
+    ('Theta', 'Decimal', warm_up_graded_response_subtest_auto_theta),
+    ('SEM', 'Decimal', warm_up_graded_response_subtest_auto_sem),
+    ('Scale Score', 'Decimal', warm_up_graded_response_subtest_auto_scaled),
+    ('Error', 'Integer', warm_up_error_total_items_items_correct_),
+    ('School Percentile', 'Percentile', warm_up_percentile_at_school),
+    ('LEA Percentile', 'Percentile', warm_up_percentile_at_lea),
+    ('National Percentile', 'Percentile', warm_up_percentile_at_nation),
+    ('Growth Score from Fall', 'Decimal', growth_score_from_fall_9),
+    ('Growth Score from Winter', 'Decimal', growth_score_from_winter_9),
+    ('Growth Score from Spring', 'Decimal', growth_score_from_spring_9),
+    ('Growth Score from SP 4', 'Decimal', growth_score_from_screening_period_4_9),
+    ('Growth Percentile by Start Score from Fall', 'Percentile', growth_percentile_by_start_score_from_fall_9),
+    ('Growth Percentile by Start Score from Winter', 'Percentile', growth_percentile_by_start_score_from_winter_9),
+    ('Growth Percentile by Start Score from Spring', 'Percentile', growth_percentile_by_start_score_from_spring_9),
+    ('Growth Percentile by Start Score from SP 4', 'Percentile', growth_percentile_by_start_score_from_screening_period_4_9),
+    ('School Growth Percentile from Fall', 'Percentile', school_growth_percentile_from_fall_9),
+    ('School Growth Percentile from Winter', 'Percentile', school_growth_percentile_from_winter_9),
+    ('School Growth Percentile from Spring', 'Percentile', school_growth_percentile_from_spring_9),
+    ('School Growth Percentile from SP 4', 'Percentile', school_growth_percentile_from_screening_period_4_9),
+    ('District Growth Percentile from Fall', 'Percentile', district_growth_percentile_from_fall_9),
+    ('District Growth Percentile from Winter', 'Percentile', district_growth_percentile_from_winter_9),
+    ('District Growth Percentile from Spring', 'Percentile', district_growth_percentile_from_spring_9),
+    ('District Growth Percentile from SP 4', 'Percentile', district_growth_percentile_from_screening_period_4_9),
+    ('National Growth Percentile from Fall', 'Percentile', national_growth_percentile_from_fall_9),
+    ('National Growth Percentile from Winter', 'Percentile', national_growth_percentile_from_winter_9),
+    ('National Growth Percentile from Spring', 'Percentile', national_growth_percentile_from_spring_9),
+    ('National Growth Percentile from SP 4', 'Percentile', national_growth_percentile_from_screening_period_4_9)
+  ]]
+] -%}
+
+{%- set filtered_obj_assessments = [] -%}
+{%- for obj in obj_assessments -%}
+  {%- set valid_scores = [] -%}
+  {%- for score in obj[2] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] != 'N/A*' and score[2] != 'N/A' -%}
+      {%- set _ = valid_scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if valid_scores -%}
+    {%- set _ = filtered_obj_assessments.append([obj[0], obj[1], valid_scores]) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id|int}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+
+  {%- if scores -%}
+  , "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if aut_oreading_risk_level is not none and aut_oreading_risk_level | length -%}
+  , "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{aut_oreading_risk_level}}",
+      "performanceLevelMet": true
+    }
+  ]
+  {%- endif -%}
+
+  {%- if filtered_obj_assessments -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj in filtered_obj_assessments -%}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{obj[0]}}",
+          "namespace": "{{namespace}}"
+        },
+        "scoreResults": [
+          {%- for score in obj[2] -%}
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+              "result": "{{score[2]}}"
+            }{% if not loop.last %},{% endif %}
+          {%- endfor -%}
+        ]
+        {%- if obj[1] is not none and obj[1] | length -%}
+        , "performanceLevels": [
+          {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[1]}}",
+            "performanceLevelMet": true
+          }
+        ]
+        {%- endif -%}
+      }{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+}
