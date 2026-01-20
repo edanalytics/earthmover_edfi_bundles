@@ -98,7 +98,7 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
-      
+
       - operation: snake_case_columns
 
       - operation: melt
@@ -143,7 +143,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: ${TEST_TYPE}
-          namespace: "uri://fastbridge.org"
+          namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           school_year: ${API_YEAR}
 
@@ -176,7 +176,7 @@ transformations:
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
-        left_keys: 
+        left_keys:
           - assessmentIdentifier
           - grade
         right_keys:
@@ -227,7 +227,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org"
+          base_namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           performance_level_json: >
             {%raw-%}
@@ -308,7 +308,7 @@ transformations:
           - $transformations.assessment_period_descriptors
         join_type: inner
         left_key: assessmentIdentifier
-        right_key: assessmentIdentifier  
+        right_key: assessmentIdentifier
 
 destinations:
   assessments:

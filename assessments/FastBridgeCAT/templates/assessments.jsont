@@ -27,7 +27,7 @@
   ["School Growth Percentile from Spring", "Percentile"],
   ["School Growth Percentile from Winter", "Percentile"],
   ["Test Theta", "Decimal"],
-  [quantile_lexile, quantile_lexile, "uri://fastbridge.org"],
+  [quantile_lexile, quantile_lexile, "uri://fastbridge.org/assessment"],
 ] -%}
 
 {
@@ -39,7 +39,7 @@
   "assessmentIdentifier": "{{assessmentIdentifier}}",
   "namespace": "{{assessmentNamespace}}",
   "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "uri://fastbridge.org/AssessmentCategoryDescriptor#Screening",
+  "assessmentCategoryDescriptor": "uri://fastbridge.org/assessment/AssessmentCategoryDescriptor#Screening",
   "assessmentFamily": "FastBridge",
   "assessmentTitle": "{{assessmentTitle}}",
   "performanceLevels": [{{performance_level_json}}],
@@ -47,7 +47,7 @@
   "scores": [
     {% for score in possible_scores %}
     {
-      "assessmentReportingMethodDescriptor": "uri://fastbridge.org/AssessmentReportingMethodDescriptor#{{ score[0] }}",
+      "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{ score[0] }}",
       "resultDatatypeTypeDescriptor": "{{ score[2] or 'uri://ed-fi.org' }}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
     }
     {% if not loop.last %},{% endif %}
