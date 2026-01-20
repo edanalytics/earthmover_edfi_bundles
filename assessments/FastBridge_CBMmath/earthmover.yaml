@@ -2,7 +2,7 @@ version: 2
 
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -311,11 +311,6 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
