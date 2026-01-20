@@ -13,7 +13,7 @@ config:
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Student ID,Secondary Student ID
-    DESCRIPTOR_NAMESPACE_OVERRIDE: uri://ed-fi.org
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 sources:
   input:
@@ -119,7 +119,7 @@ transformations:
       - operation: add_columns
         columns:
           schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
       - operation: map_values
         column: Class_Grade
         map_file: ./seeds/gradeMappings.csv
@@ -354,7 +354,7 @@ transformations:
         columns:
           join_key: "1"
           assessmentReportingMethodDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
-          resultDatatypeTypeDescriptor: "{%raw%}${DESCRIPTOR_NAMESPACE_OVERRIDE}/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
+          resultDatatypeTypeDescriptor: "{%raw%}${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{datatype}}{%endraw%}"
       - operation: add_columns
         columns:
           scores_json: >
@@ -388,7 +388,7 @@ transformations:
       - operation: add_columns
         columns:
           join_key: "1"
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
       
   assessments:
     source: $transformations.assessments_source_modified
@@ -514,7 +514,7 @@ transformations:
         columns:
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Date_Tested}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
-          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE_OVERRIDE}
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
           # Information regarding Form and Level for the assessment
           serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
       # filter out rows with missing student IDs
