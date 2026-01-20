@@ -1,0 +1,243 @@
+version: 2
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: false
+  show_stacktrace: true
+  parameter_defaults:
+    # You can set these values at the command line or leave the defaults
+    OUTPUT_DIR: ./output/
+    STATE_FILE: ./tmp/.earthmover/runs.csv
+    API_YEAR: ''
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1    
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/mapping_grade.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+      source: $sources.input
+      operations: []
+
+  stage_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          to: Grade_Descriptor
+      - operation: keep_columns
+        columns: 
+          - Grade_Descriptor
+          - from
+
+  # modify input for basic mappings
+  cleaned_input:
+    source: $transformations.input
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stage_grade_level
+        join_type: left
+        left_key: GradeLevel
+        right_key: from
+        right_keep_columns: 
+          - Grade_Descriptor
+      - operation: date_format
+        columns: 
+          - DateTaken
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+          descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
+          SchoolYear: "{%raw%}{{ DateTaken[:4] | int + 1 if DateTaken[5:7] | int >= 7 else DateTaken[:4] | int }}{%endraw%}"    
+      # rename student id column after x-walk operation
+      - operation: modify_columns
+        columns:
+          ${STUDENT_ID_NAME}: "{% raw %}{{ ${STUDENT_ID_NAME} | trim }}{% endraw %}"
+      - operation: filter_rows
+        query: ${STUDENT_ID_NAME} != "" and ${STUDENT_ID_NAME} != None
+        behavior: include
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+
+  
+  
+  assessment_reporting_method_score_descriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: filter_rows
+        query: isScoreMetric == "1"
+        behavior: include
+
+  grade_level_descriptors:
+    source: $transformations.stage_grade_level 
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+          grade_json: >
+            {%raw-%}
+            {
+              "gradeLevelDescriptor": "{{Grade_Descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - joinKey
+          - grade_json
+
+  score_reporting_method_descriptors:
+    source: $transformations.assessment_reporting_method_score_descriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+          score_json: >  
+              {%raw-%}  
+              {
+                "assessmentReportingMethodDescriptor": "{{ namespace }}#{{codeValue}}",
+                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{datatype}}"  
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          score_json: agg(score_json,,)  
+
+  performance_descriptors:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+          performance_json: >  
+              {%raw-%}  
+              {
+                "assessmentReportingMethodDescriptor": "{{ reportingMethodDescriptor }}",
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"  
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          performance_json: agg(performance_json,,)      
+ 
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.score_reporting_method_descriptors
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.performance_descriptors
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+       
+  student_assessments:
+    source: $transformations.cleaned_input
+    operations:
+      - operation: join
+        sources:
+          - $transformations.assessments
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: add_columns
+        columns:
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DateTaken}}-{{assessmentIdentifier}}-{{TextReading}}{%endraw%}"  
+          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+
+  prepare_student_assessment_valid_school:
+    source: $transformations.student_assessments
+    operations:
+      - operation: filter_rows
+        query: SchoolCode != "" and SchoolCode != None and SchoolCode != "NULL"
+        behavior: include
+      - operation: distinct_rows
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment_valid_school
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
