@@ -5,13 +5,17 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: ${STATE_FILE}
+  state_file: state.csv
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: studentId
+    # STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    STUDENT_ID_NAME: MOSIS_STATE_ID
+    # POSSIBLE_STUDENT_ID_COLUMNS: studentId
+    POSSIBLE_STUDENT_ID_COLUMNS: MOSIS_STATE_ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    EDFI_DS_VERSION: 5
+    OUTPUT_DIR: ./output
 
 sources:
   assessments:
@@ -32,7 +36,8 @@ sources:
 
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ${INPUT_FILE}
+    # file: ${INPUT_FILE}
+    file: ./data/2025_MAP_Data_VAM_Math-info-removed.xlsx
     header_rows: 1
     # See the accompanying bundle_metadata.json for a list of required columns for this file
     # Or see data/sample_anonymized_file.csv
@@ -48,7 +53,7 @@ transformations:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
-        columns: 
+        columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: add_columns
         columns:
@@ -56,24 +61,24 @@ transformations:
           namespace: "uri://fakeassessmentvendor.com"
       - operation: combine_columns
         columns:
-          - studentId
-          - adminDate
+          - studentUniqueId
+          # - adminDate
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
         columns:
-          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
-      - operation: join
-        sources:
-          - $sources.gradeLevelDescriptors
-        join_type: inner
-        # change this to match the grade from the file
-        left_keys: 
-          - grade
-          - assessmentIdentifier
-        right_keys: 
-          - originalGrade
-          - assessmentIdentifier
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+      # - operation: join
+      #   sources:
+      #     - $sources.gradeLevelDescriptors
+      #   join_type: inner
+      #   # change this to match the grade from the file
+      #   left_keys:
+      #     - grade
+      #     - assessmentIdentifier
+      #   right_keys:
+      #     - originalGrade
+      #     - assessmentIdentifier
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -83,7 +88,7 @@ transformations:
       - operation: add_columns
         columns:
           grade_json: >
-            {%raw-%}  
+            {%raw-%}
             {
               "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
@@ -95,7 +100,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns: 
+        create_columns:
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns

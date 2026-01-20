@@ -1,4 +1,4 @@
-{%- set possible_scores = 
+{%- set possible_scores =
   [
     [scaleScore, "Scale Score", "Integer"],
     [sem, "SEM", "Integer"]
@@ -11,7 +11,7 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- set possible_perf_levels = 
+{%- set possible_perf_levels =
   [
     [performanceLevel, "Performance Level", "Level"],
     [goalMet, "Goat Met", "Level"]
@@ -24,7 +24,7 @@
   {%- endif -%}
 {%- endfor -%}
 
-{% set possible_obj_assess = 
+{% set possible_obj_assess =
   [
     ['Math1', math1Percentage, math1Level],
     ['Math2', math2Percentage, math2Level],
@@ -97,11 +97,8 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
       }
-    ] 
+    ]
   } {% if not loop.last %},{% endif %}
   {% endfor %}
   ]
