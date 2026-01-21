@@ -1,0 +1,23 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+    }
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score Standard Error",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal"
+    }
+  ],
+  "performanceLevels": [{{performance_level_json}}]
+}

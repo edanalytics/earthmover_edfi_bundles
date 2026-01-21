@@ -1,0 +1,10 @@
+display_name: "California Educator Reporting System (CERS) Assessment Results - District/School Exports"
+path: "assessments/CERS"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data - District/School Export"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
+descriptor_mapping_files: ["assessmentGradeLevelDescriptors.csv", "studentGradeLevelDescriptors.csv"]
