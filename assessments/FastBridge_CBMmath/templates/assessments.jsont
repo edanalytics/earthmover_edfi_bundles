@@ -55,7 +55,7 @@
   "scores": [
     {% for score in possible_scores %}
     {
-      "assessmentReportingMethodDescriptor": "uri://fastbridge.org/AssessmentReportingMethodDescriptor#{{ score[0] }}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ score[0] }}",
       "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
     }
     {% if not loop.last %},{% endif %}
