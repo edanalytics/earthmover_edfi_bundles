@@ -120,9 +120,19 @@ transformations:
         columns:
           schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
-      - operation: map_values
-        column: Class_Grade
-        map_file: ./seeds/gradeMappings.csv
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_key: Class_Grade
+        right_key: from
+      - operation: modify_columns
+        columns:
+          Class_Grade: "{%raw%}{{ to if to else Class_Grade }}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - from
+          - to
       - operation: map_values
         column: Semester
         mapping:
