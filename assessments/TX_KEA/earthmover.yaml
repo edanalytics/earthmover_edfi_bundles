@@ -1011,7 +1011,7 @@ destinations:
   {% if '${EDFI_ROSTER_SOURCE_TYPE}' == 'file' or '${EDFI_ROSTER_SOURCE_TYPE}' == 'snowflake' %}
   input_no_student_id_match:
     header: |
-      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %}{%endraw%}
-      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %}{%endraw%}
+      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %},extra_runway_column{%endraw%}
+      {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %},extra_runway_column{%endraw%}
       {%raw%}{% for k in __row_data__.pop('__row_data__').keys() %}{{k}}{% if not loop.last %},{% endif %}{% endfor %}{%endraw%}
   {% endif %}
