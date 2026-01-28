@@ -1,0 +1,23 @@
+display_name: "FastBridgeCAT aMath/aReading"
+path: "assessments/FastBridgeCAT"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+  - display_name: "Test Type"
+    env_var: "TEST_TYPE"
+    is_required: true
+    allowed_values:
+      - aMath
+      - aReading
+descriptor_mapping_files:
+  - academicSubjectDescriptors.csv
+  - gradeLevelDescriptors.csv
+  - assessmentCategoryDescriptors.csv

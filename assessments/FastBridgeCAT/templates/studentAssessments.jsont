@@ -1,0 +1,73 @@
+{%- set possible_scores = [
+  [district_growth_percentile_from_fall, "District Growth Percentile from Fall", "Percentile"],
+  [district_growth_percentile_from_screening_period_4, "District Growth Percentile from SP 4", "Percentile"],
+  [district_growth_percentile_from_spring, "District Growth Percentile from Spring", "Percentile"],
+  [district_growth_percentile_from_winter, "District Growth Percentile from Winter", "Percentile"],
+  [growth_percentile_by_start_score_from_fall, "Growth Percentile by Start Score from Fall", "Percentile"],
+  [growth_percentile_by_start_score_from_screening_period_4, "Growth Percentile by Start Score from SP 4", "Percentile"],
+  [growth_percentile_by_start_score_from_spring, "Growth Percentile by Start Score from Spring", "Percentile"],
+  [growth_percentile_by_start_score_from_winter, "Growth Percentile by Start Score from Winter", "Percentile"],
+  [growth_score_from_fall, "Growth Score from Fall", "Decimal"],
+  [growth_score_from_screening_period_4, "Growth Score from SP 4", "Decimal"],
+  [growth_score_from_spring, "Growth Score from Spring", "Decimal"],
+  [growth_score_from_winter, "Growth Score from Winter", "Decimal"],
+  [national_growth_percentile_from_fall, "National Growth Percentile from Fall", "Percentile"],
+  [national_growth_percentile_from_screening_period_4, "National Growth Percentile from SP 4", "Percentile"],
+  [national_growth_percentile_from_spring, "National Growth Percentile from Spring", "Percentile"],
+  [national_growth_percentile_from_winter, "National Growth Percentile from Winter", "Percentile"],
+  [percentile_at_lea, "LEA Percentile", "Percentile"],
+  [percentile_at_nation, "National Percentile", "Percentile"],
+  [percentile_at_school, "School Percentile", "Percentile"],
+  [school_growth_percentile_from_fall, "School Growth Percentile from Fall", "Percentile"],
+  [school_growth_percentile_from_screening_period_4, "School Growth Percentile from SP 4", "Percentile"],
+  [school_growth_percentile_from_spring, "School Growth Percentile from Spring", "Percentile"],
+  [school_growth_percentile_from_winter, "School Growth Percentile from Winter", "Percentile"],
+  [test_theta, "Test Theta", "Decimal"],
+  [quantile, "Quantile", "Quantile", "uri://fastbridge.org/assessment"],
+  [lexile, "Lexile", "Lexile", "uri://fastbridge.org/assessment"],
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}",
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+
+  {%- if scores -%}
+  , "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "{{score[3] or descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if risk_level is not none and risk_level | length -%}
+  , "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{risk_level}}"
+    }
+  ]
+  {% endif %}
+}
