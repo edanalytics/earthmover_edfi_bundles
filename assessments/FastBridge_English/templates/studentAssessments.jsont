@@ -28,178 +28,134 @@
 
 {%- set scores = [] -%}
 {%- for score in possible_scores -%}
-  {%- if score[0] is not none and score[0] | length -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != 'N/A*' -%}
     {%- set _ = scores.append(score) -%}
-  {%- endif -%}
-{%- endfor -%}
-
-{%- set possible_perf_levels = [
-  [early_reading_english_risk_level, "Risk Level", "Level"]
-] -%}
-
-{%- set perf_levels = [] -%}
-{%- for level in possible_perf_levels -%}
-  {%- if level[0] is not none and level[0] | length -%}
-    {%- set _ = perf_levels.append(level) -%}
   {%- endif -%}
 {%- endfor -%}
 
 
 {%- set obj_assessments = [
-  ['CBMREnglish', [
+  ['CBMREnglish', cbmr_english_risk_level, [
     ('Total Words Read', 'Integer', cbmr_english_total_words_read),
     ('Words Read Correct', 'Integer', cbmr_english_words_read_correct),
     ('WRC per minute', 'Decimal', cbmr_english_wrc_per_minute),
     ('Median Accuracy', 'Decimal', cbmr_english_median_accuracy),
-    ('Error', 'Integer', cbmr_english_error_twr_wrc),
     ('School Percentile', 'Percentile', cbmr_english_percentile_at_school),
     ('LEA Percentile', 'Percentile', cbmr_english_percentile_at_lea),
-    ('National Percentile', 'Percentile', cbmr_english_percentile_at_nation),
-    ('Risk Level', 'Level', cbmr_english_risk_level)
+    ('National Percentile', 'Percentile', cbmr_english_percentile_at_nation)
   ]],
-  ['ConceptsOfPrint', [
+  ['ConceptsOfPrint', concepts_of_print_risk_level, [
     ('Total Items', 'Integer', concepts_of_print_total_items),
     ('Items Correct', 'Integer', concepts_of_print_items_correct),
     ('IC per minute', 'Decimal', concepts_of_print_ic_per_minute),
-    ('Error', 'Integer', concepts_of_print_error_total_items_items_correct),
     ('School Percentile', 'Percentile', concepts_of_print_percentile_at_school),
     ('LEA Percentile', 'Percentile', concepts_of_print_percentile_at_lea),
-    ('National Percentile', 'Percentile', concepts_of_print_percentile_at_nation),
-    ('Risk Level', 'Level', concepts_of_print_risk_level)
+    ('National Percentile', 'Percentile', concepts_of_print_percentile_at_nation)
   ]],
-  ['DecodableWords', [
+  ['DecodableWords', decodable_words_risk_level, [
     ('Total Words Read', 'Integer', decodable_words_total_words_read),
     ('Words Read Correct', 'Integer', decodable_words_words_read_correct),
     ('WRC per minute', 'Decimal', decodable_words_wrc_per_minute),
-    ('Error', 'Integer', decodable_words_error),
     ('School Percentile', 'Percentile', decodable_words_percentile_at_school),
     ('LEA Percentile', 'Percentile', decodable_words_percentile_at_lea),
-    ('National Percentile', 'Percentile', decodable_words_percentile_at_nation),
-    ('Risk Level', 'Level', decodable_words_risk_level)
+    ('National Percentile', 'Percentile', decodable_words_percentile_at_nation)
   ]],
-  ['LetterNames', [
+  ['LetterNames', letter_names_risk_level, [
     ('Total Words Read', 'Integer', letter_names_total_words_read),
     ('Words Read Correct', 'Integer', letter_names_words_read_correct),
     ('WRC per minute', 'Decimal', letter_names_wrc_per_minute),
-    ('Error', 'Integer', letter_names_error),
     ('School Percentile', 'Percentile', letter_names_percentile_at_school),
     ('LEA Percentile', 'Percentile', letter_names_percentile_at_lea),
-    ('National Percentile', 'Percentile', letter_names_percentile_at_nation),
-    ('Risk Level', 'Level', letter_names_risk_level)
+    ('National Percentile', 'Percentile', letter_names_percentile_at_nation)
   ]],
-  ['LetterSounds', [
+  ['LetterSounds', letter_sounds_risk_level, [
     ('Total Words Read', 'Integer', letter_sounds_total_words_read),
     ('Words Read Correct', 'Integer', letter_sounds_words_read_correct),
     ('WRC per minute', 'Decimal', letter_sounds_wrc_per_minute),
-    ('Error', 'Integer', letter_sounds_error),
     ('School Percentile', 'Percentile', letter_sounds_percentile_at_school),
     ('LEA Percentile', 'Percentile', letter_sounds_percentile_at_lea),
-    ('National Percentile', 'Percentile', letter_sounds_percentile_at_nation),
-    ('Risk Level', 'Level', letter_sounds_risk_level)
+    ('National Percentile', 'Percentile', letter_sounds_percentile_at_nation)
   ]],
-  ['NonsenseWords', [
+  ['NonsenseWords', nonsense_words_risk_level, [
     ('Total Words Read', 'Integer', nonsense_words_total_words_read),
     ('Words Read Correct', 'Integer', nonsense_words_words_read_correct),
     ('WRC per minute', 'Decimal', nonsense_words_wrc_per_minute),
-    ('Error', 'Integer', nonsense_words_error),
     ('School Percentile', 'Percentile', nonsense_words_percentile_at_school),
     ('LEA Percentile', 'Percentile', nonsense_words_percentile_at_lea),
-    ('National Percentile', 'Percentile', nonsense_words_percentile_at_nation),
-    ('Risk Level', 'Level', nonsense_words_risk_level)
+    ('National Percentile', 'Percentile', nonsense_words_percentile_at_nation)
   ]],
-  ['OnsetSounds', [
+  ['OnsetSounds', onset_sounds_risk_level, [
     ('Total Items', 'Integer', onset_sounds_total_items),
     ('Items Correct', 'Integer', onset_sounds_items_correct),
     ('IC per minute', 'Decimal', onset_sounds_ic_per_minute),
-    ('Error', 'Integer', onset_sounds_error_total_items_items_correct),
     ('School Percentile', 'Percentile', onset_sounds_percentile_at_school),
     ('LEA Percentile', 'Percentile', onset_sounds_percentile_at_lea),
-    ('National Percentile', 'Percentile', onset_sounds_percentile_at_nation),
-    ('Risk Level', 'Level', onset_sounds_risk_level)
+    ('National Percentile', 'Percentile', onset_sounds_percentile_at_nation)
   ]],
-  ['OralRepetition', [
+  ['OralRepetition', oral_repetition_risk_level, [
     ('Total Items', 'Integer', oral_repetition_total_items),
     ('Items Correct', 'Integer', oral_repetition_items_correct),
     ('IC per minute', 'Decimal', oral_repetition_ic_per_minute),
-    ('Error', 'Integer', oral_repetition_error_total_items_items_correct),
     ('School Percentile', 'Percentile', oral_repetition_percentile_at_school),
     ('LEA Percentile', 'Percentile', oral_repetition_percentile_at_lea),
-    ('National Percentile', 'Percentile', oral_repetition_percentile_at_nation),
-    ('Risk Level', 'Level', oral_repetition_risk_level)
+    ('National Percentile', 'Percentile', oral_repetition_percentile_at_nation)
   ]],
-  ['SentenceReading', [
-    ('Sentences Read Correct', 'Integer', sentence_reading_sentences_read_correct),
-    ('SRC per minute', 'Decimal', sentence_reading_src_per_minute),
-    ('Error', 'Integer', sentence_reading_error),
+  ['SentenceReading', sentence_reading_risk_level, [
+    ('Total Words Read', 'Integer', sentence_reading_total_words_read),
+    ('Words Read Correct', 'Integer', sentence_reading_words_read_correct),
+    ('WRC per minute', 'Decimal', sentence_reading_wrc_per_minute),
     ('School Percentile', 'Percentile', sentence_reading_percentile_at_school),
     ('LEA Percentile', 'Percentile', sentence_reading_percentile_at_lea),
-    ('National Percentile', 'Percentile', sentence_reading_percentile_at_nation),
-    ('Risk Level', 'Level', sentence_reading_risk_level)
+    ('National Percentile', 'Percentile', sentence_reading_percentile_at_nation)
   ]],
-  ['SightWords', [
-    ('Words Correct', 'Integer', sight_words_words_correct),
-    ('WC per minute', 'Decimal', sight_words_wc_per_minute),
-    ('Error', 'Integer', sight_words_error),
+  ['SightWords', sight_words_risk_level, [
+    ('Total Words Read', 'Integer', sight_words_total_words_read),
+    ('Words Read Correct', 'Integer', sight_words_words_read_correct),
+    ('WRC per minute', 'Decimal', sight_words_wrc_per_minute),
     ('School Percentile', 'Percentile', sight_words_percentile_at_school),
     ('LEA Percentile', 'Percentile', sight_words_percentile_at_lea),
-    ('National Percentile', 'Percentile', sight_words_percentile_at_nation),
-    ('Risk Level', 'Level', sight_words_risk_level)
+    ('National Percentile', 'Percentile', sight_words_percentile_at_nation)
   ]],
-  ['WordBlending', [
+  ['WordBlending', word_blending_risk_level, [
     ('Total Items', 'Integer', word_blending_total_items),
     ('Items Correct', 'Integer', word_blending_items_correct),
     ('IC per minute', 'Decimal', word_blending_ic_per_minute),
-    ('Error', 'Integer', word_blending_error_total_items_items_correct),
     ('School Percentile', 'Percentile', word_blending_percentile_at_school),
     ('LEA Percentile', 'Percentile', word_blending_percentile_at_lea),
-    ('National Percentile', 'Percentile', word_blending_percentile_at_nation),
-    ('Risk Level', 'Level', word_blending_risk_level)
+    ('National Percentile', 'Percentile', word_blending_percentile_at_nation)
   ]],
-  ['WordRhyming', [
+  ['WordRhyming', word_rhyming_risk_level, [
     ('Total Items', 'Integer', word_rhyming_total_items),
     ('Items Correct', 'Integer', word_rhyming_items_correct),
     ('IC per minute', 'Decimal', word_rhyming_ic_per_minute),
-    ('Error', 'Integer', word_rhyming_error_total_items_items_correct),
     ('School Percentile', 'Percentile', word_rhyming_percentile_at_school),
     ('LEA Percentile', 'Percentile', word_rhyming_percentile_at_lea),
-    ('National Percentile', 'Percentile', word_rhyming_percentile_at_nation),
-    ('Risk Level', 'Level', word_rhyming_risk_level)
+    ('National Percentile', 'Percentile', word_rhyming_percentile_at_nation)
   ]],
-  ['WordSegmenting', [
+  ['WordSegmenting', word_segmenting_risk_level, [
     ('Total Items', 'Integer', word_segmenting_total_items),
     ('Items Correct', 'Integer', word_segmenting_items_correct),
     ('IC per minute', 'Decimal', word_segmenting_ic_per_minute),
-    ('Error', 'Integer', word_segmenting_error_total_items_items_correct),
     ('School Percentile', 'Percentile', word_segmenting_percentile_at_school),
     ('LEA Percentile', 'Percentile', word_segmenting_percentile_at_lea),
-    ('National Percentile', 'Percentile', word_segmenting_percentile_at_nation),
-    ('Risk Level', 'Level', word_segmenting_risk_level)
+    ('National Percentile', 'Percentile', word_segmenting_percentile_at_nation)
   ]]
 ] -%}
+
+
 {%- set filtered_obj_assessments = [] -%}
 {%- for obj in obj_assessments -%}
   {%- set valid_scores = [] -%}
-  {%- for score in obj[1] -%}
-    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---', ''] -%}
+  {%- for score in obj[2] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] != 'N/A*' -%}
       {%- set _ = valid_scores.append(score) -%}
     {%- endif -%}
   {%- endfor -%}
   {%- if valid_scores -%}
-    {%- set _ = filtered_obj_assessments.append([obj[0], valid_scores]) -%}
+    {%- set _ = filtered_obj_assessments.append([obj[0], obj[1], valid_scores]) -%}
   {%- endif -%}
 {%- endfor -%}
 
-{# Precompute objective performance levels for each objective assessment #}
-{%- set objective_levels_map = {} -%}
-{%- for obj in filtered_obj_assessments -%}
-  {%- set levels = [] -%}
-  {%- for score in obj[1] -%}
-    {%- if score[0] == 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 -%}
-      {%- set _ = levels.append(score) -%}
-    {%- endif -%}
-  {%- endfor -%}
-  {%- set _ = objective_levels_map.update({obj[0]: levels}) -%}
-{%- endfor -%}
 
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
@@ -229,15 +185,13 @@
   ]
   {%- endif -%}
 
-  {%- if perf_levels -%}
+  {%- if early_reading_english_risk_level is not none and early_reading_english_risk_level | length -%}
   , "performanceLevels": [
-    {% for perf_level in perf_levels %}
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
-        "performanceLevelMet": true
-      }{% if not loop.last %},{% endif %}
-    {% endfor %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{early_reading_english_risk_level}}",
+      "performanceLevelMet": true
+    }
   ]
   {%- endif -%}
 
@@ -250,18 +204,8 @@
           "identificationCode": "{{obj[0]}}",
           "namespace": "{{namespace}}"
         },
-
-        {%- set good_scores = [] -%}
-        {%- for score in obj[1] -%}
-          {%- if score[0] != 'Risk Level' and score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---', ''] -%}
-            {%- set _ = good_scores.append(score) -%}
-          {%- endif -%}
-        {%- endfor -%}
-
-        {%- if good_scores -%}
-        
         "scoreResults": [
-          {%- for score in good_scores -%}
+          {%- for score in obj[2] -%}
             {
               "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
               "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
@@ -269,26 +213,13 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor -%}
         ]
-        {%- else -%}
-        "scoreResults": [
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Score",
-              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
-              "result": "No Score"
-            }
-        ]
-        {%- endif -%}
-
-        {%- set objective_levels = objective_levels_map[obj[0]] -%}
-        {%- if objective_levels -%}
+        {%- if obj[1] is not none and obj[1] | length -%}
         , "performanceLevels": [
-          {%- for level in objective_levels -%}
           {
-            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{level[0]}}",
-            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level[2]}}",
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[1]}}",
             "performanceLevelMet": true
-          }{% if not loop.last %},{% endif %}
-          {%- endfor -%}
+          }
         ]
         {%- endif -%}
       }{% if not loop.last %},{% endif %}
