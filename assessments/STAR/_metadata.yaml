@@ -7,14 +7,20 @@ input_files:
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
+    description: >
+      Files must follow the vendor naming convention: S<subject> or S<subject>_v2, where the subject is M (Math), R (Reading), or EL (Early Literacy). Your filename must include SM, SR, or SEL for processing to continue. 
   - display_name: "Dashboard standards"
     env_var: "INPUT_FILE_DS"
     is_required: false
     file_type: ["csv"]
+    description: >
+      Files must follow the vendor naming convention: S<subject>_Dashboard_Standards or S<subject>_Dashboard_Standards_v2, where the subject is M (Math), R (Reading), or EL (Early Literacy).
   - display_name: "Skill area"
     env_var: "INPUT_FILE_SA"
     is_required: false
     file_type: ["csv"]
+    description: >
+      Files must follow the vendor naming convention: S<subject>_SkillArea or S<subject>_SkillArea_v1, where the subject is M (Math), R (Reading), or EL (Early Literacy).
 input_params:
   - display_name: "School Year"
     env_var: "API_YEAR"
