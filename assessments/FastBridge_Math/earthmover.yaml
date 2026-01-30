@@ -7,6 +7,35 @@ config:
   state_file: ${STATE_FILE}
   show_graph: false
   show_stacktrace: true
+  macros: >
+    {# Extract season from column name. If it's a season-to-season column, use the second season. #}
+    {%- macro extract_season(col) -%}
+      {%- set seasons = ['fall', 'winter', 'spring', 'screening_period_4', 'screening_period_5'] -%}
+      {%- set search_str = col.split('_to_', 1)[1] if '_to_' in col else col -%}
+      {%- set found = [] -%}
+      {%- for s in seasons -%}
+        {%- if found | length == 0 -%}
+          {%- set prefix = s + '_' -%}
+          {%- if (search_str | length >= prefix | length and search_str[:prefix | length] == prefix) or search_str == s -%}
+            {%- set _ = found.append(s) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ found[0] if found | length > 0 else '' }}
+    {%- endmacro -%}
+
+    {# Remove season from column name to standardize for the pivot. #}
+    {%- macro remove_season(col, season) -%}
+      {%- if season | length > 0 -%}
+        {%- if '_to_' in col -%}
+          {{ col.replace('_to_' + season, '') }}
+        {%- else -%}
+          {{ col[season | length + 1:] if col.startswith(season + '_') else ('' if col == season else col) }}
+        {%- endif -%}
+      {%- else -%}
+        {{ col }}
+      {%- endif -%}
+    {%- endmacro -%}
   parameter_defaults:
     # You can set these values at the command line or leave the defaults
     OUTPUT_DIR: ./output/
@@ -19,11 +48,8 @@ sources:
   input:
     file: ${INPUT_FILE} # Path to the input CSV file
     header_rows: 1
-  assessments:
-    file: ./seeds/assessments.csv
-    header_rows: 1
-  assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
@@ -31,17 +57,23 @@ sources:
   assessmentPeriodDescriptors:
     file: ./seeds/assessmentPeriodDescriptors.csv
     header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
+  assessments:
+    file: ./seeds/assessments.csv
     header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
   objectiveAssessmentScores:
     file: ./seeds/objectiveAssessmentScores.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
 
 
@@ -50,27 +82,49 @@ transformations:
     source: $sources.input
     operations: []
 
-  # Clean and prepare input data
-  cleaned_input:
+cleaned_input:
     source: $transformations.input
     operations:
-      # Duplicate key columns for easier template access
       - operation: duplicate_columns
         columns:
-          Final_Date: administrationDate
-          ${STUDENT_ID_NAME}: studentUniqueId
-      # Convert column names to snake_case for easier template access
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
-      # Add required columns
+      - operation: melt
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+      - operation: add_columns
+        columns:
+          season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
+          cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
+      - operation: filter_rows
+        query: season == ''
+        behavior: exclude
+      - operation: pivot
+        cols_by: cleaned_variable
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        values: melt_value
+      - operation: map_values
+        column: season
+        mapping:
+          fall: Fall
+          winter: Winter
+          spring: Spring
+          screening_period_4: Screening Period 4
+          screening_period_5: Screening Period 5
+      - operation: duplicate_columns
+        columns:
+          early_math_final_date: administration_date
+      - operation: filter_rows
+        query: administration_date == ''
+        behavior: exclude
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_earlyMath"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-      # Create unique student assessment ID
+          school_year: ${API_YEAR}
       - operation: combine_columns
         columns:
-          - final_date
+          - administration_date
           - student_unique_id
           - season
         new_column: studentAssessmentIdentifier
@@ -78,15 +132,10 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
-      # Format the administration date
       - operation: date_format
         column: administration_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-      - operation: add_columns
-        columns:
-          school_year: "{%raw%}{{administration_date[:4]|int +1 if administration_date[5:7]|int >=7 else administration_date[:4]|int }}{%endraw%}"
-      #join gradeleveldescriptor
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
@@ -107,7 +156,6 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          assessmentIdentifier: "FastBridge_earlyMath"
           grade_json: >
             {%raw-%}
             {
@@ -234,6 +282,18 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -258,7 +318,6 @@ transformations:
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
-
 destinations:
   assessments:
     source: $transformations.assessments
@@ -272,13 +331,18 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
