@@ -27,7 +27,7 @@ Sample file: `data/Sample_earlyMath_deidentified.csv`
 Running earthmover: 
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/Sample_earlyMath_deidentified_pivoted.csv",
+"INPUT_FILE": "data/Sample_earlyMath_deidentified.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "State ID",
 "API_YEAR": "2024"}'

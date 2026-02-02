@@ -82,7 +82,7 @@ transformations:
     source: $sources.input
     operations: []
 
-cleaned_input:
+  cleaned_input:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -260,6 +260,17 @@ cleaned_input:
         columns:
           score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  assessment_category_descriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - assessmentCategoryDescriptor
+
   # Prepare assessments with proper structure
   assessments:
     source: $sources.assessments
@@ -290,7 +301,7 @@ cleaned_input:
         right_key: assessmentIdentifier
       - operation: join
         sources:
-          - $sources.assessmentCategoryDescriptors
+          - $transformations.assessment_category_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
