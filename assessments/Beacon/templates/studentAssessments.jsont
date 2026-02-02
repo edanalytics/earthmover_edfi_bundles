@@ -1,9 +1,7 @@
 {%- set possible_scores = 
   [
     [Total_Scale_Score, "Scale Score", "Integer"],
-    [Total_Scale_Score_SEM, "SEM", "Integer"],
-    [Total_Theta, "Theta", "Decimal"],
-    [Total_Theta_SEM, "Theta SEM", "Decimal"]
+    [Total_Scale_Score_SEM, "SEM", "Integer"]
   ] -%}
 
 {%- set scores = [] -%}
@@ -28,26 +26,26 @@
 {%- if assessmentIdentifier in ('beacon_math_fixed', 'beacon_math_adaptive', 'beacon_math_testlet') -%}
     {%- set possible_obj_assess =
       [
-        ['beacon_math_number_and_quantity', [('Scale Score', 'Integer', S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Theta','Decimal',S1_Theta), ('Theta SEM','Decimal',S1_Theta_SEM), ('Achievement Level', S1_Achievement_Level)]],
-        ['beacon_math_algebra', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Theta','Decimal',S2_Theta), ('Theta SEM','Decimal',S2_Theta_SEM), ('Achievement Level', S2_Achievement_Level)]],
-        ['beacon_math_measurement_and_data', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Theta','Decimal',S3_Theta), ('Theta SEM','Decimal',S3_Theta_SEM), ('Achievement Level', S3_Achievement_Level)]],
-        ['beacon_math_geometry', [('Scale Score', 'Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Theta','Decimal',S4_Theta), ('Theta SEM','Decimal',S4_Theta_SEM), ('Achievement Level', S4_Achievement_Level)]]
+        ['beacon_math_number_and_quantity', [('Scale Score', 'Integer', S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Achievement Level', S1_Achievement_Level)]],
+        ['beacon_math_algebra', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Achievement Level', S2_Achievement_Level)]],
+        ['beacon_math_measurement_and_data', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Achievement Level', S3_Achievement_Level)]],
+        ['beacon_math_geometry', [('Scale Score', 'Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Achievement Level', S4_Achievement_Level)]]
       ] 
     -%}
 {%- else -%}
     {%- set possible_obj_assess =
       [
-        ['beacon_ela_reading', [('Scale Score','Integer',S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Theta','Decimal',S1_Theta), ('Theta SEM','Decimal',S1_Theta_SEM), ('Achievement Level', S1_Achievement_Level)]],
-        ['beacon_ela_key_ideas', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Theta','Decimal',S2_Theta), ('Theta SEM','Decimal',S2_Theta_SEM), ('Achievement Level', S2_Achievement_Level)]],
-        ['beacon_ela_craft_structure', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Theta','Decimal',S3_Theta), ('Theta SEM','Decimal',S3_Theta_SEM), ('Achievement Level', S3_Achievement_Level)]],
-        ['beacon_ela_vocabulary_acquisition', [('Scale Score','Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Theta','Decimal',S4_Theta), ('Theta SEM','Decimal',S4_Theta_SEM), ('Achievement Level', S4_Achievement_Level)]],
-        ['beacon_ela_reading_text_types', [('Scale Score','Integer',S5_Scale_Score), ('SEM','Integer',S5_Scale_Score_SEM), ('Theta','Decimal',S5_Theta), ('Theta SEM','Decimal',S5_Theta_SEM), ('Achievement Level', S5_Achievement_Level)]],
-        ['beacon_ela_literary_text', [('Scale Score','Integer',S6_Scale_Score), ('SEM','Integer',S6_Scale_Score_SEM), ('Theta','Decimal',S6_Theta), ('Theta SEM','Decimal',S6_Theta_SEM), ('Achievement Level', S6_Achievement_Level)]],
-        ['beacon_ela_informational_text', [('Scale Score','Integer',S7_Scale_Score), ('SEM','Integer',S7_Scale_Score_SEM), ('Theta','Decimal',S7_Theta), ('Theta SEM','Decimal',S7_Theta_SEM), ('Achievement Level', S7_Achievement_Level)]],
-        ['beacon_ela_writing', [('Scale Score','Integer',S8_Scale_Score), ('SEM','Integer',S8_Scale_Score_SEM), ('Theta','Decimal',S8_Theta), ('Theta SEM','Decimal',S8_Theta_SEM), ('Achievement Level', S8_Achievement_Level)]],
-        ['beacon_ela_text_types', [('Scale Score','Integer',S9_Scale_Score), ('SEM','Integer',S9_Scale_Score_SEM), ('Theta','Decimal',S9_Theta), ('Theta SEM','Decimal',S9_Theta_SEM), ('Achievement Level', S9_Achievement_Level)]],
-        ['beacon_ela_conventions', [('Scale Score','Integer',S10_Scale_Score), ('SEM','Integer',S10_Scale_Score_SEM), ('Theta','Decimal',S10_Theta), ('Theta SEM','Decimal',S10_Theta_SEM), ('Achievement Level', S10_Achievement_Level)]],
-        ['beacon_ela_research', [('Scale Score','Integer',S11_Scale_Score), ('SEM','Integer',S11_Scale_Score_SEM), ('Theta','Decimal',S11_Theta), ('Theta SEM','Decimal',S11_Theta_SEM), ('Achievement Level', S11_Achievement_Level)]]
+        ['beacon_ela_reading', [('Scale Score','Integer',S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Achievement Level', S1_Achievement_Level)]],
+        ['beacon_ela_key_ideas', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Achievement Level', S2_Achievement_Level)]],
+        ['beacon_ela_craft_structure', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Achievement Level', S3_Achievement_Level)]],
+        ['beacon_ela_vocabulary_acquisition', [('Scale Score','Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Achievement Level', S4_Achievement_Level)]],
+        ['beacon_ela_reading_text_types', [('Scale Score','Integer',S5_Scale_Score), ('SEM','Integer',S5_Scale_Score_SEM), ('Achievement Level', S5_Achievement_Level)]],
+        ['beacon_ela_literary_text', [('Scale Score','Integer',S6_Scale_Score), ('SEM','Integer',S6_Scale_Score_SEM), ('Achievement Level', S6_Achievement_Level)]],
+        ['beacon_ela_informational_text', [('Scale Score','Integer',S7_Scale_Score), ('SEM','Integer',S7_Scale_Score_SEM), ('Achievement Level', S7_Achievement_Level)]],
+        ['beacon_ela_writing', [('Scale Score','Integer',S8_Scale_Score), ('SEM','Integer',S8_Scale_Score_SEM), ('Achievement Level', S8_Achievement_Level)]],
+        ['beacon_ela_text_types', [('Scale Score','Integer',S9_Scale_Score), ('SEM','Integer',S9_Scale_Score_SEM), ('Achievement Level', S9_Achievement_Level)]],
+        ['beacon_ela_conventions', [('Scale Score','Integer',S10_Scale_Score), ('SEM','Integer',S10_Scale_Score_SEM), ('Achievement Level', S10_Achievement_Level)]],
+        ['beacon_ela_research', [('Scale Score','Integer',S11_Scale_Score), ('SEM','Integer',S11_Scale_Score_SEM), ('Achievement Level', S11_Achievement_Level)]]
       ]
     -%}
     {%- endif -%}
