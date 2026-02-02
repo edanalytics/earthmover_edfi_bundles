@@ -1,0 +1,131 @@
+{%- set possible_scores = 
+  [
+    [Total_Scale_Score, "Scale Score", "Integer"],
+    [Total_Scale_Score_SEM, "SEM", "Integer"]
+  ] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = 
+  [
+     [Total_Achievement_Level, "Achievement Level"]
+  ] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if assessmentIdentifier in ('beacon_math_fixed', 'beacon_math_adaptive', 'beacon_math_testlet') -%}
+    {%- set possible_obj_assess =
+      [
+        ['beacon_math_number_and_quantity', [('Scale Score', 'Integer', S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Achievement Level', S1_Achievement_Level)]],
+        ['beacon_math_algebra', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Achievement Level', S2_Achievement_Level)]],
+        ['beacon_math_measurement_and_data', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Achievement Level', S3_Achievement_Level)]],
+        ['beacon_math_geometry', [('Scale Score', 'Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Achievement Level', S4_Achievement_Level)]]
+      ] 
+    -%}
+{%- else -%}
+    {%- set possible_obj_assess =
+      [
+        ['beacon_ela_reading', [('Scale Score','Integer',S1_Scale_Score), ('SEM','Integer',S1_Scale_Score_SEM), ('Achievement Level', S1_Achievement_Level)]],
+        ['beacon_ela_key_ideas', [('Scale Score','Integer',S2_Scale_Score), ('SEM','Integer',S2_Scale_Score_SEM), ('Achievement Level', S2_Achievement_Level)]],
+        ['beacon_ela_craft_structure', [('Scale Score','Integer',S3_Scale_Score), ('SEM','Integer',S3_Scale_Score_SEM), ('Achievement Level', S3_Achievement_Level)]],
+        ['beacon_ela_vocabulary_acquisition', [('Scale Score','Integer',S4_Scale_Score), ('SEM','Integer',S4_Scale_Score_SEM), ('Achievement Level', S4_Achievement_Level)]],
+        ['beacon_ela_reading_text_types', [('Scale Score','Integer',S5_Scale_Score), ('SEM','Integer',S5_Scale_Score_SEM), ('Achievement Level', S5_Achievement_Level)]],
+        ['beacon_ela_literary_text', [('Scale Score','Integer',S6_Scale_Score), ('SEM','Integer',S6_Scale_Score_SEM), ('Achievement Level', S6_Achievement_Level)]],
+        ['beacon_ela_informational_text', [('Scale Score','Integer',S7_Scale_Score), ('SEM','Integer',S7_Scale_Score_SEM), ('Achievement Level', S7_Achievement_Level)]],
+        ['beacon_ela_writing', [('Scale Score','Integer',S8_Scale_Score), ('SEM','Integer',S8_Scale_Score_SEM), ('Achievement Level', S8_Achievement_Level)]],
+        ['beacon_ela_text_types', [('Scale Score','Integer',S9_Scale_Score), ('SEM','Integer',S9_Scale_Score_SEM), ('Achievement Level', S9_Achievement_Level)]],
+        ['beacon_ela_conventions', [('Scale Score','Integer',S10_Scale_Score), ('SEM','Integer',S10_Scale_Score_SEM), ('Achievement Level', S10_Achievement_Level)]],
+        ['beacon_ela_research', [('Scale Score','Integer',S11_Scale_Score), ('SEM','Integer',S11_Scale_Score_SEM), ('Achievement Level', S11_Achievement_Level)]]
+      ]
+    -%}
+    {%- endif -%}
+
+{% set all_obj_assessment = [] %}
+{%- for obj in possible_obj_assess -%}
+  {% if obj[1][0][2] is not none and obj[1][0][2] | length %}
+    {% set _ = all_obj_assessment.append(obj) %}
+  {% endif %}
+{% endfor %}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
+  {% if scores | length %}
+  "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  {% endif %}
+  {% if perf_levels | length %}
+  "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  {% endif %}
+  {% if all_obj_assessment | length %}
+  "studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {%- for obj_score in obj[1] if obj_score[2] is not none and obj_score[2] | length -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{obj_score[1]}}",
+        "result": "{{obj_score[2]}}"
+      } {% if not loop.last %},{% endif %}
+      {%- endfor -%}
+    ],
+    "performanceLevels": [
+      {%- for obj_score in obj[1] if obj_score | length == 2 and obj_score[1] is not none -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj_score[1]}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      }
+      {%- endfor -%}
+    ] 
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+  {% endif %}
+}
