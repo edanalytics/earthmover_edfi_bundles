@@ -301,7 +301,7 @@ transformations:
         right_key: assessmentIdentifier
       - operation: join
         sources:
-          - $transformations.assessmentCategoryDescriptors
+          - $transformations.assessment_category_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
