@@ -28,6 +28,7 @@ sources:
     header_rows: 1
   
   input:
+    encoding: windows-1252
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     optional_fields:  # Define optional fields that cause issues during lowercase dedupe.
