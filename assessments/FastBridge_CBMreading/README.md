@@ -11,13 +11,23 @@ To run this bundle, please add your own source file(s) and column(s):
 <summary><code>data/fastbridge_cbmreading.csv</code></summary>
 This template will only work with the vendor-provided FastBridge CBMreading screening results file.
 </details>
+<details>
+<summary>(optional)<code>data/fastbridge_comprehension_question.csv</code></summary>
+Option to provide a Comprehension - Question screening results file for the same school year.
+</details>
+<details>
+<summary>(optional)<code>data/fastbridge_comprehension_recall.csv</code></summary>
+Option to provide a Comprehension - Recall screening results file for the same school year.
+</details>
 
-Or use the sample file (data/sample_anonymized_file_fastbridge_cbmreading.csv).
+Or use the sample files provided.
 
 ## CLI Parameters
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the FastBridge CBMreading .csv file you want to transform
+- INPUT_FILE_COMP_QUESTION: (optional) The path to the Comprehension - Question .csv file
+- INPUT_FILE_COMP_RECALL: (optional) The path to the Comprehension - Recall .csv file
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
 - API_YEAR: The school year associated with the results file
 
@@ -28,6 +38,8 @@ earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "output/" ,
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file_fastbridge_cbmreading.csv",
+"INPUT_FILE_COMP_QUESTION": "data/sample_anonymized_file_fastbridge_comprehension_question.csv",
+"INPUT_FILE_COMP_RECALL": "data/sample_anonymized_file_fastbridge_comprehension_recall.csv",
 "STUDENT_ID_NAME": "Local ID",
 "API_YEAR": "2023"
 }'

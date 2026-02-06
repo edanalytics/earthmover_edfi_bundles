@@ -47,6 +47,34 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+  input_comp_question:
+    file: ${INPUT_FILE_COMP_QUESTION}
+    header_rows: 1
+    optional: True
+    columns:
+      - Assessment
+      - Assessment Language
+      - District
+      - School
+      - Local ID
+      - State ID
+      - FAST ID
+      - Grade
+      - Score
+  input_comp_recall:
+    file: ${INPUT_FILE_COMP_RECALL}
+    header_rows: 1
+    optional: True
+    columns:
+      - Assessment
+      - Assessment Language
+      - District
+      - School
+      - Local ID
+      - State ID
+      - FAST ID
+      - Grade
+      - Score
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
@@ -67,6 +95,9 @@ sources:
     header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  objectiveAssessmentScores:
+    file: ./seeds/objectiveAssessmentScores.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
@@ -99,6 +130,91 @@ transformations:
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
+
+  cleaned_comp_question:
+    source: $sources.input_comp_question
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
+      - operation: melt
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+      - operation: add_columns
+        columns:
+          season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
+          cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
+      - operation: filter_rows
+        query: season == ''
+        behavior: exclude
+      - operation: pivot
+        cols_by: cleaned_variable
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        values: melt_value
+
+  cleaned_comp_recall:
+    source: $sources.input_comp_recall
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
+      - operation: melt
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+      - operation: add_columns
+        columns:
+          season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
+          cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
+      - operation: filter_rows
+        query: season == ''
+        behavior: exclude
+      - operation: pivot
+        cols_by: cleaned_variable
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        values: melt_value
+
+  joined_input:
+    source: transformations.cleaned_input
+    operations:
+      - operation: join
+        sources:
+          - transformations.cleaned_comp_question
+        join_type: left
+        left_keys:
+          - student_unique_id
+          - season
+        right_keys:
+          - student_unique_id
+          - season
+        right_keep_columns:
+          - comprehension_question_ic_per_minute
+          - comprehension_question_items_correct
+          - comprehension_question_total_items
+          - comprehension_question_percentile_at_school
+          - comprehension_question_percentile_at_lea
+          - comprehension_question_percentile_at_nation
+          - comprehension_question_risk_level
+      - operation: join
+        sources:
+          - transformations.cleaned_comp_recall
+        join_type: left
+        left_keys:
+          - student_unique_id
+          - season
+        right_keys:
+          - student_unique_id
+          - season
+        right_keep_columns:
+          - comprehension_recall_detailed_comp_ic_per_minute
+          - comprehension_recall_detailed_comp_items_correct
+          - comprehension_recall_detailed_comp_total_items
+          - comprehension_recall_synthesis_comp_ic_per_minute
+          - comprehension_recall_synthesis_comp_items_correct
+          - comprehension_recall_synthesis_comp_total_items
+          - comprehension_recall_percentile_at_school
+          - comprehension_recall_percentile_at_lea
+          - comprehension_recall_percentile_at_nation
+          - comprehension_recall_risk_level
       - operation: map_values
         column: season
         mapping:
@@ -241,6 +357,34 @@ transformations:
           - assessmentIdentifier
           - assessmentCategoryDescriptor
 
+  # Generate scores JSON for objective assessments
+  objective_assessment_scores:
+    source: $sources.objectiveAssessmentScores
+    operations:
+      - operation: add_columns
+        columns:
+          base_namespace: "uri://fastbridge.org/assessment"
+          score_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#{{scoreType}}",
+              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate by assessmentIdentifier:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          score_json: agg(score_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
   # Prepare assessments with proper structure
   assessments:
     source: $sources.assessments
@@ -286,6 +430,12 @@ transformations:
       - operation: join
         sources:
           - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.objective_assessment_scores
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier

@@ -3,8 +3,16 @@ path: "assessments/FastBridge_CBMreading"
 valid_edfi: ">=3.0"
 report_resources: ["studentAssessments"]
 input_files:
-  - display_name: "Assessment data"
+  - display_name: "CBMreading assessment data"
     env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
+  - display_name: "Comprehension Question assessment data"
+    env_var: "INPUT_FILE_COMP_QUESTION"
+    is_required: true
+    file_type: ["csv"]
+  - display_name: "Comprehension Recall assessment data"
+    env_var: "INPUT_FILE_COMP_RECALL"
     is_required: true
     file_type: ["csv"]
 input_params:
