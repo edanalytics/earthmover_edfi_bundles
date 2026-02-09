@@ -37,23 +37,46 @@
 
 
 {%- set obj_assessments = [
-  ['Passage1', [
+  ['Passage1', None, [
     ('Total Words Read', 'Integer', cbmr_english_passage_1_total_words_read),
     ('Words Read Correct', 'Integer', cbmr_english_passage_1_words_read_correct),
-    ('WRC per minute', 'Decimal', cbmr_english_passage_1_wrc_per_minute),
+    ('WRC per minute', 'Decimal', cbmr_english_passage_1_wrc_per_min),
     ('Accuracy', 'Integer', cbmr_english_passage_1_accuracy_wrc_twr_)
   ]],
-  ['Passage2', [
+  ['Passage2', None, [
     ('Total Words Read', 'Integer', cbmr_english_passage_2_total_words_read),
     ('Words Read Correct', 'Integer', cbmr_english_passage_2_words_read_correct),
-    ('WRC per minute', 'Decimal', cbmr_english_passage_2_wrc_per_minute),
+    ('WRC per minute', 'Decimal', cbmr_english_passage_2_wrc_per_min),
     ('Accuracy', 'Integer', cbmr_english_passage_2_accuracy_wrc_twr_)
   ]],
-  ['Passage3', [
+  ['Passage3', None, [
     ('Total Words Read', 'Integer', cbmr_english_passage_3_total_words_read),
     ('Words Read Correct', 'Integer', cbmr_english_passage_3_words_read_correct),
-    ('WRC per minute', 'Decimal', cbmr_english_passage_3_wrc_per_minute),
+    ('WRC per minute', 'Decimal', cbmr_english_passage_3_wrc_per_min),
     ('Accuracy', 'Integer', cbmr_english_passage_3_accuracy_wrc_twr_)
+  ]],
+  ['ComprehensionQuestion', comprehension_question_risk_level, [
+    ('IC per minute', 'Decimal', comprehension_question_ic_per_minute),
+    ('Total Items', 'Integer', comprehension_question_total_items),
+    ('Items Correct', 'Integer', comprehension_question_items_correct),
+    ('School Percentile', 'Decimal', comprehension_question_percentile_at_school),
+    ('LEA Percentile', 'Decimal', comprehension_question_percentile_at_lea),
+    ('National Percentile', 'Decimal',  comprehension_question_percentile_at_nation)
+  ]],
+  ['ComprehensionRecall', comprehension_recall_risk_level, [
+    ('School Percentile', 'Decimal', comprehension_recall_percentile_at_school),
+    ('LEA Percentile', 'Decimal', comprehension_recall_percentile_at_lea),
+    ('National Percentile', 'Decimal',  comprehension_recall_percentile_at_nation)
+  ]],
+  ['ComprehensionRecallDetailed', None, [
+    ('IC per minute', 'Decimal', comprehension_recall_detailed_comp_ic_per_minute),
+    ('Total Items', 'Integer', comprehension_recall_detailed_comp_total_items),
+    ('Items Correct', 'Integer', comprehension_recall_detailed_comp_items_correct)
+  ]],
+  ['ComprehensionRecallSynthesis', None, [
+    ('IC per minute', 'Decimal', comprehension_recall_synthesis_comp_ic_per_minute),
+    ('Total Items', 'Integer', comprehension_recall_synthesis_comp_total_items),
+    ('Items Correct', 'Integer', comprehension_recall_synthesis_comp_items_correct)
   ]]
 ] -%}
 {%- set filtered_obj_assessments = [] -%}
@@ -125,7 +148,16 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor -%}
         ]
-      }{% if not loop.last %},{% endif %}
+      {%- if obj[1] is not none and obj[1] | length -%}
+      , "performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[1]}}",
+          "performanceLevelMet": true
+        }
+      ]
+      {% endif %}
+    }{% if not loop.last %},{% endif %}
     {%- endfor -%}
   ]
   {%- endif -%}

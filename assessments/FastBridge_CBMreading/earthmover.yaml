@@ -60,7 +60,101 @@ sources:
       - State ID
       - FAST ID
       - Grade
-      - Score
+      - Fall Comprehension Question IC per minute
+      - Fall Comprehension Question Total Items
+      - Fall Comprehension Question Items Correct
+      - Fall Comprehension Question Error(Total Items - Items Correct)
+      - Fall Comprehension Question Percentile at School
+      - Fall Comprehension Question Percentile at LEA
+      - Fall Comprehension Question Percentile at Nation
+      - Fall Comprehension Question Risk Level
+      - Fall Comprehension Question Final Date
+      - Winter Comprehension Question IC per minute
+      - Winter Comprehension Question Total Items
+      - Winter Comprehension Question Items Correct
+      - Winter Comprehension Question Error(Total Items - Items Correct)
+      - Winter Comprehension Question Percentile at School
+      - Winter Comprehension Question Percentile at LEA
+      - Winter Comprehension Question Percentile at Nation
+      - Winter Comprehension Question Risk Level
+      - Winter Comprehension Question Final Date
+      - Growth Score from Fall to Winter
+      - School Growth Percentile from Fall to Winter
+      - District Growth Percentile from Fall to Winter
+      - National Growth Percentile from Fall to Winter
+      - Growth Percentile by Start Score from Fall to Winter
+      - Spring Comprehension Question IC per minute
+      - Spring Comprehension Question Total Items
+      - Spring Comprehension Question Items Correct
+      - Spring Comprehension Question Error(Total Items - Items Correct)
+      - Spring Comprehension Question Percentile at School
+      - Spring Comprehension Question Percentile at LEA
+      - Spring Comprehension Question Percentile at Nation
+      - Spring Comprehension Question Risk Level
+      - Spring Comprehension Question Final Date
+      - Growth Score from Fall to Spring
+      - School Growth Percentile from Fall to Spring
+      - District Growth Percentile from Fall to Spring
+      - National Growth Percentile from Fall to Spring
+      - Growth Percentile by Start Score from Fall to Spring
+      - Growth Score from Winter to Spring
+      - School Growth Percentile from Winter to Spring
+      - District Growth Percentile from Winter to Spring
+      - National Growth Percentile from Winter to Spring
+      - Growth Percentile by Start Score from Winter to Spring
+      - Screening Period 4 Comprehension Question IC per minute
+      - Screening Period 4 Comprehension Question Total Items
+      - Screening Period 4 Comprehension Question Items Correct
+      - Screening Period 4 Comprehension Question Error(Total Items - Items Correct)
+      - Screening Period 4 Comprehension Question Percentile at School
+      - Screening Period 4 Comprehension Question Percentile at LEA
+      - Screening Period 4 Comprehension Question Percentile at Nation
+      - Screening Period 4 Comprehension Question Risk Level
+      - Screening Period 4 Comprehension Question Final Date
+      - Growth Score from Fall to Screening Period 4
+      - School Growth Percentile from Fall to Screening Period 4
+      - District Growth Percentile from Fall to Screening Period 4
+      - National Growth Percentile from Fall to Screening Period 4
+      - Growth Percentile by Start Score from Fall to Screening Period 4
+      - Growth Score from Winter to Screening Period 4
+      - School Growth Percentile from Winter to Screening Period 4
+      - District Growth Percentile from Winter to Screening Period 4
+      - National Growth Percentile from Winter to Screening Period 4
+      - Growth Percentile by Start Score from Winter to Screening Period 4
+      - Growth Score from Spring to Screening Period 4
+      - School Growth Percentile from Spring to Screening Period 4
+      - District Growth Percentile from Spring to Screening Period 4
+      - National Growth Percentile from Spring to Screening Period 4
+      - Growth Percentile by Start Score from Spring to Screening Period 4
+      - Screening Period 5 Comprehension Question IC per minute
+      - Screening Period 5 Comprehension Question Total Items
+      - Screening Period 5 Comprehension Question Items Correct
+      - Screening Period 5 Comprehension Question Error(Total Items - Items Correct)
+      - Screening Period 5 Comprehension Question Percentile at School
+      - Screening Period 5 Comprehension Question Percentile at LEA
+      - Screening Period 5 Comprehension Question Percentile at Nation
+      - Screening Period 5 Comprehension Question Risk Level
+      - Screening Period 5 Comprehension Question Final Date
+      - Growth Score from Fall to Screening Period 5
+      - School Growth Percentile from Fall to Screening Period 5
+      - District Growth Percentile from Fall to Screening Period 5
+      - National Growth Percentile from Fall to Screening Period 5
+      - Growth Percentile by Start Score from Fall to Screening Period 5
+      - Growth Score from Winter to Screening Period 5
+      - School Growth Percentile from Winter to Screening Period 5
+      - District Growth Percentile from Winter to Screening Period 5
+      - National Growth Percentile from Winter to Screening Period 5
+      - Growth Percentile by Start Score from Winter to Screening Period 5
+      - Growth Score from Spring to Screening Period 5
+      - School Growth Percentile from Spring to Screening Period 5
+      - District Growth Percentile from Spring to Screening Period 5
+      - National Growth Percentile from Spring to Screening Period 5
+      - Growth Percentile by Start Score from Spring to Screening Period 5
+      - Growth Score from Screening Period 4 to Screening Period 5
+      - School Growth Percentile from Screening Period 4 to Screening Period 5
+      - District Growth Percentile from Screening Period 4 to Screening Period 5
+      - National Growth Percentile from Screening Period 4 to Screening Period 5
+      - Growth Percentile by Start Score from Screening Period 4 to Screening Period 5
   input_comp_recall:
     file: ${INPUT_FILE_COMP_RECALL}
     header_rows: 1
@@ -74,7 +168,111 @@ sources:
       - State ID
       - FAST ID
       - Grade
-      - Score
+      - Fall Comprehension Recall Detailed Comp IC per minute
+      - Fall Comprehension Recall Detailed Comp Items Correct
+      - Fall Comprehension Recall Detailed Comp Total Items
+      - Fall Comprehension Recall Synthesis Comp Items Correct
+      - Fall Comprehension Recall Synthesis Comp IC per minute
+      - Fall Comprehension Recall Synthesis Comp Total Items
+      - Fall Comprehension Recall Percentile at School
+      - Fall Comprehension Recall Percentile at LEA
+      - Fall Comprehension Recall Percentile at Nation
+      - Fall Comprehension Recall Risk Level
+      - Fall Comprehension Recall Final Date
+      - Winter Comprehension Recall Detailed Comp IC per minute
+      - Winter Comprehension Recall Detailed Comp Items Correct
+      - Winter Comprehension Recall Detailed Comp Total Items
+      - Winter Comprehension Recall Synthesis Comp Items Correct
+      - Winter Comprehension Recall Synthesis Comp IC per minute
+      - Winter Comprehension Recall Synthesis Comp Total Items
+      - Winter Comprehension Recall Percentile at School
+      - Winter Comprehension Recall Percentile at LEA
+      - Winter Comprehension Recall Percentile at Nation
+      - Winter Comprehension Recall Risk Level
+      - Winter Comprehension Recall Final Date
+      - Growth Score from Fall to Winter
+      - School Growth Percentile from Fall to Winter
+      - District Growth Percentile from Fall to Winter
+      - National Growth Percentile from Fall to Winter
+      - Growth Percentile by Start Score from Fall to Winter
+      - Spring Comprehension Recall Detailed Comp IC per minute
+      - Spring Comprehension Recall Detailed Comp Items Correct
+      - Spring Comprehension Recall Detailed Comp Total Items
+      - Spring Comprehension Recall Synthesis Comp Items Correct
+      - Spring Comprehension Recall Synthesis Comp IC per minute
+      - Spring Comprehension Recall Synthesis Comp Total Items
+      - Spring Comprehension Recall Percentile at School
+      - Spring Comprehension Recall Percentile at LEA
+      - Spring Comprehension Recall Percentile at Nation
+      - Spring Comprehension Recall Risk Level
+      - Spring Comprehension Recall Final Date
+      - Growth Score from Fall to Spring
+      - School Growth Percentile from Fall to Spring
+      - District Growth Percentile from Fall to Spring
+      - National Growth Percentile from Fall to Spring
+      - Growth Percentile by Start Score from Fall to Spring
+      - Growth Score from Winter to Spring
+      - School Growth Percentile from Winter to Spring
+      - District Growth Percentile from Winter to Spring
+      - National Growth Percentile from Winter to Spring
+      - Growth Percentile by Start Score from Winter to Spring
+      - Screening Period 4 Comprehension Recall Detailed Comp IC per minute
+      - Screening Period 4 Comprehension Recall Detailed Comp Items Correct
+      - Screening Period 4 Comprehension Recall Detailed Comp Total Items
+      - Screening Period 4 Comprehension Recall Synthesis Comp Items Correct
+      - Screening Period 4 Comprehension Recall Synthesis Comp IC per minute
+      - Screening Period 4 Comprehension Recall Synthesis Comp Total Items
+      - Screening Period 4 Comprehension Recall Percentile at School
+      - Screening Period 4 Comprehension Recall Percentile at LEA
+      - Screening Period 4 Comprehension Recall Percentile at Nation
+      - Screening Period 4 Comprehension Recall Risk Level
+      - Screening Period 4 Comprehension Recall Final Date
+      - Growth Score from Fall to Screening Period 4
+      - School Growth Percentile from Fall to Screening Period 4
+      - District Growth Percentile from Fall to Screening Period 4
+      - National Growth Percentile from Fall to Screening Period 4
+      - Growth Percentile by Start Score from Fall to Screening Period 4
+      - Growth Score from Winter to Screening Period 4
+      - School Growth Percentile from Winter to Screening Period 4
+      - District Growth Percentile from Winter to Screening Period 4
+      - National Growth Percentile from Winter to Screening Period 4
+      - Growth Percentile by Start Score from Winter to Screening Period 4
+      - Growth Score from Spring to Screening Period 4
+      - School Growth Percentile from Spring to Screening Period 4
+      - District Growth Percentile from Spring to Screening Period 4
+      - National Growth Percentile from Spring to Screening Period 4
+      - Growth Percentile by Start Score from Spring to Screening Period 4
+      - Screening Period 5 Comprehension Recall Detailed Comp IC per minute
+      - Screening Period 5 Comprehension Recall Detailed Comp Items Correct
+      - Screening Period 5 Comprehension Recall Detailed Comp Total Items
+      - Screening Period 5 Comprehension Recall Synthesis Comp Items Correct
+      - Screening Period 5 Comprehension Recall Synthesis Comp IC per minute
+      - Screening Period 5 Comprehension Recall Synthesis Comp Total Items
+      - Screening Period 5 Comprehension Recall Percentile at School
+      - Screening Period 5 Comprehension Recall Percentile at LEA
+      - Screening Period 5 Comprehension Recall Percentile at Nation
+      - Screening Period 5 Comprehension Recall Risk Level
+      - Screening Period 5 Comprehension Recall Final Date
+      - Growth Score from Fall to Screening Period 5
+      - School Growth Percentile from Fall to Screening Period 5
+      - District Growth Percentile from Fall to Screening Period 5
+      - National Growth Percentile from Fall to Screening Period 5
+      - Growth Percentile by Start Score from Fall to Screening Period 5
+      - Growth Score from Winter to Screening Period 5
+      - School Growth Percentile from Winter to Screening Period 5
+      - District Growth Percentile from Winter to Screening Period 5
+      - National Growth Percentile from Winter to Screening Period 5
+      - Growth Percentile by Start Score from Winter to Screening Period 5
+      - Growth Score from Spring to Screening Period 5
+      - School Growth Percentile from Spring to Screening Period 5
+      - District Growth Percentile from Spring to Screening Period 5
+      - National Growth Percentile from Spring to Screening Period 5
+      - Growth Percentile by Start Score from Spring to Screening Period 5
+      - Growth Score from Screening Period 4 to Screening Period 5
+      - School Growth Percentile from Screening Period 4 to Screening Period 5
+      - District Growth Percentile from Screening Period 4 to Screening Period 5
+      - National Growth Percentile from Screening Period 4 to Screening Period 5
+      - Growth Percentile by Start Score from Screening Period 4 to Screening Period 5
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
@@ -174,11 +372,11 @@ transformations:
         values: melt_value
 
   joined_input:
-    source: transformations.cleaned_input
+    source: $transformations.cleaned_input
     operations:
       - operation: join
         sources:
-          - transformations.cleaned_comp_question
+          - $transformations.cleaned_comp_question
         join_type: left
         left_keys:
           - student_unique_id
@@ -196,7 +394,7 @@ transformations:
           - comprehension_question_risk_level
       - operation: join
         sources:
-          - transformations.cleaned_comp_recall
+          - $transformations.cleaned_comp_recall
         join_type: left
         left_keys:
           - student_unique_id
@@ -377,7 +575,7 @@ transformations:
       # group and aggregate by assessmentIdentifier:
       - operation: group_by
         group_by_columns:
-          - assessmentIdentifier
+          - identificationCode
         create_columns:
           score_json: agg(score_json,)
       # there will be a trailing comma, want to get rid of that
@@ -437,8 +635,8 @@ transformations:
         sources:
           - $transformations.objective_assessment_scores
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: identificationCode
+        right_key: identificationCode
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -453,7 +651,7 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.cleaned_input
+    source: $transformations.joined_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
