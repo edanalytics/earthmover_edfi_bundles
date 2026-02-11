@@ -1,0 +1,161 @@
+{%- set possible_scores = [
+  [Composite, "Scale Score", "Integer"],
+  [Composite_Low, "Low Scale Score", "Integer"],
+  [Composite_High, "High Scale Score", "Integer"],
+  [Pred_ACT_Composite_Low, "Low Predicted Score", "Integer"],
+  [Pred_ACT_Composite_High, "High Predicted Score", "Integer"],
+  [USRnk_Comp, "National Norms Score", "Percentile"]
+] -%}
+
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = [
+  [performanceLevelDescriptor, "Progress Toward Career Readiness Indicator", "Level"],
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set obj_assessment = [
+  ['PreACT_Eng', [
+    ('Scale Score', 'Integer', Eng),
+    ('National Norms Score', 'Percentile', USRnk_Sub_Engl),
+    ('Low Scale Score', 'Integer', Eng_Low),
+    ('High Scale Score', 'Integer', Eng_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_Eng_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_Eng_High),
+    ('Raw Score','Integer',Eng_Raw)
+  ]],
+  ['PreACT_Mat', [
+    ('Scale Score', 'Integer', Mth),
+    ('National Norms Score', 'Percentile', USRnk_Sub_Math),
+    ('Low Scale Score', 'Integer', Mth_Low),
+    ('High Scale Score', 'Integer', Mth_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_Mth_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_Mth_High),
+    ('Raw Score','Integer',Math_Raw)
+  ]],
+  ['PreACT_Rdg', [
+    ('Scale Score', 'Integer', Rdg),
+    ('National Norms Score', 'Percentile', USRnk_Sub_Rdg),
+    ('Low Scale Score', 'Integer', Rdg_Low),
+    ('High Scale Score', 'Integer', Rdg_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_Rdg_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_Rdg_High),
+    ('Raw Score','Integer',Read_Raw)
+  ]],
+  ['PreACT_Sci', [
+    ('Scale Score', 'Integer', Sci),
+    ('National Norms Score', 'Percentile', USRnk_Sub_Sci),
+    ('Low Scale Score', 'Integer', Sci_Low),
+    ('High Scale Score', 'Integer', Sci_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_Sci_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_Sci_High),
+    ('Raw Score','Integer',Sci_Raw)
+  ]],
+  ['PreACT_STEM', [
+    ('Scale Score', 'Integer', STEM),
+    ('National Norms Score', 'Percentile', USRnk_Sub_STEM),
+    ('Low Scale Score', 'Integer', STEM_Low),
+    ('High Scale Score', 'Integer', STEM_High),
+    ('Low Predicted Score', 'Integer', Pred_ACT_STEM_Low),
+    ('High Predicted Score', 'Integer', Pred_ACT_STEM_High),
+    ('Raw Score','Integer',STEM_Raw)
+  ]],
+
+  ['PreACT_E_Earn_Prod', [('Raw Score', 'Integer', E_Earn_Prod)]],
+  ['PreACT_E_Earn_Knlg', [('Raw Score', 'Integer', E_Earn_Knlg)]],
+  ['PreACT_E_Earn_Conv', [('Raw Score', 'Integer', E_Earn_Conv)]],
+  ['PreACT_M_Earn_Higher', [('Raw Score', 'Integer', M_Earn_Higher)]],
+  ['PreACT_M_Earn_NumQ', [('Raw Score', 'Integer', M_Earn_NumQ)]],
+  ['PreACT_M_Earn_Alg', [('Raw Score', 'Integer', M_Earn_Alg)]],
+  ['PreACT_M_Earn_Func', [('Raw Score', 'Integer', M_Earn_Func)]],
+  ['PreACT_M_Earn_Geom', [('Raw Score', 'Integer', M_Earn_Geom)]],
+  ['PreACT_M_Earn_Stat', [('Raw Score', 'Integer', M_Earn_Stat)]],
+  ['PreACT_M_Earn_Essen', [('Raw Score', 'Integer', M_Earn_Essen)]],
+  ['PreACT_M_Earn_Mod', [('Raw Score', 'Integer', M_Earn_Mod)]],
+  ['PreACT_R_Earn_Ideas', [('Raw Score', 'Integer', R_Earn_Ideas)]],
+  ['PreACT_R_Earn_Struc', [('Raw Score', 'Integer', R_Earn_Struc)]],
+  ['PreACT_R_Earn_Knlg', [('Raw Score', 'Integer', R_Earn_Knlg)]],
+  ['PreACT_S_Earn_Data', [('Raw Score', 'Integer', S_Earn_Data)]],
+  ['PreACT_S_Earn_Inv', [('Raw Score', 'Integer', S_Earn_Inv)]],
+  ['PreACT_S_Earn_Eval', [('Raw Score', 'Integer', S_Earn_Eval)]]
+] -%}
+
+{%- set filtered_obj_assessment = [] -%}
+{%- for obj in obj_assessment -%}
+  {%- set valid_scores = [] -%}
+  {%- for score in obj[1] -%}
+    {%- if score[2] is not none and score[2] | trim | length > 0 and score[2] not in ['-', '--', '---'] -%}
+      {%- set _ = valid_scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if valid_scores -%}
+    {%- set _ = filtered_obj_assessment.append([obj[0], valid_scores]) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear|int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+
+  {%- if scores -%}
+  , "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if perf_levels -%}
+  , "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if filtered_obj_assessment -%}
+  , "studentObjectiveAssessments": [
+    {%- for obj in filtered_obj_assessment -%}
+      {
+        "objectiveAssessmentReference": {"assessmentIdentifier": "{{assessmentIdentifier}}", "identificationCode": "{{obj[0]}}", "namespace": "{{namespace}}"},
+        "scoreResults": [
+          {%- for score in obj[1] -%}
+            { "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}", "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}", "result": "{{score[2]}}" }{% if not loop.last %},{% endif %}
+          {%- endfor -%}
+        ]
+      }{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+}
