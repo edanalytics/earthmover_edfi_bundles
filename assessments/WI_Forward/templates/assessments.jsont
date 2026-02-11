@@ -1,0 +1,47 @@
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+{# match the assessment spec on assessment identifier #}
+{%- set assessment = assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
+
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [{"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"}],
+  "scores": [
+  {% set leading_comma = joiner(",") %}
+  {% for score in assessment.scoreResults %} 
+  {% if 
+    ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+    ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+  %}
+  {{ leading_comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ score.reportingMethod }}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{ score.typeDescriptor }}"
+    }
+  {% endif %}
+  {% endfor %}
+  ],
+  "performanceLevels": [
+  {% set leading_comma = joiner(",") %}
+  {% for pl in assessment.performanceLevels %} 
+    {% for level in pl.levels %} 
+    {% if 
+      ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+      ${API_YEAR} >= (pl.min_year | default(${API_YEAR})) 
+    %}
+    {{ leading_comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{ pl.reportingMethod }}",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{ level }}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+  ]
+}

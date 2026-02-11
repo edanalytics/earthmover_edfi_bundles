@@ -1,0 +1,56 @@
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+{# match the assessment spec on assessment identifier #}
+{%- set assessment = assessments | selectattr('assessmentIdentifier', 'equalto', assessmentIdentifier) | first -%}
+
+{# match the objective assessment spec on code #}
+{%- set objectiveAssessment = assessment.objectiveAssessments | selectattr('identificationCode', 'equalto', identificationCode) | first | default({}) -%}
+
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "scores": [
+    {% set leading_comma = joiner(",") %}
+    {% for score in objectiveAssessment.scoreResults %}
+    {% if 
+      ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+      ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+    %}
+    {{ leading_comma() }}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score.reportingMethod}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score.typeDescriptor}}"
+      }
+    {% endif %}
+    {% endfor %}
+    ],
+    "performanceLevels": [
+    {% set leading_comma = joiner(",") %}
+    {% for pl in objectiveAssessment.performanceLevels %}
+      {% for level in pl.levels %}
+      {% if 
+        ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (pl.min_year | default(${API_YEAR})) 
+      %}
+      {{ leading_comma() }}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl.reportingMethod}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{level}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+      } 
+      {% endif %}
+      {% endfor %}
+    {% endfor %}
+    ]
+  }
