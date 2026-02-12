@@ -1,0 +1,258 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'studentId' 
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org 
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+  
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelMapping.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_academic_subject:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  stage_assessments:
+    source: $transformations.stage_academic_subject
+    operations:
+      - operation: keep_columns
+        columns:
+          - AP_Exam_Description
+          - AP_Exam_Code
+          - namespace
+          - codeValue
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}AP - {{AP_Exam_Code}}{%endraw%}"
+          assessmentTitle: "{%raw%}Advanced Placement - {{AP_Exam_Description}}{%endraw%}"
+          assessmentFamily: "Advanced Placement"
+          assessmentNamespace: "uri://collegeboard.org"
+          academicSubjectDescriptor:  "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+          assessmentCategoryDescriptor: "uri://collegeboard.org/AssessmentCategoryDescriptor#Advanced Placement"
+          assessmentPeriodDescriptor: "uri://collegeboard.org/AssessmentPeriodDescriptor#Spring"
+          assessment_ReportingMethod: "uri://collegeboard.org/AssessmentReportingMethodDescriptor#AP Score"
+          assessment_resultDatatype: "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+          maximumScore: "5"
+          minimumScore: "1"
+          joinKey: "Key"
+
+  stage_assessment_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          CodeValue: Grade_CodeValue 
+          Namespace: Grade_Namespace
+
+  stage_assessment_performance_level:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  performance_levels:  
+    source: $transformations.stage_assessment_performance_level
+    operations:
+      - operation: keep_columns
+        columns:
+          - joinKey
+          - codeValue
+          - namespace
+          - reportingMethod
+      - operation: add_columns
+        columns:
+          performance_json: >
+              {%raw-%} 
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}#AP Award",
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%} 
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          performance_json: agg(performance_json,,)
+
+  grade_levels:
+    source: $transformations.stage_assessment_grade_level
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          grade_json: >
+              {%raw-%} {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%} 
+              {
+                "gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          grade_json: agg(grade_json,,)
+
+  stage_distinct_assessments:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - ExamCode
+      - operation: distinct_rows
+        columns:
+          - ExamCode
+
+  prepare_assessments:
+    source: $transformations.stage_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.stage_distinct_assessments
+        join_type: inner
+        left_key: AP_Exam_Code
+        right_key: ExamCode
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+        right_keep_columns:
+          - performance_json
+
+  stage_student_assessments:
+   source: $transformations.input
+   operations:
+      - operation: rename_columns
+        columns:
+          SchoolCode: schoolId
+          Score: result
+          ${STUDENT_ID_NAME}: studentUniqueId
+
+  prepare_student_assessments:
+    source: $transformations.stage_student_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_grade_level
+        join_type: left
+        left_keys: 
+          - GradeLevel
+        right_keys: 
+          - APGrade
+        right_keep_columns:
+          - Grade_CodeValue
+          - Grade_Namespace
+      - operation: join
+        sources:
+          - $transformations.stage_assessments
+        join_type: inner
+        left_key: ExamCode
+        right_key: AP_Exam_Code
+        right_keep_columns:
+          - assessmentNamespace
+          - assessmentIdentifier
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  SchoolYear) }}{%endraw%}" 
+          whenAssessedGradeLevelDescriptor: "{%raw-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{%-endraw%}"
+          administrationDate: "{%raw-%} {{'05/01/'~ School_Year }}{%-endraw%}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+          performanceLevel: "{%raw-%} {%- if AwardType != 'nan'-%} {{AwardType}} {%-endif-%} {%-endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - studentAssessmentIdentifier
+          - assessmentIdentifier
+          - studentUniqueId
+          - administrationDate
+          - School_Year
+          - assessmentNamespace
+          - whenAssessedGradeLevelDescriptor
+          - schoolId
+          - descriptorNamespace
+          - performanceLevel
+          - IrregularityCode1
+          - IrregularityCode2
+        create_columns: 
+          result: max(result)
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
