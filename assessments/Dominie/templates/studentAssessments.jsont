@@ -1,0 +1,30 @@
+{% if result is not none and result | length %}
+{ 
+ "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}",
+  "scoreResults": [{
+    "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethod}}",
+    "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{resultDatatype}}",
+    "result": "{{ result }}"
+    }
+    {% if resultStanine and resultStanine != 'NULL' and resultStanine|length %}
+    ,{
+    "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Stanine",
+    "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+    "result": "{{ resultStanine }}"
+    }
+    {%- endif -%}
+    ]
+}
+{%- endif -%}
