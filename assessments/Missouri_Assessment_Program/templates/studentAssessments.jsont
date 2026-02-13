@@ -40,6 +40,7 @@
 {% endfor %}
 
 {
+  "TEST_DATE": "{{TEST_DATE}}"
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -51,7 +52,7 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{adminDate}}",
+  "administrationDate": "{{administrationDate}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
   {% if scores | length %}
   "scoreResults": [

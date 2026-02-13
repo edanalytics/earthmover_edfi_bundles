@@ -5,17 +5,16 @@ config:
   log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
-  state_file: state.csv
+  # state_file: state.csv
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
     # STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     STUDENT_ID_NAME: MOSIS_STATE_ID
-    # POSSIBLE_STUDENT_ID_COLUMNS: studentId
-    POSSIBLE_STUDENT_ID_COLUMNS: MOSIS_STATE_ID
+    POSSIBLE_STUDENT_ID_COLUMNS: MOSIS_STATE_ID,DISTRICT_STUDENT_NUMBER,STUDENT_NUMBER
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: 5
-    OUTPUT_DIR: ./output
+    OUTPUT_DIR: output
 
 sources:
   assessments:
@@ -35,14 +34,9 @@ sources:
     header_rows: 1
 
   input:
-    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     # file: ${INPUT_FILE}
-    file: ./data/2025_MAP_Data_VAM_Math-info-removed.xlsx
+    file: ./data/sample_anonymized_student_test__small.tsv
     header_rows: 1
-    # See the accompanying bundle_metadata.json for a list of required columns for this file
-    # Or see data/sample_anonymized_file.csv
-
-
 
 transformations:
   input:
@@ -52,19 +46,46 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
+      - operation: modify_columns
+        columns:
+          "*": "{%raw%}{{ value | trim }}{%endraw%}"
+
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
+
+
+      # TODO: Map CONTENT_AREAs to SubjectDescriptor
+      - operation: map_values
+        column: CONTENT_AREA
+        mapping:
+          Eng. Language Arts: english_language_arts
+          Mathematics: math
+          Science: science
+          Social Studies: social_studies
+
+      - operation: date_format
+        column: TEST_DATE
+        from_format: "%m%d%y"
+        to_format: "%Y-%m-%d"
+
+      - operation: rename_columns
+        columns:
+          TEST_DATE: administrationDate
+
       - operation: add_columns
         columns:
           assessmentIdentifier: "fake_math_assessment"
           namespace: "uri://fakeassessmentvendor.com"
+
       - operation: combine_columns
         columns:
           - studentUniqueId
-          # - adminDate
+          - assessmentIdentifier
+          - administrationDate
         new_column: studentAssessmentIdentifier
         separator: '-'
+
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -118,23 +139,28 @@ transformations:
         right_key: assessmentIdentifier
 
 destinations:
-  assessments:
-    source: $transformations.assessments
-    template: ./templates/assessments.jsont
-    extension: jsonl
-  assessmentReportingMethodDescriptors:
-    source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-  objectiveAssessments:
-    source: $sources.objectiveAssessments
-    template: ./templates/objectiveAssessments.jsont
-    extension: jsonl
-  studentAssessments:
+  clean_results:
     source: $transformations.clean_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+
+  # assessments:
+  #   source: $transformations.assessments
+  #   template: ./templates/assessments.jsont
+  #   extension: jsonl
+  # assessmentReportingMethodDescriptors:
+  #   source: $sources.assessmentReportingMethodDescriptors
+  #   template: ./templates/descriptors.jsont
+  #   extension: jsonl
+  # performanceLevelDescriptors:
+  #   source: $sources.performanceLevelDescriptors
+  #   template: ./templates/descriptors.jsont
+  #   extension: jsonl
+  # objectiveAssessments:
+  #   source: $sources.objectiveAssessments
+  #   template: ./templates/objectiveAssessments.jsont
+  #   extension: jsonl
+  # studentAssessments:
+  #   source: $transformations.clean_results
+  #   template: ./templates/studentAssessments.jsont
+  #   extension: jsonl
