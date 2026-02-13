@@ -1,0 +1,98 @@
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "administrationDate": "{{DateTaken}}",
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  }
+  {%- if Grade_Descriptor is not none and Grade_Descriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{Grade_Descriptor}}"
+  {% endif %}
+
+ 
+  {%- set reportingMethodsScores = [
+  ['TextReadingAccuracy','Text Reading Accuracy','Decimal'],
+  ['TextReadingAccuracy2','Text Reading Accuracy 2','Decimal'],
+  ['TextReading','Text Reading Level','Level'],
+  ['FluencyLevel','Fluency Level','Decimal'],
+  ['WordsPerMinute','Words Per Minute','Decimal'],
+  ['SelfCorrectionRate','Self Correction Rate','Decimal'],
+  ['EarlyLiteracyBehaviors','Early Literacy Behaviors','Integer'],
+  ['LetterRecognition','Letter Recognition','Decimal'],
+  ['InitialSounds','Initial Sounds','Decimal'],
+  ['HighFrequencyWords','High Frequency Words','Decimal'],
+  ['RhymingAssessment','Rhyming Assessment','Integer'],
+  ['Comprehension','Comprehension','Decimal'],
+  ['Comprehension2','Comprehension 2','Decimal'],
+  ['Meaning','Meaning','Integer'],
+  ['Visual','Visual','Integer'],
+  ['WordWriting','Word Writing','Integer'],
+  ['Genre','Genre','Level']
+  ] -%}
+
+{# --- Check if there is at least one score  --- #}
+{# Scores #}
+{%- set vars = {'any_score': False} -%} 
+{%- for reportingKey, reportingMethod, reportingDataType in reportingMethodsScores -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+   {%- if vars.update({'any_score': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if vars.any_score  -%}
+,"scoreResults": [
+  {%- set comma = joiner(",") -%}
+  {%- for reportingKey, reportingMethod, reportingDataType in reportingMethodsScores -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+  {{ comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#{{reportingDataType}}",
+      "result": "{{val}}"
+    }
+  {%- endif -%}
+  {%- endfor -%}
+]
+{%- endif -%}
+
+
+{%- set reportingMethodsPerformance = [
+  ['LexileLevel','Lexile Level'],
+  ['ComprehensionLevel','Comprehension Level']
+  ] -%}
+
+{# --- Check if there is at least one performance  --- #}
+{# Performance #}
+{%- set vars = {'any_performance': False} -%} 
+{%- for  reportingKey, reportingMethod in reportingMethodsPerformance -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+   {%- if vars.update({'any_performance': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if vars.any_performance  -%}
+,"performanceLevels": [
+  {%- set comma = joiner(",") -%}
+  {%- for reportingKey, reportingMethod in reportingMethodsPerformance -%}
+  {%- set val = __row_data__[reportingKey] -%}
+  {%- if val is not none and val | string | lower not in ['none', 'null'] and val | string | trim != '' -%}
+  {{ comma() }}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{reportingMethod}}",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{val}}",
+      "performanceLevelMet": true
+    }
+  {%- endif -%}
+  {%- endfor -%}
+]
+{%- endif -%}
+}
