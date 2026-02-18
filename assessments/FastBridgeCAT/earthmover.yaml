@@ -180,7 +180,7 @@ transformations:
           - assessmentIdentifier
           - original_grade
         right_keep_columns:
-        - gradeLevelDescriptor
+        - edfi_descriptor
 
       # aMath/aReading have Quantile/Lexile columns, respectively.
       # Make sure they both exist. One will always be ignored.
@@ -201,7 +201,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
