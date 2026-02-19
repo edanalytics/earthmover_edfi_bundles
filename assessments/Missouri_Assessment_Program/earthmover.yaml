@@ -50,19 +50,40 @@ transformations:
         columns:
           "*": "{%raw%}{{ value | trim }}{%endraw%}"
 
+      # 1. We can't use results if TEST_NAME_MAP (the test type) is missing.
+      # 2. In most cases, this is because the results were invalidated.
+      #
+      # From the MAP data dictionary:
+      #
+      # [MAP_SCORE_INVALIDATION] ... is an indicator created by DESE to
+      # identify if a student has a valid score on the MAP Test.  If a student
+      # has this code marked as yes, the student was either exempt, absent all 3
+      # sessions, or the teacher marked one of the sessions as invalid.
+      - operation: filter_rows
+        query: TEST_NAME_MAP == '' or MAP_SCORE_INVALIDATION = 'Y'
+        behavior: exclude
+
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
 
-
-      # TODO: Map CONTENT_AREAs to SubjectDescriptor
+      # These names correspond to those I defined in the assessmentIdentifier
+      # column in assessments.csv
       - operation: map_values
         column: CONTENT_AREA
         mapping:
-          Eng. Language Arts: english_language_arts
-          Mathematics: math
-          Science: science
-          Social Studies: social_studies
+          Eng. Language Arts: ELA
+          Mathematics: Math
+          Science: Science
+          Social Studies: SocialStudies
+
+      # Sometimes TEST_DATE is missing, but YEAR, the year of the spring in
+      # which the test was taken, is always present.
+      # - Using the date format that will be parsed in the next operation (looks like 40126 for 2026-04-01)
+      # - Using April 1 to avoid being cute w/ season cutoffs.
+      - operation: modify_columns
+        columns:
+          TEST_DATE: "{%raw%}{% if TEST_DATE == '' %}401{{ YEAR[2:4] }}{% else %}{{ TEST_DATE }}{% endif %}{%endraw%}"
 
       - operation: date_format
         column: TEST_DATE
@@ -72,11 +93,24 @@ transformations:
       - operation: rename_columns
         columns:
           TEST_DATE: administrationDate
+          YEAR: schoolYear
 
       - operation: add_columns
         columns:
-          assessmentIdentifier: "fake_math_assessment"
-          namespace: "uri://fakeassessmentvendor.com"
+          # Initialize assessmentIdentifier. Will be appended in next operation.
+          assessmentIdentifier: MissouriAssessmentProgram
+          namespace: uri://dese.mo.gov/assessment
+          # Yes, MAP uses 1-1 Ed-Fi PerformanceLevelDescriptor values
+          performanceLevelDescriptor: "{%raw%}uri://ed-fi.org/PerformanceLevelDescriptor#{{PERFORMANCE_LEVEL}}{%endraw%}"
+
+      - operation: combine_columns
+        columns:
+          - assessmentIdentifier
+          # EOC, MAP, MAPA (MAP-Alternate)
+          - TEST_NAME_MAP
+          - CONTENT_AREA
+        separator: _
+        new_column: assessmentIdentifier
 
       - operation: combine_columns
         columns:
@@ -89,6 +123,11 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+
+
+      # TODO: Use YEAR + spring when TEST_DATE is missing
+
+
       # - operation: join
       #   sources:
       #     - $sources.gradeLevelDescriptors

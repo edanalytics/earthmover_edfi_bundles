@@ -40,7 +40,6 @@
 {% endfor %}
 
 {
-  "TEST_DATE": "{{TEST_DATE}}"
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
     "assessmentIdentifier": "{{assessmentIdentifier}}",
@@ -65,19 +64,12 @@
     {% endfor %}
   ],
   {% endif %}
-  {% if perf_levels | length %}
   "performanceLevels": [
-    {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
+        "assessmentReportingMethodDescriptor": "uri://ed-fi.org/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "{{performanceLevelDescriptor}}"
+      }
   ],
-  {% endif %}
   {% if all_obj_assessment | length %}
   "studentObjectiveAssessments": [
   {%- for obj in all_obj_assessment -%}
