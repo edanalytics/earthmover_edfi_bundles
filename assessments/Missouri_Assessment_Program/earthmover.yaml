@@ -63,10 +63,6 @@ transformations:
         query: TEST_NAME_MAP == '' or MAP_SCORE_INVALIDATION = 'Y'
         behavior: exclude
 
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: studentUniqueId
-
       # These names correspond to those I defined in the assessmentIdentifier
       # column in assessments.csv
       - operation: map_values
@@ -103,11 +99,16 @@ transformations:
           # Yes, MAP uses 1-1 Ed-Fi PerformanceLevelDescriptor values
           performanceLevelDescriptor: "{%raw%}uri://ed-fi.org/PerformanceLevelDescriptor#{{PERFORMANCE_LEVEL}}{%endraw%}"
 
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+
       - operation: combine_columns
         columns:
           - assessmentIdentifier
           # EOC, MAP, MAPA (MAP-Alternate)
           - TEST_NAME_MAP
+          # Subject
           - CONTENT_AREA
         separator: _
         new_column: assessmentIdentifier
