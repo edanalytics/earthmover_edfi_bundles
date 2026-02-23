@@ -48,14 +48,14 @@
   },
   "administrationDate": "{{administration_date}}",
   "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
-  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
 
   {%- if scores -%}
   , "scoreResults": [
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
-        "resultDatatypeTypeDescriptor": "{{score[3]}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}

@@ -310,24 +310,47 @@ transformations:
   assessments:
     source: $sources.assessments
     operations:
+
       - operation: join
         sources:
           - $transformations.performance_level_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+
       - operation: join
         sources:
           - $transformations.assessment_period_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_keys:
+          - assessmentIdentifier
+        right_keys:
+          - assessmentIdentifier
+        right_keep_columns:
+          - edfi_descriptor
+
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
+
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
 
 destinations:
   assessments:

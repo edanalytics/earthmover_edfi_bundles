@@ -1,5 +1,5 @@
 
-{% set quantile_lexile = "Quantile" if assessmentIdentifier == "aMath" else "Lexile" %}
+{% set quantile_lexile = "Quantile" if assessmentIdentifier == "FastBridge_aMath" else "Lexile" %}
 
 {# [Reporting Method, Data type, Custom namespace] #}
 {%- set possible_scores = [
@@ -27,7 +27,7 @@
   ["School Growth Percentile from Spring", "Percentile"],
   ["School Growth Percentile from Winter", "Percentile"],
   ["Test Theta", "Decimal"],
-  [quantile_lexile, quantile_lexile, "uri://fastbridge.org/assessment"],
+  [quantile_lexile, "Level"],
 ] -%}
 
 {
@@ -48,7 +48,7 @@
     {% for score in possible_scores %}
     {
       "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{ score[0] }}",
-      "resultDatatypeTypeDescriptor": "{{ score[2] or 'uri://ed-fi.org' }}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{ score[1] }}"
     }
     {% if not loop.last %},{% endif %}
     {% endfor %}
