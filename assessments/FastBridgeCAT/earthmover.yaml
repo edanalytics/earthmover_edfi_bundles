@@ -72,6 +72,10 @@ sources:
     file: ./seeds/xwalks/gradeLevelDescriptors.csv
     header_rows: 1
 
+  academicSubjectDescriptors:
+    file: ./seeds/xwalks/academicSubjectDescriptors.csv
+    header_rows: 1
+
   # Custom Descriptors
   {% for descr in custom_descriptors %}
   {{ descr }}:
@@ -138,7 +142,7 @@ transformations:
 
       - operation: add_columns
         columns:
-          assessmentIdentifier: ${TEST_TYPE}
+          assessmentIdentifier: FastBridge_${TEST_TYPE}
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           school_year: ${API_YEAR}
@@ -179,7 +183,26 @@ transformations:
           - assessmentIdentifier
           - original_grade
         right_keep_columns:
-        - edfi_descriptor
+          - edfi_descriptor
+      
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
+
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: left
+        left_keys:
+          - assessmentIdentifier
+        right_keys:
+          - assessmentIdentifier
+        right_keep_columns:
+          - edfi_descriptor
+
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
 
       # aMath/aReading have Quantile/Lexile columns, respectively.
       # Make sure they both exist. One will always be ignored.
