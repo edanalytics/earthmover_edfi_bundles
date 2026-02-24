@@ -143,7 +143,10 @@ transformations:
         left_key: grade
         right_key: original_grade
         right_keep_columns:
-        - gradeLevelDescriptor
+        - edfi_descriptor
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: gradeLevelDescriptor
 
   # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -154,7 +157,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -177,14 +180,12 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org/assessment"
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           performance_level_json: >
             {%raw-%}
             {
-              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#Risk Level",
               "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -233,12 +234,11 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org/assessment"
           score_json: >
             {%raw-%}
             {
-              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#{{scoreType}}",
-              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{scoreType}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{resultDatatype}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -254,6 +254,17 @@ transformations:
       - operation: modify_columns
         columns:
           score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessment_category_descriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - assessmentCategoryDescriptor
 
   # Prepare assessments with proper structure
   assessments:
@@ -283,9 +294,12 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
       - operation: join
         sources:
-          - $sources.assessmentCategoryDescriptors
+          - $transformations.assessment_category_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
@@ -309,9 +323,16 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      - operation: add_columns
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
         columns:
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+         edfi_descriptor: academicSubjectDescriptor
+         
 
 destinations:
   assessments:
@@ -326,6 +347,11 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
