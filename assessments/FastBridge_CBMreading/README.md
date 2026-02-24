@@ -1,7 +1,7 @@
-## FastBridge CBMreading
+## FastBridge CBMreading and CBMcomp
 
-* **Title:** FastBridge CBMreading
-* **Description**: This template maps FastBridge CBMreading assessment results. This covers the comprehensive screening version of the assessment, not the progress monitoring version. 
+* **Title:** FastBridge CBMreading and CBMcomp
+* **Description**: This template maps FastBridge CBMreading assessment results. This covers the comprehensive screening version of the assessment, not the progress monitoring version. CBMcomp subscores can also be mapped if the optional 'Comprehension - Question' and/or 'Comprehension - Recall' files are provided. 
 * **API version**: 5.3
 * **Submitter name**: Samantha LeBlanc
 * **Submitter organization**: Education Analytics
