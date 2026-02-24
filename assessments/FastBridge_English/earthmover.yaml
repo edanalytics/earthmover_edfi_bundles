@@ -42,7 +42,7 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    SCHOOL_YEAR: 2024
+    API_YEAR: 2024
 
 sources:
   input:
@@ -143,7 +143,10 @@ transformations:
         left_key: grade
         right_key: original_grade
         right_keep_columns:
-        - gradeLevelDescriptor
+        - edfi_descriptor
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: gradeLevelDescriptor
       # filter out rows with missing student IDs
       - operation: filter_rows
         query: "student_unique_id	 != ''"
@@ -159,7 +162,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -299,6 +302,9 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
       - operation: join
         sources:
           - $transformations.assessment_category_descriptors
@@ -342,11 +348,6 @@ destinations:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  academicSubjectDescriptors:
-    source: $sources.academicSubjectDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
