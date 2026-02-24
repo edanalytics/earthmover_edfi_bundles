@@ -10,12 +10,8 @@ config:
   show_stacktrace: true
   macros: >
     {% macro assign_assessment_identifier(test) -%}
-    {%- if test == 'ELA_RWR' -%} beacon_ela_adaptive
-    {%- elif test == 'ELAF' -%} beacon_ela_fixed
-    {%- elif test in ('READ', 'ELA_TXT_TST', 'ELA_CSE_TST', 'ELA_RES_TST', 'ELA_LST_TST') -%} beacon_ela_testlet
-    {%- elif test == 'MATHA' -%} beacon_math_adaptive
-    {%- elif test == 'MATHF' -%} beacon_math_fixed
-    {%- elif test in ('MAT_ALG_TST', 'MAT_GEO_TST', 'MAT_MEA_TST', 'MAT_NUQ_TST') -%} beacon_math_testlet
+    {%- if test.startswith('MAT') -%} beacon_math
+    {%- elif test.startswith(('ELA', 'READ')) -%} beacon_ela
     {%- endif -%}
     {%- endmacro %}
   parameter_defaults:
