@@ -185,14 +185,12 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org/assessment"
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           performance_level_json: >
             {%raw-%}
             {
-              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#Risk Level",
               "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -241,12 +239,11 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org/assessment"
           score_json: >
             {%raw-%}
             {
-              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#{{scoreType}}",
-              "resultDatatypeTypeDescriptor": "{{resultDatatypeTypeDescriptor}}"
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{scoreType}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{resultDatatype}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -331,9 +328,15 @@ transformations:
         join_type: inner
         left_key: identificationCode
         right_key: identificationCode
-      - operation: add_columns
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
         columns:
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+         edfi_descriptor: academicSubjectDescriptor
 
 destinations:
   assessments:
