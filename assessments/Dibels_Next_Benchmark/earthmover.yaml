@@ -52,6 +52,9 @@ transformations:
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
+      - operation: modify_columns
+        columns:
+          grade: "{%raw%}{{ grade.zfill(2) if grade.isdigit() and grade|length == 1 else grade }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
