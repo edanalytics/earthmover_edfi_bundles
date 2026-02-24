@@ -19,7 +19,7 @@ Or use the sample file (data/sample_anonymized_file_fastbridge_er_spanish.csv).
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the FastBridge Early Reading - Spanish .csv file you want to transform
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
-- SCHOOL_YEAR: The school year associated with the results file
+- API_YEAR: The school year associated with the results file
 
 ### Examples
 Running earthmover:
@@ -29,7 +29,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file_fastbridge_er_spanish.csv",
 "STUDENT_ID_NAME": "Local ID",
-"SCHOOL_YEAR": "2024"
+"API_YEAR": "2024"
 }'
 ```
 
