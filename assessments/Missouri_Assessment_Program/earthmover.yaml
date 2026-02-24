@@ -34,8 +34,7 @@ sources:
     header_rows: 1
 
   input:
-    # file: ${INPUT_FILE}
-    file: ./data/sample_anonymized_student_test__small.tsv
+    file: ${INPUT_FILE}
     header_rows: 1
 
 transformations:
@@ -60,7 +59,7 @@ transformations:
       # has this code marked as yes, the student was either exempt, absent all 3
       # sessions, or the teacher marked one of the sessions as invalid.
       - operation: filter_rows
-        query: TEST_NAME_MAP == '' or MAP_SCORE_INVALIDATION = 'Y'
+        query: TEST_NAME_MAP == '' or MAP_SCORE_INVALIDATION == 'Y'
         behavior: exclude
 
       # These names correspond to those I defined in the assessmentIdentifier
@@ -90,6 +89,10 @@ transformations:
         columns:
           TEST_DATE: administrationDate
           YEAR: schoolYear
+      
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
       - operation: add_columns
         columns:
@@ -97,7 +100,8 @@ transformations:
           assessmentIdentifier: MissouriAssessmentProgram
           namespace: uri://dese.mo.gov/assessment
           # Yes, MAP uses 1-1 Ed-Fi PerformanceLevelDescriptor values
-          performanceLevelDescriptor: "{%raw%}uri://ed-fi.org/PerformanceLevelDescriptor#{{PERFORMANCE_LEVEL}}{%endraw%}"
+          performanceLevelDescriptor: "{%raw%}{{descriptor_namespace}}/PerformanceLevelDescriptor#{{PERFORMANCE_LEVEL}}{%endraw%}"
+          calculated_grade_level: "{%raw%}{%if GRADE_OF_STUDENT == '' %}{{GRADE_LEVEL}}{%else%}{{GRADE_OF_STUDENT}}{%endif%}{%endraw%}"
 
       - operation: duplicate_columns
         columns:
@@ -125,21 +129,18 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
 
-
-      # TODO: Use YEAR + spring when TEST_DATE is missing
-
-
-      # - operation: join
-      #   sources:
-      #     - $sources.gradeLevelDescriptors
-      #   join_type: inner
-      #   # change this to match the grade from the file
-      #   left_keys:
-      #     - grade
-      #     - assessmentIdentifier
-      #   right_keys:
-      #     - originalGrade
-      #     - assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys:
+          - calculated_grade_level
+          - assessmentIdentifier
+        right_keys:
+          - originalGrade
+          - assessmentIdentifier
+        right_keep_columns:
+          - gradeLevelDescriptor
 
   # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
   # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
@@ -179,7 +180,7 @@ transformations:
         right_key: assessmentIdentifier
 
 destinations:
-  clean_results:
+  studentAssessments:
     source: $transformations.clean_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
