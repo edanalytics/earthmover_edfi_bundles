@@ -178,8 +178,9 @@ transformations:
         right_keys:
           - assessmentIdentifier
           - original_grade
-        right_keep_columns:
-          - gradeLevelDescriptor
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: gradeLevelDescriptor
 
   # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -190,7 +191,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -213,14 +214,12 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          base_namespace: "uri://fastbridge.org/assessment"
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           performance_level_json: >
             {%raw-%}
             {
-              "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#Risk Level",
               "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -302,6 +301,9 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
       - operation: join
         sources:
           - $transformations.assessment_category_descriptors
