@@ -8,6 +8,12 @@ config:
   state_file: ${STATE_FILE}
   show_graph: False
   show_stacktrace: true
+  macros: >
+    {% macro clean_reading_title(title) -%}
+    {%- if title.endswith('ELA') -%} {{title | replace('ELA', 'Reading')}}
+    {%- else -%}{{title}}
+    {%- endif -%}
+    {%- endmacro %}
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
@@ -129,7 +135,7 @@ transformations:
     source: $transformations.clean_results
     operations:
       - operation: distinct_rows
-        column: assessmentTitle
+        column: assessmentIdentifier
       - operation: keep_columns
         columns:
           - assessmentIdentifier
@@ -139,7 +145,7 @@ transformations:
           - assessmentCategoryDescriptor
       - operation: modify_columns
         columns:
-          assessmentTitle: "{%raw%}MVPA - {{assessmentTitle}}{%endraw%}"
+          assessmentTitle: "{%raw%}MVPA - {{ clean_reading_title(assessmentTitle) }}{%endraw%}"
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
