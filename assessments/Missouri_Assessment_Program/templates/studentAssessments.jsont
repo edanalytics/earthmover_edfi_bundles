@@ -1,5 +1,5 @@
 
-{# Unclear the type of EOC_SCORE #}
+{# Only of these are set per assessmentIdentifier #}
 {%- set possible_scores = [
     (MAP_SCALE_SCORE, "Scale Score", "Integer"),
     (EOC_SCORE, "Scale Score", "Integer")

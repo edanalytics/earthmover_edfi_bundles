@@ -23,9 +23,6 @@ sources:
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
@@ -184,28 +181,19 @@ transformations:
         right_key: assessmentIdentifier
 
 destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
   studentAssessments:
     source: $transformations.clean_results
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-
-  # assessments:
-  #   source: $transformations.assessments
-  #   template: ./templates/assessments.jsont
-  #   extension: jsonl
-  # assessmentReportingMethodDescriptors:
-  #   source: $sources.assessmentReportingMethodDescriptors
-  #   template: ./templates/descriptors.jsont
-  #   extension: jsonl
-  # performanceLevelDescriptors:
-  #   source: $sources.performanceLevelDescriptors
-  #   template: ./templates/descriptors.jsont
-  #   extension: jsonl
-  # objectiveAssessments:
-  #   source: $sources.objectiveAssessments
-  #   template: ./templates/objectiveAssessments.jsont
-  #   extension: jsonl
-  # studentAssessments:
-  #   source: $transformations.clean_results
-  #   template: ./templates/studentAssessments.jsont
-  #   extension: jsonl
