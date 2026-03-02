@@ -253,7 +253,7 @@ transformations:
             {
               "assessmentReportingMethodDescriptor": "{{base_namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
               "performanceLevelDescriptor": "{{base_namespace}}/PerformanceLevelDescriptor#{{codeValue}}",
-              "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+              "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
             },
             {%-endraw%}
       - operation: modify_columns
