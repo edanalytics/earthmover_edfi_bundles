@@ -143,7 +143,10 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "reportedSchoolReference": {
+    "schoolId": "{{educationOrganizationId}}"
+  }
   {%- if adminDate -%}
   , "administrationDate": "{{adminDate}}"
   {%- endif -%}
