@@ -33,6 +33,7 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    type: tsv
 
 transformations:
   input:
@@ -86,16 +87,13 @@ transformations:
         columns:
           TEST_DATE: administrationDate
           YEAR: schoolYear
-      
-      - operation: add_columns
-        columns:
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
       - operation: add_columns
         columns:
           # Initialize assessmentIdentifier. Will be appended in next operation.
           assessmentIdentifier: MissouriAssessmentProgram
           namespace: uri://dese.mo.gov/assessment
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           # 1. When the test type is EOC, GRADE_OF_STUDENT represents the grade
           #    (we want this), while GRADE_LEVEL represents a subject sequence,
           #    such as "A1", meaning Algebra 1.
