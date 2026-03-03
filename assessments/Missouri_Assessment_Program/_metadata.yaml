@@ -1,7 +1,7 @@
 display_name: "Missouri Assessment Program (MAP)"
 path: "assessments/Missouri_Assessment_Program"
-earthmover_config_file: earthmover.yaml
-student_id_names: ["DISTRICT_STUDENT_NUMBER", "STUDENT_NUMBER", "MOSIS_STATE_ID"]
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
 input_files:
   - display_name: "Assessment data"
     env_var: "INPUT_FILE"
