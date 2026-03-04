@@ -1,17 +1,16 @@
-earthmover_config_file: earthmover.yaml
-edfi_data_model_version_range: [">=0.3.0", "<0.4.0"]
-assessment_year_validated_range: [">=2022", "<=2024"]
-student_id_names: ["DISTRICT_STUDENT_NUMBER", "STUDENT_NUMBER", "MOSIS_STATE_ID"]
+display_name: "Missouri Assessment Program (MAP)"
+path: "assessments/Missouri_Assessment_Program"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
 input_files:
-  INPUT_FILE: 
-    optional: false
-    required_fields: ["CONTENT_AREA", "YEAR", "GRADE_LEVEL", "GRADE_OF_STUDENT"]
-params:
-  required: ["INPUT_FILE"]
-  requires_user_input: []
-  properties:
-    INPUT_FILE:
-      type: string
-      format: data-url
-      title: Assessment File
-      description: The assessment file to be loaded
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["txt"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+descriptor_mapping_files:
+  - academicSubjectDescriptors.csv
+  - gradeLevelDescriptors.csv
