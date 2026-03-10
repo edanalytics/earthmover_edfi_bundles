@@ -24,6 +24,9 @@ sources:
   student_ieps:
     file: ${STUDENT_IEPS_FILE}
     header_rows: 1
+  student_iep_disability_collecitons:
+    file: ${STUDENT_IEP_DISABILITY_COLLECTION_FILE}
+    header_rows: 1
 
 
 transformations:
@@ -98,6 +101,17 @@ transformations:
         right_keep_columns:
           - lea_code
           - event_date
+  student_iep_disability_collections:
+    source: $sources.student_iep_disability_collection
+    operations:
+      - operation: snake_case_columns
+      - operation: date_format
+        columns: 
+          - event_date
+          - event_begin_date
+          - event_end_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
 
 
 destinations:
@@ -116,4 +130,8 @@ destinations:
   studentIEPs:
     source: $transformations.student_ieps
     template: ./templates/studentIEPs.jsont
+    extension: jsonl
+  studentIEPDisabilityCollections:
+    source: $transformations.student_iep_disabilities
+    template: ./templates/studentIEPDisabilityCollection.jsont
     extension: jsonl
