@@ -11,7 +11,6 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: MOSIS_STATE_ID,DISTRICT_STUDENT_NUMBER,STUDENT_NUMBER
-    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     OUTPUT_DIR: output
 
 sources:
@@ -97,7 +96,6 @@ transformations:
           # Initialize assessmentIdentifier. Will be appended in next operation.
           assessmentIdentifier: MissouriAssessmentProgram
           namespace: uri://dese.mo.gov/assessment
-          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           # 1. When the test type is EOC, GRADE_OF_STUDENT represents the grade
           #    (we want this), while GRADE_LEVEL represents a subject sequence,
           #    such as "A1", meaning Algebra 1.
