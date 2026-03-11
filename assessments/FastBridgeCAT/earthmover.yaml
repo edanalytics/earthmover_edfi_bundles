@@ -118,6 +118,12 @@ transformations:
         columns:
           melt_value: "{% raw %}{{ melt_value|replace('N/A*', '') }}{% endraw %}"
 
+      # If a student is included but has no test scores across all assessments &
+      # seasons, the pivot fails due to duplicate rows in the identity columns.
+      - operation: filter_rows
+        query: melt_value == ''
+        behavior: exclude
+
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
