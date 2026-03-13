@@ -10,7 +10,7 @@
 - Cambridge bundle
 
 ## Under the hood
-- Restructured the ACCESS, ACT, ASVAB, CIRCLE, DIBELS 8, DIBELS Next, SC EOCEP, IB, KRA, MAP Growth, PSAT/SAT, SC Alt, SCREADY, STAMP, STAR, TX KEA, WIN, and i-Ready bundles for Runway needs.
+- Restructured the ACCESS, ACT, ASVAB, CIRCLE, DIBELS 8, DIBELS Next, SC EOCEP, IB, KRA, MAP Growth, SC Alt, SCREADY, STAMP, STAR, TX KEA, WIN, and i-Ready bundles for Runway needs.
     - Adds `_metadata.yaml` files used by Runway app.
     - Updates the seed structure to work with descriptor mapping feature in Runway.
         - NOTE: This is considered a breaking change for any implementations that use project composition to override descriptor values. 
@@ -63,7 +63,6 @@
 - STAAR Summative 2025 compatibility updates
 
 ## Fixes
-- Updated data model for PSAT/SAT bundle to follow governance best-practices
 - Updated data model for MAP Growth bundle to follow governance best-practices
 - Updated data model for STAR bundle to follow governance best-practices
 - Change MAP Fluency testing language to optional
