@@ -9,30 +9,37 @@ This repository contains earthmover bundles for mapping assessment data to Ed-Fi
 ## Common Tasks
 
 ### Check for Required Columns
-How to know if a column is required:
-- The column is referenced directly in a way that would break an earthmover run
+
+Columns fall into three categories:
+- **Must have values**: The column must exist AND contain data. Missing values would break the earthmover run or produce invalid Ed-Fi output (e.g., empty `scoreResults` array).
+- **Must exist as header (values can be empty)**: The column header must be present in the file (because it's in `rename_columns` and NOT in `optional_fields`), but the template null-checks the values so empty cells are handled gracefully.
+- **Optional**: The column is listed in `optional_fields`, so neither the header nor values need to exist.
 
 Process for determining required columns:
 1. Read the earthmover.yaml file to identify:
-   - Columns in `duplicate_columns` operations (always required)
-   - Columns in `combine_columns` operations (always required)
-   - Columns used in `join` operations with `join_type: inner` (required, records filtered if missing/invalid)
-   - Columns in `rename_columns` that are NOT in `optional_fields` (required)
-   - Columns used in `modify_columns` for transformations (usually required)
-   - Columns referenced in `filter_rows` operations (required for filtering logic)
+   - Columns in `duplicate_columns` operations (must have values)
+   - Columns in `combine_columns` operations (must have values)
+   - Columns with `expect` assertions (must have values)
+   - Columns used in `modify_columns` for transformations like date parsing (must have values)
+   - Columns used in `join` operations with `join_type: inner` (records filtered if missing/invalid - check if blanks are handled in the seed)
+   - Columns in `rename_columns` that are NOT in `optional_fields` (must exist as headers - but check step 2 to determine if values are also needed)
+   - Columns referenced in `filter_rows` operations (must have values for filtering logic)
 
-2. Read the template files to identify:
-   - Variables referenced directly without null checks (required)
-   - Variables in loops that check if they exist before including (optional)
+2. Read the template files to determine which "header required" columns also need values:
+   - Variables referenced directly without null checks → must have values
+   - Variables in null-checked loops (e.g., `if score[0] is not none and score[0] | length`) → values can be empty
+   - Pay special attention to Ed-Fi required arrays like `scoreResults` - at least one item must pass null checks or the output is invalid
 
-3. Create a test_subset.csv file:
-   - Include all student ID columns from the sample file
-   - Include only the columns you believe are required (with valid values)
-   - For columns that must exist in the header but can be empty, include them with empty values
+3. Create a required_columns.csv test file:
+   - Include "must have values" columns with valid values
+   - Include "must exist as header" columns WITH EMPTY VALUES to verify the bundle handles them gracefully
+   - Include at least one row where optional score values are populated and one where they are empty
 
-4. Run earthmover with the test_subset.csv:
+4. Run earthmover with the required_columns.csv:
    - Use the example command from the bundle's README
-   - Point INPUT_FILE to the test_subset.csv
+   - Point INPUT_FILE to the required_columns.csv
+   - Use the bundle's default output directory (./output) and runs file (./runs.csv)
+   - Do NOT create separate test output directories or runs files
    - If it breaks, the error message will tell you what's missing
    - If it succeeds, proceed to step 5
 
@@ -40,10 +47,11 @@ Process for determining required columns:
    - Validate the output JSONL files contain all expected required fields per Ed-Fi schema
    - Check for null values or empty strings in required fields
    - Verify records weren't silently filtered out due to inner joins with invalid data
+   - For rows with empty "header only" columns, verify the output still has valid `scoreResults` (not an empty array)
 
 6. Document the findings:
-   - List all truly required columns
-   - Note any columns that must exist in the header but can be empty
+   - List columns that must have values and explain why (assertion, used in transformation, needed for valid Ed-Fi output)
+   - List columns that must exist as headers but can be empty
    - Note any data format requirements (date formats, enum values, etc.)
    - Identify silent filtering scenarios (inner joins that exclude records)
 
