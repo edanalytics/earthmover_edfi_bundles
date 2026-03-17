@@ -63,10 +63,31 @@ transformations:
           schoolYear: ${API_YEAR}
           namespace: "uri://collegeboard.org/Assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-      # Determine assessment type
+      # Add parameter value as column for conditional logic
       - operation: add_columns
         columns:
-          assessmentIdentifier: ${ASSESSMENT_TYPE}
+          assessment_type_param: ${ASSESSMENT_TYPE}
+      # Determine assessment type (auto-detect if not explicitly provided)
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: >
+            {%raw-%}
+            {%- if assessment_type_param is not none and assessment_type_param | length -%}
+              {{assessment_type_param}}
+            {%- elif LATEST_SAT_DATE is defined and LATEST_SAT_DATE is not none and LATEST_SAT_DATE | length -%}
+              SAT
+            {%- elif LATEST_PSAT_GRADE is defined and LATEST_PSAT_GRADE is not none and LATEST_PSAT_GRADE | length -%}
+              {%- if LATEST_PSAT_GRADE in ['8', '9'] -%}
+                PSAT-8/9
+              {%- elif LATEST_PSAT_GRADE == '10' -%}
+                PSAT-10
+              {%- else -%}
+                PSAT-NMSQT
+              {%- endif -%}
+            {%- else -%}
+              PSAT-NMSQT
+            {%- endif -%}
+            {%-endraw%}
       # Extract administration date (try both SAT and PSAT columns)
       - operation: add_columns
         columns:
