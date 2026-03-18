@@ -10,46 +10,67 @@ This repository contains earthmover bundles for mapping assessment data to Ed-Fi
 
 ### Check for Required Columns
 
-Columns fall into three categories:
-- **Must have values**: The column must exist AND contain data. Missing values would break the earthmover run or produce invalid Ed-Fi output (e.g., empty `scoreResults` array).
-- **Must exist as header (values can be empty)**: The column header must be present in the file (because it's in `rename_columns` and NOT in `optional_fields`), but the template null-checks the values so empty cells are handled gracefully.
-- **Optional**: The column is listed in `optional_fields`, so neither the header nor values need to exist.
+Columns fall into two categories:
+- **Must exist in the file**: The column is referenced by an earthmover YAML operation that will error if it's missing. Whether it needs VALUES depends on the specific operation (see below).
+- **Not required**: The column is either in `optional_fields` (auto-created with empty values if missing) OR only referenced in Jinja templates (Jinja2's `Undefined` class handles missing columns gracefully — `| length` returns 0, so null-checked scores are silently skipped).
+
+**Key technical detail (verified in earthmover source code):**
+Earthmover uses Jinja2 3.x's default `Undefined` class. When a column is missing from the CSV and referenced in a template:
+- `Undefined is not none` → `True` (Undefined is NOT None!)
+- `Undefined | length` → `0` (this is what actually filters it out)
+- So the common pattern `if x is not none and x | length` correctly skips missing columns without errors.
+- Columns ONLY referenced in templates with `| length` checks do NOT need to exist as headers.
 
 Process for determining required columns:
-1. Read the earthmover.yaml file to identify:
-   - Columns in `duplicate_columns` operations (must have values)
-   - Columns in `combine_columns` operations (must have values)
-   - Columns with `expect` assertions (must have values)
-   - Columns used in `modify_columns` for transformations like date parsing (must have values)
-   - Columns used in `join` operations with `join_type: inner` (records filtered if missing/invalid - check if blanks are handled in the seed)
-   - Columns in `rename_columns` that are NOT in `optional_fields` (must exist as headers - but check step 2 to determine if values are also needed)
-   - Columns referenced in `filter_rows` operations (must have values for filtering logic)
+1. Read the earthmover.yaml file. ONLY the following operations require columns to exist:
+   - `duplicate_columns`: column must exist (errors with "column X not present in the dataset")
+   - `combine_columns`: columns must exist (uses `raise_on_unmatched=True`)
+   - `rename_columns`: column must exist (errors with "column X not present in the dataset")
+   - `date_format`: column must exist (uses `raise_on_unmatched=True`)
+   - `keep_columns`: column must exist (uses `raise_on_unmatched=True`)
+   - `map_values`: column must exist (uses `raise_on_unmatched=True`)
+   - `join` left keys: must exist (pandas merge will error)
+   - `filter_rows`: columns in query must exist (pandas query will error)
+   - `expect`: columns in assertions must exist and have values
+   - `POSSIBLE_STUDENT_ID_COLUMNS`: all listed columns must exist as headers; one must have values in every row
+   - Columns in `optional_fields` are auto-created with `fill_value=""` if missing — they do NOT need to exist.
+   - Columns ONLY referenced in Jinja templates do NOT need to exist (see technical detail above).
 
-2. Read the template files to determine which "header required" columns also need values:
-   - Variables referenced directly without null checks → must have values
-   - Variables in null-checked loops (e.g., `if score[0] is not none and score[0] | length`) → values can be empty
-   - Pay special attention to Ed-Fi required arrays like `scoreResults` - at least one item must pass null checks or the output is invalid
+2. For columns that must exist, determine if they also need VALUES:
+   - `duplicate_columns` / `combine_columns`: need values if used to build identifiers (e.g., studentAssessmentIdentifier)
+   - `date_format`: needs a parseable date value or will error
+   - `join` with `join_type: inner`: records are silently dropped if value doesn't match seed — check if blanks are handled in the seed file
+   - `join` with `join_type: left`: values can be empty (unmatched rows get nulls)
+   - `filter_rows`: behavior depends on the query — check if empty values would cause unintended filtering
+   - `rename_columns`: header must exist, but values can be empty if the template null-checks them
 
 3. Create a required_columns.csv test file:
    - Include "must have values" columns with valid values
    - Include "must exist as header" columns WITH EMPTY VALUES to verify the bundle handles them gracefully
    - Include at least one row where optional score values are populated and one where they are empty
 
-4. Run earthmover with the required_columns.csv:
-   - Use the example command from the bundle's README
-   - Point INPUT_FILE to the required_columns.csv
-   - Use the bundle's default output directory (./output) and runs file (./runs.csv)
-   - Do NOT create separate test output directories or runs files
-   - If it breaks, the error message will tell you what's missing
-   - If it succeeds, proceed to step 5
+4. End-to-end test with edfi_testing_stack:
+   - The testing stack repo is at `/home/jalvord/code/edfi_testing_stack/`
+   - Install if needed: `pip install -e /home/jalvord/code/edfi_testing_stack/`
+   - Before running, temporarily modify the bundle's lightbeam.yaml:
+     - Add `namespace_overrides: {}` (lightbeam bug — crashes without it)
+     - Set `verify_ssl: False` (local stack uses HTTP, not HTTPS)
+     - Do NOT change `mode` — `district_specific` works with the local stack
+   - Run the test-bundle command:
+     ```bash
+     test-bundle /path/to/bundle -p '{"OUTPUT_DIR": "./output", "STATE_FILE": "./runs.csv", "INPUT_FILE": "./data/required_columns.csv", ...}' -v -kr
+     ```
+     - Use `-v` for verbose output to see lightbeam details
+     - Use `-kr` to keep containers running between tests
+     - Pass earthmover parameters via `-p` matching the bundle's README example
+   - If running a second bundle while containers are already up, spin down first (`edfi-stack down`) so the new bundle's namespace gets registered
+   - The stack takes ~2 minutes to spin up — "Waiting for API to come online..." is normal
+   - Success looks like: all endpoints return 201 status codes and you see the rainbow message
+   - 409 errors on objectiveAssessments can indicate dependency ordering issues (not related to required_columns)
+   - If it breaks, the error message will tell you what's missing — fix the required_columns.csv and re-run
+   - After testing, revert the lightbeam.yaml changes (namespace_overrides and verify_ssl)
 
-5. Check the output:
-   - Validate the output JSONL files contain all expected required fields per Ed-Fi schema
-   - Check for null values or empty strings in required fields
-   - Verify records weren't silently filtered out due to inner joins with invalid data
-   - For rows with empty "header only" columns, verify the output still has valid `scoreResults` (not an empty array)
-
-6. Document the findings:
+5. Document the findings:
    - List columns that must have values and explain why (assertion, used in transformation, needed for valid Ed-Fi output)
    - List columns that must exist as headers but can be empty
    - Note any data format requirements (date formats, enum values, etc.)
@@ -182,6 +203,10 @@ If I ask you to review a bundle, you must confirm that you've checked and give m
   - Parameter defaults
     - STUDENT_ID_NAME
       - Should default to 'edFi_studentUniqueID', which is the column added by the apply_xwalk package of student ID xwalking feature.
+    - POSSIBLE_STUDENT_ID_COLUMNS
+      - ALL columns listed in this parameter must exist as headers in the input file.
+      - ONE of those columns must be completely filled in for every row. The other columns can be entirely empty.
+      - This is NOT a per-row requirement — one column must be the designated ID column with values in every single row.
 - Check logic to transform the files, especially if they are wide
   - Goal is to ensure we won't unintentionally run into memory issues, performance issues, etc.
 - Check grade level mapping

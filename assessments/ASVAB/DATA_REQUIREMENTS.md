@@ -7,10 +7,12 @@ This file explains what your ASVAB data needs to look like to be processed corre
 Your file must include these columns:
 
 ### Student Identification
-- `student_unique_id` - Student unique identifier
+- `student_unique_id` - Student unique identifier. Every row must have a value.
 
 ### Test Information
-- `Test Date` - The test date
+- `Test Date` - The test date. Every row must have a value.
+- `Grade` - Student grade level. Must exist as a column header, but values can be empty.
+- `AFQT` - Armed Forces Qualification Test score. Must exist as a column header, but values can be empty.
 
 ## Data Format Requirements
 
@@ -42,16 +44,13 @@ Your file must include these columns:
 
 ## Optional Columns
 
-All score columns are optional and can be left blank. If included, they will be sent as score results:
+All other score columns are optional and do not need to appear in your file at all. If present, their values will be processed; if absent or empty, they are skipped.
 
-### Top-Level Scores
 - `Session Number` - Session identifier
 - `Test Version` - Version of the test
-- `AFQT Score` - Armed Forces Qualification Test score
+- `AFQT Score` - AFQT score (alternate column name)
 - `Career Intent` - Student's career intent
 - `Release Option` - Release option selected
-
-### Subject Area Scores
 - `MA` - Mathematics Knowledge
 - `TEC` - Technical
 - `GS` - General Science
@@ -63,5 +62,3 @@ All score columns are optional and can be left blank. If included, they will be 
 - `EI` - Electronics Information
 - `AS` - Auto & Shop Information
 - `MC` - Mathematics Computation
-
-**Note:** Score columns must exist in the file header, but the values can be empty. Only scores with values will be included in the output.

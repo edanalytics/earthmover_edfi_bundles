@@ -19,14 +19,7 @@ Your file must include these columns:
 - `LEVEL` - Course level
 - `GROUP_NUMBER` - Subject group number
 - `LANGUAGE` - Language of instruction
-- `CATEGORY` - Category type
-
-### Score Information
-- `PREDICTED_GRADE` - Predicted grade
 - `SUBJECT_GRADE` - Subject grade achieved
-- `EE_TOK_BONUS_POINTS` - Extended Essay/Theory of Knowledge bonus points
-- `TOTAL_POINTS` - Total points earned
-- `RESULT_CODE` - Diploma result code
 
 ## Data Format Requirements
 
@@ -61,6 +54,7 @@ Your file must include these columns:
 - `3 and 4` - Individuals and Societies / Sciences
 - `5` - Mathematics
 - `6` - Arts
+- `9` - Theory of Knowledge and other special subjects
 
 **Note:** This field is critical for categorizing subjects and cannot be left blank.
 
@@ -77,6 +71,7 @@ Your file must include these columns:
 **Valid values:**
 - `SL` - Standard Level
 - `HL` - Higher Level
+- `TK` - Theory of Knowledge
 
 ### Language (`LANGUAGE`)
 **Format:** Language name in uppercase
@@ -86,60 +81,14 @@ Your file must include these columns:
 - `SPANISH`
 - `FRENCH`
 
-### Category (`CATEGORY`)
-**Valid values:**
-- `DIPLOMA` - Full IB Diploma Programme
-- `CERTIFICATE` - IB Certificate for individual courses
-
-**Note:** The category determines which additional scores are included. DIPLOMA category records include Extended Essay/TOK bonus points, total points, and diploma result codes.
-
-### Predicted Grade (`PREDICTED_GRADE`)
-**Format:** Number 1-7, or empty
-
-**Examples:**
-- `6`
-- `7`
-- `5`
-- (leave blank if not available)
-
 ### Subject Grade (`SUBJECT_GRADE`)
-**Format:** Number 1-7
+**Format:** Number 1-7, or a letter grade for special subjects
 
 **Examples:**
 - `6`
 - `7`
-- `4`
-
-### EE/TOK Bonus Points (`EE_TOK_BONUS_POINTS`)
-**Format:** Number 0-3, or empty
-
-**Examples:**
-- `2`
-- `1`
-- `0`
-- (leave blank for non-DIPLOMA records)
-
-**Note:** Only applies to DIPLOMA category records.
-
-### Total Points (`TOTAL_POINTS`)
-**Format:** Number, or empty
-
-**Examples:**
-- `38`
-- `42`
-- `28`
-- (leave blank for non-DIPLOMA records)
-
-**Note:** Only applies to DIPLOMA category records.
-
-### Result Code (`RESULT_CODE`)
-**Format:** Single letter code, or empty
-
-**Valid values for DIPLOMA:**
-- `D` - Diploma awarded
-- `N` - Diploma not awarded
-
-**Note:** Only applies to DIPLOMA category records.
+- `B` (for Theory of Knowledge)
+- `N` (Not graded/No grade awarded)
 
 ### Candidate (`CANDIDATE`)
 **Format:** Candidate identifier
@@ -150,7 +99,13 @@ Your file must include these columns:
 
 ## Optional Columns
 
-All other columns in your export file are optional and can be included if present, including:
+These columns do not need to appear in your file at all. If present, their values will be processed; if absent or empty, they are skipped.
+
+- `CATEGORY` - Category type (DIPLOMA or CERTIFICATE)
+- `PREDICTED_GRADE` - Predicted grade
+- `EE_TOK_BONUS_POINTS` - Extended Essay/Theory of Knowledge bonus points
+- `TOTAL_POINTS` - Total points earned
+- `RESULT_CODE` - Diploma result code
 - `PROGRAMME`
 - `REGIONAL_OFFICE`
 - `COUNTRY`
@@ -163,5 +118,3 @@ All other columns in your export file are optional and can be included if presen
 - `DOB`
 - `GENDER`
 - `GROUP_OF_SCHOOLS`
-
-These columns will be ignored during processing.

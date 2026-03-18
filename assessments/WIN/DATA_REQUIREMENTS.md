@@ -4,7 +4,7 @@ This file explains what your WIN assessment data needs to look like to be proces
 
 ## Required Columns
 
-Your file must include these columns:
+Your file must include these columns. Both `StudentID` and `StateID` must exist as column headers. One of them must be completely filled in for every row (the other can be entirely empty).
 
 ### Student Identification
 - `StudentID` - Local student ID
@@ -21,45 +21,28 @@ Your file must include these columns:
 ### Test Details
 - `Acc` - Accommodations indicator
 - `Retake` - Retake indicator
-- `CertLevel` - Certificate level
 - `UID` - Unique identifier (can be left blank)
 
-### Soft Skills Assessment (Required)
+### Soft Skills Assessment
 - `SoftScore` - Soft skills score
 - `SoftSS` - Soft skills scale score
 - `SoftStatus` - Soft skills status
 - `SoftSTime` - Soft skills start time
 - `SoftFTime` - Soft skills finish time
 
-### Math Assessment (Required)
+### Math Assessment
 - `MathLev` - Math level
 - `MathSS` - Math scale score
 - `MathStatus` - Math status
 - `MathSTime` - Math start time
 - `MathFTime` - Math finish time
 
-### Reading Assessment (Required)
+### Reading Assessment
 - `ReadLev` - Reading level
 - `ReadSS` - Reading scale score
 - `ReadStatus` - Reading status
 - `ReadSTime` - Reading start time
 - `ReadFTime` - Reading finish time
-
-### Data Literacy Assessment (Optional)
-These columns must exist in the file header but can have empty values:
-- `DataLev` - Data literacy level
-- `DataSS` - Data literacy scale score
-- `DataStatus` - Data literacy status
-- `DataSTime` - Data literacy start time
-- `DataFTime` - Data literacy finish time
-
-### Information Literacy Assessment (Optional)
-These columns must exist in the file header but can have empty values:
-- `InfoLev` - Information literacy level
-- `InfoSS` - Information literacy scale score
-- `InfoStatus` - Information literacy status
-- `InfoSTime` - Information literacy start time
-- `InfoFTime` - Information literacy finish time
 
 ## Data Format Requirements
 
@@ -74,7 +57,6 @@ These columns must exist in the file header but can have empty values:
 **❌ Will NOT work:**
 - `11/01/2023` (slashes)
 - `2023-11-01` (dashes)
-- `20231101` missing leading zeros
 
 ### Test Administration (`TestAdmin`)
 **Format:** Two-letter season code followed by two-digit year
@@ -117,7 +99,7 @@ These columns must exist in the file header but can have empty values:
 - `0` - Fail
 
 ### Status Fields
-**For `MathStatus`, `ReadStatus`, `SoftStatus`, `DataStatus`, `InfoStatus`:**
+**For `MathStatus`, `ReadStatus`, `SoftStatus`:**
 
 **Valid values:**
 - `1` - Complete
@@ -133,15 +115,19 @@ These columns must exist in the file header but can have empty values:
 - `1045` for 10:45 AM
 - `1330` for 1:30 PM
 
-**Note:** Times are used to calculate duration. Start and finish times are required for Math, Reading, and Soft Skills assessments. For Data and Info assessments, times can be empty if those assessments were not administered.
+**Note:** Times are used to calculate duration. Start and finish times are required for Math, Reading, and Soft Skills assessments.
 
 ### Unique Identifier (`UID`)
 **Optional field - can be left blank**
 
 If not provided, the system will generate an identifier using TestAdmin, TestDate, and StudentID.
 
-## Important Notes
+## Optional Columns
 
-- All columns listed above must be present in your file header, even if some values are empty
-- Data Literacy and Information Literacy assessments are optional - these columns can have all empty values if those assessments were not administered
-- Math, Reading, and Soft Skills assessments are required and must have values
+These columns do not need to appear in your file at all. If present, their values will be processed; if absent or empty, they are skipped.
+
+- `CertLevel` - Certificate level
+- `GR9` - Grade 9 indicator
+- `MathRS` / `ReadRS` / `SoftRS` - Raw scores
+- `DataLev`, `DataSS`, `DataStatus`, `DataSTime`, `DataFTime`, `DataRS` - Data Literacy assessment
+- `InfoLev`, `InfoSS`, `InfoStatus`, `InfoSTime`, `InfoFTime`, `InfoRS` - Information Literacy assessment
