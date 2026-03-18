@@ -1,0 +1,22 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "academicSubjectDescriptor": "{{ edfi_descriptor }}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{assessmentReportingMethodDescriptor}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#Integer",
+        "minimumScore":"{{ minimumScore | string }}",
+        "maximumScore":"{{ maximumScore | string}}"
+      }
+    ],
+    "performanceLevels": [
+       {{ performance_json }}
+ 
+    ]
+  }

@@ -1,3 +1,30 @@
+{% if category == 'DIPLOMA' %}
+ {%- set possible_scores = [
+    [category, "Level", "Category"],
+    [group_number, "Level", "Subject Group"], 
+    [level, "Level", "Level"],
+    [predicted_grade, "Level", "Predicted Grade"],
+    [subject_grade, "Level", "Subject Grade"],
+    [ee_tok_bonus_points, "Integer", "EE/TOK Bonus Points"],
+    [total_points, "Integer", "Total Points"]
+  ] -%}
+{%- else -%}
+ {%- set possible_scores = [
+    [category, "Level", "Category"],
+    [group_number, "Level", "Subject Group"], 
+    [level, "Level", "Level"],
+    [predicted_grade, "Level", "Predicted Grade"],
+    [subject_grade, "Level", "Subject Grade"]
+  ] -%}
+{%- endif -%}
+
+{%- set scores = [] -%}
+  {%- for score in possible_scores -%}
+    {%- if score[0] is not none and score[0] | length -%}
+      {%- set _ = scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
 {
   "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
@@ -12,52 +39,21 @@
   },
   "administrationDate": "{{administration_date}}",
   "scoreResults": [
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Category",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{category}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Group",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{group_number}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Level",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level",
-      "result": "{{level}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Predicted Grade",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{predicted_grade}}"
-    }
-  {% if subject_grade is not none and subject_grade | length %},
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject Grade",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{subject_grade}}"
-    }
-  {% endif %}
-  {% if category == 'DIPLOMA' %},
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#EE/TOK Bonus Points",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{ee_tok_bonus_points}}"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Total Points",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer",
-      "result": "{{total_points}}"
-    }
-  ],
-
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[0][:35]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% if category == 'DIPLOMA' and result_code is not none and result_code | length %},
   "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Diploma Result Code",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{result_code}}",
       "performanceLevelMet": true
     }
- {% endif %}
   ]
+ {% endif %}
 }

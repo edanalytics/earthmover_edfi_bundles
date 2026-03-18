@@ -1,0 +1,14 @@
+display_name: "ASVAB"
+path: "assessments/ASVAB"
+valid_edfi: ">=3.0"
+report_resources: ["studentAssessments"]
+input_files:
+  - display_name: "Assessment data"
+    env_var: "INPUT_FILE"
+    is_required: true
+    file_type: ["csv"]
+input_params:
+  - display_name: "School Year"
+    env_var: "API_YEAR"
+    is_required: true
+descriptor_mapping_files: ["academicSubjectDescriptors.csv", "gradeLevelDescriptors.csv"]
