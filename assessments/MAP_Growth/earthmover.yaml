@@ -16,7 +16,7 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   macros: >
       {% macro get_assess_id(subject, is_screener) -%}
-      {%- set prefix = 'MAP_Screener' if is_screener == 'true' else 'MAP_Growth' -%}
+      {%- set prefix = 'MAP_Screening' if is_screener == 'true' else 'MAP_Growth' -%}
       {%- if 'Mathematics' in subject -%}{{prefix}}_Mathematics
       {%- elif 'Language Arts' in subject -%}{{prefix}}_Reading
       {%- elif 'Science' in subject -%}{{prefix}}_Science
