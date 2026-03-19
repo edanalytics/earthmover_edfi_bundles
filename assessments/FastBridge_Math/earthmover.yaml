@@ -147,6 +147,9 @@ transformations:
       - operation: rename_columns
         columns:
          edfi_descriptor: gradeLevelDescriptor
+      - operation: modify_columns
+        columns:
+          gradeLevelDescriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
       # filter out rows with missing student IDs
       - operation: filter_rows
         query: "student_unique_id	 != ''"
