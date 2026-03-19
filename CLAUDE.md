@@ -78,6 +78,50 @@ Process for determining required columns:
    - Note any data format requirements (date formats, enum values, etc.)
    - Identify silent filtering scenarios (inner joins that exclude records)
 
+### Fixing Bundles to Only Require Ed-Fi Required Columns
+
+Bundles should only make columns required if they map to Ed-Fi required fields (plus at least one overall score). All other columns should be in `optional_fields` and handled gracefully when missing.
+
+**Identifying what's truly required by Ed-Fi for a studentAssessment:**
+- `studentAssessmentIdentifier` (required)
+- `assessmentReference`: assessmentIdentifier + namespace (typically hardcoded/added by the bundle)
+- `studentReference`: studentUniqueId (required — from STUDENT_ID_NAME / POSSIBLE_STUDENT_ID_COLUMNS)
+- `administrationDate` (required — typically from a date column like TestDate)
+- At least one `scoreResult` (required — the bundle must ensure at least one score is always present)
+- Any columns needed to derive the above (e.g., TestAdmin for schoolYear calculation)
+
+**Everything else is optional** — scores, performance levels, grade levels, platformType, objective assessments, etc. These should not cause the bundle to fail if missing.
+
+**How to fix a bundle:**
+
+1. **Move non-required columns to `optional_fields`** in the source definition. This auto-creates them with empty string if missing from the CSV. This is needed for columns referenced by operations that require existence (`map_values`, `filter_rows`, `join` keys, etc.).
+
+2. **Handle NaN from left joins on optional columns.** When an optional column is used as a left join key and the value is empty, the join won't match and joined columns get pandas NaN. NaN gets stringified as `"nan"` in templates and passes `is not none and | length` checks (length of "nan" is 3). Fix by adding a `modify_columns` after the join:
+   ```yaml
+   - operation: modify_columns
+     columns:
+       edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+   ```
+   The `value != value` pattern detects NaN (NaN is the only value where self-inequality is true).
+
+3. **Verify `map_values` on optional columns works.** When a column is in `optional_fields` and missing from the CSV, all rows get empty string. `map_values` leaves unmatched values as-is, so empty strings pass through unchanged. Template null-checks (`is not none and | length`) then filter them out.
+
+4. **Update `required_columns.csv`** to contain ONLY the truly required columns plus one score. Do NOT include optional column headers — the point is to test that the bundle runs with a minimal file.
+
+5. **Test with BOTH files using `test-bundle`:**
+   - First, spin down any running stack: `edfi-stack down`
+   - Temporarily modify lightbeam.yaml: add `namespace_overrides: {}` and set `verify_ssl: False`
+   - **Test 1: required_columns.csv** — verifies the bundle handles missing optional columns
+     ```bash
+     test-bundle /path/to/bundle -p '{...}' -v -kr
+     ```
+   - **Test 2: sample_anonymized_file.csv** — verifies the bundle still works with the full file (no regressions)
+     ```bash
+     test-bundle /path/to/bundle -p '{"INPUT_FILE": "./data/sample_anonymized_file.csv", ...}' -v -kr
+     ```
+   - Both must produce all 201s and the rainbow message
+   - After testing, revert lightbeam.yaml changes
+
 ### Creating DATA_REQUIREMENTS.md Files
 
 DATA_REQUIREMENTS.md files are **user-facing documentation for district staff** who provide source data files. These users will NOT be running the bundles themselves - they are just supplying the data that will be processed by technical staff or through Runway.
