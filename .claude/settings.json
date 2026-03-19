@@ -1,4 +1,72 @@
 {
+  "permissions": {
+    "read": {
+      "allow": ["**/*"]
+    },
+    "write": {
+      "allow": [
+        "assessments/**/*",
+        ".claude/**/*",
+        "*.md",
+        "*.yaml",
+        "*.yml",
+        "*.json",
+        "*.py"
+      ],
+      "deny": [
+        "assessments/**/output/**",
+        "registry.json"
+      ]
+    },
+    "bash": {
+      "allow": [
+        "earthmover *",
+        "lightbeam *",
+        "ruff *",
+        "yamllint *",
+        "python create-registry.py *",
+        "jq *",
+        "git status*",
+        "git diff*",
+        "git log*",
+        "git show*",
+        "git branch*",
+        "git remote*",
+        "git ls-files*",
+        "grep *",
+        "find *",
+        "cat *",
+        "head *",
+        "tail *",
+        "wc *",
+        "ls *",
+        "pwd",
+        "cd *",
+        "mkdir *",
+        "rm *",
+        "cp *",
+        "mv *",
+        "test *",
+        "~/.local/bin/gh *"
+      ],
+      "deny": [
+        "git commit*",
+        "git push*",
+        "git pull*",
+        "git fetch*",
+        "git merge*",
+        "git rebase*",
+        "git reset*",
+        "git add*",
+        "git rm*",
+        "git mv*",
+        "rm -rf / *",
+        "rm -rf ~ *",
+        "sudo *",
+        "chmod 777 *"
+      ]
+    }
+  },
   "hooks": {
     "PostToolUse": [
       {
