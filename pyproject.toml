@@ -1,0 +1,42 @@
+[tool.ruff]
+# Python version target
+target-version = "py311"
+
+# File patterns to exclude
+extend-exclude = [
+    ".venv",
+    "venv",
+    "output",
+    "*.egg-info",
+]
+
+# Line length
+line-length = 100
+
+[tool.ruff.lint]
+# Enable specific linting rules
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",  # line too long (handled by line-length)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Allow unused imports in __init__.py files
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with 4 spaces
+indent-style = "space"

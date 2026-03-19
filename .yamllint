@@ -1,0 +1,41 @@
+---
+extends: default
+
+rules:
+  # Allow longer lines for readability in configs
+  line-length:
+    max: 120
+    level: warning
+
+  # Allow inline mappings (key: value on same line)
+  braces:
+    max-spaces-inside: 1
+    level: warning
+
+  # Don't require document start (---) markers
+  document-start: disable
+
+  # Allow duplicate keys (earthmover uses this for multi-step operations)
+  key-duplicates: disable
+
+  # Be flexible with indentation in complex nested structures
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+    check-multi-line-strings: false
+
+  # Allow trailing spaces (some templates use them)
+  trailing-spaces:
+    level: warning
+
+  # Don't enforce truthy value style (allow yes/no, true/false, on/off)
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+    check-keys: false
+
+ignore: |
+  .venv/
+  venv/
+  output/
+  .git/
+  **/.local/

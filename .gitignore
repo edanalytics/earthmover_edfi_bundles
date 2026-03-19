@@ -1,2 +1,33 @@
 **/earthmover_compiled.yaml
 **/runs.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+env/
+
+# Ruff
+.ruff_cache/
+
+# Claude Code - keep personal overrides private
+.claude/settings.local.json
+
+# Earthmover output files (may contain derived data)
+**/output/
+
+# Development files (may contain PII from testing)
+**/.local/
+
+# Environment files (may contain credentials)
+.env
+*.env
+.env.*
