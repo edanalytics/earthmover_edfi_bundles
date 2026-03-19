@@ -47,22 +47,48 @@ sources:
     type: ${INPUT_FILETYPE}
     header_rows: 1
     optional_fields:
+      # Test details
+      - Acc
+      - Retake
+      - Mode
+      - CertLevel
+      - UID
+      - GR9
+      # Math assessment
+      - MathLev
+      - MathSS
       - MathRS
+      - MathStatus
+      - MathSTime
+      - MathFTime
+      # Reading assessment
+      - ReadLev
+      - ReadSS
       - ReadRS
+      - ReadStatus
+      - ReadSTime
+      - ReadFTime
+      # Soft Skills assessment
+      - SoftScore
+      - SoftSS
       - SoftRS
+      - SoftStatus
+      - SoftSTime
+      - SoftFTime
+      # Data Literacy assessment
       - DataLev
       - DataSS
+      - DataRS
       - DataStatus
       - DataSTime
       - DataFTime
-      - DataRS
+      # Information Literacy assessment
       - InfoLev
       - InfoSS
+      - InfoRS
       - InfoStatus
       - InfoSTime
       - InfoFTime
-      - InfoRS
-      - GR9
 
 
 transformations:
@@ -138,12 +164,15 @@ transformations:
         sources:
           - $sources.platformTypeDescriptors
         join_type: left
-        left_keys: 
+        left_keys:
           - assessmentIdentifier
           - Mode
-        right_keys: 
+        right_keys:
           - assessmentIdentifier
           - Mode
+      - operation: modify_columns
+        columns:
+          edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
     expect:
       - edfi_ds_version|int != 0
 
