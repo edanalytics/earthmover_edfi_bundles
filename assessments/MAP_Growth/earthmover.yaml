@@ -14,14 +14,15 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-  macros: > 
-      {% macro map_subject_to_assess_id(value) -%}
-      {%- if 'Mathematics' in value -%}MAP_Growth_Mathematics
-      {%- elif 'Language Arts' in value -%}MAP_Growth_Reading
-      {%- elif 'Science' in value -%}MAP_Growth_Science
+  macros: >
+      {% macro get_assess_id(subject, is_screener) -%}
+      {%- set prefix = 'MAP_Screener' if is_screener == 'true' else 'MAP_Growth' -%}
+      {%- if 'Mathematics' in subject -%}{{prefix}}_Mathematics
+      {%- elif 'Language Arts' in subject -%}{{prefix}}_Reading
+      {%- elif 'Science' in subject -%}{{prefix}}_Science
       {%- endif -%}
       {%- endmacro %}
-    
+
 
 sources:
   academicSubjectDescriptors:
@@ -57,21 +58,24 @@ sources:
 transformations:
   input:
     source: $sources.input
-    operations: []
+    operations:
+      - operation: add_columns
+        columns:
+          is_screener: "{%raw%}{%- if TestType == 'Survey' and TestName.startswith('Screening:') -%}true{%- else -%}false{%- endif -%}{%endraw%}"
 
   map_student_assessment:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
-        columns: 
+        columns:
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: modify_columns
-        columns: 
+        columns:
           studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
       - operation: add_columns
         columns:
           schoolYear: "{%raw%}{{TermName[-4:]}}{%endraw%}"
-          assessmentIdentifier: "{%raw%}{{ map_subject_to_assess_id(Subject) }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}{{ get_assess_id(Subject, is_screener) }}{%endraw%}"
           namespace: 'uri://www.nwea.org/map/Assessment'
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}  # Set hard-coded ResultDatatypeTypeDescriptors in the template
       - operation: date_format
@@ -120,7 +124,7 @@ transformations:
       - operation: add_columns
         columns:
           grade_json: >
-            {%raw-%}  
+            {%raw-%}
             {
               "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
@@ -132,13 +136,13 @@ transformations:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns: 
+        create_columns:
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
-        
+
   assessments:
     source: $sources.assessments
     operations:
@@ -163,27 +167,28 @@ transformations:
       - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-  
-  {% for i in range(1, 9) %} 
-  goal_{{i}}: 
+
+  {% for i in range(1, 9) %}
+  goal_{{i}}:
     source: $transformations.input
     operations:
       - operation: keep_columns
-        columns: 
+        columns:
           - Subject
           - Goal{{i}}Name
+          - is_screener
       - operation: distinct_rows
       - operation: rename_columns
-        columns: 
+        columns:
           Goal{{i}}Name: identificationCode
-    {%  endfor %}
-  
+  {%  endfor %}
+
   objective_assessments:
     source: $transformations.goal_1
-    operations: 
+    operations:
       - operation: union
         sources:
-          {% for i in range(2, 9) %} 
+          {% for i in range(2, 9) %}
           - $transformations.goal_{{i}}
           {%  endfor %}
       - operation: filter_rows
@@ -192,7 +197,7 @@ transformations:
       - operation: distinct_rows
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{%raw%}{{ map_subject_to_assess_id(Subject) }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}{{ get_assess_id(Subject, is_screener) }}{%endraw%}"
           namespace: 'uri://www.nwea.org/map/Assessment'
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}  # Set hard-coded ResultDatatypeTypeDescriptors in the template
 
@@ -201,17 +206,17 @@ transformations:
     source: $transformations.input
     operations:
       - operation: keep_columns
-        columns: 
+        columns:
           - ProjectedProficiencyStudy{{i}}
       - operation: distinct_rows
       - operation: rename_columns
-        columns: 
+        columns:
           ProjectedProficiencyStudy{{i}}: codeValue
   {% endfor %}
 
   proj_prof:
     source: $transformations.proj_prof_1
-    operations: 
+    operations:
       - operation: union
         sources:
         {% for i in range(2, 10) %}
@@ -233,7 +238,7 @@ transformations:
 
   reporting_methods:
     source: $sources.assessmentReportingMethodDescriptors
-    operations: 
+    operations:
       - operation: filter_rows
         query: is_deprecated == 'False'
         behavior: include
