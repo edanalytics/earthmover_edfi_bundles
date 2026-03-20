@@ -3,46 +3,38 @@
 * **API version**: 7.1
 * **Submitter name**: SA Salter
 * **Submitter organization**: CrocusLLC
-To run this bundle, please add your own source file<code>data/SAMPLE_AP_2324.csv</code>
 
-This bundle works with AP files in the format provided by the assessment vendor. 
+To run this bundle, please add your own source file(s) and column(s):
+<details>
+<summary><code>data/SAMPLE_AP_2324.csv</code></summary>
+This bundle works with AP files in the wide format provided by College Board, containing up to 30 exam slots and 6 award slots per student.
+
+</details>
 
 ## CLI Parameters
+- OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
+- INPUT_FILE: The student assessment file to be mapped
+- API_YEAR: The API year of the ODS for which we would send these records
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is `studentId` (renamed from `Student Identifier` during processing). Leave as default `edFi_studentUniqueID` when using the student ID xwalk package.
 
 ### Examples
-
-There is a pre executing python function that needs to be run before running earthmover to vertically stack the results. The pre-execution step is created to resolve performance issues when using earthmover: 
-```bash
-python -c'import python_pre_exec.ap_pre_exec; ap_pre_exec(input_file="./data/SAMPLE_AP_2324.csv", output_file="./data/SAMPLE_AP_processed.csv")'
-```
-The earthmover processes the output file from the pre-execution step that takes in the vendor file as input. 
-### Required
-- **OUTPUT_DIR**: Where output files will be written
-- **INPUT_FILE**: The assessment file to be mapped
-- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `studentId`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
-- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `studentId`) . 
-### Optional
-- **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor . The default value is : uri://ed-fi.org
-
-### Examples
-
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/SAMPLE_AP_processed.csv",
-  "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "studentId"
-}'
+"OUTPUT_DIR": "./output",
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "./data/SAMPLE_AP_2324.csv",
+"API_YEAR": "2024",
+"STUDENT_ID_NAME": "studentId" }'
 ```
 
-Once you have inspected the output JSONL for issues, check the settings in lightbeam.yaml and transmit them to your Ed-Fi API with:
-
+Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
 ```bash
 lightbeam validate+send -c ./lightbeam.yaml -p '{
-  "DATA_DIR": "./output/",
-  "API_YEAR": "yourAPIYear",
-  "BASE_URL": "yourURL",
-  "EDFI_API_CLIENT_ID": "yourID",
-  "EDFI_API_CLIENT_SECRET": "yourSecret"
-}'
+"DATA_DIR": "./output/",
+"API_YEAR": "yourAPIYear",
+"BASE_URL": "yourURL",
+"EDFI_API_CLIENT_ID": "yourID",
+"EDFI_API_CLIENT_SECRET": "yourSecret" }'
 ```
