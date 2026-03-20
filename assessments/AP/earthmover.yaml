@@ -1,0 +1,595 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Identifier'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    API_YEAR: ''
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  {% set exam_ids = [] %}
+  {% for i in range(1, 31) %}
+    {% set _ = exam_ids.append('%02d' % i) %}
+  {% endfor %}
+
+  # --- Melt exam admin years ---
+  melt_admin_years:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          - Grade Level
+          - AI Code
+          {% for id in exam_ids %}
+          - Admin Year {{id}}
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier, Grade Level, AI Code]
+        value_vars:
+          {% for id in exam_ids %}
+          - Admin Year {{id}}
+          {% endfor %}
+        var_name: exam_slot
+        value_name: SchoolYear
+      - operation: modify_columns
+        columns:
+          exam_slot: "{%raw%}{{ exam_slot[-2:] }}{%endraw%}"
+      - operation: filter_rows
+        query: SchoolYear == ''
+        behavior: exclude
+
+  # --- Melt exam codes ---
+  melt_exam_codes:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in exam_ids %}
+          - Exam Code {{id}}
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in exam_ids %}
+          - Exam Code {{id}}
+          {% endfor %}
+        var_name: exam_slot
+        value_name: ExamCode
+      - operation: modify_columns
+        columns:
+          exam_slot: "{%raw%}{{ exam_slot[-2:] }}{%endraw%}"
+
+  # --- Melt exam grades (scores) ---
+  melt_exam_grades:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in exam_ids %}
+          - Exam Grade {{id}}
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in exam_ids %}
+          - Exam Grade {{id}}
+          {% endfor %}
+        var_name: exam_slot
+        value_name: Score
+      - operation: modify_columns
+        columns:
+          exam_slot: "{%raw%}{{ exam_slot[-2:] }}{%endraw%}"
+
+  # --- Melt irregularity code 1 ---
+  melt_irreg1:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in exam_ids %}
+          - "Irregularity Code #1 {{id}}"
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in exam_ids %}
+          - "Irregularity Code #1 {{id}}"
+          {% endfor %}
+        var_name: exam_slot
+        value_name: IrregularityCode1
+      - operation: modify_columns
+        columns:
+          exam_slot: "{%raw%}{{ exam_slot[-2:] }}{%endraw%}"
+
+  # --- Melt irregularity code 2 ---
+  melt_irreg2:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in exam_ids %}
+          - "Irregularity Code #2 {{id}}"
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in exam_ids %}
+          - "Irregularity Code #2 {{id}}"
+          {% endfor %}
+        var_name: exam_slot
+        value_name: IrregularityCode2
+      - operation: modify_columns
+        columns:
+          exam_slot: "{%raw%}{{ exam_slot[-2:] }}{%endraw%}"
+
+  # --- Join all melted exam columns together ---
+  unpivoted_exams:
+    source: $transformations.melt_admin_years
+    operations:
+      - operation: join
+        sources:
+          - $transformations.melt_exam_codes
+        join_type: inner
+        left_keys:
+          - Student Identifier
+          - exam_slot
+        right_keys:
+          - Student Identifier
+          - exam_slot
+        right_keep_columns:
+          - ExamCode
+      - operation: join
+        sources:
+          - $transformations.melt_exam_grades
+        join_type: left
+        left_keys:
+          - Student Identifier
+          - exam_slot
+        right_keys:
+          - Student Identifier
+          - exam_slot
+        right_keep_columns:
+          - Score
+      - operation: join
+        sources:
+          - $transformations.melt_irreg1
+        join_type: left
+        left_keys:
+          - Student Identifier
+          - exam_slot
+        right_keys:
+          - Student Identifier
+          - exam_slot
+        right_keep_columns:
+          - IrregularityCode1
+      - operation: join
+        sources:
+          - $transformations.melt_irreg2
+        join_type: left
+        left_keys:
+          - Student Identifier
+          - exam_slot
+        right_keys:
+          - Student Identifier
+          - exam_slot
+        right_keep_columns:
+          - IrregularityCode2
+      - operation: add_columns
+        columns:
+          School_Year: "{%raw%}20{{ SchoolYear }}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          Student Identifier: studentId
+          Grade Level: GradeLevel
+          AI Code: SchoolCode
+
+  {% set award_ids = ['1','2','3','4','5','6'] %}
+
+  # --- Melt award types ---
+  melt_award_types:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in award_ids %}
+          - Award Type {{id}}
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in award_ids %}
+          - Award Type {{id}}
+          {% endfor %}
+        var_name: award_slot
+        value_name: AwardType
+      - operation: modify_columns
+        columns:
+          award_slot: "{%raw%}{{ award_slot[-1:] }}{%endraw%}"
+      - operation: filter_rows
+        query: AwardType == ''
+        behavior: exclude
+
+  # --- Melt award years ---
+  melt_award_years:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - Student Identifier
+          {% for id in award_ids %}
+          - Award Year {{id}}
+          {% endfor %}
+      - operation: melt
+        id_vars: [Student Identifier]
+        value_vars:
+          {% for id in award_ids %}
+          - Award Year {{id}}
+          {% endfor %}
+        var_name: award_slot
+        value_name: AwardYear
+      - operation: modify_columns
+        columns:
+          award_slot: "{%raw%}{{ award_slot[-1:] }}{%endraw%}"
+
+  # --- Join award types and years ---
+  unpivoted_awards:
+    source: $transformations.melt_award_types
+    operations:
+      - operation: join
+        sources:
+          - $transformations.melt_award_years
+        join_type: inner
+        left_keys:
+          - Student Identifier
+          - award_slot
+        right_keys:
+          - Student Identifier
+          - award_slot
+        right_keep_columns:
+          - AwardYear
+      - operation: rename_columns
+        columns:
+          Student Identifier: studentId
+
+  # --- Join awards to exams ---
+  exams_with_awards:
+    source: $transformations.unpivoted_exams
+    operations:
+      - operation: join
+        sources:
+          - $transformations.unpivoted_awards
+        join_type: left
+        left_keys:
+          - studentId
+          - SchoolYear
+        right_keys:
+          - studentId
+          - AwardYear
+        right_keep_columns:
+          - AwardType
+      # Clean up NaN from left join on AwardType, and zero-pad to match descriptor seed
+      - operation: modify_columns
+        columns:
+          AwardType: "{%raw%}{%- if value != value -%}{%- elif value | length == 1 -%}0{{value}}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          IrregularityCode1: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          IrregularityCode2: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          Score: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+      # Filter to target school year if specified
+      {% if "${API_YEAR}" | length %}
+      - operation: filter_rows
+        query: School_Year != '${API_YEAR}'
+        behavior: exclude
+      {% endif %}
+
+  # ===== Assessment-level transformations =====
+
+  stage_academic_subject:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  stage_assessment_category:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          codeValue: category_codeValue
+          namespace: category_namespace
+
+  stage_assessment_period:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: rename_columns
+        columns:
+          codeValue: period_codeValue
+          namespace: period_namespace
+
+  stage_assessments:
+    source: $transformations.stage_academic_subject
+    operations:
+      - operation: keep_columns
+        columns:
+          - AP_Exam_Description
+          - AP_Exam_Code
+          - edfi_descriptor
+          - joinKey
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}AP - {{AP_Exam_Code}}{%endraw%}"
+          assessmentTitle: "{%raw%}Advanced Placement - {{AP_Exam_Description}}{%endraw%}"
+          assessmentFamily: "Advanced Placement"
+          assessmentNamespace: "uri://collegeboard.org"
+          academicSubjectDescriptor: "{%raw%}{{edfi_descriptor}}{%endraw%}"
+          assessment_ReportingMethod: "uri://collegeboard.org/AssessmentReportingMethodDescriptor#AP Score"
+          assessment_resultDatatype: "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+          maximumScore: "5"
+          minimumScore: "1"
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_category
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+        right_keep_columns:
+          - category_codeValue
+          - category_namespace
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_period
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+        right_keep_columns:
+          - period_codeValue
+          - period_namespace
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{category_namespace}}#{{category_codeValue}}{%endraw%}"
+          assessmentPeriodDescriptor: "{%raw%}{{period_namespace}}#{{period_codeValue}}{%endraw%}"
+
+  stage_assessment_grade_level:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  stage_assessment_performance_level:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  performance_levels:
+    source: $transformations.stage_assessment_performance_level
+    operations:
+      - operation: keep_columns
+        columns:
+          - joinKey
+          - codeValue
+          - namespace
+          - reportingMethod
+      - operation: add_columns
+        columns:
+          performance_json: >
+              {%raw-%}
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}#AP Award",
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          performance_json: "{%raw%}{{performance_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          performance_json: agg(performance_json,,)
+
+  grade_levels:
+    source: $transformations.stage_assessment_grade_level
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+              {%raw-%} {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
+              {
+                "gradeLevelDescriptor": "{{edfi_descriptor}}"
+              }
+              {%-endif-%}
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns:
+          grade_json: agg(grade_json,,)
+
+  stage_distinct_assessments:
+    source: $transformations.exams_with_awards
+    operations:
+      - operation: keep_columns
+        columns:
+          - ExamCode
+      - operation: distinct_rows
+        columns:
+          - ExamCode
+
+  prepare_assessments:
+    source: $transformations.stage_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.stage_distinct_assessments
+        join_type: inner
+        left_key: AP_Exam_Code
+        right_key: ExamCode
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+        right_keep_columns:
+          - performance_json
+
+  # ===== Student assessment transformations =====
+
+  stage_student_assessments:
+    source: $transformations.exams_with_awards
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: rename_columns
+        columns:
+          SchoolCode: schoolId
+
+  prepare_student_assessments:
+    source: $transformations.stage_student_assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.stage_assessment_grade_level
+        join_type: left
+        left_keys:
+          - GradeLevel
+        right_keys:
+          - APGrade
+        right_keep_columns:
+          - edfi_descriptor
+      # Clean NaN from grade level left join
+      - operation: modify_columns
+        columns:
+          edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: whenAssessedGradeLevelDescriptor
+      - operation: join
+        sources:
+          - $transformations.stage_assessments
+        join_type: inner
+        left_key: ExamCode
+        right_key: AP_Exam_Code
+        right_keep_columns:
+          - assessmentNamespace
+          - assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          Score: result
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~ School_Year) }}{%endraw%}"
+          administrationDate: "{%raw-%}{{'05/01/' ~ School_Year}}{%-endraw%}"
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: group_by
+        group_by_columns:
+          - studentAssessmentIdentifier
+          - assessmentIdentifier
+          - studentUniqueId
+          - administrationDate
+          - School_Year
+          - assessmentNamespace
+          - whenAssessedGradeLevelDescriptor
+          - schoolId
+          - descriptorNamespace
+          - AwardType
+          - IrregularityCode1
+          - IrregularityCode2
+        create_columns:
+          result: max(result)
+
+  prepare_edorg_associations:
+    source: $transformations.prepare_student_assessments
+    operations:
+      - operation: filter_rows
+        query: schoolId == ''
+        behavior: exclude
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_edorg_associations
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
