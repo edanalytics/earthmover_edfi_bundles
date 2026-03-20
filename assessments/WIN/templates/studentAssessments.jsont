@@ -105,7 +105,7 @@
       "namespace": "{{namespace}}"
     },
     "scoreResults": [
-      {%- for score in obj[1] if score[0] is not none and score | length and score | length > 2 -%}
+      {%- for score in obj[1] if score[0] is not none and score[0] | length and score | length > 2 -%}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
@@ -115,7 +115,7 @@
       {%- endfor -%}
     ]
     , "performanceLevels": [
-      {%- for score in obj[1] if score[0] is not none and score | length and score | length == 2 -%}
+      {%- for score in obj[1] if score[0] is not none and score[0] | length and score | length == 2 -%}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{score[0]}}"
