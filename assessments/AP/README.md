@@ -1,4 +1,3 @@
-This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
 * **Title**: Advanced Placement (AP) - API 3.X
 * **Description**: This template includes the AP exams, designed to measure college readiness across different subjects.
 * **API version**: 7.1

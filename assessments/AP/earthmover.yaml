@@ -15,7 +15,6 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
-
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -43,7 +42,6 @@ transformations:
   {% set exam_ids = [] %}
   {% for i in range(1, 31) %}
     {% set _ = exam_ids.append('%02d' % i) %}
-  {% endfor %}
 
   # --- Melt exam admin years ---
   melt_admin_years:
@@ -324,8 +322,6 @@ transformations:
 
   stage_academic_subject:
     source: $sources.academicSubjectDescriptors
-    operations:
-      - operation: add_columns
         columns:
           joinKey: "Key"
 
@@ -576,7 +572,6 @@ destinations:
     source: $transformations.prepare_student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
