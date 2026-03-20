@@ -32,7 +32,7 @@
     "schoolYear": {{School_Year| int}}
   }
   ,"studentReference": {
-    "studentUniqueId": "{{studentUniqueId|trim}}"
+    "studentUniqueId": "{{student_unique_id|trim}}"
   }
   ,"administrationDate": "{{administrationDate}}"
   {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length -%}
