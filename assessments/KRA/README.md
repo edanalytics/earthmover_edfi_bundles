@@ -12,8 +12,8 @@ This bundle works with KRA files in the format provided by the assessment vendor
 ### Required
 - **OUTPUT_DIR**: Where output files will be written
 - **INPUT_FILE**: The assessment file to be mapped
-- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `PS_StudentID`, `StudentSUNS`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
-- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `PS_StudentID`, `StudentSUNS` ) . 
+- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `state_student_id`, `district_student_id`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
+- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `state_student_id`, `district_student_id` ) . 
 ### Optional
 - **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor . The default value is : uri://ed-fi.org
 
@@ -22,10 +22,11 @@ This bundle works with KRA files in the format provided by the assessment vendor
 Using an ID column from the assessment file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
-"INPUT_FILE": "data/KRA_sample_file_deidentified.csv",
+"INPUT_FILE": "data/KRA_sample_file_deidentified_new.csv",
 "STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "./output",
-"STUDENT_ID_NAME": "PS_StudentID",
+"STUDENT_ID_NAME": "state_student_id",
+"API_YEAR" : "2024"
 }'
 ```
 
