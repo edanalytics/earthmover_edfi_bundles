@@ -9,11 +9,11 @@ input_files:
     file_type: ["csv"]
   - display_name: "Comprehension Question assessment data"
     env_var: "INPUT_FILE_COMP_QUESTION"
-    is_required: true
+    is_required: false
     file_type: ["csv"]
   - display_name: "Comprehension Recall assessment data"
     env_var: "INPUT_FILE_COMP_RECALL"
-    is_required: true
+    is_required: false
     file_type: ["csv"]
 input_params:
   - display_name: "School Year"
