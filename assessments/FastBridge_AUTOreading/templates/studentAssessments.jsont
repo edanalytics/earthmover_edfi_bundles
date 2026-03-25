@@ -169,8 +169,11 @@
     "studentUniqueId": "{{student_unique_id|int}}"
   },
   "administrationDate": "{{administration_date}}",
-  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{season}}"
+
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- endif -%}
 
   {%- if scores -%}
   , "scoreResults": [
@@ -184,7 +187,7 @@
   ]
   {%- endif -%}
 
-  {%- if aut_oreading_risk_level is not none and aut_oreading_risk_level | length -%}
+  {%- if aut_oreading_risk_level is not none and aut_oreading_risk_level | length and aut_oreading_risk_level != 'N/A*' and aut_oreading_risk_level != 'N/A' -%}
   , "performanceLevels": [
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
@@ -212,7 +215,7 @@
             }{% if not loop.last %},{% endif %}
           {%- endfor -%}
         ]
-        {%- if obj[1] is not none and obj[1] | length -%}
+        {%- if obj[1] is not none and obj[1] | length and obj[1] != 'N/A*' and obj[1] != 'N/A' -%}
         , "performanceLevels": [
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
