@@ -17,7 +17,7 @@ Or use a sample file (data/sample_anonymized_file_cbmm_auto.csv).
 ## CLI Parameters
 - OUTPUT_DIR: Where output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- INPUT_FILE: The path to the FastBridge Early Reading - Spanish .csv file you want to transform
+- INPUT_FILE: The path to the FastBridge CBMmath .csv file you want to transform
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
 - API_YEAR: The school year associated with the results file
 - TEST_TYPE: Auto, Process, or CAP

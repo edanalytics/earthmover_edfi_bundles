@@ -158,6 +158,7 @@ transformations:
           - final_date
           - student_unique_id
           - season
+          - level
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
@@ -311,6 +312,28 @@ transformations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Dedupe descriptors
+  assessment_category_descriptors_deduped:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - codeValue
+  
+  assessment_period_descriptors_deduped:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - codeValue
+
+  performance_level_descriptors_deduped:
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: distinct_rows
+        columns:
+          - codeValue
           
 
 destinations:
@@ -323,7 +346,7 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
+    source: $transformations.assessment_category_descriptors_deduped
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
@@ -333,12 +356,12 @@ destinations:
     extension: jsonl
     linearize: True
   assessmentPeriodDescriptors:
-    source: $sources.assessmentPeriodDescriptors
+    source: $transformations.assessment_period_descriptors_deduped
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
   performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
+    source: $transformations.performance_level_descriptors_deduped
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
