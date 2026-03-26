@@ -24,8 +24,11 @@ sources:
   student_ieps:
     file: ${STUDENT_IEPS_FILE}
     header_rows: 1
-  student_iep_disability_collecitons:
-    file: ${STUDENT_IEP_DISABILITY_COLLECTION_FILE}
+  student_iep_disability_collections:
+    file: ${STUDENT_IEP_DISABILITY_COLLECTIONS_FILE}
+    header_rows: 1
+  disability_descriptors:
+    file: ./seeds/disability_descriptors.csv
     header_rows: 1
 
 
@@ -102,17 +105,15 @@ transformations:
           - lea_code
           - event_date
   student_iep_disability_collections:
-    source: $sources.student_iep_disability_collection
+    source: $sources.student_iep_disability_collections
     operations:
       - operation: snake_case_columns
+      - operation: debug
       - operation: date_format
         columns: 
-          - event_date
-          - event_begin_date
           - event_end_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-
 
 destinations:
   ideaEvents:
@@ -132,6 +133,10 @@ destinations:
     template: ./templates/studentIEPs.jsont
     extension: jsonl
   studentIEPDisabilityCollections:
-    source: $transformations.student_iep_disabilities
-    template: ./templates/studentIEPDisabilityCollection.jsont
+    source: $transformations.student_iep_disability_collections
+    template: ./templates/studentIEPDisabilityCollections.jsont
+    extension: jsonl
+  disability_descriptors:
+    source: $sources.disability_descriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl

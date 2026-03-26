@@ -1,4 +1,4 @@
-{%- set disabilities = [
+{%- set disabilities = [] -%}
     {%- if primary_disability is not none and primary_disability | length -%}
       {%- set _ = disabilities.append({
         "disability_descriptor":primary_disability,
@@ -17,17 +17,21 @@
         "order_of_disability":3
         }) -%}
     {%- endif -%}
-]
-%}
+
+
 {
   "studentIEPReference": {
-    "studentIEPAssociationID": "{{student_iep_association_id}}"
+    "studentIEPAssociationID": "{{student_iep_association_id}}",
+    "educationOrganizationId":{{lea_code}},
+    "iepFinalizedDate":"{{event_end_date}}",
+    "studentUniqueId":"{{student_unique_id}}"
   },
   "disabilities": [
-    for disability in disabilities
-       "studentIEPDisabilityCollectionDisability": {
-          "disabilityDescriptor": "{{disability["disability_descriptor"]}}",
-          "orderOfDisability": "{{disability["order_of_disability"]}}"
-        }
+    {%- for disability in disabilities -%}
+        {
+          "disabilityDescriptor": "uri://sedm.edfacts.gov/DisabilityDescriptor#{{disability["disability_descriptor"]}}",
+          "orderOfDisability": {{disability["order_of_disability"]}}
+        } {% if not loop.last %},{% endif %}
+    {%- endfor -%}
   ]
 }
