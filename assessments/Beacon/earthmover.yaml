@@ -69,7 +69,7 @@ transformations:
           schoolYear: "{%raw%}{{Academic_Year[-4:] | int}}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Enrollment"
           # School code and district code may be prepended with a ` to preserve leading 0. Remove this so we are sending an int as Ed-Fi expects
-          educationOrganizationId: "{%raw%}{{ (District_Code | replace('`', '')) ~ (School_Code | replace ('`', '')) }}{%endraw%}"
+          educationOrganizationId: "{%raw%}{{ ((District_Code | replace('`', '')) ~ (School_Code | replace ('`', ''))) | int }}{%endraw%}"
       - operation: combine_columns
         columns:
           - State_Student_ID
