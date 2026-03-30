@@ -68,12 +68,16 @@ transformations:
           namespace: "uri://datarecognitioncorp.com"
           schoolYear: "{%raw%}{{Academic_Year[-4:] | int}}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Enrollment"
-          educationOrganizationId: "{%raw%}{{District_Code~School_Code}}{%endraw%}"
+          # School code and district code may be prepended with a ` to preserve leading 0. Remove this so we are sending an int as Ed-Fi expects
+          educationOrganizationId: "{%raw%}{{ (District_Code | replace('`', '')) ~ (School_Code | replace ('`', '')) }}{%endraw%}"
       - operation: combine_columns
         columns:
           - State_Student_ID
           - adminDate
           - Test
+          # Document ID is necessary to differentiate instances where multiple record exist for the same test to the same student on the same day
+          # Though this is uncommon, there are examples in the data with distinct Objective assessment and overall results associated with each record.
+          - Document_ID
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
