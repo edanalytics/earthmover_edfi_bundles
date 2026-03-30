@@ -102,6 +102,22 @@
         {%- endif -%}
       {%- endfor -%}
 
+      {%- set possible_projected_proficiencies = [
+          [ProjectedProficiencyLevel1, ProjectedProficiencyStudy1, 'Level'],
+          [ProjectedProficiencyLevel2, ProjectedProficiencyStudy2, 'Level'],
+          [ProjectedProficiencyLevel3, ProjectedProficiencyStudy3, 'Level'],
+          [ProjectedProficiencyLevel4, ProjectedProficiencyStudy4, 'Level'],
+          [ProjectedProficiencyLevel5, ProjectedProficiencyStudy5, 'Level'],
+          [ProjectedProficiencyLevel6, ProjectedProficiencyStudy6, 'Level'],
+          [ProjectedProficiencyLevel7, ProjectedProficiencyStudy7, 'Level'],
+          [ProjectedProficiencyLevel8, ProjectedProficiencyStudy8, 'Level'],
+          [ProjectedProficiencyLevel9, ProjectedProficiencyStudy9, 'Level']
+      ] -%}
+      {%- for pp in possible_projected_proficiencies -%}
+        {%- if pp[0] is not none and pp[0] | length -%}
+          {%- set _ = scores.append(pp) -%}
+        {%- endif -%}
+      {%- endfor -%}
 
       {% for score in scores %}
       {
@@ -110,6 +126,7 @@
         "result": "{{ score[0] | truncate(35, True, '', 0) }}"
       } {% if not loop.last %},{% endif %}
       {% endfor %}
+      
     ],
     "studentObjectiveAssessments": [
       {%- set possible_objective_assessments = [
