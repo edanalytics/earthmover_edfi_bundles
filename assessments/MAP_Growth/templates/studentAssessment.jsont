@@ -111,7 +111,8 @@
           [ProjectedProficiencyLevel6, ProjectedProficiencyStudy6, 'Level'],
           [ProjectedProficiencyLevel7, ProjectedProficiencyStudy7, 'Level'],
           [ProjectedProficiencyLevel8, ProjectedProficiencyStudy8, 'Level'],
-          [ProjectedProficiencyLevel9, ProjectedProficiencyStudy9, 'Level']
+          [ProjectedProficiencyLevel9, ProjectedProficiencyStudy9, 'Level'],
+          [ProjectedProficiencyLevel10, ProjectedProficiencyStudy10, 'Level']
       ] -%}
       {%- for pp in possible_projected_proficiencies -%}
         {%- if pp[0] is not none and pp[0] | length -%}
