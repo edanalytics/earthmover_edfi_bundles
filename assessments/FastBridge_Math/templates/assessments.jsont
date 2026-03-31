@@ -5,7 +5,7 @@
     }
   ],
   "assessmentIdentifier": "{{assessmentIdentifier}}",
-  "namespace": "{{assessmentNamespace}}",
+  "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "assessmentFamily": "{{assessmentFamily}}",
@@ -14,19 +14,19 @@
   "periods": [{{period_json}}],
   "scores": [
     {
-      "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#Composite Score",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
       "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Decimal"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#School Percentile",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#School Percentile",
       "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#LEA Percentile",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#LEA Percentile",
       "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
     },
     {
-      "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#National Percentile",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#National Percentile",
       "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
     }
   ]
