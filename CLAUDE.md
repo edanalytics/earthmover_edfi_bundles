@@ -55,21 +55,22 @@ Process for determining required columns:
    - Install if needed: `pip install -e /home/jalvord/code/edfi_testing_stack/`
    - Some bundles use `lightbeam.yml` instead of `lightbeam.yaml`. test-bundle looks for `lightbeam.yaml`, so copy/rename the file if needed.
    - Before running, temporarily modify the bundle's lightbeam.yaml:
-     - Add `namespace_overrides: {}` (lightbeam bug — crashes without it)
-     - Set `verify_ssl: False` (local stack uses HTTP, not HTTPS)
+     - Add `namespace_overrides: {}` at the **top level** of the file (NOT nested under `connection` or `edfi_api`). Lightbeam crashes without this key.
+     - Set `verify_ssl: False` (under `connection`)
      - Do NOT change `mode` — `district_specific` works with the local stack
-   - Run the test-bundle command:
+   - Run the test-bundle command using the **sample anonymized file first** (not required_columns.csv):
      ```bash
-     test-bundle /path/to/bundle -p '{"OUTPUT_DIR": "./output", "STATE_FILE": "./runs.csv", "INPUT_FILE": "./data/required_columns.csv", ...}' -v -kr
+     test-bundle /path/to/bundle -p '{"OUTPUT_DIR": "./output", "STATE_FILE": "./runs.csv", "INPUT_FILE": "./data/sample_anonymized_file.csv", ...}' -v -kr
      ```
      - Use `-v` for verbose output to see lightbeam details
      - Use `-kr` to keep containers running between tests
      - Pass earthmover parameters via `-p` matching the bundle's README example
    - If running a second bundle while containers are already up, spin down first (`edfi-stack down`) so the new bundle's namespace gets registered
    - The stack takes ~2 minutes to spin up — "Waiting for API to come online..." is normal
-   - Success looks like: all endpoints return 201 status codes and you see the rainbow message
-   - 409 errors on objectiveAssessments can indicate dependency ordering issues (not related to required_columns)
-   - If it breaks, the error message will tell you what's missing — fix the required_columns.csv and re-run
+   - Success looks like: all endpoints return 201 status codes
+   - 409 errors on objectiveAssessments are a known dependency ordering issue (children sent before parents) — ignore these and do NOT retry or investigate further. StudentAssessment 409s that cascade from OA ordering issues can also be ignored.
+   - If it breaks, the error message will tell you what's missing
+   - Do NOT separately validate JSON output or retry individual endpoint sends if the test stack otherwise works
    - After testing, revert the lightbeam.yaml changes (namespace_overrides and verify_ssl)
 
 5. Document the findings:
@@ -110,16 +111,16 @@ Bundles should only make columns required if they map to Ed-Fi required fields (
 
 5. **Test with BOTH files using `test-bundle`:**
    - First, spin down any running stack: `edfi-stack down`
-   - Temporarily modify lightbeam.yaml: add `namespace_overrides: {}` and set `verify_ssl: False`
-   - **Test 1: required_columns.csv** — verifies the bundle handles missing optional columns
-     ```bash
-     test-bundle /path/to/bundle -p '{...}' -v -kr
-     ```
-   - **Test 2: sample_anonymized_file.csv** — verifies the bundle still works with the full file (no regressions)
+   - Temporarily modify lightbeam.yaml: add `namespace_overrides: {}` at the **top level** and set `verify_ssl: False` under `connection`
+   - **Test 1: sample_anonymized_file.csv** — verifies the bundle still works with the full file (no regressions)
      ```bash
      test-bundle /path/to/bundle -p '{"INPUT_FILE": "./data/sample_anonymized_file.csv", ...}' -v -kr
      ```
-   - Both must produce all 201s and the rainbow message
+   - **Test 2: required_columns.csv** — verifies the bundle handles missing optional columns
+     ```bash
+     test-bundle /path/to/bundle -p '{...}' -v -kr
+     ```
+   - Both must produce all 201s (409 errors on objectiveAssessments from ordering issues can be ignored)
    - After testing, revert lightbeam.yaml changes
 
 ### Creating DATA_REQUIREMENTS.md Files
@@ -180,3 +181,12 @@ Good (just states the requirement):
 
 ### Reviewing bundle code:
 If I ask you to review a bundle, fetch and follow the Bundle Review Checklist from Slite (doc ID: `6zJA95bkBivsg9`, URL: https://edanalytics.slite.com/app/docs/6zJA95bkBivsg9). You must confirm that you've checked and give me the results of each item in the checklist.
+
+**Reading bundle files:** Bundle structures are predictable. Don't use an Explore agent to discover files — just read everything directly in parallel using Read calls:
+- Config files: `earthmover.yaml`, `lightbeam.yaml`, `_metadata.yaml`, `README.md`, `DATA_REQUIREMENTS.md`
+- All templates: `templates/*.jsont` (use Glob first if unsure of names)
+- All seeds: `seeds/*.csv`
+- Data files: `data/required_columns.csv`, `data/sample_anonymized_file*.csv`
+
+**Known patterns that are NOT issues — do not flag these:**
+- `STUDENT_ID_NAME` differs between the README example and the earthmover.yaml default. The README example must use a column that exists in the sample file (e.g., `StateID`), while the earthmover.yaml defaults to `edFi_studentUniqueID` for use with the student ID xwalk package. This is intentional across all bundles.
