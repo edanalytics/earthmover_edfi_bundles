@@ -212,11 +212,19 @@
   {%- endif %}
 
   {%- if Subject == 'A' -%}
-    {%- set possible_obj_assess = [
-        ['Algebra', AlgLev1],
-        ['Functions', AlgLev2],
-        ['Number and Quantity; Interpreting Data', AlgLev3]
-    ] -%}
+    {%- if school_year | int < 2026 -%}
+      {%- set possible_obj_assess = [
+          ['Algebra', AlgLev1],
+          ['Functions', AlgLev2],
+          ['Number and Quantity; Interpreting Data', AlgLev3]
+      ] -%}
+    {%- elif school_year | int >= 2026 -%}
+      {%- set possible_obj_assess = [
+          ['Statistical and Geometrical Modeling; Numerical Reasoning', AlgLev1],
+          ['Patterns and Algebraic Reasoning', AlgLev2],
+          ['Functional Reasoning', AlgLev3]
+      ] -%}
+    {%- endif -%}
   {%- endif %}
 
   {%- if Subject == 'B' -%}
@@ -231,10 +239,10 @@
       ] -%}
     {%- elif school_year | int >= 2024 -%}
       {%- set possible_obj_assess = [
-        ['From Molecules to Organisms: Structures and Processes', BioLev1],
-        ['Ecosystems: Interactions Energy and Dynamics', BioLev2],
-        ['Heredity: Inheritance and Variation of Traits', BioLev3],
-        ['Biological Evolution: Unity and Diversity', BioLev4]
+        ['Structures and Processes', BioLev1],
+        ['Ecosystems', BioLev2],
+        ['DNA & Heredity', BioLev3],
+        ['Biological Evolution', BioLev4]
       ] -%}
     {%- endif -%}
   {%- endif %}
