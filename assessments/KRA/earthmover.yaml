@@ -270,7 +270,7 @@ transformations:
       - operation: add_columns
         columns:
           SchoolYear: "{% raw %}{{School_Year|int}}{% endraw %}"
-          administrationDate: "{%raw%}{{(SchoolYear|int -1) ~ '-08-10'}}{%endraw%}"
+          administrationDate: "{%raw%}{{(SchoolYear|int -1) ~ '-08-25'}}{%endraw%}"
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
       - operation: join
         sources:
