@@ -1,0 +1,102 @@
+{# Build lists of non-null score results #}
+{% set scoreResults = [] %}
+
+{# Total Score - always present #}
+{% if total_score %}
+  {% set _ = scoreResults.append({
+    "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Total Score",
+    "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+    "result": total_score
+  }) %}
+{% endif %}
+
+{# Section Scores - EBRW and Math (new format) OR Critical Reading, Math, Writing (old format) #}
+{% if sat_format == 'old' %}
+  {# Old SAT - 3 sections #}
+  {% if critical_reading_score %}
+    {% set _ = scoreResults.append({
+      "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Critical Reading",
+      "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+      "result": critical_reading_score
+    }) %}
+  {% endif %}
+  {% if math_section_score %}
+    {% set _ = scoreResults.append({
+      "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Mathematics",
+      "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+      "result": math_section_score
+    }) %}
+  {% endif %}
+  {% if writing_score %}
+    {% set _ = scoreResults.append({
+      "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Writing",
+      "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+      "result": writing_score
+    }) %}
+  {% endif %}
+{% else %}
+  {# New format - 2 sections (PSAT and new SAT) #}
+  {% if ebrw_section_score %}
+    {% set _ = scoreResults.append({
+      "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Evidence-Based Reading and Writing",
+      "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+      "result": ebrw_section_score
+    }) %}
+  {% endif %}
+  {% if math_section_score %}
+    {% set _ = scoreResults.append({
+      "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#Math",
+      "resultDatatypeTypeDescriptor": DESCRIPTOR_NAMESPACE ~ "ResultDatatypeTypeDescriptor#Integer",
+      "result": math_section_score
+    }) %}
+  {% endif %}
+{% endif %}
+
+{# Build list of non-null performance levels based on CCR benchmarks #}
+{% set performanceLevels = [] %}
+{% if EBRW_CCR_BENCHMARK == 'Y' or MATH_CCR_BENCHMARK == 'Y' %}
+  {% set _ = performanceLevels.append({
+    "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#College and Career Readiness Benchmark",
+    "performanceLevelDescriptor": ASSESSMENT_NAMESPACE ~ "PerformanceLevelDescriptor#Meets Benchmark",
+    "performanceLevelMet": true
+  }) %}
+{% elif EBRW_CCR_BENCHMARK == 'N' or MATH_CCR_BENCHMARK == 'N' %}
+  {% set _ = performanceLevels.append({
+    "assessmentReportingMethodDescriptor": ASSESSMENT_NAMESPACE ~ "AssessmentReportingMethodDescriptor#College and Career Readiness Benchmark",
+    "performanceLevelDescriptor": ASSESSMENT_NAMESPACE ~ "PerformanceLevelDescriptor#Does Not Meet Benchmark",
+    "performanceLevelMet": false
+  }) %}
+{% endif %}
+
+{# Main StudentAssessment entity #}
+{
+  "studentAssessmentIdentifier": "{{ student_assessment_identifier }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessment_identifier }}",
+    "namespace": "{{ ASSESSMENT_NAMESPACE }}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{ API_YEAR }}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{ edFi_studentUniqueID }}"
+  },
+  "administrationDate": "{{ administration_date }}",
+  "whenAssessedGradeLevelDescriptor": "{{ grade_level_descriptor }}"
+
+  {% if scoreResults %}
+  , "scoreResults": [
+    {% for score in scoreResults %}
+    {{ score | tojson }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+
+  {% if performanceLevels %}
+  , "performanceLevels": [
+    {% for pl in performanceLevels %}
+    {{ pl | tojson }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+}

@@ -1,0 +1,119 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    INPUT_FILE: ./data/sample_psat.csv
+    OUTPUT_DIR: ./output/
+    STATE_FILE: ./earthmover_state.csv
+    API_YEAR: 2024
+    STUDENT_ID_NAME: STATE_STUDENT_ID
+    TEST_TYPE: auto
+    ASSESSMENT_NAMESPACE: uri://collegeboard.org/sat-suite/
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org/
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+
+transformations:
+  # Initial transformation - detect test type and SAT format
+  assessments:
+    source: $sources.input
+    operations:
+      # Add parameter columns for template access
+      - operation: add_columns
+        columns:
+          ASSESSMENT_NAMESPACE: ${ASSESSMENT_NAMESPACE}
+          DESCRIPTOR_NAMESPACE: ${DESCRIPTOR_NAMESPACE}
+          API_YEAR: ${API_YEAR}
+
+      # Detect test type and calculate derived columns
+      - operation: add_columns
+        columns:
+          # Detect test type from file path or columns
+          test_type_detected: >
+            {%raw%}{% if '${TEST_TYPE}' != 'auto' %}${TEST_TYPE}{% elif LATEST_PSAT_DATE %}{% if 'psat89' in '${INPUT_FILE}'.lower() %}psat89{% elif 'psat10' in '${INPUT_FILE}'.lower() %}psat10{% else %}psat{% endif %}{% elif LATEST_SAT_DATE %}sat{% else %}unknown{% endif %}{%endraw%}
+
+          # For SAT: detect old vs new format
+          sat_format: >
+            {%raw%}{% if LATEST_SAT_DATE %}{% if LATEST_SAT_EBRW %}new{% elif LATEST_SAT_CRITICAL_READING %}old{% else %}unknown{% endif %}{% else %}new{% endif %}{%endraw%}
+
+          # Calculate school year from test date
+          school_year: >
+            {%raw%}{% set test_date = LATEST_PSAT_DATE or LATEST_SAT_DATE %}{% if test_date %}{% set month = test_date.split('-')[1] | int %}{% set year = test_date.split('-')[0] | int %}{% if month >= 8 %}{{ year }}{% else %}{{ year - 1 }}{% endif %}{% endif %}{%endraw%}
+
+          # Calculate grade level from cohort year
+          calculated_grade: >
+            {%raw%}{% if COHORT_YEAR and school_year %}{{ 12 - (COHORT_YEAR | int - school_year | int) }}{% endif %}{%endraw%}
+
+          # Map to Ed-Fi grade level descriptor
+          grade_level_descriptor: >
+            {%raw%}{% if calculated_grade == '8' %}uri://ed-fi.org/GradeLevelDescriptor#Eighth grade{% elif calculated_grade == '9' %}uri://ed-fi.org/GradeLevelDescriptor#Ninth grade{% elif calculated_grade == '10' %}uri://ed-fi.org/GradeLevelDescriptor#Tenth grade{% elif calculated_grade == '11' %}uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade{% elif calculated_grade == '12' %}uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade{% endif %}{%endraw%}
+
+          # Map to assessment identifier
+          assessment_identifier: >
+            {%raw%}{% if test_type_detected == 'psat89' %}PSAT 8/9 Composite{% elif test_type_detected == 'psat10' %}PSAT 10 Composite{% elif test_type_detected == 'psat' %}PSAT/NMSQT Composite{% elif test_type_detected == 'sat' and sat_format == 'old' %}SAT (Pre-2016) Composite{% elif test_type_detected == 'sat' %}SAT Composite{% else %}Unknown{% endif %}{%endraw%}
+
+          # Student assessment identifier
+          student_assessment_identifier: >
+            {%raw%}{% set test_date = LATEST_PSAT_DATE or LATEST_SAT_DATE %}{% if test_date %}{{ test_type_detected }}_{{ test_date }}{% endif %}{%endraw%}
+
+          # Administration date
+          administration_date: >
+            {%raw%}{{ LATEST_PSAT_DATE or LATEST_SAT_DATE }}{%endraw%}
+
+          # EBRW section score
+          ebrw_section_score: >
+            {%raw%}{% if test_type_detected in ['psat', 'psat10', 'psat89'] %}{{ LATEST_PSAT_EBRW }}{% elif test_type_detected == 'sat' and sat_format == 'new' %}{{ LATEST_SAT_EBRW }}{% endif %}{%endraw%}
+
+          # Math section score
+          math_section_score: >
+            {%raw%}{% if test_type_detected in ['psat', 'psat10', 'psat89'] %}{{ LATEST_PSAT_MATH_SECTION }}{% elif test_type_detected == 'sat' and sat_format == 'new' %}{{ LATEST_SAT_MATH_SECTION }}{% elif test_type_detected == 'sat' and sat_format == 'old' %}{{ LATEST_SAT_MATH }}{% endif %}{%endraw%}
+
+          # Total score
+          total_score: >
+            {%raw%}{% if test_type_detected in ['psat', 'psat10', 'psat89'] %}{{ LATEST_PSAT_TOTAL }}{% elif test_type_detected == 'sat' %}{{ LATEST_SAT_TOTAL }}{% endif %}{%endraw%}
+
+          # Old SAT specific scores
+          critical_reading_score: >
+            {%raw%}{% if test_type_detected == 'sat' and sat_format == 'old' %}{{ LATEST_SAT_CRITICAL_READING }}{% endif %}{%endraw%}
+
+          writing_score: >
+            {%raw%}{% if test_type_detected == 'sat' and sat_format == 'old' %}{{ LATEST_SAT_WRITING }}{% endif %}{%endraw%}
+
+      # Prepare student unique ID column reference
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: edFi_studentUniqueID
+
+destinations:
+  studentAssessments:
+    source: $transformations.assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+    distinct_rows: True
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+    distinct_rows: True

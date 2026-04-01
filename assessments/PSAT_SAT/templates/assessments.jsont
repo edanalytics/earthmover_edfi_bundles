@@ -1,0 +1,133 @@
+{
+  "assessmentIdentifier": "{{ assessment_identifier }}",
+  "namespace": "{{ ASSESSMENT_NAMESPACE }}",
+  "assessmentTitle": "{{ assessment_identifier }}",
+  "assessmentFamily": "SAT Suite",
+  "revisionDate": "2015-01-01",
+  {% if sat_format == 'old' %}
+  "maxRawScore": 2400,
+  {% elif test_type_detected == 'sat' %}
+  "maxRawScore": 1600,
+  {% elif test_type_detected == 'psat' or test_type_detected == 'psat10' %}
+  "maxRawScore": 1520,
+  {% elif test_type_detected == 'psat89' %}
+  "maxRawScore": 1440,
+  {% endif %}
+  "assessmentCategoryDescriptor": "uri://ed-fi.org/AssessmentCategoryDescriptor#College entrance exam",
+  "academicSubjects": [
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#English Language Arts"
+    },
+    {
+      "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Mathematics"
+    }
+  ],
+  "assessedGradeLevels": [
+    {% if test_type_detected == 'psat89' %}
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade"
+    }
+    {% elif test_type_detected == 'psat10' %}
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade"
+    }
+    {% elif test_type_detected == 'psat' %}
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
+    }
+    {% elif test_type_detected == 'sat' %}
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade"
+    },
+    {
+      "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade"
+    }
+    {% endif %}
+  ],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Total Score",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      {% if sat_format == 'old' %}
+      "minimumScore": "600",
+      "maximumScore": "2400"
+      {% elif test_type_detected == 'sat' %}
+      "minimumScore": "400",
+      "maximumScore": "1600"
+      {% elif test_type_detected == 'psat' or test_type_detected == 'psat10' %}
+      "minimumScore": "320",
+      "maximumScore": "1520"
+      {% elif test_type_detected == 'psat89' %}
+      "minimumScore": "240",
+      "maximumScore": "1440"
+      {% endif %}
+    },
+    {% if sat_format == 'old' %}
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Critical Reading",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      "minimumScore": "200",
+      "maximumScore": "800"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Mathematics",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      "minimumScore": "200",
+      "maximumScore": "800"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Writing",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      "minimumScore": "200",
+      "maximumScore": "800"
+    }
+    {% else %}
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Evidence-Based Reading and Writing",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      {% if test_type_detected == 'sat' %}
+      "minimumScore": "200",
+      "maximumScore": "800"
+      {% elif test_type_detected == 'psat' or test_type_detected == 'psat10' %}
+      "minimumScore": "160",
+      "maximumScore": "760"
+      {% elif test_type_detected == 'psat89' %}
+      "minimumScore": "120",
+      "maximumScore": "720"
+      {% endif %}
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#Math",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Integer",
+      {% if test_type_detected == 'sat' %}
+      "minimumScore": "200",
+      "maximumScore": "800"
+      {% elif test_type_detected == 'psat' or test_type_detected == 'psat10' %}
+      "minimumScore": "160",
+      "maximumScore": "760"
+      {% elif test_type_detected == 'psat89' %}
+      "minimumScore": "120",
+      "maximumScore": "720"
+      {% endif %}
+    }
+    {% endif %}
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#College and Career Readiness Benchmark",
+      "performanceLevelDescriptor": "{{ ASSESSMENT_NAMESPACE }}PerformanceLevelDescriptor#Meets Benchmark",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{ ASSESSMENT_NAMESPACE }}AssessmentReportingMethodDescriptor#College and Career Readiness Benchmark",
+      "performanceLevelDescriptor": "{{ ASSESSMENT_NAMESPACE }}PerformanceLevelDescriptor#Does Not Meet Benchmark",
+      "resultDatatypeTypeDescriptor": "{{ DESCRIPTOR_NAMESPACE }}ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}

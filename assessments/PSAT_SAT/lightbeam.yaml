@@ -1,0 +1,36 @@
+version: 2
+
+config:
+  log_level: INFO
+  parameter_defaults:
+    INPUT_DIR: ./output/
+    API_YEAR: 2024
+    EDFI_API_BASE_URL: "http://localhost:8001"
+    EDFI_API_KEY: "your-key"
+    EDFI_API_SECRET: "your-secret"
+
+send:
+  - endpoint: /ed-fi/assessmentReportingMethodDescriptors
+    method: POST
+    file: seeds/assessmentReportingMethodDescriptors.csv
+    encoding: utf-8
+
+  - endpoint: /ed-fi/performanceLevelDescriptors
+    method: POST
+    file: seeds/performanceLevelDescriptors.csv
+    encoding: utf-8
+
+  - endpoint: /ed-fi/assessments
+    method: POST
+    file: ${INPUT_DIR}/assessments.jsonl
+    encoding: utf-8
+
+  - endpoint: /ed-fi/objectiveAssessments
+    method: POST
+    file: ${INPUT_DIR}/objectiveAssessments.jsonl
+    encoding: utf-8
+
+  - endpoint: /ed-fi/studentAssessments
+    method: POST
+    file: ${INPUT_DIR}/studentAssessments.jsonl
+    encoding: utf-8

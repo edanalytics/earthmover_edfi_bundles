@@ -1,0 +1,82 @@
+{
+  "bundle_name": "PSAT_SAT",
+  "description": "College Board SAT Suite of Assessments (PSAT 8/9, PSAT 10, PSAT/NMSQT, SAT)",
+  "version": "1.0.0",
+  "earthmover_version": ">=0.4.0",
+  "parameters": {
+    "required": {
+      "INPUT_FILE": {
+        "type": "string",
+        "description": "Path to CSV file containing PSAT or SAT assessment data"
+      },
+      "API_YEAR": {
+        "type": "integer",
+        "description": "School year for the assessment data (e.g., 2024 for 2023-24 school year)"
+      }
+    },
+    "optional": {
+      "OUTPUT_DIR": {
+        "type": "string",
+        "description": "Directory for earthmover output",
+        "default": "./output/"
+      },
+      "STATE_FILE": {
+        "type": "string",
+        "description": "Path to earthmover state file for change tracking",
+        "default": "./earthmover_state.csv"
+      },
+      "STUDENT_ID_NAME": {
+        "type": "string",
+        "description": "Column name containing student unique ID (for student ID crosswalking)",
+        "default": "STATE_STUDENT_ID"
+      },
+      "TEST_TYPE": {
+        "type": "string",
+        "description": "Test type: 'psat89', 'psat10', 'psat', 'sat', or 'auto' to detect from file",
+        "default": "auto"
+      },
+      "ASSESSMENT_NAMESPACE": {
+        "type": "string",
+        "description": "Namespace URI for assessments",
+        "default": "uri://collegeboard.org/sat-suite/"
+      },
+      "DESCRIPTOR_NAMESPACE": {
+        "type": "string",
+        "description": "Namespace URI for Ed-Fi descriptors",
+        "default": "uri://ed-fi.org/"
+      }
+    }
+  },
+  "field_requirements": {
+    "required_columns": [
+      "COHORT_YEAR",
+      "STATE_STUDENT_ID"
+    ],
+    "required_for_psat": [
+      "LATEST_PSAT_DATE",
+      "LATEST_PSAT_TOTAL"
+    ],
+    "required_for_sat": [
+      "LATEST_SAT_DATE",
+      "LATEST_SAT_TOTAL"
+    ],
+    "optional_columns": [
+      "LATEST_PSAT_EBRW",
+      "LATEST_PSAT_MATH_SECTION",
+      "LATEST_SAT_EBRW",
+      "LATEST_SAT_MATH_SECTION",
+      "LATEST_SAT_CRITICAL_READING",
+      "LATEST_SAT_MATH",
+      "LATEST_SAT_WRITING",
+      "EBRW_CCR_BENCHMARK",
+      "MATH_CCR_BENCHMARK",
+      "GENDER"
+    ]
+  },
+  "notes": [
+    "This bundle supports both old SAT format (pre-2016, 3 sections) and new SAT format (2016+, 2 sections)",
+    "Grade level is calculated from COHORT_YEAR and test date",
+    "Test type can be auto-detected from column names or specified via TEST_TYPE parameter",
+    "CCR benchmarks (EBRW_CCR_BENCHMARK, MATH_CCR_BENCHMARK) are used to determine performance levels"
+  ]
+}
