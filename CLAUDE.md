@@ -50,7 +50,9 @@ Process for determining required columns:
    - Include "must exist as header" columns WITH EMPTY VALUES to verify the bundle handles them gracefully
    - Include at least one row where optional score values are populated and one where they are empty
 
-4. End-to-end test with edfi_testing_stack:
+4. When running earthmover manually (outside of test-bundle), always use the bundle's own `./output` directory as OUTPUT_DIR. Never use `/tmp` or other external directories.
+
+5. End-to-end test with edfi_testing_stack:
    - The testing stack repo is at `/home/jalvord/code/edfi_testing_stack/`
    - Install if needed: `pip install -e /home/jalvord/code/edfi_testing_stack/`
    - Some bundles use `lightbeam.yml` instead of `lightbeam.yaml`. test-bundle looks for `lightbeam.yaml`, so copy/rename the file if needed.
@@ -73,7 +75,7 @@ Process for determining required columns:
    - Do NOT separately validate JSON output or retry individual endpoint sends if the test stack otherwise works
    - After testing, revert the lightbeam.yaml changes (namespace_overrides and verify_ssl)
 
-5. Document the findings:
+6. Document the findings:
    - List columns that must have values and explain why (assertion, used in transformation, needed for valid Ed-Fi output)
    - List columns that must exist as headers but can be empty
    - Note any data format requirements (date formats, enum values, etc.)
