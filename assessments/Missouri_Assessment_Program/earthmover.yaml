@@ -104,11 +104,11 @@ transformations:
           #    GRADE_LEVEL represents the grade (we want this), and
           #    GRADE_OF_STUDENT is not set.
           calculated_grade_level: "{%raw%}{%if GRADE_OF_STUDENT == '' %}{{GRADE_LEVEL}}{%else%}{{GRADE_OF_STUDENT}}{%endif%}{%endraw%}"
-          # For EOC, use the course code (GRADE_LEVEL) as the subject segment of
-          # the assessmentIdentifier so each course gets its own distinct assessment
+          # For EOC, use the course code (GRADE_LEVEL) as the subject area so each
+          # course gets its own distinct assessmentIdentifier
           # (e.g. MissouriAssessmentProgram_EOC_A1 for Algebra I).
           # For MAP/MAPA, use the mapped CONTENT_AREA as before.
-          subject_sequence: "{%raw%}{% if TEST_NAME_MAP == 'EOC' %}{{GRADE_LEVEL}}{% else %}{{CONTENT_AREA}}{% endif %}{%endraw%}"
+          subject_area: "{%raw%}{% if TEST_NAME_MAP == 'EOC' %}{{GRADE_LEVEL}}{% else %}{{CONTENT_AREA}}{% endif %}{%endraw%}"
 
       - operation: duplicate_columns
         columns:
@@ -121,7 +121,7 @@ transformations:
           - TEST_NAME_MAP
           # For EOC: course code (A1, A2, GE, E1, E2, B1, PS, GV, AH)
           # For MAP/MAPA: subject (ELA, Math, Science, SocialStudies)
-          - subject_sequence
+          - subject_area
         separator: _
         new_column: assessmentIdentifier
 
