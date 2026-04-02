@@ -190,5 +190,7 @@ If I ask you to review a bundle, fetch and follow the Bundle Review Checklist fr
 - All seeds: `seeds/*.csv`
 - Data files: `data/required_columns.csv`, `data/sample_anonymized_file*.csv`
 
+**Extraneous required columns check:** When you reach the checklist items about required columns and extraneous columns, follow the full "Check for Required Columns" process documented above in this file. Trace through every operation in the earthmover.yaml to identify which columns must exist and whether each is actually needed for Ed-Fi output. Flag any columns that are made required by operations (e.g., `rename_columns`, `keep_columns`, `filter_rows`) but are never used in a template or transformation output.
+
 **Known patterns that are NOT issues — do not flag these:**
 - `STUDENT_ID_NAME` differs between the README example and the earthmover.yaml default. The README example must use a column that exists in the sample file (e.g., `StateID`), while the earthmover.yaml defaults to `edFi_studentUniqueID` for use with the student ID xwalk package. This is intentional across all bundles.
