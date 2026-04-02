@@ -71,6 +71,7 @@ Process for determining required columns:
    - The stack takes ~2 minutes to spin up — "Waiting for API to come online..." is normal
    - Success looks like: all endpoints return 201 status codes
    - 409 errors on objectiveAssessments are a known dependency ordering issue (children sent before parents) — ignore these and do NOT retry or investigate further. StudentAssessment 409s that cascade from OA ordering issues can also be ignored.
+   - 409 errors on descriptor endpoints (e.g., performanceLevelDescriptors, assessmentCategoryDescriptors) mean duplicate payloads are being sent. This is NOT expected and should be fixed. When descriptor seeds contain per-assessment rows (with an `assessmentIdentifier` column), the descriptor destination must use a deduped transformation (with `keep_columns` to drop `assessmentIdentifier` + `distinct_rows`) instead of sourcing the raw seed directly. Only the unique descriptor values should be sent.
    - If it breaks, the error message will tell you what's missing
    - Do NOT separately validate JSON output or retry individual endpoint sends if the test stack otherwise works
    - After testing, revert the lightbeam.yaml changes (namespace_overrides and verify_ssl)
