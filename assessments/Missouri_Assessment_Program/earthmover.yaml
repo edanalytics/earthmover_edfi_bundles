@@ -98,12 +98,17 @@ transformations:
           assessmentIdentifier: MissouriAssessmentProgram
           namespace: uri://dese.mo.gov/assessment
           # 1. When the test type is EOC, GRADE_OF_STUDENT represents the grade
-          #    (we want this), while GRADE_LEVEL represents a subject sequence,
-          #    such as "A1", meaning Algebra 1.
+          #    (we want this), while GRADE_LEVEL represents a subject sequence
+          #    (course code), such as "A1" meaning Algebra I.
           # 2. For other test types, MAP and MAPA, it's somewhat reversed:
           #    GRADE_LEVEL represents the grade (we want this), and
           #    GRADE_OF_STUDENT is not set.
           calculated_grade_level: "{%raw%}{%if GRADE_OF_STUDENT == '' %}{{GRADE_LEVEL}}{%else%}{{GRADE_OF_STUDENT}}{%endif%}{%endraw%}"
+          # For EOC, use the course code (GRADE_LEVEL) as the subject segment of
+          # the assessmentIdentifier so each course gets its own distinct assessment
+          # (e.g. MissouriAssessmentProgram_EOC_A1 for Algebra I).
+          # For MAP/MAPA, use the mapped CONTENT_AREA as before.
+          subject_sequence: "{%raw%}{% if TEST_NAME_MAP == 'EOC' %}{{GRADE_LEVEL}}{% else %}{{CONTENT_AREA}}{% endif %}{%endraw%}"
 
       - operation: duplicate_columns
         columns:
@@ -114,8 +119,9 @@ transformations:
           - assessmentIdentifier
           # EOC, MAP, MAPA (MAP-Alternate)
           - TEST_NAME_MAP
-          # Subject
-          - CONTENT_AREA
+          # For EOC: course code (A1, A2, GE, E1, E2, B1, PS, GV, AH)
+          # For MAP/MAPA: subject (ELA, Math, Science, SocialStudies)
+          - subject_sequence
         separator: _
         new_column: assessmentIdentifier
 
