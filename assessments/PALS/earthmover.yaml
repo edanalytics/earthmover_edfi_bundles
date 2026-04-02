@@ -1,0 +1,318 @@
+version: 2
+config:
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ./runs.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STD_STI,ID'
+    DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
+
+sources:
+  input:
+    file: ${INPUT_FILE}
+    optional_fields:
+      - ID
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1 
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1 
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  assessmentPeriodDescriptors:
+    file: ./seeds/assessmentPeriodDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_reporting_method:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+
+  stage_period:
+    source: $sources.assessmentPeriodDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+  
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+              {%raw-%}  
+              {
+                "gradeLevelDescriptor": "{{edfi_descriptor}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,,)
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+              {%raw-%}  
+              {
+                "academicSubjectDescriptor": "{{edfi_descriptor}}"
+              },
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          subject_json: agg(subject_json,)
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessment_reporting_method:
+    source: $transformations.stage_reporting_method
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          score_json: >  
+              {%raw-%}  
+              {
+                "assessmentReportingMethodDescriptor": "{{ namespace }}#{{codeValue}}",
+                "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"  
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          score_json: agg(score_json,,)
+
+  assessment_periods:
+    source: $transformations.stage_period
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+          period_json: >
+              {%raw-%}
+              {
+                "assessmentPeriodDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}
+      - operation: modify_columns
+        columns:
+          period_json: "{%raw%}{{period_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - joinKey
+        create_columns: 
+          period_json: agg(period_json,,)
+
+  {% set assessment = ['NAMEWRI','ALPHA_UC','ALPHA_LC', 'LETTERSND', 'BEGSOUND', 'PRNTWORD', 'RHYME', 'NURRHYME'] %}
+  
+{% for assessment_name in assessment %}
+
+  student_assessment_{{assessment_name}}:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns:
+          - {{assessment_name}}
+          - ${STUDENT_ID_NAME}
+          - "SCH_NO"
+          - "ASSESSDATE"
+          - "YEAR"
+          - "SEMESTER"
+      - operation: date_format
+        column: ASSESSDATE
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "PALS_{{assessment_name}}"
+          joinKey: "Key"  
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: modify_columns
+        columns:
+          studentUniqueId: "{%raw%}{{ value | trim }}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          SCH_NO: schoolId
+      - operation: rename_columns
+        columns:
+          {{assessment_name}}: Score 
+      - operation: duplicate_columns
+        columns: 
+          SEMESTER: assessmentPeriodDescriptor
+      - operation: map_values
+        column: assessmentPeriodDescriptor
+        map_file: ./seeds/semester_mapping.csv
+      - operation: add_columns
+        columns:
+          result: "{%raw-%}{{ Score }}{%-endraw%}"
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          namespace: assessmentNamespace
+      - operation: join
+        sources:
+          - $transformations.stage_reporting_method
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          administrationDate: "{%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}{% elif SEMESTER | lower == 's' %}{{YEAR[-4:]}}-05-01{% elif SEMESTER | lower == 'm' %}{{YEAR[-4:]}}-02-01{% elif SEMESTER | lower == 'f' %}{{YEAR[:4]}}-09-01{% endif %}{%endraw%}"
+          schoolYear: "{%raw%}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{%endraw%}"
+          studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
+          descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
+      - operation: keep_columns
+        columns:
+            - "studentAssessmentIdentifier"
+            - "assessmentIdentifier"
+            - "schoolId"
+            - "schoolYear"
+            - "studentUniqueId"
+            - "administrationDate"
+            - "descriptorNamespace"
+            - "result"
+            - "namespace"
+            - "codeValue"
+            - "edfi_descriptor"
+            - "assessmentPeriodDescriptor" 
+            - "assessmentNamespace"
+      - operation: filter_rows
+        query: "result != 'NULL' and result!=''"
+        behavior: include
+  {% endfor %}
+
+  combined_results:
+    source: $transformations.student_assessment_{{ assessment[0] }}
+    operations:
+    - operation: union
+      sources:
+{% for assessment_name in assessment[1:] %}
+        - $transformations.student_assessment_{{ assessment_name }}
+{% endfor %}
+    - operation: distinct_rows
+      columns: 
+        - studentUniqueId
+        - assessmentIdentifier
+        - administrationDate
+  
+  prepare_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "Key"
+      - operation: join
+        sources:
+          - $transformations.assessment_reporting_method
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.assessment_periods
+        join_type: inner
+        left_key: joinKey
+        right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+
+  prepare_student_assessment_valid_school:
+    source: $transformations.combined_results
+    operations:
+      - operation: filter_rows
+        query: schoolId != "" and schoolId != None
+        behavior: include
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    
+  studentAssessments:
+    source: $transformations.combined_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment_valid_school
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
+
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl

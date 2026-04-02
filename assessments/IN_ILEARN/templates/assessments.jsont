@@ -1,0 +1,68 @@
+{
+	"assessmentIdentifier": "{{assessmentIdentifier}}",
+	"assessmentTitle": "{{assessmentTitle}}",
+	"namespace": "{{namespace}}",
+	"assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "assessmentFamily": "{{assessmentFamily}}",
+	"assessedGradeLevels":[{{grade_json}}],
+	"academicSubjects": [
+		{
+		"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+		}
+	],
+	"scores": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Subject",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale score",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lexile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Quantile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		}
+	],
+	"performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Approaching Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#At Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above Proficiency",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Proficiency level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#UND",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#College and Career Readiness Indicator",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Yes",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#College and Career Readiness Indicator",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#No",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		}
+	]
+}

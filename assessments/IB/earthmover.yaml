@@ -10,6 +10,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'student_unique_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   macros: > 
       {% macro group_number_with_language(value) -%}
       {%- if group_number == '1' -%}
@@ -25,14 +26,18 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    expect:
+      - "GROUP_NUMBER != ''"
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  subject_group_mappings:
-    file: ./seeds/subject_group_mappings.csv
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
 
@@ -44,7 +49,13 @@ transformations:
   ib_student_results:
     source: $transformations.input
     operations:
+      - operation: rename_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_id
       - operation: snake_case_columns
+      - operation: modify_columns
+        columns:
+          subject: "{%raw%}{{ value | trim }}{%endraw%}"
       - operation: combine_columns
         columns:
           - year
@@ -61,21 +72,69 @@ transformations:
           assessment_family: "International Baccalaureate"
           namespace: "uri://ibo.org"
           school_year: ${API_YEAR}
-          administration_date: "{%raw%}{{year}}-{%- if month == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
+          administration_date: "{%raw%}{{year}}-{%- if month|upper == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
-      - operation: rename_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_id
   
   student_assessments:
     source: $transformations.ib_student_results
     operations:
       - operation: join
         sources:
-          - $sources.subject_group_mappings
+          - $sources.academicSubjectDescriptors
         join_type: inner
         left_key: group_number
         right_key: group_id
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - group_id
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          join_key: "1"
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - join_key
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessments:
     source: $transformations.ib_student_results
@@ -85,14 +144,20 @@ transformations:
           - subject
       - operation: add_columns
         columns:
+          join_key: "1"
           mod_group_number: "{%raw%}{{ group_number_with_language(group_number) }}{%endraw%}"
       - operation: join
         sources:
-          - $sources.subject_group_mappings
+          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: mod_group_number
         right_key: group_id
-
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: join_key
+        right_key: join_key
 
 destinations:
   assessments:

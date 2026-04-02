@@ -1,0 +1,89 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#At/Near"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#UND"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N/A"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Invalidated"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Blank"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Non-Scorable Language"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Insufficient"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Off Purpose"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Off Topic"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Illegible"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Invalidated"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Essay Score",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N/A"
+		}
+    ]
+  }

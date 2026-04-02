@@ -16,3 +16,8 @@ connection:
   verify_ssl: True
 verbose: True
 show_stacktrace: True
+validate:
+  methods:
+    - schema # checks that payloads conform to the Swagger definitions from the API
+    - descriptors # checks that descriptor values are either locally-defined or exist in the remote API
+    # do NOT check uniqueness
