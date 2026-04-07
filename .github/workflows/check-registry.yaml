@@ -27,11 +27,19 @@ jobs:
         run: |
           python -m pip install PyYAML
 
+      # prevent an attacker from maliciously modifying these scripts in their own PR and forcing them to execute
+      # Use the base versions instead
+      - name: Checkout trusted validator
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+
       - name: Generate registry.json
         run: |
-          python create-registry.py assessments --output /tmp/registry.generated.json
+          python trusted/create-registry.py assessments --output /tmp/registry.generated.json
           test -f /tmp/registry.generated.json || (echo "::error::failed to generate registry.json" && exit 1)
 
       - name: Compare registry.json to generated copy
         run: |
-          python .github/scripts/registry-diff.py registry.json /tmp/registry.generated.json
+          python trusted/.github/scripts/registry-diff.py registry.json /tmp/registry.generated.json
