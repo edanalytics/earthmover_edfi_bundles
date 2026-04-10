@@ -122,7 +122,7 @@
 
       {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{score[1][:50]}}",
+        "assessmentReportingMethodDescriptor": "uri://www.nwea.org/map/AssessmentReportingMethodDescriptor#{{score[1][:50].rstrip()}}",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{ score[0] | truncate(35, True, '', 0) }}"
       } {% if not loop.last %},{% endif %}

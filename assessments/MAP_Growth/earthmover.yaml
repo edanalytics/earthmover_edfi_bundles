@@ -204,6 +204,9 @@ transformations:
         columns: 
           - ProjectedProficiencyStudy{{i}}
       - operation: distinct_rows
+      - operation: modify_columns
+        columns:
+          ProjectedProficiencyStudy{{i}}: "{%raw%}{{value[:50].rstrip()}}{%endraw%}"
       - operation: rename_columns
         columns: 
           ProjectedProficiencyStudy{{i}}: codeValue
