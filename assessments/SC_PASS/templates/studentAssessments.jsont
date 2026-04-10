@@ -1,0 +1,221 @@
+{%- set assessment_map = {
+    'SC_PASS_Science' : '01',
+    'SC_PASS_Social_Studies' : '02'
+   } -%}
+
+{%- set assessment_performance_map = {
+    '01': 'SciLev',
+    '02' : 'SocLev'
+   } -%}
+
+{%- set assessment_append_map = {
+    '01': 'Sci',
+    '02': 'Soc'
+   } -%}
+
+{%- set reportingMethods = [
+  ['SS','Integer'],['Ag','Level']
+  ] -%}
+
+{%- set performance_objective = ['Lev1','Lev2','Lev3','Lev4','Lev5','Lev6','Lev7'] -%}
+
+{%- set objectives_reporting = {
+  'SciLev1': 'Science Standard 1',
+  'SciLev2': 'Science Standard 2',
+  'SciLev3': 'Science Standard 3',
+  'SciLev4': 'Science Standard 4',
+  'SciLev5': 'Science Standard 5',
+  'SciLev6': 'Science Standard 6',
+  'SocLev1': 'Social Studies Standard 1',
+  'SocLev2': 'Social Studies Standard 2',
+  'SocLev3': 'Social Studies Standard 3',
+  'SocLev4': 'Social Studies Standard 4',
+  'SocLev5': 'Social Studies Standard 5',
+  'SocLev6': 'Social Studies Standard 6',
+  'SocLev7': 'Social Studies Standard 7'
+} -%}
+
+
+{%- set assessment = assessment_map[assessmentIdentifier] -%}
+
+{# --- Check if there is at least one score or objective  --- #}
+{# Scores #}
+{%- set vars = {'any_score': False} -%} 
+{%- for reportingKey, reportingDataType in reportingMethods -%}
+  {%- set val = __row_data__[assessment_append_map[assessment] ~ reportingKey] -%}
+  {%- if val != None and val | string != 'None' and val | string != 'none' and val | string | trim != '' -%}
+   {%- if vars.update({'any_score': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{# Objectives #}
+{%- set vars = {'any_obj': False} -%} 
+{%- for perf in performance_objective -%}
+  {%- set key = assessment_append_map[assessment] ~ perf -%}
+  {%- if key in __row_data__ and (__row_data__[key]|string|trim) -%}
+    {%- if vars.update({'any_obj': True}) -%} {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if vars.any_score or vars.any_obj -%}{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{SchoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{student_unique_id}}"
+  },
+  "administrationDate": "{{administration_date}}"
+
+{% set grade_column = assessment_append_map[assessment] ~ 'Grade' %}
+{% set gradeName = __row_data__[grade_column]|trim %}
+
+  {%- if gradeName is not none and gradeName | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{gradeName}}"
+  {% endif %}
+
+  {% set platform_column = assessment_append_map[assessment] ~ 'Mode' %}
+{% set platformName = __row_data__[platform_column]|trim %}
+
+  {%- if platformName is not none and platformName | length -%}
+  ,"platformTypeDescriptor": "{{namespace}}/PlatformTypeDescriptor#{{platformName}}"
+  {% endif %}
+
+
+  {#  Accommodations #}
+
+  {% set accommodation_descriptor_dictionary = [
+    'Acc1',
+    'Acc2',
+    'Acc3',
+    'Acc4',
+    'Acc5',
+    'Acc6',
+    'Acc7',
+    'Acc8',
+    'Acc9',
+    'Acc10',
+    'Acc11',
+    'ESLAcc1',
+    'ESLAcc2',
+    'ESLAcc3',
+    'ESLAcc4',
+    'ESLAcc5',
+    'ESLAcc6'
+  ] %}
+
+  {# Detect if any accommodation has 'Y' #}
+ {% set vars = {'has_accommodation': False} %} 
+{% for acc in accommodation_descriptor_dictionary %}
+  {% set accommodation_column = assessment_append_map[assessment] ~ acc %}
+  {% if accommodation_column in __row_data__ and __row_data__[accommodation_column]|trim == 'Y' %}
+   {% if vars.update({'has_accommodation': True}) %} {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% if vars.has_accommodation %}
+
+    ,"accommodations": [
+       {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+    {% for acc in accommodation_descriptor_dictionary %}
+      {% set accommodation_column = assessment_append_map[assessment] ~ acc %}
+      {% set accommodation_value = __row_data__[accommodation_column]|trim %}
+        {% if accommodation_column in __row_data__ and __row_data__[accommodation_column]|trim == 'Y' %}
+        {{ comma() }}
+        {
+          "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{acc}}"
+        }
+        {% endif %}
+    {% endfor %}
+    ]
+{% endif %}
+    
+{#--------------- performance Level ---------------#}
+{% set performanceLevel = __row_data__[assessment_performance_map[assessment]] %}
+{% set performanceLevelName = "Lev" %}
+{% set RCWAbsPerformanceLevel = __row_data__[assessment_append_map[assessment] ~ 'RCWAbs'] %}
+
+{%- if performanceLevel or RCWAbsPerformanceLevel -%}
+,"performanceLevels": [
+  {%- if  performanceLevel != None and performanceLevel | string != 'None' and performanceLevel | string != 'none' and performanceLevel | string | trim != '' -%}
+  {% set writeComma=true %}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevel}}",
+          "performanceLevelMet": true
+        }
+    {% endif %}
+    {%- if  RCWAbsPerformanceLevel != None and RCWAbsPerformanceLevel | string != 'None' and RCWAbsPerformanceLevel | string != 'none' and RCWAbsPerformanceLevel | string | trim != '' -%}
+    {%- if writeComma -%}, {% endif %}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#RCWAbs",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{RCWAbsPerformanceLevel}}",
+          "performanceLevelMet": true
+        }
+{% endif %}
+    ]
+{% endif %}
+
+{#--------------- scores ---------------#}
+,"scoreResults": [
+         {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+{% for reportingKey, reportingDataType in reportingMethods %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set scoreName = reportingKey %}
+    {% set scoreAppendName = assessment_append_map[assessment] %}
+    {% set scoreColumnValue = __row_data__[scoreAppendName ~ scoreName] %}
+
+    {#- Check if the score value actually exists -#}
+    {% if scoreColumnValue != None and scoreColumnValue | string != 'None' and scoreColumnValue | string != 'none' and scoreColumnValue | string | trim != '' %}
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{scoreName}}",
+            "resultDatatypeTypeDescriptor": "{{ descriptor_namespace_override }}/ResultDatatypeTypeDescriptor#{{reportingDataType}}",
+            "result": "{{scoreColumnValue}}"
+        }
+    {% endif %}
+{% endfor %}          
+        ]
+{#--------------- objectives ---------------#}
+,"studentObjectiveAssessments": [ 
+ {# The joiner will add a comma before every item except the first one that gets printed #}
+{% set comma = joiner(",") %}
+{% for performance in performance_objective %}
+    {#- Define variables and use the ~ operator for string concatenation -#}
+    {% set performanceAppendName = assessment_append_map[assessment] %}
+    {% set realPerformanceNameAppendName = performanceAppendName ~ performance %}
+    {% set performanceColumnValue = __row_data__[realPerformanceNameAppendName] %}
+    {% set objectiveName = objectives_reporting[realPerformanceNameAppendName] %}
+    {#- Check if the performance value actually exists -#}
+    {% if performanceColumnValue| trim %}
+    {{ comma() }} 
+      {
+        "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}_{{SchoolYear}}",
+            "identificationCode": "{{objectiveName}}",
+            "namespace": "{{namespace}}"
+        },
+        "performanceLevels": [
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{performanceLevelName}}",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceColumnValue}}",
+            "performanceLevelMet": true
+        }
+        ]
+        ,"scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Ag",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace_override}}/ResultDatatypeTypeDescriptor#Level",
+        "result": "No Score"
+      }
+      ]   
+      } 
+{%- endif -%}
+{%- endfor -%}
+]}{%- endif -%}
