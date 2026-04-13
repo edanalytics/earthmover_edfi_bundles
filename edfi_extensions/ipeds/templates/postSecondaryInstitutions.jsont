@@ -1,0 +1,48 @@
+{% set ipeds_id_codes = [(UNITID, 'IPEDS'), (EIN, 'Federal'),(UEIS, 'DUNS'),(OPEID, 'USDE-OPE')] %}
+
+{
+  "categories": [
+    {
+      "educationOrganizationCategoryDescriptor": "{{educationOrganizationCategoryDescriptor}}"
+    }
+  ],
+  "postSecondaryInstitutionId": {{UNITID}},
+  "addresses": [
+    {
+      "addressTypeDescriptor": "{{addressTypeDescriptor}}",
+      "stateAbbreviationDescriptor": "{{stateAbbreviationDescriptor}}",
+      "city": "{{CITY}}",
+      "postalCode": "{{ZIP}}",
+      "streetNumberName": "{{ADDR}}",
+      "localeDescriptor": "{{localeDescriptor}}",
+      "congressionalDistrict": "{{CNGDSTCD}}",
+      "countyFIPSCode": "{{COUNTYCD}}",
+      "doNotPublishIndicator": true,
+      "latitude": "{{LATITUDE}}",
+      "longitude": "{{LONGITUD}}",
+      "nameOfCounty": "{{COUNTYNM}}"
+    }
+  ],
+  "administrativeFundingControlDescriptor": "{{administrativeFundingControlDescriptor}}",
+  "identificationCodes": [
+    {% for id in ipeds_id_codes %}
+      {% if id[0] %}
+        {
+          "educationOrganizationIdentificationSystemDescriptor": "uri://ed-fi.org/EducationOrganizationIdentificationSystemDescriptor#{{id[1]}}",
+          "identificationCode": "{{id[0]}}"
+        }
+        {% if not loop.last %},{% endif %}
+      {% endif %}
+    {% endfor %}
+  ],
+  "institutionTelephones": [
+    {
+      "institutionTelephoneNumberTypeDescriptor": "{{institutionTelephoneNumberTypeDescriptor}}",
+      "telephoneNumber": "{{GENTELE}}"
+    }
+  ],
+  "nameOfInstitution": "{{INSTNM}}",
+  "operationalStatusDescriptor": "{{operationalStatusDescriptor}}",
+  "postSecondaryInstitutionLevelDescriptor": "{{postSecondaryInstitutionLevelDescriptor}}",
+  "shortNameOfInstitution": "{{IALIAS}}"
+}
