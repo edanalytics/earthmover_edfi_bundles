@@ -18,6 +18,9 @@ sources:
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -212,6 +215,26 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+  assessment_category_descriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: add_columns
+        columns: 
+          assessmentCategoryDescriptor: "{%raw%}{{namespace}}/assessmentCategoryDescriptor#{{codeValue}}{%endraw%}"
+
+  distinct_assessment_category_descriptors:
+    source: $transformations.assessment_category_descriptors
+    operations:
+      - operation: distinct_rows
+        columns: 
+          - codeValue
+      - operation: keep_columns
+        columns:
+          - namespace
+          - codeValue
+          - description
+          - shortDescription
+
   assessments:
     source: $sources.assessments
     operations:
@@ -225,11 +248,24 @@ transformations:
         join_type: inner
         left_key: dummy_group_key
         right_key: dummy_group_key
+      - operation: join
+        sources:
+          - $transformations.assessment_category_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_drop_columns:
+          - namespace
+          
 
 destinations:
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $transformations.distinct_assessment_category_descriptors
+    template: ./templates/descriptors.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
