@@ -11,17 +11,6 @@
     {%- endif -%}
   {%- endfor -%}
 
-{%- set possible_perf_levels = [
-    [AwardType, "AP Award"]
-] -%}
-
-{%- set perf_levels = [] -%}
-  {%- for pl in possible_perf_levels -%}
-    {%- if pl[0] is not none and pl[0] | length -%}
-      {%- set _ = perf_levels.append(pl) -%}
-    {%- endif -%}
-  {%- endfor -%}
-
 {
   "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
   "assessmentReference": {
@@ -48,14 +37,8 @@
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]{%- endif -%}
-  {%- if perf_levels | length -%}
+  {%- if award_perf_json is not none and award_perf_json | length -%}
   ,"performanceLevels": [
-    {% for perf_level in perf_levels %}
-      {
-        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}"
-        ,"performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
-        ,"performanceLevelMet": true
-      } {% if not loop.last %},{% endif %}
-    {% endfor %}
+    {{award_perf_json}}
   ]{%- endif -%}
 }
