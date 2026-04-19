@@ -15,9 +15,6 @@ sources:
   idea_events:
     file: ${IDEA_EVENTS_FILE}
     header_rows: 1
-  iep_goals:
-    file: ${IEP_GOALS_FILE}
-    header_rows: 1
   iep_service_prescriptions:
     file: ${IEP_SERIVCE_PRESCRIPTIONS_FILE}
     header_rows: 1
@@ -59,30 +56,7 @@ transformations:
       - operation: map_values
         column: placement
         map_file: ./seeds/special_ed_setting_mapping.csv
-  
-  iep_goals:
-    source: $sources.iep_goals
-    operations:
-      - operation: snake_case_columns
-      - operation: modify_columns
-        columns: 
-          annual_goal: "{%raw%}{{ value|replace('\"',\"'\") }}{%endraw%}"
-      - operation: date_format
-        columns: 
-          - event_begin_date
-          - event_end_date
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
-      - operation: join
-        sources:
-          - $transformations.student_ieps
-        join_type: left
-        left_key: iepid
-        right_key: student_iep_association_id
-        right_keep_columns:
-          - lea_code
-          - event_date
-          - state_code
+
   
   iep_service_prescriptions:
     source: $sources.iep_service_prescriptions
@@ -90,7 +64,6 @@ transformations:
       - operation: snake_case_columns
       - operation: date_format
         columns: 
-          - event_date
           - event_begin_date
           - event_end_date
         from_format: "%m/%d/%Y"
@@ -119,10 +92,6 @@ destinations:
   ideaEvents:
     source: $transformations.idea_events
     template: ./templates/iDEAEvents.jsont
-    extension: jsonl
-  studentIEPGoals:
-    source: $transformations.iep_goals
-    template: ./templates/studentIEPGoals.jsont
     extension: jsonl
   studentIEPServicePrescriptions:
     source: $transformations.iep_service_prescriptions
