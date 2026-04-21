@@ -109,9 +109,19 @@ transformations:
           {%- for reporting_method in reporting_methods %}
           {{reporting_method}}: '{%raw%}{{__row_data__[__row_data__["school_year"] ~ " {%endraw%}{{assessment ~ " " ~ reporting_method}}{%raw%}"]}}{%endraw%}'
           {%- endfor %}
-      - operation: map_values
-        column: grade_level_descriptor
-        map_file: 'seeds/gradeLevelDescriptors.csv'
+      # DO NOT USE map_values; this is difficult to override with project composition :(
+      - operation: join
+        sources:
+        - $sources.gradeLevelDescriptors
+        join_type: left
+        left_key: grade_level_descriptor
+        right_key: originalGrade
+      - operation: drop_columns
+        columns:
+          - grade_level_descriptor
+      - operation: rename_columns
+        columns: 
+          gradeLevelDescriptor: grade_level_descriptor
       - operation: modify_columns
         columns:
           admin_date: '{%raw%}
