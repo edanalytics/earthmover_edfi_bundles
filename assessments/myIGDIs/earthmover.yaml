@@ -52,7 +52,7 @@ transformations:
           School Year: SchoolYear
           Init District Id: InitDistrictId
       - operation: melt
-        id_vars: [SchoolYear, "State Name", "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId]
+        id_vars: [SchoolYear, "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId]
       # Parse the column name: {Assessment}/{Objective...}/{Window}/{Metric}
       # Español objectives contain '/' so we parse from both ends
       - operation: add_columns
@@ -71,7 +71,7 @@ transformations:
         behavior: include
       - operation: pivot
         cols_by: metric
-        rows_by: [SchoolYear, "State Name", "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId, assessment, objective, TimeWindow]
+        rows_by: [SchoolYear, "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId, assessment, objective, TimeWindow]
         values: melt_value
       - operation: filter_rows
         query: "Score != ''"

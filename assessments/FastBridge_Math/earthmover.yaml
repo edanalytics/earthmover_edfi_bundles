@@ -98,6 +98,7 @@ transformations:
       - operation: filter_rows
         query: season == ''
         behavior: exclude
+      - operation: distinct_rows
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]

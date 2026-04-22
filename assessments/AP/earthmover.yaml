@@ -304,13 +304,57 @@ transformations:
         right_keep_columns:
           - AwardYear
 
+  # --- Aggregate awards by student and year ---
+  aggregated_awards:
+    source: $transformations.unpivoted_awards
+    operations:
+      # Zero-pad AwardType to match seed codeValues
+      - operation: modify_columns
+        columns:
+          AwardType: "{%raw%}{%- if AwardType | length == 1 -%}0{{AwardType}}{%- else -%}{{AwardType}}{%- endif -%}{%endraw%}"
+      # Build reporting method name: "AP Award" for slot 1, "AP Award N" for slot N > 1
+      - operation: add_columns
+        columns:
+          award_reporting_method: "{%raw%}AP Award{%- if award_slot != '1' %} {{award_slot}}{%- endif %}{%endraw%}"
+      # Join to seed to get descriptor namespace and reporting method
+      - operation: join
+        sources:
+          - $sources.performanceLevelDescriptors
+        join_type: inner
+        left_key: AwardType
+        right_key: codeValue
+        right_keep_columns:
+          - namespace
+          - reportingMethod
+      # Build performance level JSON fragment for each award
+      - operation: add_columns
+        columns:
+          award_perf_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "{{reportingMethod}}#{{award_reporting_method}}",
+              "performanceLevelDescriptor": "{{namespace}}#{{AwardType}}",
+              "performanceLevelMet": true
+            }
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          award_perf_json: "{%raw%}{{award_perf_json | replace('\n', '')-}}{%endraw%}"
+      # Aggregate all awards for a given student-year
+      - operation: group_by
+        group_by_columns:
+          - student_unique_id
+          - AwardYear
+        create_columns:
+          award_perf_json: agg(award_perf_json,,)
+
   # --- Join awards to exams ---
   exams_with_awards:
     source: $transformations.unpivoted_exams
     operations:
       - operation: join
         sources:
-          - $transformations.unpivoted_awards
+          - $transformations.aggregated_awards
         join_type: left
         left_keys:
           - student_unique_id
@@ -319,11 +363,11 @@ transformations:
           - student_unique_id
           - AwardYear
         right_keep_columns:
-          - AwardType
-      # Clean up NaN from left join on AwardType, and zero-pad to match descriptor seed
+          - award_perf_json
+      # Clean up NaN from left joins
       - operation: modify_columns
         columns:
-          AwardType: "{%raw%}{%- if value != value -%}{%- elif value | length == 1 -%}0{{value}}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          award_perf_json: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           IrregularityCode1: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           IrregularityCode2: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           Score: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
@@ -435,10 +479,12 @@ transformations:
         columns:
           performance_json: >
               {%raw-%}
+              {%- for i in range(1, 7) -%}
               {
-                "assessmentReportingMethodDescriptor": "{{reportingMethod}}#AP Award",
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}#AP Award{% if i > 1 %} {{i}}{% endif %}",
                 "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
-              }
+              }{% if not loop.last %},{% endif %}
+              {%- endfor -%}
               {%-endraw%}
       - operation: modify_columns
         columns:
@@ -561,7 +607,7 @@ transformations:
           - whenAssessedGradeLevelDescriptor
           - schoolId
           - descriptorNamespace
-          - AwardType
+          - award_perf_json
           - IrregularityCode1
           - IrregularityCode2
         create_columns:
