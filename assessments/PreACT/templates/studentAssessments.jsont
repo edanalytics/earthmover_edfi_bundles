@@ -65,12 +65,11 @@
   ]],
   ['PreACT_STEM', [
     ('Scale Score', 'Integer', STEM),
-    ('National Norms Score', 'Percentile', USRnk_Sub_STEM),
+    ('National Norms Score', 'Percentile', USRnk_STEM),
     ('Low Scale Score', 'Integer', STEM_Low),
     ('High Scale Score', 'Integer', STEM_High),
     ('Low Predicted Score', 'Integer', Pred_ACT_STEM_Low),
-    ('High Predicted Score', 'Integer', Pred_ACT_STEM_High),
-    ('Raw Score','Integer',STEM_Raw)
+    ('High Predicted Score', 'Integer', Pred_ACT_STEM_High)
   ]],
 
   ['PreACT_E_Earn_Prod', [('Raw Score', 'Integer', E_Earn_Prod)]],
@@ -117,8 +116,11 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{administrationDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  "administrationDate": "{{administrationDate}}"
+
+  {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
+  , "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+  {%- endif -%}
 
   {%- if scores -%}
   , "scoreResults": [

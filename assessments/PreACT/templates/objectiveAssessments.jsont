@@ -12,49 +12,47 @@
       "identificationCode": "{{parentIdentificationCode}}"
     },
     {% endif %}
-    "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
+    "academicSubjectDescriptor": "{{ edfi_descriptor }}",
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#National Norms Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#National Norms Score",
         "maximumScore": "100",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Raw Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Raw Score",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Low Scale Score",
         "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#High Scale Score",
         "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Predicted Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Low Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
-         {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Predicted Score",
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#High Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       }
     ]
-
-
   }

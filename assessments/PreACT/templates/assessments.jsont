@@ -4,43 +4,43 @@
     "assessmentFamily": "PreACT",
     "namespace": "{{namespace}}",
     "assessedGradeLevels": [{{grade_json}}],
-    "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
     "academicSubjects": [{{subject_json}}],
     "scores": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Scale Score",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#National Norms Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#National Norms Score",
         "maximumScore": "100",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Low Scale Score",
         "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Raw Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Raw Score",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Scale Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#High Scale Score",
         "maximumScore": "30",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#High Predicted Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#High Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Low Predicted Score",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Low Predicted Score",
         "maximumScore": "36",
         "minimumScore": "1",
         "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
@@ -48,38 +48,38 @@
     ],
     "performanceLevels": [
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
         "maximumScore": "0",
         "minimumScore": "0",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#0"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#0"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
         "maximumScore": "1",
         "minimumScore": "1",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#1"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
         "maximumScore": "2",
         "minimumScore": "2",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#2"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
         "maximumScore": "3",
         "minimumScore": "3",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#3"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
         "maximumScore": "4",
         "minimumScore": "4",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#4"
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#4"
       },
       {
-        "assessmentReportingMethodDescriptor": "uri://act.org/Assessments/preact/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
-        "performanceLevelDescriptor": "uri://act.org/Assessments/preact/PerformanceLevelDescriptor#-"
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#-"
       }
     ]
 }
