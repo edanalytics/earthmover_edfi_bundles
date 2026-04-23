@@ -1,0 +1,107 @@
+{%- if schoolYear >= '2022' -%}
+  {%- set score_map = {
+  "Applied Math": [
+    [MathLevelScore, "Level", "Level Score"],
+    [MathScaleScore, "Integer", "Scale Score"]
+  ],
+  "Workplace Documents": [
+    [DocumentsLevelScore, "Level", "Level Score"],
+    [DocumentsScaleScore, "Integer", "Scale Score"]
+  ],
+  "Graphic Literacy": [
+    [GraphLevelScore, "Level", "Level Score"],
+    [GraphScaleScore, "Integer", "Scale Score"]
+  ]
+} -%}
+
+{%- else -%} 
+{%- set score_map = {
+  "Applied Mathematics": [
+    [MathLevelScore, "Level", "Level Score"],
+    [MathScaleScore, "Integer", "Scale Score"]
+  ],
+  "Locating Information": [
+    [InfoLevelScore, "Level", "Level Score"],
+    [InfoScaleScore, "Integer", "Scale Score"]
+  ],
+  "Reading for Information": [
+    [ReadLevelScore, "Level", "Level Score"],
+    [ReadScaleScore, "Integer", "Scale Score"]
+  ]
+} -%}
+{%- endif -%}
+ 
+ {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}"
+  
+  {%- if Grade_CodeValue is not none and Grade_CodeValue | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
+  {% endif %}
+  {%- if platformTypeDescriptor is not none and platformTypeDescriptor | length -%}
+  ,"platformTypeDescriptor": "{{assessmentNamespace}}/PlatformTypeDescriptor#{{platformTypeDescriptor}}"
+  {%- endif -%}
+  
+  {%- if accommodationsFlag == "true" and accommodationDescriptorUri is not none and accommodationDescriptorUri | length > 0 %}
+,"accommodations": [
+  {
+    "accommodationDescriptor": "{{accommodationDescriptorUri}}"
+  }
+]
+{%- endif %}
+
+  
+ {%- if Performance_CodeValue is not none and Performance_CodeValue | length -%}
+  ,"performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{Performance_ReportingMethod}}",
+        "performanceLevelDescriptor": "{{Performance_Namespace}}#{{Performance_CodeValue}}",
+        "performanceLevelMet": true
+      } 
+  ]
+  {%- endif -%}
+  {%- if score_map | length > 0 -%}
+,"studentObjectiveAssessments": [
+  {%- set ns = namespace(first=true) -%}
+  {%- for domain, score_list in score_map.items() %}
+    {%- set ns.valid_scores = [] %}
+    {%- for score in score_list %}
+      {%- if score[0] != None and score[0] | string != 'None' and score[0] | string != 'none' and score[0] | string | trim != '' %}
+        {%- set ns.valid_scores = ns.valid_scores + [score] %}
+      {%- endif %}
+    {%- endfor %}
+    {%- if ns.valid_scores | length > 0 %}
+      {%- if not ns.first %},{% endif -%}
+      {%- set ns.first = false %}
+      {
+        "objectiveAssessmentReference": {
+          "assessmentIdentifier": "{{assessmentIdentifier}}",
+          "identificationCode": "{{domain}}",
+          "namespace": "{{assessmentNamespace}}"
+        },
+        "scoreResults": [
+          {%- for score in ns.valid_scores %}
+          {
+            "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+            "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+            "result": "{{score[0]}}"
+          }{% if not loop.last %},{% endif %}
+          {%- endfor %}
+        ]
+      }
+    {%- endif %}
+  {%- endfor %}
+]
+{%- endif %}
+
+}
