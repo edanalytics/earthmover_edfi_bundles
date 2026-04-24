@@ -1,0 +1,20 @@
+{
+  "identificationCode": "{{identificationCode}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "description": "{{description}}",
+  {% if parentIdentificationCode | length %}
+  "parentObjectiveAssessmentReference":{
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}",
+    "identificationCode": "{{parentIdentificationCode}}"
+  },
+  {% endif %}
+  "academicSubjectDescriptor": "{{academicSubjectDescriptor}}",
+  {% if identificationCode in ('ComprehensionQuestion', 'ComprehensionRecall') %}
+  "performanceLevels": [{{performance_level_json}}],
+  {% endif %}
+  "scores": [{{score_json}}]
+}

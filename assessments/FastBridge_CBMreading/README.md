@@ -1,0 +1,56 @@
+## FastBridge CBMreading and CBMcomp
+
+* **Title:** FastBridge CBMreading and CBMcomp
+* **Description**: This template maps FastBridge CBMreading assessment results. This covers the comprehensive screening version of the assessment, not the progress monitoring version. CBMcomp subscores can also be mapped if the optional 'Comprehension - Question' and/or 'Comprehension - Recall' files are provided. 
+* **API version**: 5.3
+* **Submitter name**: Samantha LeBlanc
+* **Submitter organization**: Education Analytics
+
+To run this bundle, please add your own source file(s) and column(s):
+<details>
+<summary><code>data/fastbridge_cbmreading.csv</code></summary>
+This template will only work with the vendor-provided FastBridge CBMreading screening results file.
+</details>
+<details>
+<summary>(optional)<code>data/fastbridge_comprehension_question.csv</code></summary>
+Option to provide a Comprehension - Question screening results file for the same school year.
+</details>
+<details>
+<summary>(optional)<code>data/fastbridge_comprehension_recall.csv</code></summary>
+Option to provide a Comprehension - Recall screening results file for the same school year.
+</details>
+
+Or use the sample files provided.
+
+## CLI Parameters
+- OUTPUT_DIR: Where output files will be written
+- STATE_FILE: Where to store the earthmover runs.csv file
+- INPUT_FILE: The path to the FastBridge CBMreading .csv file you want to transform
+- INPUT_FILE_COMP_QUESTION: (optional) The path to the Comprehension - Question .csv file
+- INPUT_FILE_COMP_RECALL: (optional) The path to the Comprehension - Recall .csv file
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
+- API_YEAR: The school year associated with the results file
+
+### Examples
+Running earthmover:
+```bash
+earthmover run -c ./earthmover.yaml -p '{
+"OUTPUT_DIR": "output/" ,
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_file_fastbridge_cbmreading.csv",
+"INPUT_FILE_COMP_QUESTION": "data/sample_anonymized_file_fastbridge_comprehension_question.csv",
+"INPUT_FILE_COMP_RECALL": "data/sample_anonymized_file_fastbridge_comprehension_recall.csv",
+"STUDENT_ID_NAME": "Local ID",
+"API_YEAR": "2023"
+}'
+```
+
+Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
+```bash
+lightbeam validate+send -c ./lightbeam.yaml -p '{
+"DATA_DIR": "./output/",
+"EDFI_API_BASE_URL": "yourURL",
+"EDFI_API_CLIENT_ID": "yourID",
+"EDFI_API_CLIENT_SECRET": "yourSecret",
+"API_YEAR": yourAPIYear }'
+```
