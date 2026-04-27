@@ -258,15 +258,6 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $sources.gradeLevelDescriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: rename_columns
-        columns:
-          edfi_descriptor: gradeLevelDescriptor
       - operation: add_columns
         columns:
           SchoolYear: "{% raw %}{{School_Year|int}}{% endraw %}"
@@ -298,7 +289,6 @@ transformations:
           - administrationDate
           - SchoolYear
           - namespace
-          - gradeLevelDescriptor
           - OverallScore
           - OverallSem
           - PerformanceLevelDescriptor
