@@ -56,6 +56,8 @@ transformations:
           "social_studies_reporting_category_2_scores": social_studies_reporting_category_2_raw_score
           "social_studies_reporting_category_3_scores": social_studies_reporting_category_3_raw_score
           "social_studies_reporting_category_4_scores": social_studies_reporting_category_4_raw_score
+          {% endif %}
+          {% if ${API_YEAR} < 2026 %}
           "science_reporting_category_1_scores": science_reporting_category_1_raw_score
           "science_reporting_category_2_scores": science_reporting_category_2_raw_score
           "science_reporting_category_3_scores": science_reporting_category_3_raw_score
