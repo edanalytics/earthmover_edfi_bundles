@@ -16,43 +16,12 @@ config:
     API_YEAR: 2025
 
 sources:
-  #[CBMMATH Automaticity-PM]
-  #[CBMmath CAP-PM]
-  #[CBMR-English-PM]
-  #[Comprehension Efficiency-PM]
-  #[Early Math-PM]
-  #[Early Reading English-PM]
   input:
     file: ${INPUT_FILE} # Path to the input CSV file
-    header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
-    header_rows: 1
-  assessmentCategoryDescriptors:
-    file: ./seeds/assessmentCategoryDescriptors.csv
-    header_rows: 1
-  assessmentPeriodDescriptors:
-    file: ./seeds/assessmentPeriodDescriptors.csv
-    header_rows: 1
-  assessmentReportingMethodDescriptors:
-    file: ./seeds/assessmentReportingMethodDescriptors.csv
-    header_rows: 1
-  assessments:
-    file: ./seeds/assessments.csv
     header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
-  objectiveAssessments:
-    file: ./seeds/objectiveAssessments.csv
-    header_rows: 1
-  objectiveAssessmentScores:
-    file: ./seeds/objectiveAssessmentScores.csv
-    header_rows: 1
-  performanceLevelDescriptors:
-    file: ./seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-
 
 transformations:
   input:
