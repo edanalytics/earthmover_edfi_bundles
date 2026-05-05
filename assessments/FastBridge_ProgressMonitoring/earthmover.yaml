@@ -107,9 +107,142 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
+# Generate scores JSON for objective assessments
+  objective_assessment_scores:
+    source: $sources.objectiveAssessmentScores
+    operations:
+      - operation: add_columns
+        columns:
+          score_json: >
+            {%raw-%}
+            {
+              "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{scoreType}}",
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{resultDatatype}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{score_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate by identificationCode:
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns:
+          score_json: agg(score_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessment_category_descriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          assessmentCategoryDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - assessmentCategoryDescriptor
+
+  # Prepare assessments with proper structure
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessment_period_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
+      - operation: join
+        sources:
+          - $transformations.assessment_category_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Prepare objective assessments
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.performance_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.objective_assessment_scores
+        join_type: inner
+        left_key: identificationCode
+        right_key: identificationCode
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+         edfi_descriptor: academicSubjectDescriptor
+
+
 destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
   studentAssessments:
     source: $transformations.cleaned_input
     template: ./templates/studentAssessments.jsont
     extension: jsonl
-  
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessmentPeriodDescriptors:
+    source: $sources.assessmentPeriodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
