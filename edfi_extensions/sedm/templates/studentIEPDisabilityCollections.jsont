@@ -7,13 +7,13 @@
     {%- endif -%}
     {%- if secondary_disability is not none and secondary_disability | length -%}
             {%- set _ = disabilities.append({
-        "disability_descriptor":primary_disability,
+        "disability_descriptor":secondary_disability,
         "order_of_disability":2
         }) -%}
     {%- endif -%}
     {%- if third_disability is not none and third_disability | length -%}
       {%- set _ = disabilities.append({
-        "disability_descriptor":primary_disability,
+        "disability_descriptor":third_disability,
         "order_of_disability":3
         }) -%}
     {%- endif -%}
