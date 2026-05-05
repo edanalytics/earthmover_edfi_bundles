@@ -13,7 +13,7 @@ Or use the sample file (`data/sample_ipeds_file.csv`).
 ### Required
 - OUTPUT_DIR: Where the output files will be written
 - STATE_FILE: Where to store the earthmover runs.csv file
-- INPUT_FILE: The MVPA assessment results file to be mapped
+- INPUT_FILE: The IPEDS directory file to be mapped
 
 ### Examples
 
