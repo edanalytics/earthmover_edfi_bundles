@@ -66,6 +66,9 @@ transformations:
           - event_end_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
+      - operation: filter_rows
+        query: primary_disability != ''
+        behavior: include
 
 destinations:
   ideaEvents:
