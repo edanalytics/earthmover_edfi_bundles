@@ -1,0 +1,107 @@
+{%- set possible_scores = [
+  [qualifyingDimension, "Qualifying Dimension", "Level"],
+  [qualifyingDimensionTestName, "Qualifying Dimension Test Name", "Level"],
+  [qualifyingTotalPercentile, "Qualifying Total Percentile", "Percentile"],
+  [qualifyingQuantitativePercentile, "Qualifying Quantitative Percentile", "Percentile"],
+  [qualifyingVerbalPercentile, "Qualifying Verbal Percentile", "Percentile"],
+  [qualifyingNonVerbalPercentile, "Qualifying Non-Verbal Percentile", "Percentile"],
+  [readingScore, "Reading Score", "Integer"],
+  [mathScore, "Math Score", "Integer"],
+  [qualifyingDimensionGradeLevel, "Qualifying Dimension GradeLevel", "Level"],
+  [qualifyingDimensionTestAdminDate, "Qualifying Dimension Test Administration Date", "Level"],
+] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = [
+  [starQualifier, "Performance Level", "Level"],
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_obj_assess = [
+    ['Verbal', [('Rubric Score', 'Integer', verbalScore), ('No Score', 'Level', noVerbalScoreReason)]],
+    ['Non-Verbal', [('Rubric Score', 'Integer', nonVerbalScore), ('No Score', 'Level', noNonVerbalScoreReason)]],
+  ] -%}
+
+{%- set all_obj_assessment = [] -%}
+  {%- for obj in possible_obj_assess -%}
+    {%- if obj[1] is not none and obj[1] | length -%}
+      {%- set _= all_obj_assessment.append(obj) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{assessmentNamespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear|int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId|trim}}"
+  }
+  ,"administrationDate": "{{administrationDate}}"
+  {%- if whenAssessedGradeLevelDescriptor is not none and whenAssessedGradeLevelDescriptor | length and whenAssessedGradeLevelDescriptor!= 'nan' -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
+  {%- endif -%}
+  
+  {%- if scores -%}
+  ,"scoreResults": [
+	{%- for score in scores -%}
+    {
+		"assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+		"resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+		"result": "{{score[0]}}"
+	} {% if not loop.last %},{% endif %}
+	{% endfor %}
+  ] {% endif %}
+
+	{%- if perf_levels -%}
+  , "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{assessmentNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "performanceLevelMet": true
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+
+  {%- if all_obj_assessment -%}
+  ,"studentObjectiveAssessments": [
+	{%- for obj in all_obj_assessment -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{obj[0]}}",
+        "namespace": "{{assessmentNamespace}}"
+      },
+
+    "scoreResults": [
+    {%- for score in obj[1] if score[2] is not none and score[2] | length -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{assessmentNamespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[2]}}"
+      } {% if not loop.last %},{% endif %}
+    {%- endfor %}
+	 ] 
+      } {% if not loop.last %},{% endif %}
+  	  {% endfor %}
+	] 
+	{%- endif -%}	
+}
