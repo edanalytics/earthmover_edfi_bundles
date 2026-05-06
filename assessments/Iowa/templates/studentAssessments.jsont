@@ -374,9 +374,8 @@
         {% endif %}
     {% endfor %}
   ]
-  {% if valid_composite_scores or valid_scores %}
 ,"scoreResults": [
-  {%- set comma = joiner(",") -%}
+  {% if valid_composite_scores or valid_scores %}
   {% set all_scores = valid_composite_scores + valid_scores %}
   {% for item in all_scores %}
   {
@@ -385,6 +384,12 @@
     "result": "{{ item.result }}"
   }{% if not loop.last %},{% endif %}
   {% endfor %}
+  {% else %}
+  {
+    "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#No Score",
+    "resultDatatypeTypeDescriptor": "{{ descriptor_namespace_override }}/ResultDatatypeTypeDescriptor#Level",
+    "result": "No Score"
+  }
+  {% endif %}
 ]
-{% endif %}  
 }

@@ -41,7 +41,7 @@ sources:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ./seeds/gradeMappings.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
 transformations:
@@ -52,25 +52,23 @@ transformations:
   cleaned_input:
     source: $transformations.input
     operations:
-      # Filter only required columns
       - operation: rename_columns
         columns:
           "District Code": "District_Code"
-          "Building Code": "Building_Code"
           "Class Grade": "Class_Grade"
           "Date Tested": "Date_Tested"
           "Student ID": "Student_Id"
           "Secondary Student ID": "Secondary_Student_Id"
           "Norm Year": "Norm_Year"
-          "Completion Criteria (CC)": "Completion_Criteria"
-          "Number Attempted (NA)": "Number_Attempted"          
-          "Raw Score (RS)": "Raw_Score"
-          "Grade Equivalent (GE)": "Grade_Equivalent"
-          "National Curve Equivalent (NCE)": "National_Curve_Equivalent"
-          "Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct": "Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct"
-      # Simplify column names
       - operation: add_columns
         columns:
+          Building_Code: "{% raw -%}{{ __row_data__.get('Building Code') or ''}}{%- endraw %}"
+          Completion_Criteria: "{% raw -%}{{ __row_data__.get('Completion Criteria (CC)') or ''}}{%- endraw %}"
+          Number_Attempted: "{% raw -%}{{ __row_data__.get('Number Attempted (NA)') or ''}}{%- endraw %}"
+          Raw_Score: "{% raw -%}{{ __row_data__.get('Raw Score (RS)') or ''}}{%- endraw %}"
+          Grade_Equivalent: "{% raw -%}{{ __row_data__.get('Grade Equivalent (GE)') or ''}}{%- endraw %}"
+          National_Curve_Equivalent: "{% raw -%}{{ __row_data__.get('National Curve Equivalent (NCE)') or ''}}{%- endraw %}"
+          Iowa_Skill_Domain_and_Cognitive_Difficulty_Levels_Percent_Correct: "{% raw -%}{{ __row_data__.get('Iowa Skill Domain and Cognitive Difficulty Levels Percent Correct') or ''}}{%- endraw %}"
           Standard_Score: "{% raw -%}{{ __row_data__.get('Standard Score (SS)') or ''}}{%- endraw %}"
           National_Percentile_Rank: "{% raw -%}{{ __row_data__.get('National Percentile Rank (NPR)') or ''}}{%- endraw %}"
           National_Stanine: "{% raw -%}{{ __row_data__.get('National Stanine (NS)') or ''}}{%- endraw %}"
@@ -128,11 +126,11 @@ transformations:
         right_key: from
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ to if to else Class_Grade }}{%endraw%}"
+          Class_Grade: "{%raw%}{{ edfi_descriptor if edfi_descriptor else Class_Grade }}{%endraw%}"
       - operation: drop_columns
         columns:
           - from
-          - to
+          - edfi_descriptor
       - operation: map_values
         column: Semester
         mapping:
@@ -159,7 +157,7 @@ transformations:
           joinKey: "Key"
       - operation: rename_columns
         columns:
-          to: Grade_Descriptor
+          edfi_descriptor: Grade_Descriptor
 
   reporting_methods_base:
     source: $sources.assessmentReportingMethodDescriptors
