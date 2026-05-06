@@ -43,7 +43,7 @@ transformations:
         behavior: exclude
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           school_year: ${API_YEAR}
@@ -51,10 +51,11 @@ transformations:
         columns:
           - administration_date
           - student_unique_id
-          # 2 PM tests on same date?
           - assessment
         new_column: studentAssessmentIdentifier
         separator: '-'
+      # operation: debug
+      #  to_file: /home/raguilar/code/sandbox/wdl/fastbridgepm/debug_combine.csv
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -69,10 +70,7 @@ transformations:
         left_key: grade
         right_key: original_grade
         right_keep_columns:
-        - edfi_descriptor
-      - operation: rename_columns
-        columns:
-         edfi_descriptor: gradeLevelDescriptor
+        - gradeLevelDescriptor
       - operation: modify_columns
         columns:
           gradeLevelDescriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
@@ -80,6 +78,18 @@ transformations:
       - operation: filter_rows
         query: "student_unique_id	 != ''"
         behavior: include
+      - operation: add_columns
+        columns:
+          score_dict: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
+      - operation: pivot
+        cols_by: score_metric
+        rows_by: 
+          - student_unique_id
+          - studentAssessmentIdentifier
+        values: score
+      - operation: debug
+        rows: 10
+        to_file: /home/raguilar/code/sandbox/wdl/fastbridgepm/debug_pivot.csv
 
 # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -108,9 +118,10 @@ transformations:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
 # Generate scores JSON for objective assessments
-  objective_assessment_scores:
-    source: $sources.objectiveAssessmentScores
+  assessment_scores:
+    source: $transformations.cleaned_input
     operations:
+      - operation: 
       - operation: add_columns
         columns:
           score_json: >
