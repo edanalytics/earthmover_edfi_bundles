@@ -41,6 +41,10 @@ transformations:
       - operation: filter_rows
         query: administration_date == ''
         behavior: exclude
+      - operation: map_values
+        columns: 
+          - assessment
+        map_file: ./seeds/assessment_mapping.csv
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
@@ -85,6 +89,7 @@ transformations:
         cols_by: score_metric
         rows_by: 
           - student_unique_id
+          - assessmentIdentifier
           - studentAssessmentIdentifier
         values: score
       - operation: debug
@@ -117,11 +122,10 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-# Generate scores JSON for objective assessments
+  # Generate scores JSON for  assessments
   assessment_scores:
-    source: $transformations.cleaned_input
+    source: $sources.assessmentScores
     operations:
-      - operation: 
       - operation: add_columns
         columns:
           score_json: >
