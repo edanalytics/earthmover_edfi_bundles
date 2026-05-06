@@ -24,7 +24,7 @@
     "studentIEPAssociationID": "{{student_iep_association_id}}",
     "educationOrganizationId":{{lea_code}},
     "iepFinalizedDate":"{{event_end_date}}",
-    "studentUniqueId":"{{student_unique_id}}"
+    "studentUniqueId":"{{state_code}}"
   },
   "disabilities": [
     {%- for disability in disabilities -%}

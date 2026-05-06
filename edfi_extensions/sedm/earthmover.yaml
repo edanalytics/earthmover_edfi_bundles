@@ -63,7 +63,7 @@ transformations:
       - operation: debug
       - operation: date_format
         columns: 
-          - event_end_date
+          - event_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
       - operation: filter_rows
