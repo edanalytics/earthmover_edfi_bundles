@@ -58,8 +58,6 @@ transformations:
           - assessment
         new_column: studentAssessmentIdentifier
         separator: '-'
-      # operation: debug
-      #  to_file: /home/raguilar/code/sandbox/wdl/fastbridgepm/debug_combine.csv
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -200,42 +198,18 @@ transformations:
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
-
-  # Prepare objective assessments
-  objective_assessments:
-    source: $sources.objectiveAssessments
-    operations:
       - operation: join
         sources:
-          - $transformations.performance_level_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $transformations.objective_assessment_scores
+          - $transformations.assessment_scores
         join_type: inner
         left_key: identificationCode
         right_key: identificationCode
-      - operation: join
-        sources:
-          - $sources.academicSubjectDescriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: rename_columns
-        columns:
-         edfi_descriptor: academicSubjectDescriptor
 
 
 destinations:
   assessments:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
-    extension: jsonl
-  objectiveAssessments:
-    source: $transformations.objective_assessments
-    template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
     source: $transformations.cleaned_input
