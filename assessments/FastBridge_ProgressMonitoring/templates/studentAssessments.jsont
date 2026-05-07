@@ -1,0 +1,107 @@
+{%- set possible_scores = [
+  [comp_eff_sentences_rpm,"CompEff Sentences RPM","Decimal"],
+  [comp_eff_wrpm,"CompEff WRPM","Decimal"],
+  [detailed_comp_ic_per_minute,"Detailed Comp IC per minute","Decimal"],
+  [detailed_comp_items_correct,"Detailed Comp Items Correct","Integer"],
+  [detailed_comp_total_items,"Detailed Comp Total Items","Integer"],
+  [ic_per_minute,"IC per minute","Decimal"],
+  [items_attempted,"Items Attempted","Integer"],
+  [items_correct,"Items Correct","Integer"],
+  [items_correct_per_10_minutes,"Items Correct Per 10 minutes","Decimal"],
+  [recall_comp_scale,"Recall Comp Scale","Integer"],
+  [synthesis_comp_ic_per_minute,"Synthesis Comp IC per minute","Decimal"],
+  [synthesis_comp_items_correct,"Synthesis Comp Items Correct","Integer"],
+  [synthesis_comp_total_items,"Synthesis Comp Total Items","Integer"],
+  [text_ic_per_minute,"Text IC Per Minute","Decimal"],
+  [text_accuracy,"Text accuracy","Percentile"],
+  [text_and_text_text_accuracy,"Text and text text Accuracy","Percentile"],
+  [text_and_text_text_ic_per_minute,"Text and text text IC Per Minute","Decimal"],
+  [text_and_text_text_correct,"Text and text text correct","Integer"],
+  [text_and_text_text_total,"Text and text text total","Integer"],
+  [text_correct,"Text correct","Integer"],
+  [text_know_ic_per_minute,"Text know IC Per Minute","Decimal"],
+  [text_know_accuracy,"Text know accuracy","Percentile"],
+  [text_know_correct,"Text know correct","Integer"],
+  [text_know_total,"Text know total","Integer"],
+  [text_text_ic_per_minute,"Text text IC Per Minute","Decimal"],
+  [text_text_accuracy,"Text text accuracy","Percentile"],
+  [text_text_correct,"Text text correct","Integer"],
+  [text_text_total,"Text text total","Integer"],
+  [text_total,"Text total","Integer"],
+  [total_accuracy,"Total Accuracy","Percentile"],
+  [total_items,"Total Items","Integer"],
+  [total_words,"Total Words","Integer"],
+  [total_words_read,"Total Words Read","Integer"],
+  [wrc_per_minute,"WRC per minute","Integer"],
+  [words_read_correct,"Words Read Correct","Integer"]
+] -%}
+
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length and score[0] != 'N/A*' -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+  
+  {
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "schoolYearTypeReference": {
+      "schoolYear": {{school_year}}
+    },
+    "studentReference": {
+      "studentUniqueId": "{{student_unique_id|int}}"
+    },
+    "administrationDate": "{{administration_date}}",
+    {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
+    ,"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+    {%- endif -%}
+  
+    {%- if scores -%}
+    , "scoreResults": [
+      {% for score in scores %}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+          "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+          "result": "{{score[0]}}"
+        } {% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+    {%- endif -%}
+  
+    {%- if filtered_obj_assessments -%}
+    , "studentObjectiveAssessments": [
+      {%- for obj in filtered_obj_assessments -%}
+        {
+          "objectiveAssessmentReference": {
+            "assessmentIdentifier": "{{assessmentIdentifier}}",
+            "identificationCode": "{{obj[0]}}",
+            "namespace": "{{namespace}}"
+          },
+          "scoreResults": [
+            {%- for score in obj[2] -%}
+              {
+                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+                "result": "{{score[2]}}"
+              }{% if not loop.last %},{% endif %}
+            {%- endfor -%}
+          ]
+          {%- if obj[1] is not none and obj[1] | length -%}
+          , "performanceLevels": [
+            {
+              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
+              "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[1]}}",
+              "performanceLevelMet": true
+            }
+          ]
+          {%- endif -%}
+        }{% if not loop.last %},{% endif %}
+      {%- endfor -%}
+    ]
+    {%- endif -%}
+  }
