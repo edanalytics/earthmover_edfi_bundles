@@ -178,12 +178,6 @@ transformations:
         right_key: assessmentIdentifier
       - operation: join
         sources:
-          - $transformations.assessment_period_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
           - $sources.academicSubjectDescriptors
         join_type: inner
         left_key: assessmentIdentifier
@@ -224,16 +218,6 @@ destinations:
     linearize: True
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
-  assessmentPeriodDescriptors:
-    source: $sources.assessmentPeriodDescriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
-    linearize: True
-  performanceLevelDescriptors:
-    source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
