@@ -14,6 +14,24 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    optional_fields:
+      - schoolid
+      - qdim
+      - qdimname
+      - qdimt
+      - qdimvr
+      - qdimnvm
+      - qdimq
+      - qdimg
+      - qdimdate
+      - vnoscore
+      - nvnoscore
+      - vtotal
+      - nvtotal
+      - qualify
+      - totalv
+      - totalnv
+      - stargrade
 
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
@@ -45,12 +63,11 @@ transformations:
   stage_student_assessments:
     source: $transformations.input
     operations:
-      - operation: keep_columns      
+      - operation: keep_columns
         columns:
           - testadmin
           - schoolid
           - stateid
-          - psid
           - grade
           - qdim
           - qdimname
