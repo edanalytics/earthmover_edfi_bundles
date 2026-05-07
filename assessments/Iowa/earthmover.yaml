@@ -43,6 +43,9 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -397,6 +400,15 @@ transformations:
         columns:
           join_key: "1"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
       
   assessments:
     source: $transformations.assessments_source_modified
