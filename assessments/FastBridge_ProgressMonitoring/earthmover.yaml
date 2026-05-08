@@ -22,6 +22,15 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentScores:
+    file: ./seeds/assessmentScores.csv
+    header_rows: 1
 
 transformations:
   input:
@@ -34,6 +43,15 @@ transformations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
+      - operation: snake_case_columns
+      - operation: pivot
+        cols_by: score_metric
+        rows_by: 
+          - student_unique_id
+          - assessment
+          - assessment_date
+          - grade
+        values: score
       - operation: snake_case_columns
       - operation: duplicate_columns
         columns:
@@ -80,20 +98,6 @@ transformations:
       - operation: filter_rows
         query: "student_unique_id	 != ''"
         behavior: include
-      - operation: add_columns
-        columns:
-          score_dict: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
-      - operation: pivot
-        cols_by: score_metric
-        rows_by: 
-          - student_unique_id
-          - assessmentIdentifier
-          - studentAssessmentIdentifier
-        values: score
-      - operation: snake_case_columns
-      - operation: debug
-        rows: 10
-        to_file: /home/raguilar/code/sandbox/wdl/fastbridgepm/debug_pivot.csv
 
 # Generate grade level JSON for assessments
   grade_level_descriptors:
@@ -167,12 +171,6 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
-      - operation: join
-        sources:
-          - $transformations.performance_level_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
