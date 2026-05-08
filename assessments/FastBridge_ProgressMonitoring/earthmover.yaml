@@ -19,6 +19,9 @@ sources:
   input:
     file: ${INPUT_FILE} # Path to the input CSV file
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
