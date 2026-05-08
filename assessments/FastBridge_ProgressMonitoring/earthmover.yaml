@@ -19,20 +19,23 @@ sources:
   input:
     file: ${INPUT_FILE} # Path to the input CSV file
     header_rows: 1
-  academicSubjectDescriptors:
-    file: ./seeds/academicSubjectDescriptors.csv
-    header_rows: 1
-  gradeLevelDescriptors:
-    file: ./seeds/gradeLevelDescriptors.csv
+  assessments:
+    file: ./seeds/assessments.csv
     header_rows: 1
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
-  assessments:
-    file: ./seeds/assessments.csv
-    header_rows: 1
   assessmentScores:
     file: ./seeds/assessmentScores.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
 
 transformations:
@@ -86,14 +89,13 @@ transformations:
         column: administration_date
         from_format: "%m/%d/%Y"
         to_format: "%Y-%m-%d"
-      - operation: join
-        sources:
-          - $sources.gradeLevelDescriptors
-        join_type: left
-        left_key: grade
-        right_key: original_grade
-        right_keep_columns:
-        - gradeLevelDescriptor
+      - operation: map_values
+        columns: 
+          - grade
+        map_file: ./seeds/grade_level_mapping.csv
+      - operation: duplicate_columns
+        columns:
+          grade: gradeLevelDescriptor
       - operation: modify_columns
         columns:
           gradeLevelDescriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
@@ -133,7 +135,6 @@ transformations:
     source: $sources.assessmentScores
     operations:
       - operation: add_columns
-        assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
         columns:
           score_json: >
             {%raw-%}
@@ -199,8 +200,8 @@ transformations:
         sources:
           - $transformations.assessment_scores
         join_type: inner
-        left_key: identificationCode
-        right_key: identificationCode
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
 
 
 destinations:
