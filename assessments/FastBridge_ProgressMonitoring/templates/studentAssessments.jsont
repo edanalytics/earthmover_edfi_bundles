@@ -56,7 +56,7 @@
     "studentReference": {
       "studentUniqueId": "{{student_unique_id|int}}"
     },
-    "administrationDate": "{{administration_date}}",
+    "administrationDate": "{{administration_date}}"
     {%- if gradeLevelDescriptor is not none and gradeLevelDescriptor | length -%}
     ,"whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}"
     {%- endif -%}
@@ -70,38 +70,6 @@
           "result": "{{score[0]}}"
         } {% if not loop.last %},{% endif %}
       {% endfor %}
-    ]
-    {%- endif -%}
-  
-    {%- if filtered_obj_assessments -%}
-    , "studentObjectiveAssessments": [
-      {%- for obj in filtered_obj_assessments -%}
-        {
-          "objectiveAssessmentReference": {
-            "assessmentIdentifier": "{{assessmentIdentifier}}",
-            "identificationCode": "{{obj[0]}}",
-            "namespace": "{{namespace}}"
-          },
-          "scoreResults": [
-            {%- for score in obj[2] -%}
-              {
-                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
-                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
-                "result": "{{score[2]}}"
-              }{% if not loop.last %},{% endif %}
-            {%- endfor -%}
-          ]
-          {%- if obj[1] is not none and obj[1] | length -%}
-          , "performanceLevels": [
-            {
-              "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Risk Level",
-              "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[1]}}",
-              "performanceLevelMet": true
-            }
-          ]
-          {%- endif -%}
-        }{% if not loop.last %},{% endif %}
-      {%- endfor -%}
     ]
     {%- endif -%}
   }
