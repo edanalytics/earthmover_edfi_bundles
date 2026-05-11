@@ -1,19 +1,24 @@
+## myIGDIs
+
 * **Title**: myIGDIs Assessment Bundle - API 3.X
 * **Description**: This template includes the myIGDIs assessments, designed to measure individual growth and development indicators across various domains.
 * **API version**: 7.1
 * **Submitter name**: Bruk Woldearegay
 * **Submitter organization**: CrocusLLC
 
-To run this bundle, please add your own source file `data/myIGDIs_Data_File.csv`
+To run this bundle, please add your own source file(s) and column(s):
+<details>
+This template works with vendor layout file structure. See the sample anonymized file.
+</details>
 
-This bundle works with myIGDIs files in the format provided by the assessment vendor. 
-## CLI Parameters
+Sample file: `data/sample_anonymized_file.csv`
+
+### CLI Parameters
 
 ### Required
-
 - **OUTPUT_DIR**: Where output files will be written
 - **INPUT_FILE**: The assessment file to be mapped
-- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `Student Id`) when the bundle is run directly. Otherwise, leave the default value `edFi_studentUniqueID`
+- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Default column is the `edFi_studentUniqueID` from the student ID crosswalk package.
 - **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student ID columns in the assessment file (e.g., `Student Id`)
 
 ### Optional
@@ -22,31 +27,23 @@ This bundle works with myIGDIs files in the format provided by the assessment ve
 
 ### Examples
 
-### Examples
-
-There is a pre executing python function that needs to be run before running earthmover to vertically stack the results. The pre-execution step is created to resolve performance issues when using earthmover: 
-```bash
-python -c'import python_pre_exec.myIGDIS_pre_exec; myIGDIS_pre_exec(input_file="./data/myIGDIs_Score_Export_SAMPLE_data_file.csv", output_file="./data/stacked_format_output.csv")'
-```
-
-Using an ID column from the assessment file and running earthmover on the pre processed file:
-
+Running earthmover:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-  "INPUT_FILE": "path/to/stacked_format_output.csv",
+  "INPUT_FILE": "data/sample_anonymized_file.csv",
   "OUTPUT_DIR": "./output",
-  "STUDENT_ID_NAME": "StudentId"
+  "STUDENT_ID_NAME": "Student Id"
 }'
 ```
 
-Once you have inspected the output JSONL for issues, check the settings in lightbeam.yaml and transmit them to your Ed-Fi API with:
-
+Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with:
 ```bash
 lightbeam validate+send -c ./lightbeam.yaml -p '{
   "DATA_DIR": "./output/",
-  "API_YEAR": "yourAPIYear",
-  "BASE_URL": "yourURL",
-  "EDFI_API_CLIENT_ID": "yourID",
-  "EDFI_API_CLIENT_SECRET": "yourSecret"
+  "STATE_DIR": "./tmp/.lightbeam/",
+  "EDFI_API_BASE_URL": "<yourURL>",
+  "EDFI_API_CLIENT_ID": "<yourID>",
+  "EDFI_API_CLIENT_SECRET": "<yourSecret>",
+  "API_YEAR": "<yourAPIYear>"
 }'
 ```

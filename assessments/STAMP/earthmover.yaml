@@ -335,7 +335,7 @@ transformations:
           school_year_month: "{%raw%}{{StartDate[0:2]}}{%endraw%}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
           assessedMinutes: "{%raw%}{{TestLength.split()[0]}}{%endraw%}"
-          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if grade_edfi_descriptor is not none and grade_edfi_descriptor|length and grade_edfi_descriptor != 'nan'-%} {{grade_edfi_descriptor}}{% endif %}{%endraw%}"
+          whenAssessedGradeLevelDescriptor: "{%raw%}{%- if grade_edfi_descriptor is not none and grade_edfi_descriptor|string|length and grade_edfi_descriptor|string != 'nan'-%} {{grade_edfi_descriptor}}{% endif %}{%endraw%}"
           Reading_Length: "{%raw%}{{ReadingLengthOfTime.split()[0]}}{%endraw%}"
           Writing_Length: "{%raw%}{{WritingLengthOfTime.split()[0]}}{%endraw%}"
           Listening_Length: "{%raw%}{{ListeningLengthOfTime.split()[0]}}{%endraw%}"
