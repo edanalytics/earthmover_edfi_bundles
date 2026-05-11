@@ -93,13 +93,16 @@ columns_list: &columns_list
   - RaceI
   - RaceP
   - RaceW
+  - RemoteTested
   - School
+  - Sex
   - TrueGrade
   - VSchool
 
   # ELA-specific fields
   - ELAGrade
   - ELASS
+  - ELASSW
   - ELAVSS
   - ELALev
   - ELARS10
@@ -113,10 +116,12 @@ columns_list: &columns_list
   - ELALev8
   - ELALev9
   - ELALev11
+  - ELALevW
   - Lex
   - LexLow
   - LexUp
   - LexNPR
+  - TDWScore
 
   - ELAAg
   - ELAAttempt
@@ -126,6 +131,7 @@ columns_list: &columns_list
   - ELAFormType
   - ELALevRead
   - ELAMode
+  - MixedMode
   - ELANPR
   - ELARCWAbs
   - ELARCWGro
@@ -186,6 +192,11 @@ columns_list: &columns_list
   - ELA2ESLAcc3
   - ELA2ESLAcc4
   - ELA2ESLAcc5
+
+  - ELA3FTime
+  - ELA3STime
+  - ELA3TAInitials
+  - ELA3TestDuration
 
   # Math-specific fields
   - MathGrade
