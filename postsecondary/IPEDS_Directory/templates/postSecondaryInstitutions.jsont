@@ -1,4 +1,4 @@
-{% set ipeds_id_codes = [(UNITID, 'IPEDS'), (EIN, 'Federal'),(UEIS, 'DUNS'),(OPEID, 'USDE-OPE')] %}
+{% set ipeds_id_codes = [(UNITID, 'IPEDS'), (EIN, 'Federal'),(UEIS, 'DUNS'),(OPEID, 'USDE - OPE')] %}
 
 {
   "categories": [
@@ -6,7 +6,7 @@
       "educationOrganizationCategoryDescriptor": "{{educationOrganizationCategoryDescriptor}}"
     }
   ],
-  "postSecondaryInstitutionId": 10000{{UNITID}},
+  "postSecondaryInstitutionId": 1000{{UNITID}},
   "addresses": [
     {
       "addressTypeDescriptor": "{{addressTypeDescriptor}}",
@@ -35,14 +35,18 @@
       {% endif %}
     {% endfor %}
   ],
+  {% if GENTELE and GENTELE | length %}
   "institutionTelephones": [
     {
       "institutionTelephoneNumberTypeDescriptor": "{{institutionTelephoneNumberTypeDescriptor}}",
       "telephoneNumber": "{{GENTELE}}"
     }
   ],
+  {% endif %}
   "nameOfInstitution": "{{INSTNM}}",
   "operationalStatusDescriptor": "{{operationalStatusDescriptor}}",
   "postSecondaryInstitutionLevelDescriptor": "{{postSecondaryInstitutionLevelDescriptor}}",
+  {% if IALIAS and IALIAS | length %}
   "shortNameOfInstitution": "{{IALIAS}}"
+  {% endif %}
 }
