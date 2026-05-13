@@ -113,7 +113,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{edfi_descriptor}}"
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -140,7 +140,7 @@ transformations:
             {%raw-%}
             {
               "assessmentReportingMethodDescriptor": "uri://fastbridge.org/assessment/AssessmentReportingMethodDescriptor#{{scoreType}}",
-              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{resultDatatype}}"
+              "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{resultDataType}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -167,6 +167,18 @@ transformations:
         columns:
           - assessmentIdentifier
           - assessmentCategoryDescriptor
+
+  assessment_category_descriptors_grouped:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: group_by
+        group_by_columns:
+          - codeValue
+          - description
+          - namespace
+          - shortDescription
+        create_columns:
+          assessment_category_count: count(codeValue)
 
   # Prepare assessments with proper structure
   assessments:
@@ -214,7 +226,7 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
-    source: $sources.assessmentCategoryDescriptors
+    source: $transformations.assessment_category_descriptors_grouped
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
