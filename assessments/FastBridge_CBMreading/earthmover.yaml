@@ -42,6 +42,8 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    INPUT_FILE_COMP_QUESTION: ''
+    INPUT_FILE_COMP_RECALL: ''
 
 sources:
   input:
@@ -373,6 +375,7 @@ transformations:
   joined_input:
     source: $transformations.cleaned_input
     operations:
+    {% if "${INPUT_FILE_COMP_QUESTION}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_question
@@ -391,6 +394,8 @@ transformations:
           - comprehension_question_percentile_at_lea
           - comprehension_question_percentile_at_nation
           - comprehension_question_risk_level
+      {% endif %}
+      {% if "${INPUT_FILE_COMP_RECALL}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_recall
@@ -412,6 +417,7 @@ transformations:
           - comprehension_recall_percentile_at_lea
           - comprehension_recall_percentile_at_nation
           - comprehension_recall_risk_level
+      {% endif %}
       - operation: map_values
         column: season
         mapping:
