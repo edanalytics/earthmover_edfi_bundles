@@ -4,7 +4,7 @@
       "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
     }
   ],
-  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentIdentifier": "{{assessmentIdentifier[:60]}}",
   "namespace": "{{namespace}}",
   "assessedGradeLevels": [{{grade_json}}],
   "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
