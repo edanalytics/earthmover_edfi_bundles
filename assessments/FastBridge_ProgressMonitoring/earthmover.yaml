@@ -50,6 +50,15 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
+      - operation: group_by
+        group_by_columns:
+          - student_unique_id
+          - assessment
+          - score_metric
+          - assessment_date
+          - grade
+        create_columns:
+          score: max(score)
       - operation: pivot
         cols_by: score_metric
         rows_by: 
