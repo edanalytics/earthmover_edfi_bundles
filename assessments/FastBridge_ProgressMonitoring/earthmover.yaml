@@ -94,10 +94,6 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
-      - operation: date_format
-        column: administration_date
-        from_format: "%m/%d/%Y"
-        to_format: "%Y-%m-%d"
       - operation: map_values
         columns: 
           - grade
