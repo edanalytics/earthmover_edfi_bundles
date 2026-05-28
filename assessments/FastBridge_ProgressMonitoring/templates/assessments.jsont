@@ -1,13 +1,13 @@
 {
+  "assessmentIdentifier": "{{assessmentIdentifier[:60]}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "academicSubjects": [
     {
       "academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
     }
   ],
-  "assessmentIdentifier": "{{assessmentIdentifier[:60]}}",
-  "namespace": "{{namespace}}",
-  "assessedGradeLevels": [{{grade_json}}],
-  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
   "assessmentFamily": "{{assessmentFamily}}",
   "assessmentTitle": "{{assessmentTitle}}",
   "performanceLevels": [{{performance_level_json}}],
