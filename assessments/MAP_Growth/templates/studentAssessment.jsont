@@ -103,16 +103,16 @@
       {%- endfor -%}
 
       {%- set possible_projected_proficiencies = [
-          [ProjectedProficiencyLevel1, ProjectedProficiencyStudy1, 'Level'],
-          [ProjectedProficiencyLevel2, ProjectedProficiencyStudy2, 'Level'],
-          [ProjectedProficiencyLevel3, ProjectedProficiencyStudy3, 'Level'],
-          [ProjectedProficiencyLevel4, ProjectedProficiencyStudy4, 'Level'],
-          [ProjectedProficiencyLevel5, ProjectedProficiencyStudy5, 'Level'],
-          [ProjectedProficiencyLevel6, ProjectedProficiencyStudy6, 'Level'],
-          [ProjectedProficiencyLevel7, ProjectedProficiencyStudy7, 'Level'],
-          [ProjectedProficiencyLevel8, ProjectedProficiencyStudy8, 'Level'],
-          [ProjectedProficiencyLevel9, ProjectedProficiencyStudy9, 'Level'],
-          [ProjectedProficiencyLevel10, ProjectedProficiencyStudy10, 'Level']
+          [ProjectedProficiencyLevel1, 'ProjectedProficiencyLevel1', 'Level'],
+          [ProjectedProficiencyLevel2, 'ProjectedProficiencyLevel2', 'Level'],
+          [ProjectedProficiencyLevel3, 'ProjectedProficiencyLevel3', 'Level'],
+          [ProjectedProficiencyLevel4, 'ProjectedProficiencyLevel4', 'Level'],
+          [ProjectedProficiencyLevel5, 'ProjectedProficiencyLevel5', 'Level'],
+          [ProjectedProficiencyLevel6, 'ProjectedProficiencyLevel6', 'Level'],
+          [ProjectedProficiencyLevel7, 'ProjectedProficiencyLevel7', 'Level'],
+          [ProjectedProficiencyLevel8, 'ProjectedProficiencyLevel8', 'Level'],
+          [ProjectedProficiencyLevel9, 'ProjectedProficiencyLevel9', 'Level'],
+          [ProjectedProficiencyLevel10, 'ProjectedProficiencyLevel10', 'Level']
       ] -%}
       {%- for pp in possible_projected_proficiencies -%}
         {%- if pp[0] is not none and pp[0] | length -%}
