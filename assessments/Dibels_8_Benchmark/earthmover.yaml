@@ -44,6 +44,20 @@ sources:
       - Student Primary ID
       - Primary ID - Student ID (State ID)
       - Secondary Student ID (State ID)
+      - Client Date
+      - Device Date
+      - DIBELS Composite Score - Lexile
+      - Composite Score - Lexile
+      - Reading Comprehension (Maze) - Level
+      - Reading Comprehension (Maze) - Score
+      - Reading Comprehension (Maze) - National Norm Percentile
+      - Reading Comprehension (Maze) - Semester Growth
+      - Reading Comprehension (Maze) - Year Growth
+      - Basic Comprehension (Maze) - Level
+      - Basic Comprehension (Maze) - Score
+      - Basic Comprehension (Maze) - National Norm Percentile
+      - Basic Comprehension (Maze) - Semester Growth
+      - Basic Comprehension (Maze) - Year Growth
 
 transformations:
   input:
@@ -59,6 +73,13 @@ transformations:
       - operation: snake_case_columns
       - operation: modify_columns
         columns:
+          client_date: "{%raw%}{{ device_date if client_date == '' else client_date }}{%endraw%}"
+          dibels_composite_score_lexile: "{%raw%}{{ composite_score_lexile if dibels_composite_score_lexile == '' else dibels_composite_score_lexile }}{%endraw%}"
+          reading_comprehension_maze_level: "{%raw%}{{ basic_comprehension_maze_level if reading_comprehension_maze_level == '' else reading_comprehension_maze_level }}{%endraw%}"
+          reading_comprehension_maze_score: "{%raw%}{{ basic_comprehension_maze_score if reading_comprehension_maze_score == '' else reading_comprehension_maze_score }}{%endraw%}"
+          reading_comprehension_maze_national_norm_percentile: "{%raw%}{{ basic_comprehension_maze_national_norm_percentile if reading_comprehension_maze_national_norm_percentile == '' else reading_comprehension_maze_national_norm_percentile }}{%endraw%}"
+          reading_comprehension_maze_semester_growth: "{%raw%}{{ basic_comprehension_maze_semester_growth if reading_comprehension_maze_semester_growth == '' else reading_comprehension_maze_semester_growth }}{%endraw%}"
+          reading_comprehension_maze_year_growth: "{%raw%}{{ basic_comprehension_maze_year_growth if reading_comprehension_maze_year_growth == '' else reading_comprehension_maze_year_growth }}{%endraw%}"
           enrollment_grade: "{%raw%}{{ enrollment_grade.zfill(2) if enrollment_grade.isdigit() and enrollment_grade|length == 1 else enrollment_grade }}{%endraw%}"
       - operation: join
         sources:
