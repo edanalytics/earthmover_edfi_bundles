@@ -205,13 +205,13 @@ transformations:
           - growth_percentile_by_start_score_from_*_to_*_17
       - operation: melt
         id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
-        drop_empty_values: true
-        keep_empty_value_vars:
-          - fall_early_math_final_date
-          - winter_early_math_final_date
-          - spring_early_math_final_date
-          - screening_period_4_early_math_final_date
-          - screening_period_5_early_math_final_date
+        # drop_empty_values: true
+        # keep_empty_value_vars:
+        #   - fall_early_math_final_date
+        #   - winter_early_math_final_date
+        #   - spring_early_math_final_date
+        #   - screening_period_4_early_math_final_date
+        #   - screening_period_5_early_math_final_date
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
