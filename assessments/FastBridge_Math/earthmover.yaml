@@ -89,16 +89,139 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
+      - operation: drop_columns
+        columns:
+          - state
+          - first_name
+          - last_name
+          - gender
+          - dob
+          - race
+          - special_ed_status
+          - unnamed_*
+          - error*
+          - "*error*"
+          - "*_composing_final_date"
+          - "*_counting_objects_final_date"
+          - "*_decomposing_one_final_date"
+          - "*_decomposing_kg_final_date"
+          - "*_equal_partitioning_final_date"
+          - "*_match_quantity_final_date"
+          - "*_number_sequence_one_final_date"
+          - "*_number_sequence_kg_final_date"
+          - "*_numeral_identification_one_final_date"
+          - "*_numeral_identification_kg_final_date"
+          - "*_place_value_final_date"
+          - "*_quantity_discrimination_least_final_date"
+          - "*_quantity_discrimination_most_final_date"
+          - "*_subitizing_final_date"
+          - "*_verbal_addition_final_date"
+          - "*_verbal_subtraction_final_date"
+          - "*_story_problems_final_date"
+          - growth_score_from_*_to_*_1
+          - growth_score_from_*_to_*_2
+          - growth_score_from_*_to_*_3
+          - growth_score_from_*_to_*_4
+          - growth_score_from_*_to_*_5
+          - growth_score_from_*_to_*_6
+          - growth_score_from_*_to_*_7
+          - growth_score_from_*_to_*_8
+          - growth_score_from_*_to_*_9
+          - growth_score_from_*_to_*_10
+          - growth_score_from_*_to_*_11
+          - growth_score_from_*_to_*_12
+          - growth_score_from_*_to_*_13
+          - growth_score_from_*_to_*_14
+          - growth_score_from_*_to_*_15
+          - growth_score_from_*_to_*_16
+          - growth_score_from_*_to_*_17
+          - school_growth_percentile_from_*_to_*_1
+          - school_growth_percentile_from_*_to_*_2
+          - school_growth_percentile_from_*_to_*_3
+          - school_growth_percentile_from_*_to_*_4
+          - school_growth_percentile_from_*_to_*_5
+          - school_growth_percentile_from_*_to_*_6
+          - school_growth_percentile_from_*_to_*_7
+          - school_growth_percentile_from_*_to_*_8
+          - school_growth_percentile_from_*_to_*_9
+          - school_growth_percentile_from_*_to_*_10
+          - school_growth_percentile_from_*_to_*_11
+          - school_growth_percentile_from_*_to_*_12
+          - school_growth_percentile_from_*_to_*_13
+          - school_growth_percentile_from_*_to_*_14
+          - school_growth_percentile_from_*_to_*_15
+          - school_growth_percentile_from_*_to_*_16
+          - school_growth_percentile_from_*_to_*_17
+          - district_growth_percentile_from_*_to_*_1
+          - district_growth_percentile_from_*_to_*_2
+          - district_growth_percentile_from_*_to_*_3
+          - district_growth_percentile_from_*_to_*_4
+          - district_growth_percentile_from_*_to_*_5
+          - district_growth_percentile_from_*_to_*_6
+          - district_growth_percentile_from_*_to_*_7
+          - district_growth_percentile_from_*_to_*_8
+          - district_growth_percentile_from_*_to_*_9
+          - district_growth_percentile_from_*_to_*_10
+          - district_growth_percentile_from_*_to_*_11
+          - district_growth_percentile_from_*_to_*_12
+          - district_growth_percentile_from_*_to_*_13
+          - district_growth_percentile_from_*_to_*_14
+          - district_growth_percentile_from_*_to_*_15
+          - district_growth_percentile_from_*_to_*_16
+          - district_growth_percentile_from_*_to_*_17
+          - national_growth_percentile_from_*_to_*_1
+          - national_growth_percentile_from_*_to_*_2
+          - national_growth_percentile_from_*_to_*_3
+          - national_growth_percentile_from_*_to_*_4
+          - national_growth_percentile_from_*_to_*_5
+          - national_growth_percentile_from_*_to_*_6
+          - national_growth_percentile_from_*_to_*_7
+          - national_growth_percentile_from_*_to_*_8
+          - national_growth_percentile_from_*_to_*_9
+          - national_growth_percentile_from_*_to_*_10
+          - national_growth_percentile_from_*_to_*_11
+          - national_growth_percentile_from_*_to_*_12
+          - national_growth_percentile_from_*_to_*_13
+          - national_growth_percentile_from_*_to_*_14
+          - national_growth_percentile_from_*_to_*_15
+          - national_growth_percentile_from_*_to_*_16
+          - national_growth_percentile_from_*_to_*_17
+          - growth_percentile_by_start_score_from_*_to_*_1
+          - growth_percentile_by_start_score_from_*_to_*_2
+          - growth_percentile_by_start_score_from_*_to_*_3
+          - growth_percentile_by_start_score_from_*_to_*_4
+          - growth_percentile_by_start_score_from_*_to_*_5
+          - growth_percentile_by_start_score_from_*_to_*_6
+          - growth_percentile_by_start_score_from_*_to_*_7
+          - growth_percentile_by_start_score_from_*_to_*_8
+          - growth_percentile_by_start_score_from_*_to_*_9
+          - growth_percentile_by_start_score_from_*_to_*_10
+          - growth_percentile_by_start_score_from_*_to_*_11
+          - growth_percentile_by_start_score_from_*_to_*_12
+          - growth_percentile_by_start_score_from_*_to_*_13
+          - growth_percentile_by_start_score_from_*_to_*_14
+          - growth_percentile_by_start_score_from_*_to_*_15
+          - growth_percentile_by_start_score_from_*_to_*_16
+          - growth_percentile_by_start_score_from_*_to_*_17
       - operation: melt
         id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+        drop_empty_values: true
+        keep_empty_value_vars:
+          - fall_early_math_final_date
+          - winter_early_math_final_date
+          - spring_early_math_final_date
+          - screening_period_4_early_math_final_date
+          - screening_period_5_early_math_final_date
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
+        query: melt_value == '' and cleaned_variable != 'early_math_final_date'
+        behavior: exclude
+      - operation: filter_rows
         query: season == ''
         behavior: exclude
-      - operation: distinct_rows
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
@@ -153,7 +276,7 @@ transformations:
           gradeLevelDescriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
       # filter out rows with missing student IDs
       - operation: filter_rows
-        query: "student_unique_id	 != ''"
+        query: "student_unique_id  != ''"
         behavior: include
 
 
