@@ -45,8 +45,9 @@
   {% endif %}
   "nameOfInstitution": "{{INSTNM}}",
   "operationalStatusDescriptor": "{{operationalStatusDescriptor}}",
-  "postSecondaryInstitutionLevelDescriptor": "{{postSecondaryInstitutionLevelDescriptor}}",
-  {% if IALIAS and IALIAS | length %}
-  "shortNameOfInstitution": "{{IALIAS}}"
+  "postSecondaryInstitutionLevelDescriptor": "{{postSecondaryInstitutionLevelDescriptor}}"
+  {% if IALIAS and IALIAS | length and IALIAS | length > 1%}
+  ,
+  "shortNameOfInstitution": "{{IALIAS | truncate(75) }}"
   {% endif %}
 }
