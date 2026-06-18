@@ -11,7 +11,7 @@ To run this bundle, please add your own source file(s) and column(s):
 This template works with vendor layout file structure. The pre-execute script transforms the wide CSV format (seasons as columns) into a long format (seasons as rows) suitable for Ed-Fi ingestion. See the sample anonymized file.
 </details>
 
-Sample file: `data/Sample_earlyMath_deidentified.csv`
+Sample file: `data/sample_anonymized_file.csv`
 
 ### CLI Parameters
 
@@ -27,7 +27,7 @@ Sample file: `data/Sample_earlyMath_deidentified.csv`
 Running earthmover: 
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/Sample_earlyMath_deidentified.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "State ID",
 "API_YEAR": "2024"}'
