@@ -1,0 +1,20 @@
+{% set performanceLevel = ['1','2','3'] %}
+
+{
+  "identificationCode": "{{ identificationCode }}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{ assessmentIdentifier }}_{{ SchoolYear }}",
+    "namespace": "{{ namespace }}"
+  },
+  "performanceLevels": [
+    {% set comma = joiner(",") %}
+      {% for performanceKey in performanceLevel %}
+
+        {{ comma() }}
+        {
+            "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lev",
+            "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceKey}}"
+        }
+       {% endfor %} 
+  ]
+}
