@@ -13,112 +13,68 @@
   "administrationDate": "{{Date_Tested}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeDescriptor}}",
   "accommodations": [
-    {% set accs = [] %}
 
-    {% if braile == 'Y' %}
-      {% set _ = accs.append('Braile') %}
-    {% endif %}
+    {%- set possible_accs = [
+      [braile, 'Braile'],
+      [large_print, 'Large Print'],
+      [proctor_led, 'Proctor Led'],
+      [self_paced, 'Self-Paced'],
+      [audio_type, 'Audio Type'],
+      [extended_time, 'Extended Time'],
+      [alt_v, 'Alternative Verbal Reporting']
+    ] -%}
 
-    {% if large_print  == 'Y' %}
-      {% set _ = accs.append('Large Print') %}
-    {% endif %}
+    {%- set accs = [] -%}
+    {%- for acc in possible_accs -%}
+      {%- if acc[0] == 'Y' -%}
+        {%- set _ = accs.append(acc[1]) -%}
+      {%- endif -%}
+    {%- endfor -%}
 
-    {% if proctor_led  == 'Y' %}
-      {% set _ = accs.append('Proctor Led') %}
-    {% endif %}
-
-    {% if self_paced  == 'Y' %}
-      {% set _ = accs.append('Self-Paced') %}
-    {% endif %}
-
-    {% if audio_type  == 'Y' %}
-      {% set _ = accs.append('Audio Type') %}
-    {% endif %}
-
-    {% if extended_time  == 'Y' %}
-      {% set _ = accs.append('Extended Time') %}
-    {% endif %}
-
-    {% if alt_v  == 'Y' %}
-      {% set _ = accs.append('Alternative Verbal Reporting') %}
-    {% endif %}
-
-        {% for acc in accs %}
-    {
-      "accommodationDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AccommodationDescriptor#{{acc}}"
-    } {% if not loop.last %},{% endif %}
+    {% for acc in accs %}
+      {
+        "accommodationDescriptor": "{{namespace}}/AccommodationDescriptor#{{acc}}"
+      } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
   "scoreResults": [
-  {% set scores = [] %}
 
-    {% if Battery is not none and Battery.strip() | length %}
-      {% set _ = scores.append([Battery, 'Battery', 'Level']) %}
-    {% endif %}
+    {%- set possible_scores= [
+      [Battery, 'Battery', 'Level'],
+      [Level, 'Level', 'Level'],
+      [Form, 'Form', 'Level'],
+      [Norm_Year, 'Norm Year', 'Level'],
+      [uss_composite_vqn, 'Universal Scale Score', 'Integer'],
+      [sas_composite_vqn, 'Standard Age Score', 'Integer'],
+      [sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal'],
+      [sas_lower_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal'],
+      [gpr_composite_vqn, 'Grade Percentile Rank', 'Percentile'],
+      [apr_composite_vqn, 'Age Percentile Rank', 'Percentile'],
+      [lpr_composite_vqn, 'Local Percentile Rank', 'Percentile'],
+      [gs_composite_vqn, 'Grade Stanine', 'Level'],
+      [as_composite_vqn, 'Age Stanine', 'Level'],
+      [ls_composite_vqn, 'Local Stanine', 'Level']
+    ]-%}
 
-    {% if Level is not none and Level.strip() | length %}
-      {% set _ = scores.append([Level, 'Level', 'Level']) %}
-    {% endif %}
+    {%- set scores = [] -%}
+    {%- for score in possible_scores %}
+      {%- if score[0] is not none and score[0] | length -%}
+        {%- set _ = scores.append(score) -%}
+      {%- endif -%}
+    {%- endfor -%}
 
-    {% if Form is not none and Form.strip() | length %}
-      {% set _ = scores.append([Form, 'Form', 'Level']) %}
-    {% endif %}
-
-    {% if Norm_Year is not none and Norm_Year.strip() | length %}
-      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
-    {% endif %}
-
-    {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vq.strip() | length %}
-      {% set _ = scores.append([uss_composite_vqn, 'Universal Scale Score', 'Integer']) %}
-    {% endif %}
-
-    {% if sas_composite_vqn is not none and sas_composite_vqn | int >= 0 and sas_composite_vqn.strip() | length %}
-      {% set _ = scores.append([sas_composite_vqn, 'Standard Age Score', 'Integer']) %}
-    {% endif %}
-
-    {% if sas_upper_composite_vqn is not none and sas_upper_composite_vqn | int >= 0 and sas_upper_composite_vqn.strip() | length %}
-      {% set _ = scores.append([sas_upper_composite_vqn, 'Standard Age Score Upper Bound', 'Decimal']) %}
-    {% endif %}
-
-    {% if sas_lower_composite_vqn is not none and sas_lower_composite_vqn | int >= 0 and sas_lower_composite_vqn | length %}
-      {% set _ = scores.append([sas_lower_composite_vqn, 'Standard Age Score Lower Bound', 'Decimal']) %}
-    {% endif %}
-
-    {% if gpr_composite_vqn is not none and gpr_composite_vqn | int >= 0 and gpr_composite_vqn.strip() | length %}
-      {% set _ = scores.append([gpr_composite_vqn, 'Grade Percentile Rank', 'Percentile']) %}
-    {% endif %}
-
-    {% if apr_composite_vqn is not none and apr_composite_vqn | int >= 0 and apr_composite_vqn.strip() | length %}
-      {% set _ = scores.append([apr_composite_vqn, 'Age Percentile Rank', 'Percentile']) %}
-    {% endif %}
-
-    {% if lpr_composite_vqn is not none and lpr_composite_vqn | int >= 0 and lpr_composite_vqn.strip() | length %}
-      {% set _ = scores.append([lpr_composite_vqn, 'Local Percentile Rank', 'Percentile']) %}
-    {% endif %}
-
-    {% if gs_composite_vqn is not none and gs_composite_vqn | int >= 0 and gs_composite_vqn.strip() | length %}
-      {% set _ = scores.append([gs_composite_vqn, 'Grade Stanine', 'Level']) %}
-    {% endif %}
-    
-    {% if as_composite_vqn is not none and as_composite_vqn | int >= 0 and as_composite_vqn.strip() | length %}
-      {% set _ = scores.append([as_composite_vqn, 'Age Stanine', 'Level']) %}
-    {% endif %}
-
-    {% if ls_composite_vqn is not none and ls_composite_vqn | int >= 0 and ls_composite_vqn.strip() | length %}
-      {% set _ = scores.append([ls_composite_vqn, 'Local Stanine', 'Level']) %}
-    {% endif %}
-
-        {% for score in scores %}
+    {% for score in scores %}
     {
-      "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[1]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": "{{score[0]}}"
     } {% if not loop.last %},{% endif %}
     {% endfor %}
   ],
   
   "performanceLevels": [
-    {% set perf_levels = [
+
+    {% set possible_perf_levels = [
       (completed_composite_vqn, 'Completion Criteria Met'),
       (sas_valid_composite_vqn, 'Standard Age Score Valid Flag'),
       (tmo_composite_vqn, 'Too Many Omits Flag'),
@@ -126,12 +82,18 @@
       (chance_composite_vqn, 'Chance Flag'),
       (Ability_Profile, 'Ability Profile') 
     ] %}
-    {#  TODO: make sure ability profile is not nan #}
+
+    {%- set perf_levels = [] -%}
+    {%- for perf_level in possible_perf_levels -%}
+      {%- if perf_level[0] is not none and perf_level[0] | length -%}
+        {%- set _ = perf_levels.append(perf_level) -%}
+      {%- endif -%}
+    {%- endfor -%}
 
     {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{perf_level[0]}}",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}",
         "performanceLevelMet": true
       } {% if not loop.last %},{% endif %}
     {% endfor %}
@@ -303,15 +265,15 @@
           "objectiveAssessmentReference": {
             "assessmentIdentifier": "CogAT",
             "identificationCode": "{{obj_assess[0]}}",
-            "namespace": "uri://www.riversideinsights.com/cognitive_abilities_test"
+            "namespace": {{namespace}}
           },
 
           "performanceLevels": [
             {# guaranteed to be some #}
             {% for pl in obj_assess[1] %}
               {
-                "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{pl[0]}}",
-                "performanceLevelDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/PerformanceLevelDescriptor#{{pl[1]}}",
+                "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl[0]}}",
+                "performanceLevelDescriptor": "{{namespace }}/PerformanceLevelDescriptor#{{pl[1]}}",
                 "performanceLevelMet": true
               }
               {%- if not loop.last -%}
@@ -324,8 +286,8 @@
               {# guaranteed to be some #}
               {%- for score in obj_assess[2] -%}
                 {
-                  "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
-                  "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+                  "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+                  "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
                   "result": "{{score[1]}}"
                 }
                   {%- if not loop.last -%}
