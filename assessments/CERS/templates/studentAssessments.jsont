@@ -1,0 +1,55 @@
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "scoreResults": [
+    {%- set possible_scores = [
+        [ScaleScore, "Scale Score", "Integer"],
+        [ScaleScoreStandardError, "Scale Score Standard Error", "Decimal"]
+    ] -%}
+
+    {%- set scores = [] -%}
+    {%- for score in possible_scores -%}
+      {%- if score[0] is not none and score[0] | length -%}
+        {%- set _ = scores.append(score) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "performanceLevels": [
+    {%- set possible_perf_levels = [
+        [ScaleScoreAchievementLevel, "Scale Score Achievement Level", "Level"]
+    ] -%}
+
+    {%- set perf_levels = [] -%}
+    {%- for perf_level in possible_perf_levels -%}
+      {%- if perf_level[0] is not none and perf_level[0] | length -%}
+        {%- set _ = perf_levels.append(perf_level) -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
