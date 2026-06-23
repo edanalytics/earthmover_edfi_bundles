@@ -1,0 +1,44 @@
+{
+	"assessmentIdentifier": "{{assessmentIdentifier}}",
+	"assessmentTitle": "{{assessmentTitle}}",
+	"namespace": "{{namespace}}",
+	"assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "assessmentFamily": "{{assessmentFamily}}",
+	"assessedGradeLevels":[{{grade_json}}],
+	"academicSubjects": [
+		{
+		"academicSubjectDescriptor": "{{academicSubjectDescriptor}}"
+		}
+	],
+	"scores": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Overall scale score",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Lexile Measure",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		}
+	],
+		{%- set passing_status_perf_desc = ["Did Not Pass", "Pass", "At Risk", "On Track", "Invalidated", "Insufficient to Score", "UND"] -%}
+		{%- set reporting_cat_perf_desc = ["Below", "At/Near", "Above",  "Invalidated", "Insufficient to Score", "UND"] -%}
+
+	"performanceLevels": [
+		{%- for desc in passing_status_perf_desc -%}
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Passing Status",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{desc}}",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		},
+		{%- endfor -%}
+		
+		{%- for desc in reporting_cat_perf_desc -%}
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{desc}}",
+			"resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+		} {%- if not loop.last-%},{%-else-%}{%-endif-%}
+		{%- endfor -%}
+
+	]
+}
