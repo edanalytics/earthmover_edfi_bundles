@@ -1,0 +1,42 @@
+* **Title**:  Developmental Indicators for the Assessment of Learning (DIAL3_4) - API 3.X
+* **Description**: This template includes the DIAL3_4 assessment, designed to identify young children who need further testing or who need help with academic skills. The DIAL3_4 tests a child’s motor skills (skipping, jumping, cutting, writing), conceptual skills (knowledge of colors, counting), and language skills (knowledge of letters and words, ability to solve problems). 
+⚠️ Important: This bundle is specifically configured to work with a custom South Carolina Enrich data structure. It relies on a very specific file format and field layout used in that implementation, and is not broadly applicable to other versions of DIAL3_4 or generic DIAL assessment exports.
+
+* **API version**: 5.3
+* **Submitter name**: Mariela Suárez
+* **Submitter organization**: CrocusLLC
+
+To run this bundle, please add your own source file<code>data/DIAL4_SAMPLE_data_file.csv</code>
+
+## CLI Parameters
+
+### Required
+- **OUTPUT_DIR**: Where output files will be written
+- **INPUT_FILE**: The assessment file to be mapped
+- **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `suns`, `student_number`) when the bundle is run directly. Otherwise leave the default value `edFi_studentUniqueID` 
+- **POSSIBLE_STUDENT_ID_COLUMNS**: This should contain all the possible native student id columns in the assessment file( e.g., `suns`, `student_number`). 
+### Optional
+- **DESCRIPTOR_NAMESPACE**: This should be the default namespace for descriptors such as ResultDatatypeTypeDescriptor. The default value is : uri://ed-fi.org
+
+### Examples
+
+Using an ID column from the assessment file:
+```bash
+earthmover run -c ./earthmover.yaml -p '{
+  "INPUT_FILE": "./data/sample_anonymized_file.csv",
+  "OUTPUT_DIR": "./output",
+  "STUDENT_ID_NAME": "suns"
+}'
+```
+
+Once you have inspected the output JSONL for issues, check the settings in lightbeam.yaml and transmit them to your Ed-Fi API with:
+
+```bash
+lightbeam validate+send -c ./lightbeam.yaml -p '{
+  "DATA_DIR": "./output/",
+  "API_YEAR": "yourAPIYear",
+  "BASE_URL": "yourURL",
+  "EDFI_API_CLIENT_ID": "yourID",
+  "EDFI_API_CLIENT_SECRET": "yourSecret"
+}'
+```
