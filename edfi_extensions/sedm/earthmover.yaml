@@ -24,6 +24,12 @@ sources:
   disability_descriptors:
     file: ./seeds/disability_descriptors.csv
     header_rows: 1
+  iep_status_descriptors:
+    file: ./seeds/iep_status_descriptors.csv
+    header_rows: 1
+  idea_event_descriptors:
+    file: ./seeds/idea_event_descriptors.csv
+    header_rows: 1
 
 
 transformations:
@@ -83,7 +89,15 @@ destinations:
     source: $transformations.student_iep_disability_collections
     template: ./templates/studentIEPDisabilityCollections.jsont
     extension: jsonl
-  disability_descriptors:
+  disabilityDescriptors:
     source: $sources.disability_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  IEPStatusDescriptors:
+    source: $sources.iep_status_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  IDEAEventDescriptors:
+    source: $sources.idea_event_descriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
