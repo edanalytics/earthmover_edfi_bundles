@@ -177,6 +177,9 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level.reportingMethod}}",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level.val}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
       } {% if not loop.last %},{% endif %}
     {% endfor %}
   ]
@@ -207,6 +210,9 @@
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{pl.reportingMethod}}",
         "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{pl.val}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
       }{% if not loop.last %},{% endif %}
       {%- endfor -%}
     ] 

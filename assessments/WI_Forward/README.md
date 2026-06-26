@@ -158,6 +158,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/" ,
 "STUDENT_ID_NAME": "WISEID",
+"EDFI_DS_VERSION": "5",
 "API_YEAR": 2025
 }'
 ```
