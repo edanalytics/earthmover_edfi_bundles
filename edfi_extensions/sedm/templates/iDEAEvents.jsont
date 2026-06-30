@@ -6,7 +6,7 @@
     "studentReference": {
       "studentUniqueId": "{{state_code}}"
     },
-    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IDEAEventDescriptor#{{event_type}}",
+    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IdeaEventDescriptor#{{event_type}}",
     {% if event_begin_date is not none and event_begin_date | length %}
     "beginDate": "{{event_begin_date}}",
     "endDate": "{{event_end_date}}"
