@@ -77,7 +77,7 @@
   "scoreResults": [
     {% for score in scores %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
@@ -88,8 +88,8 @@
   "performanceLevels": [
     {% for perf_level in perf_levels %}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{perf_level[0]}}"
         {%- if ${EDFI_DS_VERSION}|int < 4 -%}
         ,"performanceLevelMet": true
         {% endif %}
@@ -109,7 +109,7 @@
     "scoreResults": [
       {%- for obj_score in obj[1] if obj_score[2] is not none and obj_score[2] | length -%}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
         "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{obj_score[1]}}",
         "result": "{{obj_score[2]}}"
       } {% if not loop.last %},{% endif %}
@@ -118,8 +118,8 @@
     "performanceLevels": [
       {%- for obj_score in obj[1] if obj_score | length == 2 and obj_score[1] is not none -%}
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj_score[1]}}"
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{obj_score[0]}}",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#{{obj_score[1]}}"
         {%- if ${EDFI_DS_VERSION}|int < 4 -%}
         ,"performanceLevelMet": true
         {% endif %}
