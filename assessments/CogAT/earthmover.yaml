@@ -87,7 +87,7 @@ transformations:
           - Mode_of_Administration_String
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ value.strip() }}{%endraw%}"
+          Class_Grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueID
