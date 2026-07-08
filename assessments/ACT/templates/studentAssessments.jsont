@@ -90,8 +90,10 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{administrationDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  "administrationDate": "{{administrationDate}}"
+  {% if edfi_descriptor is not none and edfi_descriptor | length %}
+  , "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  {% endif %}
 
   {%- if scores -%}
   , "scoreResults": [
