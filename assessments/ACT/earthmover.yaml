@@ -85,7 +85,7 @@ transformations:
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
+        join_type: left
         # change this to match the grade from the file
         left_keys: 
           - HS_GradeLev
