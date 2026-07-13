@@ -93,6 +93,13 @@ transformations:
         right_keys: 
           - originalGrade
           - assessmentIdentifier
+      - operation: map_values
+        column: Total_Achievement_Level
+        mapping:  # Force PLs back to their code values
+          Support Needed: 1
+          Near Target: 2
+          Prepared: 3
+
 
   # aggregate grade level descriptors
   grade_level_descriptors:
