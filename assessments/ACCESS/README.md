@@ -1,4 +1,3 @@
-This is an earthmover bundle created from the following Ed-Fi Data Import Tool mapping:
 * **Title**: WIDA ACCESS for ELLs Assessment Results - API 3.X
 * **Description**: This template includes the WIDA ACCESS Summative and WIDA Alternate ACCESS assessment results. 
 * **API version**: 5.3
@@ -20,7 +19,6 @@ earthmover run -c earthmover.yaml -p '{
 ```
 
 Runtime notes:
-- If you are processing an ACCESS file from 2021 or earlier, use `-c earthmover_2021.yaml`.
 - The <code>FORMAT</code> parameter must be set to "Standard" for Summative/Standard files and "Alternate" for Alternate results files.
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
