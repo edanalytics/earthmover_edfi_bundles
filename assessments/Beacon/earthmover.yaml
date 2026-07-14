@@ -94,7 +94,7 @@ transformations:
           - originalGrade
           - assessmentIdentifier
       - operation: map_values
-        column: Total_Achievement_Level
+        column: "*_Achievement_Level"
         mapping:  # Force PLs back to their code values
           Support Needed: 1
           Near Target: 2
