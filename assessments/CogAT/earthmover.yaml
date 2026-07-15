@@ -107,6 +107,7 @@ transformations:
       - operation: modify_columns
         columns:
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          Date_Tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
