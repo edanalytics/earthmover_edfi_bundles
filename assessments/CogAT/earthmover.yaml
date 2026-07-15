@@ -115,6 +115,18 @@ transformations:
       - operation: add_columns
         columns:
           school_year: ${SCHOOL_YEAR}
+      # construct a new student assessment identifier in case the GUID is null,
+      # e.g. when handling Enrich-sourced files
+      - operation: combine_columns
+        columns:
+          - TestInstance_GUID
+          - studentUniqueID
+          - Date_Tested
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
 
   scored_results:
     source: $transformations.clean_results
