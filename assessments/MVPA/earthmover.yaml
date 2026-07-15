@@ -14,6 +14,11 @@ config:
     {%- else -%}{{title}}
     {%- endif -%}
     {%- endmacro %}
+
+    {%- macro get_assessment_identifier(test_id) -%}
+    MVPA_{{ test_id[2:6] | string}}
+    {%- endmacro -%}
+
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
@@ -72,14 +77,17 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
           schoolYear: "{%raw%}{{ schoolYear[:4] | int +1 }}{%endraw%}"
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{ get_assessment_identifier(TestID) }}{%endraw%}"
       - operation: join
         sources:
           - $sources.assessments
         join_type: left
         left_keys:
-          - testName
+          - assessmentIdentifier
         right_keys:
-          - assessmentTitle
+          - assessmentIdentifier
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
