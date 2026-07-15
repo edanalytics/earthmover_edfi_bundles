@@ -30,6 +30,12 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  languageDescriptors:
+    file: ./seeds/languageDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
 
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
@@ -121,7 +127,7 @@ transformations:
           - grade_level_descriptor
       - operation: rename_columns
         columns: 
-          gradeLevelDescriptor: grade_level_descriptor
+          edfi_descriptor: gradeLevelDescriptor
       - operation: modify_columns
         columns:
           admin_date: '{%raw%}
@@ -198,6 +204,9 @@ transformations:
   distinct_grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
       - operation: add_columns
         columns:
           grade_json: >
@@ -225,25 +234,37 @@ transformations:
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  assessment_category_descriptors:
+  distinct_assessment_category_descriptors:
     source: $sources.assessmentCategoryDescriptors
     operations:
       - operation: add_columns
-        columns: 
-          assessmentCategoryDescriptor: "{%raw%}{{namespace}}/assessmentCategoryDescriptor#{{codeValue}}{%endraw%}"
-
-  distinct_assessment_category_descriptors:
-    source: $transformations.assessment_category_descriptors
-    operations:
+        columns:
+          namespace: ${DESCRIPTOR_NAMESPACE}
+          codeValue: "{%raw%} {{edfi_descriptor.split('#')[1]}} {%endraw%}"
       - operation: distinct_rows
         columns: 
           - codeValue
       - operation: keep_columns
         columns:
-          - namespace
           - codeValue
+          - namespace
           - description
           - shortDescription
+  
+  language_descriptors:
+    source: $sources.languageDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: languageDescriptor
+  
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+
 
   assessments:
     source: $sources.assessments
@@ -260,12 +281,23 @@ transformations:
         right_key: dummy_group_key
       - operation: join
         sources:
-          - $transformations.assessment_category_descriptors
+          - $transformations.language_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier      
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
-        right_drop_columns:
-          - namespace
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
           
 
 destinations:
