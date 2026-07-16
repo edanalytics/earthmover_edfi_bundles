@@ -58,25 +58,6 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
-      - operation: rename_columns
-        columns:
-          SchoolYear: schoolYear
-          TestDate: adminDate
-          TestName: testName
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: combine_columns
-        columns:
-          - StudentID
-          - adminDate
-          - testName
-        new_column: studentAssessmentIdentifier
-        separator: '-'
-      - operation: modify_columns
-        columns:
-          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
-          schoolYear: "{%raw%}{{ schoolYear[:4] | int +1 }}{%endraw%}"
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}{{ get_assessment_identifier(TestID) }}{%endraw%}"
@@ -88,6 +69,25 @@ transformations:
           - assessmentIdentifier
         right_keys:
           - assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          SchoolYear: schoolYear
+          TestDate: adminDate
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: combine_columns
+        columns:
+          - StudentID
+          - adminDate
+          - assessmentTitle
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+          schoolYear: "{%raw%}{{ schoolYear[:4] | int +1 }}{%endraw%}"
+      
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
