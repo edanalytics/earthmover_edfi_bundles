@@ -1,0 +1,105 @@
+import json
+import sys
+from collections import deque
+from pathlib import Path
+
+
+def load_json(path):
+    with open(path, "r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def normalize(value):
+    if isinstance(value, dict):
+        return {key: normalize(value[key]) for key in sorted(value.keys())}
+    if isinstance(value, list):
+        normalized = [normalize(item) for item in value]
+        if all(isinstance(item, dict) for item in normalized):
+            def dict_sort_key(item):
+                for key in ("path", "env_var", "display_name"):
+                    if key in item:
+                        return f"{key}:{item[key]}"
+                return json.dumps(item, sort_keys=True)
+
+            normalized.sort(key=dict_sort_key)
+        elif all(isinstance(item, (str, int, float, bool)) or item is None for item in normalized):
+            try:
+                normalized.sort()
+            except TypeError:
+                normalized.sort(key=lambda item: str(item))
+        return normalized
+    return value
+
+
+def diff_json(a, b, max_diffs=200):
+    diffs = []
+    queue = deque([("", a, b)])
+    while queue and len(diffs) < max_diffs:
+        path, left, right = queue.popleft()
+        if type(left) != type(right):
+            diffs.append((path, left, right, "type_mismatch"))
+            continue
+        if isinstance(left, dict):
+            left_keys = set(left.keys())
+            right_keys = set(right.keys())
+            for key in sorted(left_keys - right_keys):
+                diffs.append((f"{path}.{key}" if path else key, left[key], None, "missing_right"))
+                if len(diffs) >= max_diffs:
+                    return diffs
+            for key in sorted(right_keys - left_keys):
+                diffs.append((f"{path}.{key}" if path else key, None, right[key], "missing_left"))
+                if len(diffs) >= max_diffs:
+                    return diffs
+            for key in sorted(left_keys & right_keys):
+                queue.append((f"{path}.{key}" if path else key, left[key], right[key]))
+        elif isinstance(left, list):
+            if len(left) != len(right):
+                diffs.append((path, len(left), len(right), "list_length"))
+            for i, (li, ri) in enumerate(zip(left, right)):
+                queue.append((f"{path}[{i}]", li, ri))
+        else:
+            if left != right:
+                diffs.append((path, left, right, "value_mismatch"))
+    return diffs
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("usage: registry-diff.py <committed.json> <generated.json>")
+        return 2
+
+    committed_path = Path(sys.argv[1])
+    generated_path = Path(sys.argv[2])
+    committed = normalize(load_json(committed_path))
+    generated = normalize(load_json(generated_path))
+
+    if committed == generated:
+        print("registry.json is correct")
+        return 0
+
+    diffs = diff_json(committed, generated)
+    print(
+        "::error::registry.json is out of sync with one or more bundle metadata files. "
+        "Run 'python create-registry.py assessments' locally and commit the updated registry.json. "
+        "Do not update registry.json directly."
+    )
+    print("")
+    print("---- SEMANTIC DIFF (committed vs generated) ----")
+    for path, left, right, reason in diffs:
+        if reason == "type_mismatch":
+            print(f"{path}: type {type(left).__name__} != {type(right).__name__}")
+        elif reason == "missing_right":
+            print(f"{path}: present in committed, missing in generated")
+        elif reason == "missing_left":
+            print(f"{path}: missing in committed, present in generated")
+        elif reason == "list_length":
+            print(f"{path}: list length {left} != {right}")
+        elif reason == "value_mismatch":
+            print(f"{path}: {left!r} != {right!r}")
+    if len(diffs) >= 200:
+        print("... diff truncated")
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

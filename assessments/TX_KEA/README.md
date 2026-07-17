@@ -26,8 +26,8 @@ python -c'import python_pre_exec.tx_kea_pre_exec; tx_kea_pre_exec(input_file_pat
 Running a CLI TX-KEA file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "./data/sample_anonymized_file_fixed_headers.csv",
-"STUDENT_ID_NAME": "STUDENT_STATE_ID",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
+"STUDENT_ID_NAME": "Student_State_ID",
 "STATE_FILE": "./runs.csv",
 "OUTPUT_DIR": "./output"}'
 ```

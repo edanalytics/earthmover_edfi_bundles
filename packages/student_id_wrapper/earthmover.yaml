@@ -11,6 +11,10 @@ config:
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
 
 packages:
+  {#
+    DO NOT CHANGE the order of these packages - this would change which
+    takes precedence over which, and could break some bundles.
+  #}
   ${ASSESSMENT_BUNDLE}:
     git: https://github.com/edanalytics/earthmover_edfi_bundles.git
     branch: ${ASSESSMENT_BUNDLE_BRANCH}
