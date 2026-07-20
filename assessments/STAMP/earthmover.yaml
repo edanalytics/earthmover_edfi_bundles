@@ -102,11 +102,11 @@ transformations:
           assessmentIdentifier: >
             {%raw-%}
             {%- if Language == 'Latin' -%} STAMP Latin
-            {%- elif Language == 'Spanish Monolingual' -%} STAMP Monolingual
+            {%- elif Language == 'Spanish Monolingual' or TestingGroup == 'Spanish (Monolingual) Placement Test'-%} STAMP Monolingual
             {%- elif Language == 'ASL' -%} STAMP ASL
             {%- elif Language not in ('Latin', 'Spanish Monolingual', 'ASL') and
-                  (ReadingLevel is none or ReadingLevel|trim == '') and
-                  (ListeningLevel is none or ListeningLevel|trim == '') and
+                  (ReadingLevel is none or ReadingLevel|trim == '' or ReadingLevel.startswith('SE')) and
+                  (ListeningLevel is none or ListeningLevel|trim == '' or ListeningLevel.startswith('SE')) and
                   WritingLevel is not none and WritingLevel|trim != '' and
                   SpeakingLevel is not none and SpeakingLevel|trim != '' -%} STAMP WS
             {%- else -%} STAMP 4S

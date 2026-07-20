@@ -18,7 +18,9 @@
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP WS' -%} 
   {%- set possible_obj_assess = [
+    ['Reading', 'Not Applicable', Reading_Level, Reading_Length],
     ['Writing', 'Not Applicable', Writing_Level, Writing_Length],
+    ['Listening', 'Not Applicable', Listening_Level, Listening_Length],
     ['Speaking', 'Not Applicable', Speaking_Level, Speaking_Length]
   ] -%}
 {%- elif assessmentIdentifier == 'STAMP Latin' -%} 
