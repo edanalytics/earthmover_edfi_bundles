@@ -1,4 +1,4 @@
-* **Title**: Template Bundle
+* **Title**: GOLD
 * **Description**: This template maps Teaching Strategies' GOLD assessment. 
 * **Submitter name**: Na Nguyen
 * **Submitter organization**: Education Analytics
