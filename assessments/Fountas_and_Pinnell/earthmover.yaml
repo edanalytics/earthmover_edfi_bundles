@@ -30,10 +30,13 @@ sources:
     file: ./seeds/assessments.csv
     header_rows: 1
   gradeLevelDescriptors:
-    file: ./seeds/mapping_grade.csv
+    file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
     header_rows: 1
 
 transformations:
@@ -41,29 +44,21 @@ transformations:
       source: $sources.input
       operations: []
 
-  stage_grade_level:
-    source: $sources.gradeLevelDescriptors
-    operations:
-      - operation: rename_columns
-        columns:
-          to: Grade_Descriptor
-      - operation: keep_columns
-        columns: 
-          - Grade_Descriptor
-          - from
-
   # modify input for basic mappings
   cleaned_input:
     source: $transformations.input
     operations:
       - operation: join
         sources:
-          - $transformations.stage_grade_level
+          - $sources.gradeLevelDescriptors
         join_type: left
         left_key: GradeLevel
-        right_key: from
+        right_key: originalGrade
         right_keep_columns: 
-          - Grade_Descriptor
+          - edfi_descriptor
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
       - operation: date_format
         columns: 
           - DateTaken
@@ -85,7 +80,13 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
 
-  
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+
   
   assessment_reporting_method_score_descriptors:
     source: $sources.assessmentReportingMethodDescriptors
@@ -95,7 +96,7 @@ transformations:
         behavior: include
 
   grade_level_descriptors:
-    source: $transformations.stage_grade_level 
+    source: $sources.gradeLevelDescriptors 
     operations:
       - operation: add_columns
         columns:
@@ -103,7 +104,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{Grade_Descriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -190,6 +191,12 @@ transformations:
         join_type: inner
         left_key: joinKey
         right_key: joinKey
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
        
   student_assessments:
     source: $transformations.cleaned_input
