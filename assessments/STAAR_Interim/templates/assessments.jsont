@@ -83,6 +83,7 @@
     }
   ],
   "performanceLevels": [
+    {% if (api_year | int) <= 2023 %}
     {
       "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Overall Performance Level",
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#1",
@@ -103,5 +104,27 @@
       "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#4",
       "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
     }
+    {% else %}
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Predicted to be Did Not Meet Grade Level",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Predicted to be Approaches Grade Level",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Predicted to be Meets Grade Level",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "uri://tea.texas.gov/AssessmentReportingMethodDescriptor#Predicted STAAR Performance Level",
+      "performanceLevelDescriptor": "uri://tea.texas.gov/PerformanceLevelDescriptor#Predicted to be Masters Grade Level",
+      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Level"
+    }
+    {% endif %}
   ]
 }

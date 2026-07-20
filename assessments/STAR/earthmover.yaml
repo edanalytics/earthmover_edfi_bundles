@@ -26,13 +26,17 @@ config:
     INPUT_FILE_DS: ''
     INPUT_FILE_SA: ''
     INPUT_FILETYPE: csv
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
-  overall_file_name: &overall_file_name ${INPUT_FILE_OVERALL}
+  overall_file_name: &overall_file_name ${INPUT_FILE}
   separator: &separator '/'
 
 sources:
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -48,7 +52,7 @@ sources:
 
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
-    file: ${INPUT_FILE_OVERALL}
+    file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     header_rows: 1
 
@@ -128,9 +132,6 @@ transformations:
       - operation: add_columns
         columns:
           file_path: *overall_file_name
-      - operation: modify_columns
-        columns:
-          file_path: "{%raw%}{{-value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
       - operation: add_columns
         columns:
           assess_id_subject: "{%raw%}{{map_subject_abbrev_values(file_path)}}{%endraw%}"
@@ -141,7 +142,7 @@ transformations:
       - operation: add_columns
         columns: 
           assessmentTitle: "{%raw%}STAR {{subject_full-}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
@@ -168,7 +169,7 @@ transformations:
           StandardPercentMastery: ''
           StandardConfidenceLevel: ''
           StandardMasteryLevel: ''
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 0
       - operation: rename_columns
         columns:
@@ -199,7 +200,7 @@ transformations:
           DomainMasteryLevel: ''
           description: "{%raw%}{{domain_group_name}}: {{StandardName}}{%endraw%}"
           obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 1
       - operation: drop_columns
         columns:
@@ -227,7 +228,7 @@ transformations:
           StandardMasteryLevel: ''
           description: "{%raw%}{{domain_group_name}}{%endraw%}"
           obj_id_code: "{%raw%}{{md5(description)}}{%endraw%}"
-          namespace: "uri://renaissance.com"
+          namespace: "uri://renaissance.com/Assessment"
           is_standards: 1
       # dedupe from standard level to domain (obj assessment) level
       - operation: distinct_rows
@@ -244,9 +245,6 @@ transformations:
           file_path_subj: *overall_file_name
       - operation: modify_columns
         columns:
-          file_path_subj: "{%raw%}{{value.split('/')[-1].split('_')[0].upper().strip()}}{%endraw%}"
-      - operation: modify_columns
-        columns:
           file_path_subj: "{%raw%}{{map_subject_abbrev_values(value)}}{%endraw%}"
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
@@ -255,9 +253,18 @@ transformations:
       - operation: rename_columns
         columns:
           AssessmentID: StudentAssessmentID
+  
+  # Remove duplicate rows before stacking as JSON
+  stacked_obj_assessment_distinct:
+    source: $transformations.stacked_obj_assessment
+    operations:
+      - operation: distinct_rows
+        columns:
+          - StudentAssessmentID
+          - obj_id_code
 
   star_with_obj_assessment:
-    source: $transformations.stacked_obj_assessment
+    source: $transformations.stacked_obj_assessment_distinct
     operations:
       # for each assessment record, construct a new column which will be the JSON for the item
       - operation: add_columns
@@ -275,13 +282,16 @@ transformations:
                   "namespace":"uri://renaissance.com/Assessment" 
                 }, 
               {% set pls_present = [] %}
-              {% set all_pls = {"Domain Mastery Level":DomainMasteryLevel, 
-                                "Standard Mastery Level":StandardMasteryLevel} %} 
+              {% set all_pls = {
+                "Domain Mastery Level": DomainMasteryLevel, 
+                "Standard Mastery Level": StandardMasteryLevel,
+              } %} 
               {% for pl_name, pl_result in all_pls.items() %}
                 {% if pl_result is not none and pl_result | length %} 
-                  {% set _= pls_present.append([pl_name, pl_result]) %} 
+                  {% set _ = pls_present.append([pl_name, pl_result]) %} 
                 {% endif %} 
               {% endfor %} 
+              {% if pls_present %}
               "performanceLevels": 
                 [ 
                   {%- for pl in pls_present -%} 
@@ -293,13 +303,16 @@ transformations:
                   {%- if not loop.last -%}, {%- else %}{% endif %}
                   {%- endfor -%} 
                 ], 
+              {% endif %}
               {% set scores_present = [] %} 
-              {% set all_scores = {"Domain Percent Mastery":DomainPercentMastery, 
-                                   "Skill Area Mastery Score":SkillAreaMasteryScore, 
-                                   "Standard Percent Mastery":StandardPercentMastery} %} 
+              {% set all_scores = {
+                "Domain Percent Mastery": DomainPercentMastery, 
+                "Skill Area Mastery Score": SkillAreaMasteryScore, 
+                "Standard Percent Mastery": StandardPercentMastery,
+              } %} 
               {% for score_name, score_result in all_scores.items() %} 
                 {% if score_result is not none and score_result | length %} 
-                  {% set _= scores_present.append([score_name, score_result]) %} 
+                  {% set _ = scores_present.append([score_name, score_result]) %} 
                 {% endif %} 
               {% endfor %} 
               "scoreResults": 
@@ -307,7 +320,7 @@ transformations:
                   {%- for score in scores_present -%} 
                     { 
                       "assessmentReportingMethodDescriptor": "uri://renaissance.com/AssessmentReportingMethodDescriptor#{{score[0]}}", 
-                      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer", 
+                      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer", 
                       "result": "{{score[1]}}" 
                     } 
                     {%- if not loop.last -%}, {%- else %}{% endif %}
@@ -334,6 +347,25 @@ transformations:
         join_type: right
         left_key: StudentAssessmentID
         right_key: StudentAssessmentID
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors and GradeLevelDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  # Complete grade mapping in separate node to allow easier composition
+  star_with_obj_assessment_grade_mapped:
+    source: $transformations.star_with_obj_assessment
+    operations:
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys: 
+          - assessmentIdentifier
+          - Grade
+        right_keys: 
+          - assessmentIdentifier
+          - originalGrade
+        
 
   standards_exist:
     source: $transformations.stacked_obj_assessment
@@ -372,16 +404,23 @@ transformations:
         join_type: left
         left_key: join_key
         right_key: join_key
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
   
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      # exclude rows with originalGrade == "0" to avoid duplicates
+      - operation: filter_rows
+        query: originalGrade == "0"
+        behavior: exclude
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -397,6 +436,31 @@ transformations:
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
   
   assessments:
     source: $transformations.star_student_assessment_overall
@@ -417,6 +481,15 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns  # Set hard-coded ResultDatatypeTypeDescriptors in the template
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessmentReportingMethodDescriptors:
@@ -440,7 +513,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.star_with_obj_assessment
+    source: $transformations.star_with_obj_assessment_grade_mapped
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

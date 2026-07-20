@@ -1,0 +1,228 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  # state_file: state.csv
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: MOSIS_STATE_ID,DISTRICT_STUDENT_NUMBER,STUDENT_NUMBER
+    OUTPUT_DIR: output
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+    type: tsv
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: modify_columns
+        columns:
+          "*": "{%raw%}{{ value | trim }}{%endraw%}"
+
+      # 1. We can't use results if TEST_NAME_MAP (the test type) is missing.
+      # 2. In most cases, this is because the results were invalidated.
+      #
+      # From the MAP data dictionary:
+      #
+      # [MAP_SCORE_INVALIDATION] ... is an indicator created by DESE to
+      # identify if a student has a valid score on the MAP Test.  If a student
+      # has this code marked as yes, the student was either exempt, absent all 3
+      # sessions, or the teacher marked one of the sessions as invalid.
+      - operation: filter_rows
+        query: TEST_NAME_MAP == '' or MAP_SCORE_INVALIDATION == 'Y'
+        behavior: exclude
+
+      # These names correspond to those I defined in the assessmentIdentifier
+      # column in assessments.csv
+      - operation: map_values
+        column: CONTENT_AREA
+        mapping:
+          Eng. Language Arts: ELA
+          Mathematics: Math
+          Science: Science
+          Social Studies: SocialStudies
+
+      # Sometimes TEST_DATE is missing, but YEAR, the year of the spring in
+      # which the test was taken, is always present.
+      # - Using the date format that will be parsed in the next operation (looks like 40126 for 2026-04-01)
+      # - Using April 1 to avoid being cute w/ season cutoffs.
+      - operation: modify_columns
+        columns:
+          TEST_DATE: "{%raw%}{% if TEST_DATE == '' %}401{{ YEAR[2:4] }}{% else %}{{ TEST_DATE }}{% endif %}{%endraw%}"
+
+      - operation: date_format
+        column: TEST_DATE
+        from_format: "%m%d%y"
+        to_format: "%Y-%m-%d"
+
+      - operation: rename_columns
+        columns:
+          TEST_DATE: administrationDate
+          YEAR: schoolYear
+
+      - operation: add_columns
+        columns:
+          # Initialize assessmentIdentifier. Will be appended in next operation.
+          assessmentIdentifier: MissouriAssessmentProgram
+          namespace: uri://dese.mo.gov/assessment
+          # 1. When the test type is EOC, GRADE_OF_STUDENT represents the grade
+          #    (we want this), while GRADE_LEVEL represents a subject sequence
+          #    (course code), such as "A1" meaning Algebra I.
+          # 2. For other test types, MAP and MAPA, it's somewhat reversed:
+          #    GRADE_LEVEL represents the grade (we want this), and
+          #    GRADE_OF_STUDENT is not set.
+          calculated_grade_level: "{%raw%}{%if GRADE_OF_STUDENT == '' %}{{GRADE_LEVEL}}{%else%}{{GRADE_OF_STUDENT}}{%endif%}{%endraw%}"
+          # For EOC, use the course code (GRADE_LEVEL) as the subject area so each
+          # course gets its own distinct assessmentIdentifier
+          # (e.g. MissouriAssessmentProgram_EOC_A1 for Algebra I).
+          # For MAP/MAPA, use the mapped CONTENT_AREA as before.
+          subject_area: "{%raw%}{% if TEST_NAME_MAP == 'EOC' %}{{GRADE_LEVEL}}{% else %}{{CONTENT_AREA}}{% endif %}{%endraw%}"
+
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+
+      - operation: combine_columns
+        columns:
+          - assessmentIdentifier
+          # EOC, MAP, MAPA (MAP-Alternate)
+          - TEST_NAME_MAP
+          # For EOC: course code (A1, A2, GE, E1, E2, B1, PS, GV, AH)
+          # For MAP/MAPA: subject (ELA, Math, Science, SocialStudies)
+          - subject_area
+        separator: _
+        new_column: assessmentIdentifier
+
+      - operation: combine_columns
+        columns:
+          - studentUniqueId
+          - assessmentIdentifier
+          - administrationDate
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: inner
+        left_keys:
+          - calculated_grade_level
+          - assessmentIdentifier
+        right_keys:
+          - originalGrade
+          - assessmentIdentifier
+        right_keep_columns:
+          - edfi_descriptor
+
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: '{%raw-%}{"gradeLevelDescriptor": "{{edfi_descriptor}}"},{%-endraw%}'
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+      - operation: join
+        sources:
+          - $sources.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - edfi_descriptor
+
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - edfi_descriptor
+
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: assessmentCategoryDescriptor
+
+
+destinations:
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.clean_results
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl

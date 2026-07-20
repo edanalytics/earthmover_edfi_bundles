@@ -10,13 +10,17 @@ config:
   parameter_defaults:
     STATE_FILE: ./runs.csv
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID)'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID),Secondary Student ID (State ID)'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
   id_hashing: &id_hashing "{%raw%}{{ md5(value) }}{%endraw%}"
 
 sources:
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -36,6 +40,24 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
+    optional_fields:
+      - Student Primary ID
+      - Primary ID - Student ID (State ID)
+      - Secondary Student ID (State ID)
+      - Client Date
+      - Device Date
+      - DIBELS Composite Score - Lexile
+      - Composite Score - Lexile
+      - Reading Comprehension (Maze) - Level
+      - Reading Comprehension (Maze) - Score
+      - Reading Comprehension (Maze) - National Norm Percentile
+      - Reading Comprehension (Maze) - Semester Growth
+      - Reading Comprehension (Maze) - Year Growth
+      - Basic Comprehension (Maze) - Level
+      - Basic Comprehension (Maze) - Score
+      - Basic Comprehension (Maze) - National Norm Percentile
+      - Basic Comprehension (Maze) - Semester Growth
+      - Basic Comprehension (Maze) - Year Growth
 
 transformations:
   input:
@@ -49,11 +71,21 @@ transformations:
         columns: 
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
+      - operation: modify_columns
+        columns:
+          client_date: "{%raw%}{{ device_date if client_date == '' else client_date }}{%endraw%}"
+          dibels_composite_score_lexile: "{%raw%}{{ composite_score_lexile if dibels_composite_score_lexile == '' else dibels_composite_score_lexile }}{%endraw%}"
+          reading_comprehension_maze_level: "{%raw%}{{ basic_comprehension_maze_level if reading_comprehension_maze_level == '' else reading_comprehension_maze_level }}{%endraw%}"
+          reading_comprehension_maze_score: "{%raw%}{{ basic_comprehension_maze_score if reading_comprehension_maze_score == '' else reading_comprehension_maze_score }}{%endraw%}"
+          reading_comprehension_maze_national_norm_percentile: "{%raw%}{{ basic_comprehension_maze_national_norm_percentile if reading_comprehension_maze_national_norm_percentile == '' else reading_comprehension_maze_national_norm_percentile }}{%endraw%}"
+          reading_comprehension_maze_semester_growth: "{%raw%}{{ basic_comprehension_maze_semester_growth if reading_comprehension_maze_semester_growth == '' else reading_comprehension_maze_semester_growth }}{%endraw%}"
+          reading_comprehension_maze_year_growth: "{%raw%}{{ basic_comprehension_maze_year_growth if reading_comprehension_maze_year_growth == '' else reading_comprehension_maze_year_growth }}{%endraw%}"
+          enrollment_grade: "{%raw%}{{ enrollment_grade.zfill(2) if enrollment_grade.isdigit() and enrollment_grade|length == 1 else enrollment_grade }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: inner
-        left_key: assessment_grade
+        left_key: enrollment_grade
         right_key: original_grade
       - operation: add_columns
         columns:
@@ -64,16 +96,22 @@ transformations:
         columns:
           school_year: *year_mapping
           student_assessment_id: *id_hashing
+      - operation: filter_rows
+        query: client_date != ''
+        behavior: include
   
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
     operations:
+      - operation: distinct_rows
+        columns:
+          - edfi_descriptor
       - operation: add_columns
         columns:
           grade_json: >
             {%raw-%}  
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
@@ -89,6 +127,31 @@ transformations:
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+  
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: >
+            {%raw-%}
+            {
+              "academicSubjectDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{subject_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          subject_json: agg(subject_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
   assessments:
     source: $sources.assessments
@@ -96,6 +159,12 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier

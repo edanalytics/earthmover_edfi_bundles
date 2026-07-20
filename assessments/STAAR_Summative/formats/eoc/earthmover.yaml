@@ -1,0 +1,144 @@
+version: 2
+
+sources:
+  course_code_xwalk:
+    file: ../../seeds/course_code_xwalk.csv
+    header_rows: 1
+
+{% set conformed_columns = 
+  ['${STUDENT_ID_NAME}',
+   'assessment_identifier',
+   'grade_level_code',
+   'county_district_campus_number',
+   'administration_window',
+   'administration_window_label',
+   'administration_window_start_date',
+   'administration_window_end_date',
+   'subject',
+   'course_abbrev',
+   'reporting_category_1_raw_score',
+   'reporting_category_2_raw_score',
+   'reporting_category_3_raw_score',
+   'reporting_category_4_raw_score',
+   'reporting_category_5_raw_score',
+   'reporting_category_6_raw_score',
+   'reporting_category_1_name',
+   'reporting_category_2_name',
+   'reporting_category_3_name',
+   'reporting_category_4_name',
+   'reporting_category_5_name',
+   'reporting_category_6_name',
+   'raw_score',
+   'scale_score',
+   'test_version',
+   'score_code',
+   'overall_performance_level',
+   'stu_assess_id'
+  ] 
+%}
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  # CONFORMED EOC
+  conformed_staar_summative_eoc:
+    source: $transformations.input
+    operations:
+      # JOIN COURSE INFO
+      - operation: join
+        sources:
+          - $sources.course_code_xwalk
+        left_key: end_of_course_code
+        right_key: end_of_course_code
+        join_type: inner 
+      - operation: rename_columns
+        columns:
+          "administration_date": administration_window
+        {% if ${API_YEAR} >= 2022 %}
+          opportunity_key: stu_assess_id
+        {% endif %}
+      # ADD assess_id & overall_pl
+      - operation: add_columns
+        columns:
+          assessment_identifier: staar_summative_eoc
+          school_year: "${API_YEAR}"
+          subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
+          # in 2021 and earlier, opportunity key didn't exist, so create own unique key
+          {% if ${API_YEAR} <= 2021 %}
+          stu_assess_id: "{%raw%}{{document_number}}_{{end_of_course_code}}{%endraw%}"
+          {% endif %}
+          overall_performance_level: >
+            {%raw%}
+              {%- if masters_grade_level == "1" -%}
+                Masters
+              {%- elif meets_grade_level == "1" -%}
+                Meets
+              {%- elif approaches_grade_level_at_the_students_standard == "1" -%}
+                Approaches
+              {%- else -%}
+                Did Not Meet
+              {%- endif -%}
+            {%endraw%} 
+          {% if ${API_YEAR} <= 2021 %}
+          reporting_category_1_raw_score: "{%raw%}{{reporting_category_scores[0:2]}}{%endraw%}"
+          reporting_category_2_raw_score: "{%raw%}{{reporting_category_scores[2:4]}}{%endraw%}"
+          reporting_category_3_raw_score: "{%raw%}{{reporting_category_scores[4:6]}}{%endraw%}"
+          reporting_category_4_raw_score: "{%raw%}{{reporting_category_scores[6:8]}}{%endraw%}"
+          reporting_category_5_raw_score: "{%raw%}{{reporting_category_scores[8:10]}}{%endraw%}"
+          reporting_category_6_raw_score: "{%raw%}{{reporting_category_scores[10:12]}}{%endraw%}"
+          {% endif %}
+          # in 2023, reporting category 6 was dropped. add blank so template can work
+          {% if ${API_YEAR} >= 2023 %}
+          reporting_category_6_raw_score: ""
+          {% endif %}
+      # JOIN ADMIN WINDOWS
+      - operation: join
+        sources:
+          - $sources.administration_window_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+          - administration_window
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+          - administration_window
+        right_drop_columns:
+          - grade_level_code
+        join_type: inner  
+      # JOIN obj assess descriptive names
+      - operation: join
+        sources:
+          - $sources.obj_assess_codes_xwalk
+        left_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course_abbrev
+        right_keys:
+          - assessment_identifier
+          - school_year
+          - subject
+          - course
+        join_type: inner 
+      # KEEP conformed columns
+      - operation: keep_columns
+        columns: {{conformed_columns}}
+  
+  # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
+  studentAssessments:
+    source: $transformations.conformed_staar_summative_eoc
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      # add api_year as a passed-in env var
+      - operation: add_columns
+        columns:
+          api_year: ${API_YEAR} #NOTE, this is passed by the user/airflow as an env variable''

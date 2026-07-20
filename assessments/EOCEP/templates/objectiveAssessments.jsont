@@ -1,0 +1,25 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Low",
+        "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#Middle",
+        "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#Performance Level",
+        "performanceLevelDescriptor": "uri://datarecognitioncorp.com/PerformanceLevelDescriptor#High",
+        "resultDatatypeTypeDescriptor": "uri://ed.sc.gov/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+  }

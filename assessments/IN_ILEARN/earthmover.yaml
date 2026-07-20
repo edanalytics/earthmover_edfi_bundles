@@ -1,0 +1,205 @@
+version: 2
+
+config:
+  log_level: DEBUG
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'STN'
+    #INPUT_FILE: ./data/ilearn_sample_data.csv # Sample input file with plausible made-up data
+    INPUT_FILETYPE: csv
+
+sources:
+  # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+  # See the accompanying bundle_metadata.json for a list of required columns for this file
+  # Or see data/silearn_sample_data.csv
+  input:
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  studentAssessments:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+
+      # An additional python pre-processing step occurs on ILEARN's col names due to special characters (e.g. "®").
+      - operation: snake_case_columns
+
+      # These columns are necessary to imply administration dates, since ILEARN does not provide admin date as a column in their exports.
+        # file_dir: Extracts the directory path where the file was pulled from. Usually follows the format of:
+          # /efs/tmp_storage/{env}/sharefile/{tenant_code}/ILEARN/{api_year}/{ds_nodash}/{ts_nodash}/ilearn_pre_exec/{time_bound_subject}/{file_name}.csv
+        # admin_date: Extracts the {time_bound_subject} from file_dir. The ouput would resemble:
+          # EOY Biology
+        # school_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
+        # subject_descriptor: We need to extract the subject descriptor from the test_name column, which follows the format of: "ILEARN Biology ECA".
+        # generated_test_id: Hash to define a unique identifier for the student assessment record.
+        # namespace: Added namespace to re-use in templace file.
+      - operation: add_columns
+        columns:
+          file_dir: "${INPUT_FILE}"
+          admin_date: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
+          school_year: ${API_YEAR}
+          subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
+          generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
+          namespace: "uri://doe.in.gov/ILEARN/Assessment"
+
+      # Rename columns for brevity.
+      - operation: rename_columns
+        columns:
+          ilearn_reporting_category_1_performance: rc1_performance
+          ilearn_reporting_category_2_performance: rc2_performance
+          ilearn_reporting_category_3_performance: rc3_performance
+          ilearn_reporting_category_4_performance: rc4_performance
+          ilearn_reporting_category_5_performance: rc5_performance
+          ilearn_reported_lexile_measure: lexile_measure
+          ilearn_reported_quantile_measure: quantile_measure
+          college_and_career_readiness_indicator: cc_readiness_indicator
+          argumentative_organization_purpose: arg_org
+          argumentative_evidence_development_elaboration: arg_evid
+          argumentative_conventions: arg_conv
+          informative_organization_purpose: inf_org
+          informative_evidence_development_elaboration: inf_evid
+          informative_conventions: inf_conv
+          narrative_organization_purpose: nar_org
+          narrative_evidence_development_elaboration: nar_evid
+          narrative_conventions: nar_conv
+          opinion_organization_purpose: op_org
+          opinion_evidence_development_elaboration: op_evid
+          opinion_conventions: op_conv
+          explanatory_organization_purpose: expl_org
+          explanatory_evidence_development_elaboration: expl_evid
+          explanatory_conventions: expl_conv
+
+      # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
+      - operation: duplicate_columns
+        columns:
+          admin_date: admin_date_string
+
+      # Map admin_date values extracted above to estimated administration dates.
+      - operation: map_values
+        column: admin_date
+        map_file: ./seeds/administrationDate.csv
+
+      # Map scale scores to remove "UND", which is not a data type accepted by EdFi in the scores payload.
+      - operation: map_values
+        columns:
+          - overall_scale_score
+          - lexile_measure
+          - quantile_measure   
+        mapping:
+          UND: null  
+
+      # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
+      # (specified in academicSubjectDescriptor seed table)
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_keys:
+          - subject_descriptor
+        right_keys: 
+          - academicSubject
+        right_keep_columns:
+          - assessmentIdentifier
+          - assessmentTitle
+
+    expect: 
+      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' 
+      - school_year|int != 0
+      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+
+
+
+  # Generate grade level json for assessment template based on seeds
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.gradeLevelDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.studentAssessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/assessmentReportingMethodDescriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/performanceLevelDescriptors.jsont
+    extension: jsonl
+    linearize: True

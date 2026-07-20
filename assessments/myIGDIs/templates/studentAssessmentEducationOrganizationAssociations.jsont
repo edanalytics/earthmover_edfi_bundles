@@ -1,0 +1,15 @@
+ {
+      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Administration",
+      "educationOrganizationReference": {
+        "educationOrganizationId": {{InitDistrictId}}
+      },
+      "schoolYearTypeReference": {
+        "schoolYear": {{schoolYearFormatted}}
+      },
+      "studentAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier }}",
+        "namespace": "{{ namespace }}",
+        "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
+        "studentUniqueId": "{{ studentUniqueId }}"
+      }
+    }

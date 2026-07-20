@@ -21,6 +21,7 @@ The IB results file does not include student IDs besides internal IB candidate I
 - STATE_FILE: Where to store the earthmover runs.csv file
 - INPUT_FILE: The path to the IB .csv file you want to transform
 - API_YEAR: The API year that the output of this template will be sent to
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId. Default column is `student_unique_id`, which must be added to the file
 
 ### Examples
 Running earthmover for an IB file:
@@ -29,7 +30,8 @@ earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "./data/sample_anonymized_file.csv",
-"API_YEAR": "2024" }'
+"API_YEAR": "2024",
+"STUDENT_ID_NAME": "student_unique_id" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with

@@ -1,0 +1,729 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: WISEID
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    REGENERATE_ASSESSMENT_SPEC: false
+    API_YEAR: 2000 # set to arbitrary number
+    INPUT_FILE: ''
+  macros: >
+    {% macro em_row_to_json(exclude, literal) -%}
+    {# Converts an Earthmover row into a JSON object #}
+    {# exclude: a list of column names to exclude from the object #}
+    {# literal: a list of column names to not quote (e.g. ints, JSON) #}
+    {
+      {%- set leading_comma = joiner(',') -%}
+      {%- for key in __row_data__.keys() -%}
+      {%- if __row_data__[key] != '' and __row_data__[key] and key not in exclude -%}
+      {{ leading_comma() }}"{{ key }}": {%- if key not in literal -%}"{{ __row_data__[key] }}"{%- else -%}{{ __row_data__[key] }}{%- endif -%}
+      {%- endif -%}
+      {%- endfor -%}
+    }
+    {%- endmacro %}
+
+# The following maps out scores and PLs for objective assessments
+{% from 'templates/assessment_structure.jinja' import assessments %}
+
+# Imported templates don't get env variables substituted, so filter down the spec here based on API_YEAR
+{% set current_assessments = [] %}
+{% set columns_in_spec = [] %}
+{% for assessment in assessments %}
+    {# make a copy, emptying out the arrays to be filtered #}
+    {% set current_assessment = assessment.copy() %}
+    {% set _ = current_assessment.update(scoreResults=[]) %}
+    {% set _ = current_assessment.update(performanceLevels=[]) %}
+    {% set _ = current_assessment.update(objectiveAssessments=[]) %}
+    {% set _ = current_assessment.update(accommodations=[]) %}
+    {% set _ = current_assessment.update(topLevelFields=[]) %}
+
+    {# filter down high-level scores/PLs to current year #}
+    {% for score in assessment.scoreResults %}
+      {% if 
+        ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.scoreResults.append(score) %}
+        {% if score.raw_col %}
+            {% set _ = columns_in_spec.append(score.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(score.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for pl in assessment.performanceLevels %}
+      {% if 
+        ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+      %}
+        {% set _ = current_assessment.performanceLevels.append(pl) %}
+        {% if pl.raw_col %}
+            {% set _ = columns_in_spec.append(pl.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(pl.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for field in assessment.topLevelFields %}
+      {% if 
+        ${API_YEAR} <= (field.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (field.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.topLevelFields.append(field) %}
+        {% if field.raw_col %}
+            {% set _ = columns_in_spec.append(field.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(field.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% for acc in assessment.accommodations %}
+      {% if 
+        ${API_YEAR} <= (acc.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (acc.min_year | default(${API_YEAR})) 
+      %}
+        {% set _ = current_assessment.accommodations.append(acc) %}
+        {% if acc.raw_col %}
+            {% set _ = columns_in_spec.append(acc.raw_col) %}
+        {% else %}
+            {% set _ = columns_in_spec.append(acc.col) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {# filter down objectives to current year #}
+    {% for obj in assessment.objectiveAssessments %}
+      {% if 
+        ${API_YEAR} <= (obj.max_year | default(${API_YEAR})) and
+        ${API_YEAR} >= (obj.min_year | default(${API_YEAR}))  
+      %}
+        
+        {% set current_obj = obj.copy() %}
+        {% set _ = current_obj.update(scoreResults=[]) %}
+        {% set _ = current_obj.update(performanceLevels=[]) %}
+      
+        {# filter down objective scores/PLs to current year #}
+        {% for score in obj.scoreResults %}
+          {% if 
+            ${API_YEAR} <= (score.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (score.min_year | default(${API_YEAR})) 
+          %}
+            {% set _ = current_obj.scoreResults.append(score) %}
+            {% if score.raw_col %}
+                {% set _ = columns_in_spec.append(score.raw_col) %}
+            {% else %}
+                {% set _ = columns_in_spec.append(score.col) %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% for pl in obj.performanceLevels %}
+          {% if 
+            ${API_YEAR} <= (pl.max_year | default(${API_YEAR})) and
+            ${API_YEAR} >= (pl.min_year | default(${API_YEAR}))  
+          %}
+            {% set _ = current_obj.performanceLevels.append(pl) %}
+            {% if pl.raw_col %}
+                {% set _ = columns_in_spec.append(pl.raw_col) %}
+            {% else %}
+                {% set _ = columns_in_spec.append(pl.col) %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% set _ = current_assessment.objectiveAssessments.append(current_obj) %}
+      {% endif %}
+    {% endfor %}
+    
+    {% set _ = current_assessments.append(current_assessment) %}
+{% endfor %}
+
+sources:
+  # TODO: filter seeds by current year
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  reasonNotTestedDescriptors:
+    file: ./seeds/reasonNotTestedDescriptors.csv
+    header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+
+
+  # nonstandard sources for building out assessment structure spec
+  columnsToReportingMethods:
+    file: ./seeds/columns_to_reporting_methods.csv
+    header_rows: 1
+  columnsToAssessmentFields:
+    file: ./seeds/columns_to_assessment_fields.csv
+    header_rows: 1
+  columnsToAccommodations:
+    file: ./seeds/columns_to_accommodations.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+    # See data/sample_anonymized_file.csv
+    optional_fields:
+      {% for col in columns_in_spec %}
+      - {{ col }}
+      {% endfor %}
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  unique_grade_levels:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeLevelDescriptor
+      - operation: distinct_rows
+        columns:
+          - originalGrade
+          - gradeLevelDescriptor
+      - operation: keep_columns
+        columns:
+          - originalGrade
+          - gradeLevelDescriptor
+        
+
+  # pivot wide to long
+  {% for assessment in current_assessments %}
+  {{ assessment.affix | lower }}:
+    source: $transformations.input
+    operations:
+      # build assessment metadata
+      - operation: add_columns
+        columns: 
+          assessmentIdentifier: "WIForward_{{ assessment.affix }}"
+          namespace: "uri://wisedashlocal/datarecognitioncorp.com"
+      # map top-level assessment fields per subject
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+        {% for field in assessment.topLevelFields %}
+        {% if field.raw_col %}
+          {{ field.raw_col }}: {{ field.col }}
+        {% endif %}
+        {% endfor %}
+        {% for acc in assessment.accommodations %}
+        {% if acc.raw_col %}
+          {{ acc.raw_col }}: {{ acc.col }}
+        {% endif %}
+        {% endfor %}
+      - operation: modify_columns
+        columns:
+          # Enforce zero-padded grade to length 2 to match seed
+          Grade: '{%raw%}{{ Grade.zfill(2) }}{%endraw%}'
+      - operation: join
+        sources:
+          - $transformations.unique_grade_levels
+        join_type: inner
+        left_key: Grade
+        right_key: originalGrade
+      - operation: filter_rows
+        # query: adminDate != '' # is this ever missing for valid rows?
+        query: (attemptStatus == 'Y') or (reasonNotTested != '') # is this ever missing for valid rows?
+        behavior: include
+      - operation: duplicate_columns
+        columns:
+          # assessment-level scores mapped to same column names here; objective-assessment-level scores only remapped in template
+        {% for score in assessment.scoreResults %}
+        {% if score.raw_col %}
+          {{ score.raw_col }}: {{ score.col }}
+        {% endif %}
+        {% endfor %}
+        {% for pl in assessment.performanceLevels %}
+        {% if pl.raw_col %}
+          {{ pl.raw_col }}: {{ pl.col }}
+        {% endif %}
+        {% endfor %}
+      # null out accommodations that are 'N'
+      {% if assessment.accommodations %}
+      - operation: map_values
+        columns:
+        {% for acc in assessment.accommodations %}
+          - {{ acc.col }}
+        {% endfor %}
+        mapping:
+          Y: 'Y'
+          N: ''
+      {% endif %}
+      # clean out NAs from key scores/PLs: integers, percentiles, and all PLS
+      - operation: map_values
+        columns:
+        {% for score in assessment.scoreResults %}
+          {% if score.typeDescriptor in ['Integer', 'Percentile'] %}
+          - {{ score.col }}
+          {% endif %}
+        {% endfor %}
+        {% for pl in assessment.performanceLevels %}
+          - {{ pl.col }}
+        {% endfor %}
+        {% for obj in assessment.objectiveAssessments%}
+          {% for score in obj.scoreResults %}
+            {% if score.typeDescriptor in ['Integer', 'Percentile'] %}
+          - {{ score.col }}
+            {% endif %}
+          {% endfor %}
+          {% for pl in obj.performanceLevels %}
+          - {{ pl.col }}
+          {% endfor %}
+        {% endfor %}
+        mapping: 
+          NA: ''
+      - operation: combine_columns
+        columns:
+          # might be overkill; minimum is probably student ID, assessment, and the unique DB key
+          - studentUniqueId
+          - Grade
+          - assessmentIdentifier
+          - adminDate
+          - Unique_DB_KEY
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: '{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}'
+      - operation: keep_columns
+        columns:
+          - studentUniqueId
+          - assessmentIdentifier
+          - studentAssessmentIdentifier
+          - namespace
+          - gradeLevelDescriptor
+          {% for field in assessment.topLevelFields %}
+          - {{ field.col }}
+          {% endfor %}
+          {% for acc in assessment.accommodations %}
+          - {{ acc.col }}
+          {% endfor %}
+          # overall scores
+          {% for score in assessment.scoreResults %}
+          - {{ score.col }}
+          {% endfor %}
+          {% for pl in assessment.performanceLevels %}
+          - {{ pl.col }}
+          {% endfor %}
+          # objective assessment scores
+          {% for obj_assessment in assessment.objectiveAssessments %}
+          {% for score in obj_assessment.scoreResults %}
+          - {{ score.col }}
+          {% endfor %}
+          {% for pl in obj_assessment.performanceLevels %}
+          - {{ pl.col }}
+          {% endfor %}
+          {% endfor %}
+  {% endfor %}
+
+  # restack
+  student_assessments_stacked:
+    source: $transformations.{{ (current_assessments | first)['affix'] | lower }}
+    operations:
+      - operation: union
+        sources:
+        {% for assessment in current_assessments %} 
+          {% if not loop.first %}
+          - $transformations.{{ assessment.affix | lower }}
+          {% endif %}
+        {% endfor %}
+        fill_missing_columns: true # variable columns depending on subject
+      - operation: date_format
+        column: adminDate
+        from_format: '%m%d%Y'
+        to_format: '%Y-%m-%d'
+      - operation: modify_columns
+        columns:
+          reasonNotTested: '{%raw%}{% if reasonNotTested %}{{ namespace }}/ReasonNotTestedDescriptor#{{ reasonNotTested }}{% endif %}{%endraw%}'
+
+  student_assessment_ed_org_association__attribution:
+    source: $transformations.student_assessments_stacked
+    operations:
+      - operation: add_columns
+        columns:
+          # educationOrganizationId mapped in top-level assessment fields seed
+          educationOrganizationAssociationTypeDescriptor: '${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Attribution'
+
+  # instead of hardcoding descriptors that typically use ed-fi defaults (like subjects/grades)
+  # we list those in a csv and aggregate as a transformation so we never hardcode those in the jsont
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      # group and aggregate:
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      # there will be a trailing comma, want to get rid of that
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        join_type: inner
+        sources:
+          - $sources.academicSubjectDescriptors
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+      - operation: join
+        join_type: inner
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: assessmentCategoryDescriptor
+
+  assessments_spec:
+    source: $transformations.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.assessments__scoreResults
+          - $transformations.assessments__performanceLevels
+          - $transformations.assessments__objectiveAssessments
+          - $transformations.assessments__topLevelFields
+          - $transformations.assessments__accommodations
+        join_type: left
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      # drop top-level columns used mostly for the assessments Ed-Fi output
+      - operation: drop_columns
+        columns:
+          - grade_json
+          - academicSubjectDescriptor
+          - assessmentCategoryDescriptor
+          - namespace
+      - operation: rename_columns
+        columns:
+          scoreResults_json: scoreResults
+          performanceLevels_json: performanceLevels
+          objectiveAssessments_json: objectiveAssessments
+          topLevelFields_json: topLevelFields
+          accommodations_json: accommodations
+      # force JSON columns to string to catch NaNs due to left join
+      # replace with empty array
+      - operation: modify_columns
+        columns:
+          scoreResults: '{%raw%}{{ value }}{%endraw%}'
+          performanceLevels: '{%raw%}{{ value }}{%endraw%}'
+          objectiveAssessments: '{%raw%}{{ value }}{%endraw%}'
+          topLevelFields: '{%raw%}{{ value }}{%endraw%}'
+          accommodations: '{%raw%}{{ value }}{%endraw%}'
+      - operation: modify_columns
+        columns:
+          scoreResults: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          objectiveAssessments: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          topLevelFields: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          accommodations: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+      - operation: add_columns
+        columns:
+          assessment_json: "{%raw%}{{ em_row_to_json(exclude=[], literal=['scoreResults', 'performanceLevels', 'objectiveAssessments', 'topLevelFields', 'accommodations']) }}{%endraw%}"
+          dummy: '1'
+      - operation: group_by
+        group_by_columns: ['dummy']
+        create_columns:
+          assessments: json_array_agg(assessment_json)
+        
+
+  assessments__objectiveAssessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: drop_columns
+        columns: [namespace] # not needed for spec
+      - operation: join
+        sources:
+          - $transformations.objectiveAssessments__scoreResults
+        join_type: left
+        left_keys: 
+          - assessmentIdentifier
+          - identificationCode
+        right_keys: 
+          - assessmentIdentifier
+          - objectiveAssessment__identificationCode
+      - operation: drop_columns
+        columns: [objectiveAssessment__identificationCode]
+      - operation: join
+        sources:
+          - $transformations.objectiveAssessments__performanceLevels
+        join_type: left
+        left_keys: 
+          - assessmentIdentifier
+          - identificationCode
+        right_keys: 
+          - assessmentIdentifier
+          - objectiveAssessment__identificationCode
+      - operation: drop_columns
+        columns: [objectiveAssessment__identificationCode]
+      - operation: rename_columns
+        columns:
+          scoreResults_json: scoreResults
+          performanceLevels_json: performanceLevels
+      # force JSON columns to string to catch NaNs due to left join
+      # replace with empty array
+      - operation: modify_columns
+        columns:
+          scoreResults: '{%raw%}{{ value }}{%endraw%}'
+          performanceLevels: '{%raw%}{{ value }}{%endraw%}'
+      - operation: modify_columns
+        columns:
+          scoreResults: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+          performanceLevels: '{%raw%}{% if value != "nan" %}{{value}}{% else %}[]{% endif %}{%endraw%}'
+      - operation: add_columns
+        columns:
+          objectiveAssessment_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['scoreResults', 'performanceLevels', 'min_year', 'max_year']) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          objectiveAssessments_json: json_array_agg(objectiveAssessment_json)
+         
+  assessments__topLevelFields:
+    source: $sources.columnsToAssessmentFields
+    operations:
+      - operation: add_columns
+        columns:
+          topLevelField_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=[]) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          topLevelFields_json: json_array_agg(topLevelField_json)
+
+  assessments__accommodations:
+    source: $sources.columnsToAccommodations
+    operations:
+      - operation: add_columns
+        columns:
+          accommodation_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['min_year', 'max_year']) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          accommodations_json: json_array_agg(accommodation_json)
+
+  current_reporting_methods:
+    source: $sources.assessmentReportingMethodDescriptors
+    operations:
+      - operation: modify_columns
+        columns:
+          min_year: "{%raw%}{% if min_year == '' %}${API_YEAR}{% else %}{{ min_year }}{% endif %} {%endraw%}"
+          max_year: "{%raw%}{% if max_year == '' %}${API_YEAR}{% else %}{{ max_year }}{% endif %} {%endraw%}"
+      - operation: add_columns
+        columns:
+          is_current: "{%raw%}{% if (${API_YEAR} >= min_year | int ) and (${API_YEAR} <= max_year | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "is_current == 'true'"
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - is_current
+
+  all__reportingMethods:
+    source: $sources.columnsToReportingMethods
+    operations:
+      - operation: join
+        sources:
+          - $sources.assessmentReportingMethodDescriptors
+        join_type: inner
+        left_key: reportingMethod__codeValue
+        right_key: codeValue
+        right_drop_columns:
+          - namespace
+          - description
+          - shortDescription
+      # handle many-to-many joins; equivalent of joining on column mapping year range within descriptor year range
+      - operation: modify_columns
+        columns:
+          "min_year_?": "{%raw%}{% if value == '' %}2016{% else %}{{ value }}{% endif %} {%endraw%}" 
+          "max_year_?": "{%raw%}{% if value == '' %}2100{% else %}{{ value }}{% endif %} {%endraw%}" 
+      - operation: add_columns
+        columns:
+          year_range_filter: "{%raw%}{% if (min_year_x | int) >= (min_year_y | int) and (max_year_x | int) <= (max_year_y | int) %}true{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: "year_range_filter == 'true'"
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - min_year_y
+          - max_year_y
+          - year_range_filter
+      - operation: rename_columns
+        columns:
+          min_year_x: min_year
+          max_year_x: max_year
+          reportingMethod__codeValue: reportingMethod
+
+  all__scoreResults:
+    source: $transformations.all__reportingMethods
+    operations:
+      - operation: filter_rows
+        query: reportingType == 'score'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - codeValue # duplicated in join
+          - reportingType # no need to output
+      - operation: add_columns
+        columns:
+          scoreResult_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier', 'objectiveAssessment__identificationCode'], literal=['min_year', 'max_year']) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+          - objectiveAssessment__identificationCode
+        create_columns:
+          scoreResults_json: json_array_agg(scoreResult_json)
+
+              
+  all__performanceLevels:
+    source: $transformations.all__reportingMethods
+    operations:
+      - operation: filter_rows
+        query: reportingType == 'performance'
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - codeValue # duplicated in join
+          - reportingType # no need to output
+          - typeDescriptor # only for scores
+      - operation: add_columns
+        columns:
+          performanceLevel_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier', 'objectiveAssessment__identificationCode'], literal=['min_year', 'max_year', 'levels']) }}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+          - objectiveAssessment__identificationCode
+        create_columns:
+          performanceLevels_json: json_array_agg(performanceLevel_json)
+
+  assessments__scoreResults:
+    source: $transformations.all__scoreResults
+    operations:
+      - operation: filter_rows
+        query: objectiveAssessment__identificationCode == ''
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - objectiveAssessment__identificationCode
+
+  assessments__performanceLevels:
+    source: $transformations.all__performanceLevels
+    operations:
+      - operation: filter_rows
+        query: objectiveAssessment__identificationCode == ''
+        behavior: include
+      - operation: drop_columns
+        columns:
+          - objectiveAssessment__identificationCode
+
+  objectiveAssessments__scoreResults:
+    source: $transformations.all__scoreResults
+    operations:
+      - operation: filter_rows
+        query: objectiveAssessment__identificationCode != ''
+        behavior: include
+
+  objectiveAssessments__performanceLevels:
+    source: $transformations.all__performanceLevels
+    operations:
+      - operation: filter_rows
+        query: objectiveAssessment__identificationCode != ''
+        behavior: include
+
+destinations:
+  {% if ${REGENERATE_ASSESSMENT_SPEC} %}
+  assessment_spec:
+    source: $transformations.assessments_spec
+    template: ./templates/assessment_spec.jinja
+    extension: jinja
+  {% endif %}
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $transformations.current_reporting_methods
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  reasonNotTestedDescriptors:
+    source: $sources.reasonNotTestedDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.student_assessments_stacked
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.student_assessment_ed_org_association__attribution
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl

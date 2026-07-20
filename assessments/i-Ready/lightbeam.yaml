@@ -1,0 +1,19 @@
+# See accompanying README.md for details about this file.
+
+state_dir: ${STATE_DIR}
+data_dir: ${DATA_DIR}
+edfi_api:
+  base_url: ${EDFI_API_BASE_URL}
+  version: 3
+  mode: district_specific
+  year: ${API_YEAR}
+  client_id: ${EDFI_API_CLIENT_ID}
+  client_secret: ${EDFI_API_CLIENT_SECRET}
+connection:
+  pool_size: 8
+  timeout: 60
+  num_retries: 10
+  backoff_factor: 1.5
+  retry_statuses: [429, 500, 502, 503, 504]
+  verify_ssl: True
+log_level: DEBUG
