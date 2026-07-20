@@ -127,7 +127,7 @@ transformations:
           - grade_level_descriptor
       - operation: rename_columns
         columns: 
-          edfi_descriptor: gradeLevelDescriptor
+          edfi_descriptor: grade_level_descriptor
       - operation: modify_columns
         columns:
           admin_date: '{%raw%}
