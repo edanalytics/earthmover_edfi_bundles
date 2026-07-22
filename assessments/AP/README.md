@@ -6,7 +6,7 @@
 
 To run this bundle, please add your own source file(s) and column(s):
 <details>
-<summary><code>data/SAMPLE_AP_2324.csv</code></summary>
+<summary><code>data/sample_anonymized_file.csv</code></summary>
 This bundle works with AP files in the wide format provided by College Board, containing up to 30 exam slots and 6 award slots per student.
 
 </details>
@@ -24,9 +24,9 @@ Using an ID column from the assessment file:
 earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "./output",
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "./data/SAMPLE_AP_2324.csv",
+"INPUT_FILE": "./data/sample_anonymized_file.csv",
 "API_YEAR": "2024",
-"STUDENT_ID_NAME": "studentId" }'
+"STUDENT_ID_NAME": "Student Identifier" }'
 ```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with
