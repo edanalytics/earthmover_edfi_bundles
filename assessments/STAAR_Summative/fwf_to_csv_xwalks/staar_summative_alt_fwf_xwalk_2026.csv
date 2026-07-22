@@ -1,6 +1,6 @@
 start_index,end_index,field_length,field_name
 0,4,4,administration_date
-4,6,2,grade_level_tested
+4,6,2,grade_level_code
 6,8,2,esc_region_number
 8,17,9,county_district_campus_number
 17,32,15,district_name
@@ -92,8 +92,8 @@ start_index,end_index,field_length,field_name
 414,415,1,blank_98
 415,416,1,reading_language_arts_translated_student_materials
 416,423,7,blank_100
-423,424,1,level_ii_satisfactory_academic_performance_in_reading_languagearts
-424,425,1,level_iii_accomplished_academic_performance_in_reading_languagearts
+423,424,1,level_ii__satisfactory_academic_performance_in_reading_languagearts
+424,425,1,level_iii__accomplished_academic_performance_in_reading_languagearts
 425,426,1,staar_alternate_2_progress_measure_reading_language_arts
 426,428,2,blank_105
 428,429,1,on_track_to_level_ii:_satisfactory_academic_performance_reading_language_arts
@@ -131,8 +131,8 @@ start_index,end_index,field_length,field_name
 768,769,1,blank_141
 769,770,1,mathematics_translated_student_materials
 770,777,7,blank_143
-777,778,1,level_ii:_satisfactory_academic_performance_in_mathematics
-778,779,1,level_iii:_accomplished_academic_performance_in_mathematics
+777,778,1,level_ii__satisfactory_academic_performance_in_mathematics
+778,779,1,level_iii__accomplished_academic_performance_in_mathematics
 779,780,1,staar_alternate_2_mathematics_progress_measure
 780,781,1,blank_148
 781,782,1,on_track_to_level_ii:_satisfactory_academic_performance
@@ -169,8 +169,8 @@ start_index,end_index,field_length,field_name
 1516,1517,1,blank_183
 1517,1518,1,social_studies_translated_student_materials
 1518,1525,7,blank_185
-1525,1526,1,level_ii:_satisfactory_academic_performance_in_social_studies
-1526,1527,1,level_iii:_accomplished_academic_performance_in_social_studies
+1525,1526,1,level_ii__satisfactory_academic_performance_in_social_studies
+1526,1527,1,level_iii__accomplished_academic_performance_in_social_studies
 1527,1600,73,blank_188
 1600,1620,20,item_reporting_category_number_social_studies
 1620,1652,32,blank_191
@@ -226,10 +226,10 @@ start_index,end_index,field_length,field_name
 2216,2530,314,blank_245
 2530,2539,9,county_district_campus_number_247
 2539,2541,2,blank_248
-2541,2542,1,score_code
+2541,2542,1,score_code_249
 2542,2543,1,level_ii:_satisfactory_academic_performance
 2543,2544,1,level_iii:_accomplished_academic_performance
-2544,2548,4,scale_score
+2544,2548,4,scale_score_252
 2548,2550,2,tested_grade
 2550,2650,100,blank_254
 2650,2659,9,county_district_campus_number_256
