@@ -1,0 +1,26 @@
+version: 2
+
+config:
+  output_dir: ${OUTPUT_DIR}
+  log_level: INFO
+  show_stacktrace: True
+  show_graph: False
+  parameter_defaults:
+    OUTPUT_DIR: output
+    ASSESSMENT_BUNDLE_BRANCH: main
+
+packages:
+  {#
+    DO NOT CHANGE the order of these packages - this would change which
+    takes precedence over which, and could break some bundles.
+  #}
+  ${ASSESSMENT_BUNDLE}:
+    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/assessments/ACCESS
+  student_ids:
+    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/packages/id_resolution
+    subdirectory: packages/id_resolution
+
+transformations:
+  input:
+    source: $transformations.input_with_candidates
+
