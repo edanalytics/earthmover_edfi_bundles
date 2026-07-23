@@ -1,0 +1,77 @@
+version: 2
+
+config:
+  parameter_defaults:
+    EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+    OBSERVABLE_FIRST_NAME: ${OBSERVABLE_FIRST_NAME}
+  macros: >
+    {% macro clean_observables(obs) %}
+    {% if obs is string %} {{ __row_data__[obs] | trim | lower | default('∅', true)}}
+    {% elif obs is number %} {{ __row_data__[obs] | default('∅', true) | trim }}
+    {% elif obs is iterable %}
+      {% for ob in obs %}{{__row_data__[ob] | default('∅', true) | trim | lower }}{%if not loop.last %},{%endif%}{%endfor%}
+    {% endif %}
+    {% endmacro %} 
+
+transformations:
+
+  # Create the candidate id. Hash all available observables associated with each student record.
+  # The candidate ID column is appended to the input dataframe, and passed down to subsequent operations.
+  input_with_candidates:
+    source: ${EARTHMOVER_NODE_TO_RESOLVE}
+    operations:
+      - operation: add_columns
+        columns:
+          obs_first_name: "{%raw%}{{clean_observables('${OBSERVABLE_FIRST_NAME}')}}{%endraw%}"
+          obs_last_name: "{%raw%}{{clean_observables('${OBSERVABLE_LAST_NAME}')}}{%endraw%}"
+          obs_birth_date: "{%raw%}{{clean_observables('${OBSERVABLE_BIRTH_DATE}')}}{%endraw%}"
+          obs_school_id: "{%raw%}{{clean_observables('${OBSERVABLE_SCHOOL_ID}')}}{%endraw%}"
+          obs_student_ids: "{%raw%}{{clean_observables(${OBSERVABLE_STUDENT_IDS})}}{%endraw%}"
+      - operation: combine_columns
+        columns:
+          - obs_first_name
+          - obs_last_name
+          - obs_birth_date
+          - obs_school_id
+          - obs_student_ids
+        new_column: __candidate_id
+        separator: '|'
+      - operation: modify_columns
+        columns:
+          __candidate_id: "{%raw%}{{md5(__candidate_id)}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          edfi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
+
+  # Create a Candidate <-> row crosswalk. 
+  input_numbered:
+    source: $transformations.input_with_candidates
+    operations:
+      - operation: add_columns
+        columns:
+          rank_column: "{%raw%}{{ __row_number__ }}{%endraw%}"
+
+  # Summarize candidate counts by candidate ID and observables
+  candidates:
+    source: $transformations.input_with_candidates
+    operations:
+      - operation: group_by
+        group_by_columns:
+        - __candidate_id
+        - obs_first_name
+        - obs_last_name
+        - obs_birth_date
+        - obs_school_id
+        - obs_student_ids
+        create_columns:
+          record_count: count()
+
+destinations:
+  input_records:
+    source: $transformations.input_numbered
+    template: ./templates/input_records.jsont
+    extension: jsonl
+  candidates:
+    source: $transformations.candidates
+    template: ./templates/candidates.jsont
+    extension: jsonl
