@@ -83,6 +83,8 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+          # Some Test_Levels may have a season appended (e.g., 4_W for 4th Grade - Winter). We split on the '_' in these cases and use the grade to send to Ed-Fi. 
+          Test_Level: "{%raw%}{{ Test_Level.split('_')[0] }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
