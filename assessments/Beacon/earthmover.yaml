@@ -86,7 +86,7 @@ transformations:
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
+        join_type: left
         left_keys: 
           - Test_Level
           - assessmentIdentifier
