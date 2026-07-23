@@ -49,7 +49,10 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          rank_column: "{%raw%}{{ __row_number__ }}{%endraw%}"
+          __all_rows: '1'
+      - operation: group_by_with_rank
+        group_by_columns: [__all_rows]
+        rank_column: rank_column
 
   # Summarize candidate counts by candidate ID and observables
   candidates:
