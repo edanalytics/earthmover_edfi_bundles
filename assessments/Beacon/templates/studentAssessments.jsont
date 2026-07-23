@@ -71,10 +71,12 @@
   "studentReference": {
     "studentUniqueId": "{{studentUniqueId}}"
   },
-  "administrationDate": "{{adminDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
+  "administrationDate": "{{adminDate}}"
+  {% if edfi_descriptor is not none and edfi_descriptor | length %}
+  , "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  {% endif %}
   {% if scores | length %}
-  "scoreResults": [
+  ,"scoreResults": [
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "uri://datarecognitioncorp.com/AssessmentReportingMethodDescriptor#{{score[1]}}",
