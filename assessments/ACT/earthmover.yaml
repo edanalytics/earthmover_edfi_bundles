@@ -13,6 +13,12 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: ID_StateAssign,ID_Local
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'F_Name'
+    OBSERVABLE_LAST_NAME: 'L_Name'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_SCHOOL_ID: ''
+    OBSERVABLE_STUDENT_IDS: ['ID_StateAssign','ID_Local']
+
 
 sources:
   assessments:

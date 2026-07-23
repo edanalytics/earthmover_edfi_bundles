@@ -1,0 +1,25 @@
+version: 2
+
+config:
+  output_dir: ${OUTPUT_DIR}
+  log_level: INFO
+  show_stacktrace: True
+  show_graph: False
+  parameter_defaults:
+    OUTPUT_DIR: output
+    ASSESSMENT_BUNDLE_BRANCH: main
+
+packages:
+  {#
+    DO NOT CHANGE the order of these packages - this would change which
+    takes precedence over which, and could break some bundles.
+  #}
+  ${ASSESSMENT_BUNDLE}:
+    local: /path/to/your/bundle
+  student_ids:
+    local: /path/to/the/wrapper
+
+transformations:
+  input:
+    source: $transformations.input_with_candidates
+
