@@ -3,14 +3,30 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
-    OBSERVABLE_FIRST_NAME: ${OBSERVABLE_FIRST_NAME}
   macros: >
     {% macro clean_observables(obs) %}
-    {% if obs is string %} {{ __row_data__[obs] | trim | lower | default('∅', true)}}
-    {% elif obs is number %} {{ __row_data__[obs] | default('∅', true) | trim }}
-    {% elif obs is iterable %}
-      {% for ob in obs %}{{__row_data__[ob] | default('∅', true) | trim | lower }}{%if not loop.last %},{%endif%}{%endfor%}
-    {% endif %}
+      {% if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] %}
+        {% set full_name = __row_data__['${OBSERVABLE_FULL_NAME}'] %}
+        {% if full_name and ',' in full_name %}
+          {% set first_name = full_name.split(',')[1].split(' ')[0] %}
+          {% set last_name = full_name.split(',')[0] %}
+        {% elif full_name %}
+          {% set first_name = full_name.split(' ')[0] %}
+          {% set last_name = full_name.split(' ')[full_name|length -1] %}
+        {% else %}
+          {% set first_name = __row_data__['${OBSERVABLE_FIRST_NAME}'] %}
+          {% set last_name = __row_data__['${OBSERVABLE_LAST_NAME}'] %}
+        {% endif %}
+        {% if obs == 'OBSERVABLE_FIRST_NAME' %} {{first_name}}
+        {% else %} {{last_name}}
+        {% endif %}
+      {% elif obs is number %}
+        {{__row_data__[obs] | default('∅', true) | trim }}
+      {% elif obs is string %}
+        {{ __row_data__[obs] | trim | lower | default('∅', true) }}
+      {% elif obs is iterable %}
+        {% for ob in obs %}{{__row_data__[ob] | default('∅', true) | trim | lower }}{%if not loop.last %},{%endif%}{%endfor%}
+      {% endif %}
     {% endmacro %} 
 
 transformations:
@@ -22,8 +38,8 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          obs_first_name: "{%raw%}{{clean_observables('${OBSERVABLE_FIRST_NAME}')}}{%endraw%}"
-          obs_last_name: "{%raw%}{{clean_observables('${OBSERVABLE_LAST_NAME}')}}{%endraw%}"
+          obs_first_name: "{%raw%}{{clean_observables('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
+          obs_last_name: "{%raw%}{{clean_observables('OBSERVABLE_LAST_NAME')}}{%endraw%}"
           obs_birth_date: "{%raw%}{{clean_observables('${OBSERVABLE_BIRTH_DATE}')}}{%endraw%}"
           obs_school_id: "{%raw%}{{clean_observables('${OBSERVABLE_SCHOOL_ID}')}}{%endraw%}"
           obs_student_ids: "{%raw%}{{clean_observables(${OBSERVABLE_STUDENT_IDS})}}{%endraw%}"
