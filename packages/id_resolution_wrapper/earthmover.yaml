@@ -15,10 +15,9 @@ packages:
     takes precedence over which, and could break some bundles.
   #}
   ${ASSESSMENT_BUNDLE}:
-    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/assessments/ACCESS
+    local: /path/to/your/bundle
   student_ids:
-    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/packages/id_resolution
-    subdirectory: packages/id_resolution
+    local: /path/to/the/wrapper
 
 transformations:
   input:
