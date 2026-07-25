@@ -34,7 +34,8 @@ earthmover deps -c ./earthmover.yaml -p '{
 earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "./data/sample_anonymized_file.csv",
 "STUDENT_ID_NAME": "tx_unique_student_id",
-"API_YEAR": "2023"
+"API_YEAR": "2023",
+"FORMAT": "Standard"
 }'
 ```
 Running a STAAR Summative EOC ALT file:
@@ -46,7 +47,8 @@ earthmover deps -c ./earthmover.yaml -p '{
 
 earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "path/to/staar_summative_eoc_alt_2023.csv",
-"API_YEAR": "2023"
+"API_YEAR": "2023",
+"FORMAT": "End-of-Course Alternate"
 }'
 ```
 
