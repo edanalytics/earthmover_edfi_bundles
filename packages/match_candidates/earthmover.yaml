@@ -60,15 +60,17 @@ transformations:
           edFi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
 
   # Create a Candidate <-> row crosswalk. 
-  input_numbered:
-    source: $transformations.input_with_candidates
-    operations:
-      - operation: add_columns
-        columns:
-          __all_rows: '1'
-      - operation: group_by_with_rank
-        group_by_columns: [__all_rows]
-        rank_column: rank_column
+  # NOTE: This is not run at present. 
+  # May be resolved with additional earthmover functionality, resulting in a new implementation in this script. 
+  # input_numbered:
+  #   source: $transformations.input_with_candidates
+  #   operations:
+  #     - operation: add_columns
+  #       columns:
+  #         __all_rows: '1'
+  #     - operation: group_by_with_rank
+  #       group_by_columns: [__all_rows]
+  #       rank_column: rank_column
 
   # Summarize candidate counts by candidate ID and observables
   candidates:
@@ -86,10 +88,10 @@ transformations:
           record_count: count()
 
 destinations:
-  input_records:
-    source: $transformations.input_numbered
-    template: ./templates/input_records.jsont
-    extension: jsonl
+  # input_records:
+  #   source: $transformations.input_numbered
+  #   template: ./templates/input_records.jsont
+  #   extension: jsonl
   candidates:
     source: $transformations.candidates
     template: ./templates/candidates.jsont
