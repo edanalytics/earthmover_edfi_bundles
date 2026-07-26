@@ -57,7 +57,7 @@ transformations:
           __candidate_id: "{%raw%}{{md5(__candidate_id)}}{%endraw%}"
       - operation: add_columns
         columns:
-          edfi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
+          edFi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
 
   # Create a Candidate <-> row crosswalk. 
   input_numbered:
