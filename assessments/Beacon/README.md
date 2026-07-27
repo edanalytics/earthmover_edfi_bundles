@@ -22,7 +22,7 @@ Using the `StudentID` column from the assessment file:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_file_24_25.csv",
 "OUTPUT_DIR": "output/" ,
 "STUDENT_ID_NAME": "State_Student_ID"
 }'

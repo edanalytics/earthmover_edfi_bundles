@@ -9,11 +9,18 @@ config:
   show_graph: false
   show_stacktrace: true
   macros: >
-    {% macro assign_assessment_identifier(test) -%}
-    {%- if test.startswith('MAT') -%} beacon_math
-    {%- elif test.startswith(('ELA', 'READ')) -%} beacon_ela
+    {%- macro assign_assessment_identifier(test) -%}
+    {%- if (test | lower).startswith('mat') -%}beacon_math
+    {%- elif (test | lower).startswith('ela') or test | lower == 'read' -%}beacon_ela
+    {%- endif -%}
+    {%- endmacro -%}
+  
+    {%- macro assign_beacon_level(test_level) -%}
+    {%- if test_level | string in ['3','4','5','6','7','8'] -%}3-8
+    {%- elif test_level | string in ['KG','1','2'] -%}K-2
     {%- endif -%}
     {%- endmacro %}
+
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'State_Student_ID,DRC_Student_ID'
@@ -35,6 +42,9 @@ sources:
     header_rows: 1
   objectiveAssessments:
     file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  objective_assessment_mapping:
+    file: ./seeds/objective_assessment_mapping.csv
     header_rows: 1
   performanceLevelDescriptors:
     file: ./seeds/performanceLevelDescriptors.csv
@@ -64,7 +74,7 @@ transformations:
           Tested_Date: adminDate
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{%raw%}{{ assign_assessment_identifier(Test) }}{%endraw%}"
+          assessmentIdentifier: "{%raw%}{{- assign_assessment_identifier(Test) -}}{%endraw%}"
           namespace: "uri://datarecognitioncorp.com/Assessment"
           schoolYear: "{%raw%}{{Academic_Year[-4:] | int}}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Enrollment"
@@ -83,10 +93,12 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+          # Some Test_Level values may have a season appended (e.g., 4_W for 4th Grade - Winter). We split on the '_' in these cases and use the numeric test level to send to Ed-Fi. 
+          Test_Level: "{%raw%}{{ (Test_Level |string |trim).split('_')[0] }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
+        join_type: left
         left_keys: 
           - Test_Level
           - assessmentIdentifier
@@ -99,6 +111,25 @@ transformations:
           Support Needed: 1
           Near Target: 2
           Prepared: 3
+      # Add a column capturing the level of the assessment (3-8 or K-2)
+      - operation: add_columns
+        columns:
+          beacon_level: "{%raw%}{{assign_beacon_level(Test_Level)}}{%endraw%}"
+      # Join in the objectiveAssessmentMapping file, so that we may accurately unpack year-specific objectiveAssessment values in studentAssessments.jsont
+      - operation: join
+        sources:
+          - $sources.objective_assessment_mapping
+        join_type: left
+        left_keys:
+          - assessmentIdentifier
+          - Academic_Year
+          - beacon_level
+        right_keys:
+          - assessmentIdentifier
+          - Academic_Year
+          - beacon_level
+        right_keep_columns:
+          - possible_objective_assessments
 
 
   # aggregate grade level descriptors
