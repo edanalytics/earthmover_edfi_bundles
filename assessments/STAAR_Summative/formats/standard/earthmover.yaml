@@ -56,6 +56,9 @@ transformations:
           "social_studies_reporting_category_2_scores": social_studies_reporting_category_2_raw_score
           "social_studies_reporting_category_3_scores": social_studies_reporting_category_3_raw_score
           "social_studies_reporting_category_4_scores": social_studies_reporting_category_4_raw_score
+          {% endif %}
+          {% if ${API_YEAR} >= 2022 and ${API_YEAR} < 2026 %}
+          # science category scores were removed in 2026
           "science_reporting_category_1_scores": science_reporting_category_1_raw_score
           "science_reporting_category_2_scores": science_reporting_category_2_raw_score
           "science_reporting_category_3_scores": science_reporting_category_3_raw_score
@@ -235,7 +238,9 @@ transformations:
         sources:
           - $transformations.staar_summative_scores_mathematics
           - $transformations.staar_summative_scores_social_studies
+        {% if ${API_YEAR} <= 2025 %} 
           - $transformations.staar_summative_scores_science
+        {% endif %}
         {% if ${API_YEAR} <= 2021 %} 
           - $transformations.staar_summative_scores_writing
         {% endif %}
