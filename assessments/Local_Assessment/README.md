@@ -17,6 +17,7 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Default is 'edFi_studentUniqueID'
 - POSSIBLE_STUDENT_ID_COLUMNS: Comma-separated list of possible student ID columns. Default is 'StudentID'
 - INPUT_FILETYPE: File type of the input file (csv or tsv). Default is 'csv'
+- DESCRIPTOR_NAMESPACE: Namespace for Ed-Fi descriptors. Default is 'uri://ed-fi.org'
 
 ### Examples
 Using an ID column from the assessment file:
