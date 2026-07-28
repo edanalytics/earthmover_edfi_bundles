@@ -3,6 +3,10 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+  # The clean_observables macro below takes the OBSERVABLES set in each bundle and cleans them for use downstream.
+  # OBSERVABLE_FIRST_NAME and OBSERVABLE_LAST_NAME are passed to the macro as strings because we conditionally populate these
+  # using either OBSERVABLE_FULL_NAME or OBSERVABLE_FIRST_NAME/OBSERVABLE_LAST_NAME, depending on which is provided.
+  # All other observables are passed as variable references.
   macros: >
     {%- macro clean_observables(obs) -%}
       {%- if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] -%}
@@ -25,7 +29,11 @@ config:
       {%- elif obs is string -%}
         {{ __row_data__[obs] | trim | lower | default(none, true) }}
       {%- elif obs is iterable -%}
-        {% for ob in obs %}{{__row_data__[ob] | trim | lower | default(none, true) }}{%if not loop.last %},{%endif%}{%endfor%}
+        {%- set cleaned_list = [] -%}
+        {%- for ob in obs -%}
+          {%- set _ = cleaned_list.append(__row_data__[ob] | trim | lower | default(none, true)) -%}
+        {%-endfor-%}
+        {{cleaned_list}}
       {%- endif -%}
     {%- endmacro %} 
 
