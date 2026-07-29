@@ -596,7 +596,13 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ student_unique_id ~ '-' ~ School_Year) }}{%endraw%}"
           administrationDate: "{%raw-%}{{'05/01/' ~ School_Year}}{%-endraw%}"
-          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
+          descriptorNamespace: ${DESCRIPTOR_NAMESPACE}  
+      - operation: modify_columns
+      # If the assessmentIdentifier was none, that means we could not join on ExamCode
+      # We still want to include these records in the group by below, so they failures when sendt to the ODS
+      # So we set all columns to blanks in this case, so they are picked up and register as failures
+        columns:
+          "*": "{%raw%}{%- if assessmentIdentifier is none -%}''{%- else -%}{{value}}{%-endif-%}{%endraw%}"
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
