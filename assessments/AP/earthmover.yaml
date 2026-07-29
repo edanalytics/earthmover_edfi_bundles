@@ -185,7 +185,7 @@ transformations:
       - operation: join
         sources:
           - $transformations.melt_exam_codes
-        join_type: inner
+        join_type: left
         left_keys:
           - student_unique_id
           - exam_slot
