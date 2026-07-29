@@ -583,7 +583,7 @@ transformations:
       - operation: join
         sources:
           - $transformations.stage_assessments
-        join_type: inner
+        join_type: left
         left_key: ExamCode
         right_key: AP_Exam_Code
         right_keep_columns:
