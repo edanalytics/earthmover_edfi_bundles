@@ -239,7 +239,7 @@ transformations:
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
+        join_type: left
         left_keys: [grade_when_assessed, assessmentIdentifier]
         right_keys: [psat_sat_grade, assessmentIdentifier]
 
