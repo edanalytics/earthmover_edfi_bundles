@@ -87,7 +87,7 @@ transformations:
           - Mode_of_Administration_String
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ value.strip() }}{%endraw%}"
+          Class_Grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueID
@@ -107,6 +107,7 @@ transformations:
       - operation: modify_columns
         columns:
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          Date_Tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
@@ -114,6 +115,18 @@ transformations:
       - operation: add_columns
         columns:
           school_year: ${SCHOOL_YEAR}
+      # construct a new student assessment identifier in case the GUID is null,
+      # e.g. when handling Enrich-sourced files
+      - operation: combine_columns
+        columns:
+          - TestInstance_GUID
+          - studentUniqueID
+          - Date_Tested
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
 
   scored_results:
     source: $transformations.clean_results
