@@ -39,6 +39,14 @@ sources:
     header_rows: 1
 
 transformations:
+  
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations: 
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeDescriptor
+
   input:
     source: $sources.input
     operations: []
@@ -100,7 +108,7 @@ transformations:
           "": "N/A"
       - operation: join
         sources:
-          - $sources.gradeLevelDescriptors
+          - $transformations.gradeLevelDescriptors
         join_type: inner
         left_keys: [Class_Grade]
         right_keys: [cogatGrade]
@@ -202,7 +210,7 @@ transformations:
           namespace: "{{namespace}}"
 
   grade_level_descriptors:
-    source: $sources.gradeLevelDescriptors
+    source: $transformations.gradeLevelDescriptors
     operations:
       - operation: add_columns
         columns:
