@@ -128,7 +128,7 @@ transformations:
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          school_year: ${SCHOOL_YEAR}
+          school_year: ${API_YEAR}
       # construct a new student assessment identifier in case the GUID is null,
       # e.g. when handling Enrich-sourced files
       - operation: combine_columns
