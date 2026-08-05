@@ -37,6 +37,12 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 
 transformations:
   
@@ -221,6 +227,20 @@ transformations:
         columns:
           assessmentIdentifier: "{{assessmentIdentifier}}"
           namespace: "{{namespace}}"
+  
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+  
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: assessmentCategoryDescriptor
 
   grade_level_descriptors:
     source: $transformations.gradeLevelDescriptors
@@ -253,6 +273,18 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
