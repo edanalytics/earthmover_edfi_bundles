@@ -38,7 +38,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
-"SCHOOL_YEAR" : "2023",
+"API_YEAR" : "2023",
 "STUDENT_ID_NAME" : "Student_ID"}'
 ```
 The value for `STUDENT_ID_NAME` may vary
