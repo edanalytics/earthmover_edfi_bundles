@@ -16,6 +16,12 @@ config:
     FORMAT: 'Standard'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'StudentFirstName'
+    OBSERVABLE_LAST_NAME: 'StudentLastName'
+    OBSERVABLE_BIRTH_DATE: 'BirthDate'
+    OBSERVABLE_SCHOOL_ID: 'SchoolNumber'
+    OBSERVABLE_STUDENT_IDS: ['UniqueDRCStudentID','StateStudentID','DistrictStudentID']
+
 sources:
   input:
     file: ${INPUT_FILE}
