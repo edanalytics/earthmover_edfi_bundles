@@ -37,8 +37,22 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 
 transformations:
+  
+  gradeLevelDescriptors:
+    source: $sources.gradeLevelDescriptors
+    operations: 
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: gradeDescriptor
+
   input:
     source: $sources.input
     operations: []
@@ -87,7 +101,7 @@ transformations:
           - Mode_of_Administration_String
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ value.strip() }}{%endraw%}"
+          Class_Grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueID
@@ -100,20 +114,33 @@ transformations:
           "": "N/A"
       - operation: join
         sources:
-          - $sources.gradeLevelDescriptors
+          - $transformations.gradeLevelDescriptors
         join_type: inner
         left_keys: [Class_Grade]
         right_keys: [cogatGrade]
       - operation: modify_columns
         columns:
           Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          Date_Tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
       - operation: date_format
         column: Date_Tested
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          school_year: ${SCHOOL_YEAR}
+          school_year: ${API_YEAR}
+      # construct a new student assessment identifier in case the GUID is null,
+      # e.g. when handling Enrich-sourced files
+      - operation: combine_columns
+        columns:
+          - TestInstance_GUID
+          - studentUniqueID
+          - Date_Tested
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
 
   scored_results:
     source: $transformations.clean_results
@@ -200,9 +227,23 @@ transformations:
         columns:
           assessmentIdentifier: "{{assessmentIdentifier}}"
           namespace: "{{namespace}}"
+  
+  academicSubjectDescriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: academicSubjectDescriptor
+  
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    operations:
+      - operation: rename_columns
+        columns:
+          edfi_descriptor: assessmentCategoryDescriptor
 
   grade_level_descriptors:
-    source: $sources.gradeLevelDescriptors
+    source: $transformations.gradeLevelDescriptors
     operations:
       - operation: add_columns
         columns:
@@ -232,6 +273,18 @@ transformations:
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academicSubjectDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.assessmentCategoryDescriptors
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
