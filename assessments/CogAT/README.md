@@ -7,8 +7,22 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 
 To run this bundle, please add your own source file(s):
 <details>
-<summary><code>data/cogat_export.txt</code></summary>
-This bundle currently works with CogAT 7 & 8. It assumes you are working with a fixed-width text file exported from Riverside Insights DataManager with a total row length of 5682 characters.
+<summary><code>data/cogat_export.txt</code> or <code>data/cogat_export.csv</code></summary>
+This bundle works with CogAT 7 & 8, and takes any of the three files we see in practice.
+There is a sample of each in `data/`:
+
+| File | Looks like |
+| --- | --- |
+| `.txt` | fixed width, 5682 characters per row (layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv`) |
+| `.csv` | one column per subtest: `Standard Age Score (SAS) V`, `Standard Age Score (SAS) VQ` |
+| `.csv` | one column per score: `Standard_Age_Score_SAS` = `107105117107114114112` |
+
+The last one is the layout we publish as the loading spec; the middle one is what
+DataManager exports. A fixed-width file must be named `.txt` — that is how the bundle tells
+it apart from a CSV.
+
+Capitalization, punctuation and extra spaces in CSV headers don't matter:
+`Number Attempted (NA) V`, `Number_Attempted_NA_V` and `number attempted (na) v` all work.
 
 </details>
 <details>
@@ -26,17 +40,12 @@ Required columns:
    - `student_id_to`
 </details>
 
-Once your input files are in place, you need to transform the fixed-width CogAT data into a CSV. This bundle includes a script and configuration file that accomplish this:
-
-```bash
-python3 util/preprocessing.py data/cogat_export.txt util/cogat_format.csv
-```
-
-This will output `cogat_export.csv`, which can be used as input to Earthmover. Run the following command:
+Once your input files are in place, run the following command. Earthmover reads both
+formats directly, so no preprocessing step is required:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_file.txt",
 "OUTPUT_DIR": "output/",
 "API_YEAR" : "2023",
 "STUDENT_ID_NAME" : "Student_ID"}'
@@ -55,4 +64,13 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 ### Maintenance notes
 
+  - `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` is the fixed-width layout. It matches
+    `util/cogat_format.csv` except that each score field is split into one column per subtest
+    (`Standard_Age_Score_SAS__verbal`, `..._composite_vq`, ...). That split matters: pandas
+    trims spaces off both ends of a fixed-width field, and these values are right-aligned, so
+    reading a score field whole would drop the first value's padding and shift the rest.
+    Regenerate this file if the layout changes; don't hand-edit it.
+  - `util/preprocessing.py` turns a fixed-width export into the one-column-per-score CSV.
+    Earthmover reads the `.txt` directly now, so this is optional, but it still works and its
+    output is still a valid input.
   - The seed file `seeds/performanceLevelDescriptors.csv` was generated using the script `util/generate_pl_descriptors.py`. This was done to ensure that all possible CogAT [Ability Profiles](https://riversideinsights.com/citc/profile-finder) would be represented. If, in a future edition of the test, the set of possible Ability Profiles changes, this script will need to be modified.
