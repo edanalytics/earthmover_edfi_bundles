@@ -1,0 +1,84 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  parameter_defaults:
+    STUDENT_ID_NAME: 'edFi_studentUniqueID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID'
+    INPUT_FILE: ''
+    INPUT_FILETYPE: csv
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    type: ${INPUT_FILETYPE}
+    header_rows: 1
+    columns:
+      - StudentID
+      - AssessmentName
+      - TestDate
+      - Score
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+      - operation: filter_rows
+        query: studentUniqueId == ''
+        behavior: exclude
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: "{%raw%}{{AssessmentName}}{%endraw%}"
+          namespace: uri://edanalytics.org
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: combine_columns
+        columns:
+          - studentUniqueId
+          - AssessmentName
+          - TestDate
+        new_column: studentAssessmentIdentifier
+        separator: '-'
+
+  assessments:
+    source: $transformations.student_assessment
+    operations:
+      - operation: keep_columns
+        columns:
+          - assessmentIdentifier
+          - AssessmentName
+          - namespace
+          - descriptor_namespace
+      - operation: distinct_rows
+
+destinations:
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  studentAssessments:
+    source: $transformations.student_assessment
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
