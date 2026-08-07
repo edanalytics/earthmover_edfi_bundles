@@ -1,0 +1,674 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    STUDENT_ID_NAME: edFi_studentUniqueID # defaulting to the ID from the file because we don't anticipate needing to use student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'State Student ID'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  objectivePerformanceLevel:
+    file: ./seeds/objectivePerformanceLevel.csv
+    header_rows: 1
+  objectiveScores:
+    file: ./seeds/objectiveScores.csv
+    header_rows: 1
+
+  input:
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  stage_student_assessment:
+    source: $transformations.input
+    operations:
+      - operation: keep_columns
+        columns: 
+        -  State Student ID
+        -  State School Code
+        -  Actual Grade
+        -  English Test Administration Date
+        -  English Scale Score
+        -  English ACT Readiness Benchmark
+        -  English Readiness Level
+        -  English Projected one-year ACT Aspire Score Range Lower
+        -  English Projected one-year ACT Aspire Score Range Upper
+        -  English Projected two-year ACT Aspire Score Range Lower
+        -  English Projected two-year ACT Aspire Score Range Upper
+        -  English Projected ACT Score Range Lower
+        -  English Projected ACT Score Range Upper
+        -  English Growth Percentile
+        -  English Growth Category
+        -  Production of Writing Earned Points
+        -  Production of Writing Total Points
+        -  Production of Writing Percent Correct
+        -  Production of Writing ACT Readiness Range
+        -  Knowledge of Language Earned Points
+        -  Knowledge of Language Total Points
+        -  Knowledge of Language Percent Correct
+        -  Knowledge of Language ACT Readiness Range
+        -  Conventions of Standard English Earned Points
+        -  Conventions of Standard English Total Points
+        -  Conventions of Standard English Percent Correct
+        -  Conventions of Standard English ACT Readiness Range
+        -  English Irregularity
+        -  Mathematics Test Administration Date
+        -  Mathematics Scale Score
+        -  Mathematics ACT Readiness Benchmark
+        -  Mathematics Readiness Level
+        -  Mathematics Projected one-year ACT Aspire Score Range Lower
+        -  Mathematics Projected one-year ACT Aspire Score Range Upper
+        -  Mathematics Projected two-year ACT Aspire Score Range Lower
+        -  Mathematics Projected two-year ACT Aspire Score Range Upper
+        -  Mathematics Projected ACT Score Range Lower
+        -  Mathematics Projected ACT Score Range Upper
+        -  Mathematics Growth Percentile
+        -  Mathematics Growth Category
+        -  Grade Level Progress Earned Points
+        -  Grade Level Progress Total Points
+        -  Grade Level Progress Percent Correct
+        -  Grade Level Progress ACT Readiness Range
+        -  Foundation Earned Points
+        -  Foundation Total Points
+        -  Foundation Percent Correct
+        -  Foundation ACT Readiness Range
+        -  Justification and Explanation Earned Points
+        -  Justification and Explanation Total Points
+        -  Justification and Explanation Percent Correct
+        -  Justification and Explanation ACT Readiness Range
+        -  Modeling Earned Points
+        -  Modeling Total Points
+        -  Modeling Percent Correct
+        -  Modeling ACT Readiness Range
+        -  Number and Operations - Fractions Earned Points
+        -  Number and Operations - Fractions Total Points
+        -  Number and Operations - Fractions Percent Correct
+        -  Number and Operations - Fractions ACT Readiness Range
+        -  Number and Operations in Base 10 Earned Points
+        -  Number and Operations in Base 10 Total Points
+        -  Number and Operations in Base 10 Percent Correct
+        -  Number and Operations in Base 10 ACT Readiness Range
+        -  The Number System Earned Points
+        -  The Number System Total Points
+        -  The Number System Percent Correct
+        -  The Number System ACT Readiness Range
+        -  Number and Quantity Earned Points
+        -  Number and Quantity Total Points
+        -  Number and Quantity Percent Correct
+        -  Number and Quantity ACT Readiness Range
+        -  Operations and Algebraic Thinking Earned Points
+        -  Operations and Algebraic Thinking Total Points
+        -  Operations and Algebraic Thinking Percent Correct
+        -  Operations and Algebraic Thinking ACT Readiness Range
+        -  Expressions & Equations Earned Points
+        -  Expressions & Equations Total Points
+        -  Expressions & Equations Percent Correct
+        -  Expressions & Equations ACT Readiness Range
+        -  Ratios and Proportional Relationships Earned Points
+        -  Ratios and Proportional Relationships Total Points
+        -  Ratios and Proportional Relationships Percent Correct
+        -  Ratios and Proportional Relationships ACT Readiness Range
+        -  Algebra Earned Points
+        -  Algebra Total Points
+        -  Algebra Percent Correct
+        -  Algebra ACT Readiness Range
+        -  Functions Earned Points
+        -  Functions Total Points
+        -  Functions Percent Correct
+        -  Functions ACT Readiness Range
+        -  Geometry Earned Points
+        -  Geometry Total Points
+        -  Geometry Percent Correct
+        -  Geometry ACT Readiness Range
+        -  Measurement and Data Earned Points
+        -  Measurement and Data Total Points
+        -  Measurement and Data Percent Correct
+        -  Measurement and Data ACT Readiness Range
+        -  Statistics and Probability Earned Points
+        -  Statistics and Probability Total Points
+        -  Statistics and Probability Percent Correct
+        -  Statistics and Probability ACT Readiness Range
+        -  Mathematics Irregularity
+        -  Reading Test Administration Date
+        -  Reading Scale Score
+        -  Reading ACT Readiness Benchmark
+        -  Reading Readiness Level
+        -  Reading Projected one-year ACT Aspire Score Range Lower
+        -  Reading Projected one-year ACT Aspire Score Range Upper
+        -  Reading Projected two-year ACT Aspire Score Range Lower
+        -  Reading Projected two-year ACT Aspire Score Range Upper
+        -  Reading Projected ACT Score Range Lower
+        -  Reading Projected ACT Score Range Upper
+        -  Reading Growth Percentile
+        -  Reading Growth Category
+        -  Key Ideas and Details Earned Points
+        -  Key Ideas and Details Total Points
+        -  Key Ideas and Details Percent Correct
+        -  Key Ideas and Details ACT Readiness Range
+        -  Craft and Structure Earned Points
+        -  Craft and Structure Total Points
+        -  Craft and Structure Percent Correct
+        -  Craft and Structure ACT Readiness Range
+        -  Integration of Knowledge and Ideas Earned Points
+        -  Integration of Knowledge and Ideas Total Points
+        -  Integration of Knowledge and Ideas Percent Correct
+        -  Integration of Knowledge and Ideas ACT Readiness Range
+        -  Reading Irregularity
+        -  Science Test Administration Date
+        -  Science Scale Score
+        -  Science ACT Readiness Benchmark
+        -  Science Readiness Level
+        -  Science Projected one-year ACT Aspire Score Range Lower
+        -  Science Projected one-year ACT Aspire Score Range Upper
+        -  Science Projected two-year ACT Aspire Score Range Lower
+        -  Science Projected two-year ACT Aspire Score Range Upper
+        -  Science Projected ACT Score Range Lower
+        -  Science Projected ACT Score Range Upper
+        -  Science Growth Percentile
+        -  Science Growth Category
+        -  Interpretation of Data Earned Points
+        -  Interpretation of Data Total Points
+        -  Interpretation of Data Percent Correct
+        -  Interpretation of Data ACT Readiness Range
+        -  Scientific Investigation Earned Points
+        -  Scientific Investigation Total Points
+        -  Scientific Investigation Percent Correct
+        -  Scientific Investigation ACT Readiness Range
+        -  Evaluation of Models, Inferences, and Experimental Results Earned Points
+        -  Evaluation of Models, Inferences, and Experimental Results Total Points
+        -  Evaluation of Models, Inferences, and Experimental Results Percent Correct
+        -  Evaluation of Models, Inferences, and Experimental Results ACT Readiness Range
+        -  Science Irregularity
+        -  Writing Test Administration Date
+        -  Writing Scale Score
+        -  Writing ACT Readiness Benchmark
+        -  Writing Readiness Level
+        -  Writing Projected one-year ACT Aspire Score Range Lower
+        -  Writing Projected one-year ACT Aspire Score Range Upper
+        -  Writing Projected two-year ACT Aspire Score Range Lower
+        -  Writing Projected two-year ACT Aspire Score Range Upper
+        -  Writing Projected ACT Score Range Lower
+        -  Writing Projected ACT Score Range Upper
+        -  Writing Growth Percentile
+        -  Writing Growth Category
+        -  Ideas and Analysis Earned Points
+        -  Ideas and Analysis Total Points
+        -  Ideas and Analysis Percent Correct
+        -  Ideas and Analysis ACT Readiness Range
+        -  Development and Support Earned Points
+        -  Development and Support Total Points
+        -  Development and Support Percent Correct
+        -  Development and Support ACT Readiness Range
+        -  Organization Earned Points
+        -  Organization Total Points
+        -  Organization Percent Correct
+        -  Organization ACT Readiness Range
+        -  Language Use and Conventions Earned Points
+        -  Language Use and Conventions Total Points
+        -  Language Use and Conventions Percent Correct
+        -  Language Use and Conventions ACT Readiness Range
+        -  Writing Irregularity
+        -  ACT Aspire Composite Score
+        -  The ACT Predicted Composite Score Range Low
+        -  The ACT Predicted Composite Score Range High
+        -  English National Percentile Rank
+        -  Reading National Percentile Rank
+        -  Science National Percentile Rank
+        -  Writing National Percentile Rank
+        -  Mathematics National Percentile Rank
+        -  ELA Score
+        -  ELA Readiness
+        -  Progress with Text Complexity
+        -  STEM Score
+        -  STEM Readiness
+        -  Progress Toward Career Readiness
+      - operation: rename_columns
+        columns: 
+          State Student ID: State_Student_ID
+          State School Code: School_Code
+          Actual Grade: Actual_Grade
+          English Test Administration Date: English_Test_Date
+          English Scale Score: English_Scale_Score
+          English ACT Readiness Benchmark: English_ACT_Readiness_Benchmark
+          English Readiness Level: English_Readiness_Level
+          English Projected one-year ACT Aspire Score Range Lower: English_Projected_one_year_Range_Lower
+          English Projected one-year ACT Aspire Score Range Upper: English_Projected_one_year_Range_Upper
+          English Projected two-year ACT Aspire Score Range Lower: English_Projected_two_year_Range_Lower
+          English Projected two-year ACT Aspire Score Range Upper: English_Projected_two_year_Range_Upper
+          English Projected ACT Score Range Lower: English_Projected_ACT_Score_Range_Lower
+          English Projected ACT Score Range Upper: English_Projected_ACT_Score_Range_Upper
+          English Growth Percentile: English_Growth_Percentile
+          English Growth Category: English_Growth_Category
+          Production of Writing Earned Points: Production_of_Writing_Earned_Points
+          Production of Writing Total Points: Production_of_Writing_Total_Points
+          Production of Writing Percent Correct: Production_of_Writing_Percent_Correct
+          Production of Writing ACT Readiness Range: Production_of_Writing_ACT_Readiness_Range
+          Knowledge of Language Earned Points: Knowledge_of_Language_Earned_Points
+          Knowledge of Language Total Points: Knowledge_of_Language_Total_Points
+          Knowledge of Language Percent Correct: Knowledge_of_Language_Percent_Correct
+          Knowledge of Language ACT Readiness Range: Knowledge_of_Language_ACT_Readiness_Range
+          Conventions of Standard English Earned Points: Conventions_of_Standard_English_Earned_Points
+          Conventions of Standard English Total Points: Conventions_of_Standard_English_Total_Points
+          Conventions of Standard English Percent Correct: Conventions_of_Standard_English_Percent_Correct
+          Conventions of Standard English ACT Readiness Range: Conventions_of_Standard_English_ACT_Readiness_Range
+          English Irregularity: English_Irregularity
+          Mathematics Test Administration Date: Mathematics_Test_Date
+          Mathematics Scale Score: Mathematics_Scale_Score
+          Mathematics ACT Readiness Benchmark: Mathematics_ACT_Readiness_Benchmark
+          Mathematics Readiness Level: Mathematics_Readiness_Level
+          Mathematics Projected one-year ACT Aspire Score Range Lower: Mathematics_Projected_one_year_Range_Lower
+          Mathematics Projected one-year ACT Aspire Score Range Upper: Mathematics_Projected_one_year_Range_Upper
+          Mathematics Projected two-year ACT Aspire Score Range Lower: Mathematics_Projected_two_year_Range_Lower
+          Mathematics Projected two-year ACT Aspire Score Range Upper: Mathematics_Projected_two_year_Range_Upper
+          Mathematics Projected ACT Score Range Lower: Mathematics_Projected_ACT_Score_Range_Lower
+          Mathematics Projected ACT Score Range Upper: Mathematics_Projected_ACT_Score_Range_Upper
+          Mathematics Growth Percentile: Mathematics_Growth_Percentile
+          Mathematics Growth Category: Mathematics_Growth_Category
+          Grade Level Progress Earned Points: Grade_Level_Progress_Earned_Points
+          Grade Level Progress Total Points: Grade_Level_Progress_Total_Points
+          Grade Level Progress Percent Correct: Grade_Level_Progress_Percent_Correct
+          Grade Level Progress ACT Readiness Range: Grade_Level_Progress_ACT_Readiness_Range
+          Foundation Earned Points: Foundation_Earned_Points
+          Foundation Total Points: Foundation_Total_Points
+          Foundation Percent Correct: Foundation_Percent_Correct
+          Foundation ACT Readiness Range: Foundation_ACT_Readiness_Range
+          Justification and Explanation Earned Points: Justification_Explanation_Earned_Points
+          Justification and Explanation Total Points: Justification_Explanation_Total_Points
+          Justification and Explanation Percent Correct: Justification_Explanation_Percent_Correct
+          Justification and Explanation ACT Readiness Range: Justification_Explanation_ACT_Readiness_Range
+          Modeling Earned Points: Modeling_Earned_Points
+          Modeling Total Points: Modeling_Total_Points
+          Modeling Percent Correct: Modeling_Percent_Correct
+          Modeling ACT Readiness Range: Modeling_ACT_Readiness_Range
+          Number and Operations - Fractions Earned Points: Number_Operations_Fractions_Earned_Points
+          Number and Operations - Fractions Total Points: Number_Operations_Fractions_Total_Points
+          Number and Operations - Fractions Percent Correct: Number_Operations_Fractions_Percent_Correct
+          Number and Operations - Fractions ACT Readiness Range: Number_Operations_Fractions_ACT_Readiness_Range
+          Number and Operations in Base 10 Earned Points: Number_Operations_Base10_Earned_Points
+          Number and Operations in Base 10 Total Points: Number_Operations_Base10_Total_Points
+          Number and Operations in Base 10 Percent Correct: Number_Operations_Base10_Percent_Correct
+          Number and Operations in Base 10 ACT Readiness Range: Number_Operations_Base10_ACT_Readiness_Range
+          The Number System Earned Points: Number_System_Earned_Points
+          The Number System Total Points: Number_System_Total_Points
+          The Number System Percent Correct: Number_System_Percent_Correct
+          The Number System ACT Readiness Range: Number_System_ACT_Readiness_Range
+          Number and Quantity Earned Points: Number_Quantity_Earned_Points
+          Number and Quantity Total Points: Number_Quantity_Total_Points
+          Number and Quantity Percent Correct: Number_Quantity_Percent_Correct
+          Number and Quantity ACT Readiness Range: Number_Quantity_ACT_Readiness_Range
+          Operations and Algebraic Thinking Earned Points: Operations_Algebraic_Thinking_Earned_Points
+          Operations and Algebraic Thinking Total Points: Operations_Algebraic_Thinking_Total_Points
+          Operations and Algebraic Thinking Percent Correct: Operations_Algebraic_Thinking_Percent_Correct
+          Operations and Algebraic Thinking ACT Readiness Range: Operations_Algebraic_Thinking_ACT_Readiness_Range
+          Expressions & Equations Earned Points: Expressions_Equations_Earned_Points
+          Expressions & Equations Total Points: Expressions_Equations_Total_Points
+          Expressions & Equations Percent Correct: Expressions_Equations_Percent_Correct
+          Expressions & Equations ACT Readiness Range: Expressions_Equations_ACT_Readiness_Range
+          Ratios and Proportional Relationships Earned Points: Ratios_Proportional_Relationships_Earned_Points
+          Ratios and Proportional Relationships Total Points: Ratios_Proportional_Relationships_Total_Points
+          Ratios and Proportional Relationships Percent Correct: Ratios_Proportional_Relationships_Percent_Correct
+          Ratios and Proportional Relationships ACT Readiness Range: Ratios_Proportional_Relationships_ACT_Readiness_Range
+          Algebra Earned Points: Algebra_Earned_Points
+          Algebra Total Points: Algebra_Total_Points
+          Algebra Percent Correct: Algebra_Percent_Correct
+          Algebra ACT Readiness Range: Algebra_ACT_Readiness_Range
+          Functions Earned Points: Functions_Earned_Points
+          Functions Total Points: Functions_Total_Points
+          Functions Percent Correct: Functions_Percent_Correct
+          Functions ACT Readiness Range: Functions_ACT_Readiness_Range
+          Geometry Earned Points: Geometry_Earned_Points
+          Geometry Total Points: Geometry_Total_Points
+          Geometry Percent Correct: Geometry_Percent_Correct
+          Geometry ACT Readiness Range: Geometry_ACT_Readiness_Range
+          Measurement and Data Earned Points: Measurement_Data_Earned_Points
+          Measurement and Data Total Points: Measurement_Data_Total_Points
+          Measurement and Data Percent Correct: Measurement_Data_Percent_Correct
+          Measurement and Data ACT Readiness Range: Measurement_Data_ACT_Readiness_Range
+          Statistics and Probability Earned Points: Statistics_Probability_Earned_Points
+          Statistics and Probability Total Points: Statistics_Probability_Total_Points
+          Statistics and Probability Percent Correct: Statistics_Probabilit_Percent_Correct
+          Statistics and Probability ACT Readiness Range: Statistics_Probability_ACT_Readiness_Range
+          Mathematics Irregularity: Mathematics_Irregularity
+          Reading Test Administration Date: Reading_Test_Date
+          Reading Scale Score: Reading_Scale_Score
+          Reading ACT Readiness Benchmark: Reading_ACT_Readiness_Benchmark
+          Reading Readiness Level: Reading_Readiness_Level
+          Reading Projected one-year ACT Aspire Score Range Lower: Reading_Projected_one_year_Range_Lower
+          Reading Projected one-year ACT Aspire Score Range Upper: Reading_Projected_one_year_Range_Upper
+          Reading Projected two-year ACT Aspire Score Range Lower: Reading_Projected_two_year_Range_Lower
+          Reading Projected two-year ACT Aspire Score Range Upper: Reading_Projected_two_year_Range_Upper
+          Reading Projected ACT Score Range Lower: Reading_Projected_ACT_Score_Range_Lower
+          Reading Projected ACT Score Range Upper: Reading_Projected_ACT_Score_Range_Upper
+          Reading Growth Percentile: Reading_Growth_Percentile
+          Reading Growth Category: Reading_Growth_Category
+          Key Ideas and Details Earned Points: Key_Ideas_Details_Earned_Points
+          Key Ideas and Details Total Points: Key_Ideas_Details_Total_Points
+          Key Ideas and Details Percent Correct: Key_Ideas_Details_Percent_Correct
+          Key Ideas and Details ACT Readiness Range: Key_Ideas_Details_ACT_Readiness_Range
+          Craft and Structure Earned Points: Craft_Structure_Earned_Points
+          Craft and Structure Total Points: Craft_Structure_Total_Points
+          Craft and Structure Percent Correct: Craft_Structure_Percent_Correct
+          Craft and Structure ACT Readiness Range: Craft_Structure_ACT_Readiness_Range
+          Integration of Knowledge and Ideas Earned Points: Integration_of_Knowledge_Ideas_Earned_Points
+          Integration of Knowledge and Ideas Total Points: Integration_of_Knowledge_Ideas_Total_Points
+          Integration of Knowledge and Ideas Percent Correct: Integration_of_Knowledge_Ideas_Percent_Correct
+          Integration of Knowledge and Ideas ACT Readiness Range: Integration_of_Knowledge_Ideas_ACT_Readiness_Range
+          Reading Irregularity: Reading_Irregularity
+          Science Test Administration Date: Science_Test_Date
+          Science Scale Score: Science_Scale_Score
+          Science ACT Readiness Benchmark: Science_ACT_Readiness_Benchmark
+          Science Readiness Level: Science_Readiness_Level
+          Science Projected one-year ACT Aspire Score Range Lower: Science_Projected_one_year_Range_Lower
+          Science Projected one-year ACT Aspire Score Range Upper: Science_Projected_one_year_Range_Upper
+          Science Projected two-year ACT Aspire Score Range Lower: Science_Projected_two_year_Range_Lower
+          Science Projected two-year ACT Aspire Score Range Upper: Science_Projected_two_year_Range_Upper
+          Science Projected ACT Score Range Lower: Science_Projected_ACT_Score_Range_Lower
+          Science Projected ACT Score Range Upper: Science_Projected_ACT_Score_Range_Upper
+          Science Growth Percentile: Science_Growth_Percentile
+          Science Growth Category: Science_Growth_Category
+          Interpretation of Data Earned Points: Interpretation_of_Data_Earned_Points
+          Interpretation of Data Total Points: Interpretation_of_Data_Total_Points
+          Interpretation of Data Percent Correct: Interpretation_of_Data_Percent_Correct
+          Interpretation of Data ACT Readiness Range: Interpretation_of_Data_ACT_Readiness_Range
+          Scientific Investigation Earned Points: Scientific_Investigation_Earned_Points
+          Scientific Investigation Total Points: Scientific_Investigation_Total_Points
+          Scientific Investigation Percent Correct: Scientific_Investigation_Percent_Correct
+          Scientific Investigation ACT Readiness Range: Scientific_Investigation_ACT_Readiness_Range
+          Evaluation of Models, Inferences, and Experimental Results Earned Points: Evaluation_of_Models_Inferences_Experimental_Results_Earned_Points
+          Evaluation of Models, Inferences, and Experimental Results Total Points: Evaluation_of_Models_Inferences_Experimental_Results_Total_Points
+          Evaluation of Models, Inferences, and Experimental Results Percent Correct: Evaluation_of_Models_Inferences_Experimental_Results_Percent_Correct
+          Evaluation of Models, Inferences, and Experimental Results ACT Readiness Range: Evaluation_of_Models_Inferences_Experimental_Results_ACT_Readiness_Range
+          Science Irregularity: Science_Irregularity
+          Writing Test Administration Date: Writing_Test_Date
+          Writing Scale Score: Writing_Scale_Score
+          Writing ACT Readiness Benchmark: Writing_ACT_Readiness_Benchmark
+          Writing Readiness Level: Writing_Readiness_Level
+          Writing Projected one-year ACT Aspire Score Range Lower: Writing_Projected_one_year_Range_Lower
+          Writing Projected one-year ACT Aspire Score Range Upper: Writing_Projected_one_year_Range_Upper
+          Writing Projected two-year ACT Aspire Score Range Lower: Writing_Projected_two_year_Range_Lower
+          Writing Projected two-year ACT Aspire Score Range Upper: Writing_Projected_two_year_Range_Upper
+          Writing Projected ACT Score Range Lower: Writing_Projected_ACT_Score_Range_Lower
+          Writing Projected ACT Score Range Upper: Writing_Projected_ACT_Score_Range_Upper
+          Writing Growth Percentile: Writing_Growth_Percentile
+          Writing Growth Category: Writing_Growth_Category
+          Ideas and Analysis Earned Points: Ideas_Analysis_Earned_Points
+          Ideas and Analysis Total Points: Ideas_Analysis_Total_Points
+          Ideas and Analysis Percent Correct: Ideas_Analysis_Percent_Correct
+          Ideas and Analysis ACT Readiness Range: Ideas_Analysis_ACT_Readiness_Range
+          Development and Support Earned Points: Development_Support_Earned_Points
+          Development and Support Total Points: Development_Support_Total_Points
+          Development and Support Percent Correct: Development_Support_Percent_Correct
+          Development and Support ACT Readiness Range: Development_Support_ACT_Readiness_Range
+          Organization Earned Points: Organization_Earned_Points
+          Organization Total Points: Organization_Total_Points
+          Organization Percent Correct: Organization_Percent_Correct
+          Organization ACT Readiness Range: Organization_ACT_Readiness_Range
+          Language Use and Conventions Earned Points: Language_Use_Conventions_Earned_Points
+          Language Use and Conventions Total Points: Language_Use_Conventions_Total_Points
+          Language Use and Conventions Percent Correct: Language_Use_Conventions_Percent_Correct
+          Language Use and Conventions ACT Readiness Range: Language_Use_Conventions_ACT_Readiness_Range
+          Writing Irregularity: Writing_Irregularity
+          ACT Aspire Composite Score: ACT_Aspire_Composite_Score
+          The ACT Predicted Composite Score Range Low: ACT_Projected_Composite_Score_Range_Low
+          The ACT Predicted Composite Score Range High: ACT_Projected_Composite_Score_Range_High
+          English National Percentile Rank: English_National_Percentile_Rank
+          Reading National Percentile Rank: Reading_National_Percentile_Rank
+          Science National Percentile Rank: Science_National_Percentile_Rank
+          Writing National Percentile Rank: Writing_National_Percentile_Rank
+          Mathematics National Percentile Rank: Mathematics_National_Percentile_Rank
+          ELA Score: ELA_Score
+          ELA Readiness: ELA_Readiness
+          Progress with Text Complexity: Progress_with_Text_Complexity
+          STEM Score: STEM_Score
+          STEM Readiness: STEM_Readiness
+          Progress Toward Career Readiness: Progress_Toward_Career_Readiness
+  
+  prepare_student_assessment:
+    source: $transformations.stage_student_assessment
+    operations:
+      - operation: add_columns
+        columns:
+          TestDate: >
+            {%raw-%}
+            {%- if English_Test_Date is not none and English_Test_Date | length -%} {{English_Test_Date}}
+            {%- elif Mathematics_Test_Date is not none and Mathematics_Test_Date | length -%} {{Mathematics_Test_Date}}
+            {%- elif Reading_Test_Date is not none and Reading_Test_Date | length -%} {{Reading_Test_Date}}
+            {%- elif Writing_Test_Date is not none and Writing_Test_Date | length -%} {{Writing_Test_Date}}
+            {%- elif Science_Test_Date is not none and Science_Test_Date | length -%} {{Science_Test_Date}}
+            {%- endif -%}
+            {%-endraw%}
+          assessmentIdentifier: "ACT Aspire"
+          assessmentNamespace: "uri://act.org/Assessments/ACTAspire"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_keys: 
+          - Actual_Grade
+          - assessmentIdentifier
+        right_keys: 
+          - ACT_Aspire_GradeLevel
+          - assessmentIdentifier
+        right_keep_columns:
+          - Grade_CodeValue
+          - Grade_Namespace
+      - operation: modify_columns
+        columns:
+          Grade_CodeValue: "{%raw%}{{Grade_CodeValue|string}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          school_year: "{%raw%}{{TestDate[-4:]}}{%endraw%}"
+          school_year_month: "{%raw%}{{TestDate[0:2]}}{%endraw%}"
+          gradeLevelDescriptor: "{%raw%}{%- if Grade_CodeValue is not none and Grade_CodeValue|length and Grade_CodeValue != 'nan'-%} {{Grade_Namespace}}#{{Grade_CodeValue}}{% endif %}{%endraw%}"
+          administrationDate: "{%raw%}{{TestDate}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{md5(State_Student_ID ~ TestDate)}}{%endraw%}"
+          studentUniqueId: "{%raw%}{{State_Student_ID}}{%endraw%}"
+      - operation: date_format
+        column: administrationDate
+        from_format: "%m%d%Y"
+        to_format: "%Y-%m-%d"
+      - operation: add_columns
+        columns:
+          schoolYear: "{%raw%}{% if school_year is not none and school_year_month|int not in (7,8,9,10,11,12) %}{{school_year|int}}{% else %}{{school_year|int + 1}}{% endif %}{%endraw%}"
+      - operation: filter_rows
+        query: studentUniqueId != ''
+        behavior: include
+
+  prepare_student_assessment_edorg:
+    source: $transformations.prepare_student_assessment
+    operations:
+      - operation: filter_rows
+        query: School_Code != ''
+        behavior: include
+
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: >
+            {%raw-%}  
+            {"gradeLevelDescriptor": "{{Grade_Namespace}}#{{Grade_CodeValue}}"
+            },
+            {%-endraw%}
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{grade_json | replace('\n', '')-}}{%endraw%}"
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns: 
+          grade_json: agg(grade_json,)
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+
+  prepare_assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  performance_levels:  
+    source: $sources.objectivePerformanceLevel
+    operations:
+      - operation: join
+        sources:
+          - $sources.performanceLevelDescriptors
+        join_type: inner
+        left_keys: 
+        - reportingMethod
+        right_keys: 
+        - reportingMethod
+        right_keep_columns:
+        - namespace
+        - codeValue
+      - operation: add_columns
+        columns:
+          performancejson: >
+              {%raw-%}
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
+                "performanceLevelDescriptor": "{{namespace}}#{{codeValue}}"
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          performancejson: "{%raw%}{{performancejson | replace('\n', '')-}}{%endraw%}"  
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns: 
+          performancejson: agg(performancejson,,)
+
+  objective_scores:  
+    source: $sources.objectiveScores
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+          scorejson: >
+              {%raw-%}
+              {
+                "assessmentReportingMethodDescriptor": "{{reportingMethod}}",
+                "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{resultDataType}}"
+              }
+              {%-endraw%}  
+      - operation: modify_columns
+        columns:
+          scorejson: "{%raw%}{{scorejson | replace('\n', '')-}}{%endraw%}"  
+      - operation: group_by
+        group_by_columns:
+          - identificationCode
+        create_columns: 
+          scorejson: agg(scorejson,,)
+
+  performance_descriptors:  
+    source: $sources.performanceLevelDescriptors
+    operations:
+      - operation: keep_columns
+        columns:
+        - codeValue
+        - shortDescription
+        - namespace
+        - description
+      - operation: distinct_rows
+        columns:
+        - codeValue
+        - shortDescription
+        - namespace
+        - description
+
+
+  prepare_objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.performance_levels
+        join_type: left
+        left_keys: 
+        - identificationCode
+        right_keys: 
+        - identificationCode
+        right_keep_columns:
+        - performancejson
+      - operation: join
+        sources:
+          - $transformations.objective_scores
+        join_type: left
+        left_keys: 
+        - identificationCode
+        right_keys: 
+        - identificationCode
+        right_keep_columns:
+        - scorejson
+
+destinations:
+  assessments:
+    source: $transformations.prepare_assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  performanceLevelDescriptors:
+    source: $transformations.performance_descriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+  objectiveAssessments:
+    source: $transformations.prepare_objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+  studentAssessments:
+    source: $transformations.prepare_student_assessment
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+  studentAssessmentEducationOrganizationAssociations:
+    source: $transformations.prepare_student_assessment_edorg
+    template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
+    extension: jsonl
