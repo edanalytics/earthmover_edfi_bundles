@@ -11,14 +11,88 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
+    # need to conform the various inputs we accept first
+    EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
 
 {% set assessmentIdentifier = "CogAT" %}
 {% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
 
+{#
+  Three versions of the same CogAT export turn up, so this bundle takes all three. Each score
+  covers seven subtests (V, Q, N, V+Q, V+N, Q+N, V+Q+N):
+
+    * .txt -- fixed width, all seven values in one field
+    * .csv -- one column per subtest: "Standard Age Score (SAS) V", "... VQ"
+    * .csv -- one column per score: "Standard_Age_Score_SAS" = "107105117107114114112"
+
+  `input_normalized` puts all three into that last shape, which the rest of the bundle reads.
+  It can't check which file it got -- Earthmover picks its branches before it sees any
+  columns -- so it matches each field with a pattern that fits all three spellings.
+#}
+
+{% set raw_tests = ["verbal", "quantitative", "nonverbal"] %}
+{% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"] %}
+
+{# (name we use, pattern that finds it in any of the three files). The last three need
+   patterns because the files spell them differently. #}
+{% set flat_fields = [
+  ("Student_ID",                    "student_id"),
+  ("Secondary_Student_ID",          "secondary_student_id"),
+  ("Date_Tested",                   "date_tested"),
+  ("Class_Grade",                   "class_grade"),
+  ("Battery",                       "battery"),
+  ("Level",                         "level"),
+  ("Form",                          "form"),
+  ("Norm_Year",                     "norm_year"),
+  ("Ability_Profile",               "ability_profile*"),
+  ("TestInstance_GUID",             "test*instance_guid"),
+  ("Mode_of_Administration_String", "mode_of_administration*"),
+] %}
+
+{# (score name we output, field name, subtests, characters each subtest gets, column prefix,
+   filter to apply). `<prefix>*` finds either the one combined column or the per-subtest ones.
+   Note the character counts apply to CSVs too, even though a CSV has no widths of its own:
+   we join the per-subtest columns into one string below and then slice it by position, so a
+   value longer than its count would push the ones after it out of place. #}
+{% set score_fields = [
+  ("number_attempted", "Number_Attempted_NA",               raw_tests, 2, "number_attempted_na",               "| int(default=-1)"),
+  ("raw_score",        "Raw_Score_RS",                      raw_tests, 2, "raw_score_rs",                      "| int(default=-1)"),
+  ("raw_pse",          "Raw_Score_Personal_Standard_Error", raw_tests, 7, "raw_score_personal_standard_error", "| float(default=-1.0)"),
+  ("raw_upper",        "Raw_Score_Upper_Bound",             raw_tests, 7, "raw_score_upper_bound",             "| float(default=-1.0)"),
+  ("raw_lower",        "Raw_Score_Lower_Bound",             raw_tests, 7, "raw_score_lower_bound",             "| float(default=-1.0)"),
+  ("completed",        "Completion_Criteria_CC",            all_tests, 1, "completion_criteria_cc",            ""),
+  ("sas_valid",        "SAS_Valid_Flags",                   all_tests, 1, "sas_valid_flags",                   ""),
+  ("tmo",              "TMO_Flags",                         all_tests, 1, "tmo_flags",                         ""),
+  ("ev",               "Extremely_Variable_Flags",          all_tests, 1, "extremely_variable_flags",          ""),
+  ("chance",           "Chance_Flags",                      all_tests, 1, "chance_flags",                      ""),
+  ("gs",               "Grade_Stanine_GS",                  all_tests, 1, "grade_stanine_gs",                  ""),
+  ("as",               "Age_Stanine_AS",                    all_tests, 1, "age_stanine_as",                    ""),
+  ("ls",               "Local_Stanines",                    all_tests, 1, "local_stanines",                    ""),
+  ("gpr",              "Grade_Percentile_Rank_GPR",         all_tests, 2, "grade_percentile_rank_gpr",         "| int(default=-1)"),
+  ("apr",              "Age_Percentile_Rank_APR",           all_tests, 2, "age_percentile_rank_apr",           "| int(default=-1)"),
+  ("lpr",              "Local_Percentile_Rank",             all_tests, 2, "local_percentile_rank",             "| int(default=-1)"),
+  ("uss",              "Universal_Scale_Score_USS",         all_tests, 3, "universal_scale_score_uss",         "| int(default=-1)"),
+  ("sas",              "Standard_Age_Score_SAS",            all_tests, 3, "standard_age_score_sas",            "| int(default=-1)"),
+  ("sas_upper",        "SAS_Upper_Bound",                   all_tests, 6, "sas_upper_bound",                   "| float(default=-1.0)"),
+  ("sas_lower",        "SAS_Lower_Bound",                   all_tests, 6, "sas_lower_bound",                   "| float(default=-1.0)"),
+] %}
+
 sources:
   input:
     file: ${INPUT_FILE}
+  {% if "${INPUT_FILE}".lower().endswith(".txt") %}
+    type: fixedwidth
+    # the file starts with a byte-order mark; without this the first record shifts a character
+    encoding: utf-8-sig
+    colspec_file: ./fwf_to_csv_xwalks/cogat_fwf_xwalk.csv
+    colspec_headers:
+      start: start_index
+      end: end_index
+      name: column_name
+  {% else %}
+    type: csv
     header_rows: 1
+  {% endif %}
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -45,20 +119,56 @@ sources:
     header_rows: 1
 
 transformations:
-  
+
   gradeLevelDescriptors:
     source: $sources.gradeLevelDescriptors
-    operations: 
+    operations:
       - operation: rename_columns
         columns:
           edfi_descriptor: gradeDescriptor
 
-  input:
+  # Okay here's the big normalization where 3 potential inputs become one
+  input_normalized:
     source: $sources.input
+    operations:
+      - operation: snake_case_columns
+      # CogAT has room for 30 subtests but only ever reports 7. The per-subtest CSV still
+      # ships columns 8-30, so drop them. Matches nothing in the other two files.
+      - operation: drop_columns
+        columns:
+        {% for score, column, tests, width, prefix, cast in score_fields %}
+          - "{{prefix}}_[89]"
+          - "{{prefix}}_[12][0-9]"
+          - "{{prefix}}_30"
+        {% endfor %}
+      # blank fixed-width fields read as NaN, not "", so make everything a string first.
+      - operation: modify_columns
+        columns:
+        {% for column, pattern in flat_fields %}
+          "{{pattern}}": "{%raw%}{{ value if value is string }}{%endraw%}"
+        {% endfor %}
+        {% for score, column, tests, width, prefix, cast in score_fields %}
+          "{{prefix}}*": "{%raw%}{{ (value if value is string else '').rjust({%endraw%}{{width}}{%raw%}) }}{%endraw%}"
+        {% endfor %}
+      {% for column, pattern in flat_fields %}
+      - operation: combine_columns
+        columns:
+          - "{{pattern}}"
+        new_column: {{column}}
+        separator: ''
+      {% endfor %}
+      {% for score, column, tests, width, prefix, cast in score_fields %}
+      - operation: combine_columns
+        columns:
+          - "{{prefix}}*"
+        new_column: {{column}}
+        separator: ''
+      {% endfor %}
+
+  input:
+    source: $transformations.input_normalized
     operations: []
 
-  {% set raw_tests = ["verbal", "quantitative", "nonverbal"]%}
-  {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"]%}
   clean_results:
     source: $transformations.input
     operations:
@@ -76,26 +186,9 @@ transformations:
           - Level
           - Form
           - Norm_Year
-          - Number_Attempted_NA
-          - Raw_Score_RS
-          - Raw_Score_Personal_Standard_Error
-          - Raw_Score_Upper_Bound
-          - Raw_Score_Lower_Bound
-          - Completion_Criteria_CC
-          - SAS_Valid_Flags
-          - TMO_Flags
-          - Extremely_Variable_Flags
-          - Chance_Flags
-          - Grade_Stanine_GS
-          - Age_Stanine_AS
-          - Local_Stanines
-          - Grade_Percentile_Rank_GPR
-          - Age_Percentile_Rank_APR
-          - Local_Percentile_Rank
-          - Universal_Scale_Score_USS
-          - Standard_Age_Score_SAS
-          - SAS_Upper_Bound
-          - SAS_Lower_Bound
+          {% for score, column, tests, width, prefix, cast in score_fields %}
+          - {{column}}
+          {% endfor %}
           - Ability_Profile
           - TestInstance_GUID
           - Mode_of_Administration_String
@@ -145,46 +238,13 @@ transformations:
   scored_results:
     source: $transformations.clean_results
     operations:
+      # unpack fixed-width sections of individual columns
       - operation: add_columns
         columns:
-        {% for test in raw_tests %}
-          # unpack fixed-width sections of individual columns
-          # 2 chars each
-          number_attempted_{{test}}: "{% raw %}{{Number_Attempted_NA[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
-          raw_score_{{test}}: "{% raw %}{{Raw_Score_RS[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
-
-          # 7 chars each
-          raw_pse_{{test}}: "{% raw %}{{Raw_Score_Personal_Standard_Error[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
-          raw_upper_{{test}}: "{% raw %}{{Raw_Score_Upper_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
-          raw_lower_{{test}}: "{% raw %}{{Raw_Score_Lower_Bound[{% endraw %}(7 * {{loop.index - 1}}):(7 * {{loop.index - 1}}) + 7{% raw %}] | float(default=-1.0)}}{% endraw %}"
+        {% for score, column, tests, width, prefix, cast in score_fields %}
+        {% for test in tests %}
+          {{score}}_{{test}}: "{%raw%}{{ {%endraw%}{{column}}[{{width * loop.index0}}:{{width * loop.index0 + width}}] {{cast}}{%raw%} }}{%endraw%}"
         {% endfor %}
-
-        {% for test in all_tests %}
-          # unpack fixed-width sections of individual columns
-          # flag variables - 1 char each
-          completed_{{test}}: "{% raw %}{{Completion_Criteria_CC[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          sas_valid_{{test}}: "{% raw %}{{SAS_Valid_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          tmo_{{test}}: "{% raw %}{{TMO_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          ev_{{test}}: "{% raw %}{{Extremely_Variable_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          chance_{{test}}: "{% raw %}{{Chance_Flags[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-
-          # stanines - 1 char each
-          gs_{{test}}: "{% raw %}{{Grade_Stanine_GS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          as_{{test}}: "{% raw %}{{Age_Stanine_AS[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-          ls_{{test}}: "{% raw %}{{Local_Stanines[{% endraw %}{{loop.index - 1}}{% raw %}]}}{% endraw %}"
-
-          # percentile ranks - 2 chars each
-          gpr_{{test}}: "{% raw %}{{Grade_Percentile_Rank_GPR[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
-          apr_{{test}}: "{% raw %}{{Age_Percentile_Rank_APR[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
-          lpr_{{test}}: "{% raw %}{{Local_Percentile_Rank[{% endraw %}(2 * {{loop.index - 1}}):(2 * {{loop.index - 1}}) + 2{% raw %}] | int(default=-1)}}{% endraw %}"
-
-          # normalized scores - 3 chars each
-          uss_{{test}}: "{% raw %}{{Universal_Scale_Score_USS[{% endraw %}(3 * {{loop.index - 1}}):(3 * {{loop.index - 1}}) + 3{% raw %}] | int(default=-1)}}{% endraw %}"
-          sas_{{test}}: "{% raw %}{{Standard_Age_Score_SAS[{% endraw %}(3 * {{loop.index - 1}}):(3 * {{loop.index - 1}}) + 3{% raw %}] | int(default=-1)}}{% endraw %}"
-          
-          # 6 chars each
-          sas_upper_{{test}}: "{% raw %}{{SAS_Upper_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
-          sas_lower_{{test}}: "{% raw %}{{SAS_Lower_Bound[{% endraw %}(6 * {{loop.index - 1}}):(6 * {{loop.index - 1}}) + 6{% raw %}] | float(default=-1.0)}}{% endraw %}"
         {% endfor %}
 
   coded_results:

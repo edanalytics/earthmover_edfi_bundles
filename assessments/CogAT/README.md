@@ -7,36 +7,23 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 
 To run this bundle, please add your own source file(s):
 <details>
-<summary><code>data/cogat_export.txt</code></summary>
-This bundle currently works with CogAT 7 & 8. It assumes you are working with a fixed-width text file exported from Riverside Insights DataManager with a total row length of 5682 characters.
+<summary><code>data/cogat_export.txt</code> or <code>data/cogat_export.csv</code></summary>
+This bundle works with CogAT 7 & 8, and takes any of the three files we see in practice. At this time it's not clear what we should consider the canonical export from the Riverside Insights DataManager, but that is a problem for another day.
+There is a sample of each in `data/`:
+
+| File | Looks like |
+| --- | --- |
+| `.txt` | fixed width, 5682 characters per row (layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv`) |
+| `.csv` | one column per subtest: `Standard Age Score (SAS) V`, `Standard Age Score (SAS) VQ` |
+| `.csv` | one column per score: `Standard_Age_Score_SAS` = `107105117107114114112` |
 
 </details>
-<details>
-<summary><code>seeds/student_ids.csv</code></summary>
-This is a crosswalk file for translating the student IDs in the assessment CSVs to student IDs in Ed-Fi (one may be a state ID and the other a district ID, for example).
 
-This file is **optional**. If one of the existing student IDs within the assessment
-file maps to Ed-Fi's `studentUniqueId`, you can omit the crosswalk file and specify 
-which column to use (e.g. `StudentID` or `Secondary_Student_ID`).
-
-If neither of these match Ed-Fi's `studentUniqueId`, see the CLI parameters section below.
-
-Required columns:
-   - `student_id_from`
-   - `student_id_to`
-</details>
-
-Once your input files are in place, you need to transform the fixed-width CogAT data into a CSV. This bundle includes a script and configuration file that accomplish this:
-
-```bash
-python3 util/preprocessing.py data/cogat_export.txt util/cogat_format.csv
-```
-
-This will output `cogat_export.csv`, which can be used as input to Earthmover. Run the following command:
+Once your input files are in place, run the following command:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_file.txt",
 "OUTPUT_DIR": "output/",
 "API_YEAR" : "2023",
 "STUDENT_ID_NAME" : "Student_ID"}'
@@ -55,4 +42,5 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 ### Maintenance notes
 
+  - We are trying to accommodate two different formats of CSV that we have seen. One matches the FWF and has individual columns containing strings of different scores packed together. We also see CSVs where the score columns are broken out. In order to accept all of this in a single bundle, the "fixed-width-like" CSV still needs to adhere to the column widths in the colspecs. We haven't yet encountered any that don't, but this is a risk, and a place to start debugging if your CSV input is producing gibberish outputs.
   - The seed file `seeds/performanceLevelDescriptors.csv` was generated using the script `util/generate_pl_descriptors.py`. This was done to ensure that all possible CogAT [Ability Profiles](https://riversideinsights.com/citc/profile-finder) would be represented. If, in a future edition of the test, the set of possible Ability Profiles changes, this script will need to be modified.
