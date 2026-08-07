@@ -45,7 +45,7 @@ transformations:
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}{{AssessmentName}}{%endraw%}"
-          namespace: uri://NAMESPACE_PLACEHOLDER
+          namespace: uri://edanalytics.org
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
       - operation: combine_columns
         columns:
