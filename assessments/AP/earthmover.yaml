@@ -372,12 +372,6 @@ transformations:
           IrregularityCode2: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           Score: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           ExamCode: "{%raw%}{{ExamCode | int}}{%endraw%}"
-      # Filter to target school year if specified
-      {% if "${API_YEAR}" | length %}
-      - operation: filter_rows
-        query: School_Year != '${API_YEAR}'
-        behavior: exclude
-      {% endif %}
 
   # ===== Assessment-level transformations =====
 
