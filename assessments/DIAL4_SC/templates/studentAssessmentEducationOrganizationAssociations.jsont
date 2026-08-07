@@ -1,0 +1,15 @@
+{%- if schoolId is not none and schoolId | length -%}{
+      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Enrollment",
+      "educationOrganizationReference": {
+        "educationOrganizationId": {{ schoolId }}
+      },
+      "schoolYearTypeReference": {
+        "schoolYear": {{schoolYear}}
+      },
+      "studentAssessmentReference": {
+        "assessmentIdentifier": "{{ assessmentIdentifier }}",
+        "namespace": "{{ namespace }}",
+        "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
+        "studentUniqueId": "{{ studentUniqueId }}"
+      }
+}{%- endif -%}

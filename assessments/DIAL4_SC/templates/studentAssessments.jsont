@@ -1,0 +1,80 @@
+ {%- set total_possible_scores = [
+    [totalscore, "Integer", "DIAL_TOTAL_INT"],
+    [totalpercentile, "Percentile", "DIAL_TOTAL_PER"] 
+] -%}
+
+{%- set total_scores = [] -%}
+{%- for score in total_possible_scores -%}
+  {%- if score[0] is not none and score[0] | string | length -%}
+    {%- set _ = total_scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+  {%- set score_map = {
+  "MOTOR": [
+    [motorscore, "Integer", "DIAL_MOTR_INT"],
+    [motorpercentile, "Percentile", "DIAL_MOTR_PER"]
+  ],
+  "LANGUAGE": [
+    [languagescore, "Integer", "DIAL_LANG_INT"],
+    [languagepercentile, "Percentile", "DIAL_LANG_PER"]
+  ],
+  "CONCEPTS": [
+    [conceptsscore, "Integer", "DIAL_CONC_INT"],
+    [conceptspercentile, "Percentile", "DIAL_CONC_PER"]
+  ]
+} -%}
+ 
+ {
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{schoolYear | int}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administrationDate}}",
+  "administrationEndDate": "{{administrationEndDate}}"
+  {%- if gradelevel is not none and gradelevel | length -%}
+  ,"whenAssessedGradeLevelDescriptor": "{{whenAssessedGradeLevelDescriptor}}"
+  {% endif %}
+  
+  {%- if total_scores | length > 0 -%}
+  ,"scoreResults": [
+    {%- for score in total_scores -%}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+        "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {%- endif -%}
+  {%- if score_map | length > 0 -%}
+  ,"studentObjectiveAssessments": [
+    {%- for domain, score_list in score_map.items() -%}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{domain}}",
+        "namespace": "{{namespace}}"
+      },
+      "scoreResults": [
+        {%- for score in score_list if score[0] is not none and score[0] | string | length -%}
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[2]}}",
+          "resultDatatypeTypeDescriptor": "{{descriptorNamespace}}/ResultDatatypeTypeDescriptor#{{score[1]}}",
+          "result": "{{score[0]}}"
+        }{% if not loop.last %},{% endif %}
+        {%- endfor -%}
+      ]
+    }{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  
+    ]
+    {%- endif -%}
+}
