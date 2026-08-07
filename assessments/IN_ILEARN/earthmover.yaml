@@ -1,7 +1,7 @@
 version: 2
 
 config:
-  log_level: DEBUG
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   show_graph: False
@@ -20,7 +20,35 @@ sources:
     file: ${INPUT_FILE}
     type: ${INPUT_FILETYPE}
     header_rows: 1
-
+    optional_fields:
+      - Persuasive Organization
+      - Persuasive Evidence/Elaboration
+      - Persuasive Conventions
+      - Test Start Date
+      - Test Completion Date
+      - Opinion Organization/Purpose
+      - Opinion Evidence/Development & Elaboration
+      - Opinion Conventions
+      - Argumentative Organization
+      - Argumentative Evidence/Elaboration
+      - Informative Organization
+      - Informative Evidence/Elaboration
+      - Narrative Organization
+      - Narrative Evidence/Elaboration
+      - Argumentative Organization/Purpose
+      - Argumentative Evidence/Development & Elaboration
+      - Informative Organization/Purpose
+      - Informative Evidence/Development & Elaboration
+      - Narrative Organization/Purpose
+      - Narrative Evidence/Development & Elaboration
+      - ILEARN Checkpoints State Percentile Rank
+      - ILEARN Checkpoints State Percentile Ranking
+      - ILEARN Checkpoints Corporation Percentile Ranking
+      - ILEARN Corporation Percentile Ranking
+      - ILEARN Checkpoints Reporting Category 1 Performance
+      - ILEARN Checkpoints Reporting Category 2 Performance
+      - ILEARN Checkpoints Reporting Category 3 Performance
+      - ILEARN Checkpoints Reporting Category 3 Performance
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -42,6 +70,7 @@ transformations:
     source: $sources.input
     operations: []
 
+  # This transformation is used to generate the base student assessments table.
   studentAssessments:
     source: $transformations.input
     operations:
@@ -55,18 +84,19 @@ transformations:
       # These columns are necessary to imply administration dates, since ILEARN does not provide admin date as a column in their exports.
         # file_dir: Extracts the directory path where the file was pulled from. Usually follows the format of:
           # /efs/tmp_storage/{env}/sharefile/{tenant_code}/ILEARN/{api_year}/{ds_nodash}/{ts_nodash}/ilearn_pre_exec/{time_bound_subject}/{file_name}.csv
-        # admin_date: Extracts the {time_bound_subject} from file_dir. The ouput would resemble:
+        # admin_date_from_file_dir: Extracts the {time_bound_subject} from file_dir. The ouput would resemble:
           # EOY Biology
-        # school_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
+        # api_year: Extracts the {api_year} from file_dir, and uses it as a school_year value for the student assessment.
         # subject_descriptor: We need to extract the subject descriptor from the test_name column, which follows the format of: "ILEARN Biology ECA".
         # generated_test_id: Hash to define a unique identifier for the student assessment record.
         # namespace: Added namespace to re-use in templace file.
       - operation: add_columns
         columns:
           file_dir: "${INPUT_FILE}"
-          admin_date: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
-          school_year: ${API_YEAR}
+          admin_date_from_file_dir: "{% raw %}{{ file_dir.split('/')[11] }}{% endraw %}"
+          api_year: ${API_YEAR}
           subject_descriptor: "{% raw %}{{ test_name.split('ILEARN ')[1].split(' ECA')[0].split(' Grade')[0] }}{% endraw %}"
+          is_checkpoint: "{% raw %}{{ 'Checkpoint' in test_name }}{% endraw %}"
           generated_test_id: "{%raw%}{{ stn }}_{{ enrolled_school_id }}_{{ test_name }}{%endraw%}"
           namespace: "uri://doe.in.gov/ILEARN/Assessment"
 
@@ -84,30 +114,61 @@ transformations:
           argumentative_organization_purpose: arg_org
           argumentative_evidence_development_elaboration: arg_evid
           argumentative_conventions: arg_conv
+          argumentative_organization: arg_org_ext
+          argumentative_evidence_elaboration: arg_evid_ext
           informative_organization_purpose: inf_org
           informative_evidence_development_elaboration: inf_evid
           informative_conventions: inf_conv
+          informative_evidence_elaboration: inf_evid_ext
+          informative_organization: inf_org_ext
           narrative_organization_purpose: nar_org
           narrative_evidence_development_elaboration: nar_evid
           narrative_conventions: nar_conv
+          narrative_evidence_elaboration: nar_evid_ext
           opinion_organization_purpose: op_org
           opinion_evidence_development_elaboration: op_evid
           opinion_conventions: op_conv
+          narrative_organization: nar_org_ext
           explanatory_organization_purpose: expl_org
           explanatory_evidence_development_elaboration: expl_evid
           explanatory_conventions: expl_conv
-
+          persuasive_organization: pers_org
+          persuasive_evidence_elaboration: pers_evid
+          persuasive_conventions: pers_conv
+          ilearn_checkpoints_state_percentile_rank: check_state_perc_rank
+          ilearn_checkpoints_state_percentile_ranking: check_state_perc_ranking
+          ilearn_checkpoints_corporation_percentile_ranking: check_corp_perc_ranking
+          ilearn_corporation_percentile_ranking: corp_perc_ranking
+          ilearn_checkpoints_reporting_category_1_performance: check_rc1_performance
+          ilearn_checkpoints_reporting_category_2_performance: check_rc2_performance
+          ilearn_checkpoints_reporting_category_3_performance: check_rc3_performance
+          
+      - operation: modify_columns
+        columns:
+          check_state_perc_rank: "{% raw %}{{ check_state_perc_rank.split('%')[0] }}{% endraw %}"
+          check_state_perc_ranking: "{% raw %}{{ check_state_perc_ranking.split('%')[0] }}{% endraw %}"
+          check_corp_perc_ranking: "{% raw %}{{ check_corp_perc_ranking.split('%')[0] }}{% endraw %}"
+          corp_perc_ranking: "{% raw %}{{ corp_perc_ranking.split('%')[0] }}{% endraw %}"
+          
       # Duplicate admin_date to use in expectations below before it gets transformed into a date in the next step.
       - operation: duplicate_columns
         columns:
-          admin_date: admin_date_string
+          admin_date_from_file_dir: admin_date_string
 
       # Map admin_date values extracted above to estimated administration dates.
       - operation: map_values
-        column: admin_date
+        column: admin_date_from_file_dir
         map_file: ./seeds/administrationDate.csv
 
-      # Map scale scores to remove "UND", which is not a data type accepted by EdFi in the scores payload.
+      # Format admin_date_from_file_dir to match the format of the other admin_date columns.
+      - operation: date_format
+        column: admin_date_from_file_dir
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d %H:%M:%S.%f"
+        exact_match: False
+        ignore_errors: True
+
+      # Map scale scores to remove "UND"/"Insufficient to score", which is not a data type accepted by EdFi in the scores payload.
       - operation: map_values
         columns:
           - overall_scale_score
@@ -115,32 +176,77 @@ transformations:
           - quantile_measure   
         mapping:
           UND: null  
+          Insufficient to score: null
 
       # Match academic subject from test_name to shortened academic subject used in assessmentIdentifier 
       # (specified in academicSubjectDescriptor seed table)
+      # We use a checkpoint flag since the subjects for checkpoints are the same as the subjects for the other assessments, however, they have different assessment identifiers.
       - operation: join
         sources:
           - $sources.assessments
         join_type: inner
         left_keys:
           - subject_descriptor
+          - is_checkpoint
         right_keys: 
           - academicSubject
+          - isCheckpoint
         right_keep_columns:
           - assessmentIdentifier
           - assessmentTitle
 
-    expect: 
-      - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' 
-      - school_year|int != 0
-      - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+    # These are intentionally off because it consumes too much memory to compute the expectation for each row, making runtime slow.
+    # expect: 
+    #   - admin_date_string == 'EOY' or admin_date_string == 'EOY Biology' or admin_date_string == 'EOY Government' or admin_date_string == 'Checkpoint 1' or admin_date_string == 'Checkpoint 2' or admin_date_string == 'Checkpoint 3' 
+    #   - api_year|int != 0
+    #   - subject_descriptor == 'English/Language Arts' or subject_descriptor == 'Mathematics' or subject_descriptor == 'Social Studies' or subject_descriptor == 'Science' or subject_descriptor == 'Biology' or subject_descriptor == 'U.S. Government'
+
+
+  # Some exports in the new format have timestamps, so we need to format them here to match the format of the other admin_date columns.
+  # We don't want to include the rows without timestamps, otherwise we will attempt to transform nulls into date formats, and that's expensive and can make runtime slow.
+  studentAssessments_with_full_timestamps:
+      source: $transformations.studentAssessments
+      operations:
+        # Pick out rows with timestamps.
+        - operation: filter_rows
+          query: test_start_date != ''
+          behavior: include
+
+        # Format the timestamps.
+        - operation: date_format
+          column: test_start_date
+          from_format: "%m/%d/%Y %H:%M"
+          to_format: "%Y-%m-%d %H:%M:%S.%f"
+          exact_match: False
+          ignore_errors: true
+
+  # Some exports in the old format do not have timestamps, so we need to pick out those rows here.
+  studentAssessments_without_timestamps:
+    source: $transformations.studentAssessments
+    operations:
+      - operation: filter_rows
+        query: test_start_date == ''
+        behavior: include
+
+  # We need to stack the two tables together to get a complete student assessments table.
+  studentAssessments_stacked:
+    source: $transformations.studentAssessments_with_full_timestamps
+    operations:
+      - operation: union
+        sources:
+        - $transformations.studentAssessments_without_timestamps
+        fill_missing_columns: False
 
 
 
   # Generate grade level json for assessment template based on seeds
   gradeLevelDescriptors:
     source: $sources.gradeLevelDescriptors
-    operations:
+    operations:    
+      - operation: distinct_rows
+        columns:
+          - assessmentIdentifier
+          - gradeLevelDescriptor
       - operation: add_columns
         columns:
           grade_json: >
@@ -179,7 +285,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.studentAssessments_stacked
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
