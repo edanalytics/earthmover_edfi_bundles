@@ -13,7 +13,7 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
     # need to conform the various inputs we accept first
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
-
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org 
 {% set assessmentIdentifier = "CogAT" %}
 {% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
 
@@ -287,6 +287,7 @@ transformations:
         columns:
           assessmentIdentifier: "{{assessmentIdentifier}}"
           namespace: "{{namespace}}"
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
   
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
@@ -348,6 +349,16 @@ transformations:
         join_type: inner
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
+
+  objectiveAssessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: add_columns
+        columns:
+          descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
 destinations:
   assessments:
@@ -363,7 +374,7 @@ destinations:
     template: ./templates/performanceLevelDescriptors.jsont
     extension: jsonl
   objectiveAssessments:
-    source: $sources.objectiveAssessments
+    source: $transformations.objectiveAssessments
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
