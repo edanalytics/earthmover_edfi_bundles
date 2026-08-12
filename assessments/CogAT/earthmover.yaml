@@ -29,7 +29,6 @@ config:
   It can't check which file it got -- Earthmover picks its branches before it sees any
   columns -- so it matches each field with a pattern that fits all three spellings.
 #}
-{% set input_is_fwf = "${INPUT_FILE}".lower().endswith(".txt") %}
 
 {% set raw_tests = ["verbal", "quantitative", "nonverbal"] %}
 {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"] %}
@@ -81,20 +80,15 @@ config:
 sources:
   input:
     file: ${INPUT_FILE}
-  {% if input_is_fwf %}
+  {% if "${INPUT_FILE}".lower().endswith(".txt") %}
     type: fixedwidth
     # the file starts with a byte-order mark; without this the first record shifts a character
     encoding: utf-8-sig
-    # this file gives each subtest its own column. Reading a whole score field at once would
-    # not work: pandas trims spaces off both ends, and the values are right-aligned, so the
-    # first one would lose its padding and shift the rest.
     colspec_file: ./fwf_to_csv_xwalks/cogat_fwf_xwalk.csv
     colspec_headers:
       start: start_index
       end: end_index
       name: column_name
-    # no `header_rows` on purpose -- the colspec names the columns, so any value here means
-    # "row 1 is a header" and we would lose the first student
   {% else %}
     type: csv
     header_rows: 1
@@ -133,7 +127,7 @@ transformations:
         columns:
           edfi_descriptor: gradeDescriptor
 
-  # Put whichever file we were given into one shape. See the note at the top of this file.
+  # Okay here's the big normalization where 3 potential inputs become one
   input_normalized:
     source: $sources.input
     operations:
@@ -148,7 +142,6 @@ transformations:
           - "{{prefix}}_30"
         {% endfor %}
       # blank fixed-width fields read as NaN, not "", so make everything a string first.
-      # Scores get padded back to their width -- a no-op if they arrived already combined.
       - operation: modify_columns
         columns:
         {% for column, pattern in flat_fields %}
@@ -157,9 +150,6 @@ transformations:
         {% for score, column, tests, width, prefix, cast in score_fields %}
           "{{prefix}}*": "{%raw%}{{ (value if value is string else '').rjust({%endraw%}{{width}}{%raw%}) }}{%endraw%}"
         {% endfor %}
-      # give each field the name the rest of the bundle uses. `combine_columns` rather than
-      # `rename_columns` because it takes a pattern, joins per-subtest columns into one,
-      # passes a single column through as-is, and still errors if the field is missing.
       {% for column, pattern in flat_fields %}
       - operation: combine_columns
         columns:
@@ -175,7 +165,6 @@ transformations:
         separator: ''
       {% endfor %}
 
-  # leave empty: the student_ids package swaps this node out for its crosswalked input
   input:
     source: $transformations.input_normalized
     operations: []
@@ -249,7 +238,7 @@ transformations:
   scored_results:
     source: $transformations.clean_results
     operations:
-      # unpack each subtest's value from the fixed-width section it occupies
+      # unpack fixed-width sections of individual columns
       - operation: add_columns
         columns:
         {% for score, column, tests, width, prefix, cast in score_fields %}
@@ -298,14 +287,14 @@ transformations:
         columns:
           assessmentIdentifier: "{{assessmentIdentifier}}"
           namespace: "{{namespace}}"
-
+  
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
     operations:
       - operation: rename_columns
         columns:
           edfi_descriptor: academicSubjectDescriptor
-
+  
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     operations:
@@ -319,7 +308,7 @@ transformations:
       - operation: add_columns
         columns:
           grade_json: >
-            {%raw-%}
+            {%raw-%}  
             {
               "gradeLevelDescriptor": "{{gradeDescriptor}}"
             },
@@ -331,7 +320,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns:
+        create_columns: 
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns
