@@ -15,8 +15,8 @@
   "accommodations": [
     {% set accs = [] %}
 
-    {% if braile == 'Y' %}
-      {% set _ = accs.append('Braile') %}
+    {% if braille == 'Y' %}
+      {% set _ = accs.append('Braille') %}
     {% endif %}
 
     {% if large_print  == 'Y' %}
@@ -111,7 +111,7 @@
         {% for score in scores %}
     {
       "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[1]}}",
-      "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
       "result": "{{score[0]}}"
     } {% if not loop.last %},{% endif %}
     {% endfor %}
@@ -325,7 +325,7 @@
               {%- for score in obj_assess[2] -%}
                 {
                   "assessmentReportingMethodDescriptor": "uri://www.riversideinsights.com/cognitive_abilities_test/AssessmentReportingMethodDescriptor#{{score[0]}}",
-                  "resultDatatypeTypeDescriptor": "uri://ed-fi.org/ResultDatatypeTypeDescriptor#{{score[2]}}",
+                  "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
                   "result": "{{score[1]}}"
                 }
                   {%- if not loop.last -%}
