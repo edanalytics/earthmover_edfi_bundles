@@ -54,7 +54,6 @@ sources:
       end: end_index                      # required if `width` is not provided
       width: field_length                 # required if `start` or `end` is not provided
     type: fixedwidth               # required if `file` does not end with '.txt'
-    header_rows: 0
     {% endif %}
 
 transformations:
