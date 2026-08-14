@@ -8,14 +8,18 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 To run this bundle, please add your own source file(s):
 <details>
 <summary><code>data/cogat_export.txt</code> or <code>data/cogat_export.csv</code></summary>
-This bundle works with CogAT 7 & 8, and takes any of the three files we see in practice. At this time it's not clear what we should consider the canonical export from the Riverside Insights DataManager, but that is a problem for another day.
-There is a sample of each in `data/`:
+This bundle works with CogAT 7 & 8 and takes two files. There is a sample of each in `data/`:
 
-| File | Looks like |
+| File | What it is |
 | --- | --- |
-| `.txt` | fixed width, 5682 characters per row (layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv`) |
-| `.csv` | one column per subtest: `Standard Age Score (SAS) V`, `Standard Age Score (SAS) VQ` |
-| `.csv` | one column per score: `Standard_Age_Score_SAS` = `107105117107114114112` |
+| `.txt` | the vendor's fixed-width export — the canonical file. 5682 characters per row; layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` |
+| `.csv` | `input_student_id_no_match.csv` from a previous run, with the student IDs corrected |
+
+The CSV is **not** a vendor file. When a student can't be matched to Ed-Fi, the run writes
+`input_student_id_no_match.csv`; users fix the IDs in it and submit it again. It matches no
+DataManager export, and no DataManager CSV export is accepted — only this one.
+
+A fixed-width file must be named `.txt`; that is how the bundle tells the two apart.
 
 </details>
 
@@ -42,5 +46,18 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 ### Maintenance notes
 
-  - We are trying to accommodate two different formats of CSV that we have seen. One matches the FWF and has individual columns containing strings of different scores packed together. We also see CSVs where the score columns are broken out. In order to accept all of this in a single bundle, the "fixed-width-like" CSV still needs to adhere to the column widths in the colspecs. We haven't yet encountered any that don't, but this is a risk, and a place to start debugging if your CSV input is producing gibberish outputs.
+  - `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` gives each subtest its own column rather than
+    reading a whole score field at once. Two reasons, both load-bearing. Reading a field whole
+    would break the fixed-width read, because pandas trims spaces off both ends and the values
+    are right-aligned, so the first one would lose its padding and shift the rest. And the
+    no-match file is written by the `student_ids` package through a template that applies
+    `|trim` to every value — a combined field would come back from a resubmission shifted by a
+    character, silently, with no error. One value per column survives both. If you ever change
+    this back to combined fields, the round-trip breaks.
+  - The mode-of-administration flags are split the same way, into
+    `Mode_of_Administration__00` through `__19`, and for the same reason: Riverside's layout
+    says an omitted flag is `0` **or blank**, so reading the field whole would let a blank flag
+    trim away and shift every flag after it. What each position means is written out in
+    `earthmover.yaml`; note the column number is 0-based and so is one less than the position
+    number in Riverside's document.
   - The seed file `seeds/performanceLevelDescriptors.csv` was generated using the script `util/generate_pl_descriptors.py`. This was done to ensure that all possible CogAT [Ability Profiles](https://riversideinsights.com/citc/profile-finder) would be represented. If, in a future edition of the test, the set of possible Ability Profiles changes, this script will need to be modified.

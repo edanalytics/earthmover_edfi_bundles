@@ -18,63 +18,81 @@ config:
 {% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
 
 {#
-  Three versions of the same CogAT export turn up, so this bundle takes all three. Each score
-  covers seven subtests (V, Q, N, V+Q, V+N, Q+N, V+Q+N):
+  This bundle takes two files:
 
-    * .txt -- fixed width, all seven values in one field
-    * .csv -- one column per subtest: "Standard Age Score (SAS) V", "... VQ"
-    * .csv -- one column per score: "Standard_Age_Score_SAS" = "107105117107114114112"
+    * the vendor's fixed-width export (.txt), which is the canonical file
+    * input_student_id_no_match.csv, which this bundle writes when it can't match a student
+      to Ed-Fi. Users fix the IDs and resubmit it.
 
-  `input_normalized` puts all three into that last shape, which the rest of the bundle reads.
-  It can't check which file it got -- Earthmover picks its branches before it sees any
-  columns -- so it matches each field with a pattern that fits all three spellings.
+  Both use the same column names -- `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` names the
+  fixed-width fields, and the CSV is our own file written with those names -- so there is
+  nothing to rename or detect.
+
+  Each score covers seven subtests (V, Q, N, V+Q, V+N, Q+N, V+Q+N). The fixed-width file
+  packs all seven into one field; the colspec reads each into its own column and we keep them
+  that way. That is deliberate: the no-match file is written by the student_ids package
+  through a template that applies `|trim` to every value, which would eat the leading space
+  off a packed field and shift every score behind it. One value per column survives that.
 #}
-
 {% set raw_tests = ["verbal", "quantitative", "nonverbal"] %}
 {% set all_tests = ["verbal", "quantitative", "nonverbal", "composite_vq", "composite_vn", "composite_qn", "composite_vqn"] %}
 
-{# (name we use, pattern that finds it in any of the three files). The last three need
-   patterns because the files spell them differently. #}
-{% set flat_fields = [
-  ("Student_ID",                    "student_id"),
-  ("Secondary_Student_ID",          "secondary_student_id"),
-  ("Date_Tested",                   "date_tested"),
-  ("Class_Grade",                   "class_grade"),
-  ("Battery",                       "battery"),
-  ("Level",                         "level"),
-  ("Form",                          "form"),
-  ("Norm_Year",                     "norm_year"),
-  ("Ability_Profile",               "ability_profile*"),
-  ("TestInstance_GUID",             "test*instance_guid"),
-  ("Mode_of_Administration_String", "mode_of_administration*"),
+{# (position in the mode-of-administration flags, name the templates use for it).
+
+   Riverside's layout gives this field 20 single-character flags, 1 = marked and 0 or BLANK =
+   omitted. Because an omitted flag may be blank, the colspec reads each position into its own
+   `Mode_of_Administration__NN` column: read as one field, a blank flag would be trimmed away
+   and every flag after it would shift a position.
+
+   Column NN is 0-based, so it is one less than the position number in Riverside's document:
+
+     00  Online desktop or laptop        10  Spanish Language Administration
+     01  Online tablet                   11  Extended Time                *
+     02  reserved                        12  Alternative Verbal Reporting *
+     03  reserved                        13  reserved
+     04  Braille                      *  14  reserved
+     05  Large Print                  *  15  reserved
+     06  Proctor led                  *  16  reserved
+     07  Self-paced                   *  17  reserved
+     08  Audio Type                   *  18  reserved
+     09  English Language Administration 19  reserved
+
+   * = reported as an Ed-Fi accommodation below. The rest are read but not reported: 00 and 01
+   describe delivery mode rather than an accommodation, and 09/10 record the language the test
+   was administered in. #}
+{% set accommodation_flags = [
+  ("04", "braille"),
+  ("05", "large_print"),
+  ("06", "proctor_led"),
+  ("07", "self_paced"),
+  ("08", "audio_type"),
+  ("11", "extended_time"),
+  ("12", "alt_v"),
 ] %}
 
-{# (score name we output, field name, subtests, characters each subtest gets, column prefix,
-   filter to apply). `<prefix>*` finds either the one combined column or the per-subtest ones.
-   Note the character counts apply to CSVs too, even though a CSV has no widths of its own:
-   we join the per-subtest columns into one string below and then slice it by position, so a
-   value longer than its count would push the ones after it out of place. #}
+{# (score name we output, field it comes from, subtests reported, filter to apply).
+   Per-subtest columns are named `<field>__<subtest>` by the colspec file. #}
 {% set score_fields = [
-  ("number_attempted", "Number_Attempted_NA",               raw_tests, 2, "number_attempted_na",               "| int(default=-1)"),
-  ("raw_score",        "Raw_Score_RS",                      raw_tests, 2, "raw_score_rs",                      "| int(default=-1)"),
-  ("raw_pse",          "Raw_Score_Personal_Standard_Error", raw_tests, 7, "raw_score_personal_standard_error", "| float(default=-1.0)"),
-  ("raw_upper",        "Raw_Score_Upper_Bound",             raw_tests, 7, "raw_score_upper_bound",             "| float(default=-1.0)"),
-  ("raw_lower",        "Raw_Score_Lower_Bound",             raw_tests, 7, "raw_score_lower_bound",             "| float(default=-1.0)"),
-  ("completed",        "Completion_Criteria_CC",            all_tests, 1, "completion_criteria_cc",            ""),
-  ("sas_valid",        "SAS_Valid_Flags",                   all_tests, 1, "sas_valid_flags",                   ""),
-  ("tmo",              "TMO_Flags",                         all_tests, 1, "tmo_flags",                         ""),
-  ("ev",               "Extremely_Variable_Flags",          all_tests, 1, "extremely_variable_flags",          ""),
-  ("chance",           "Chance_Flags",                      all_tests, 1, "chance_flags",                      ""),
-  ("gs",               "Grade_Stanine_GS",                  all_tests, 1, "grade_stanine_gs",                  ""),
-  ("as",               "Age_Stanine_AS",                    all_tests, 1, "age_stanine_as",                    ""),
-  ("ls",               "Local_Stanines",                    all_tests, 1, "local_stanines",                    ""),
-  ("gpr",              "Grade_Percentile_Rank_GPR",         all_tests, 2, "grade_percentile_rank_gpr",         "| int(default=-1)"),
-  ("apr",              "Age_Percentile_Rank_APR",           all_tests, 2, "age_percentile_rank_apr",           "| int(default=-1)"),
-  ("lpr",              "Local_Percentile_Rank",             all_tests, 2, "local_percentile_rank",             "| int(default=-1)"),
-  ("uss",              "Universal_Scale_Score_USS",         all_tests, 3, "universal_scale_score_uss",         "| int(default=-1)"),
-  ("sas",              "Standard_Age_Score_SAS",            all_tests, 3, "standard_age_score_sas",            "| int(default=-1)"),
-  ("sas_upper",        "SAS_Upper_Bound",                   all_tests, 6, "sas_upper_bound",                   "| float(default=-1.0)"),
-  ("sas_lower",        "SAS_Lower_Bound",                   all_tests, 6, "sas_lower_bound",                   "| float(default=-1.0)"),
+  ("number_attempted", "Number_Attempted_NA",               raw_tests, "| int(default=-1)"),
+  ("raw_score",        "Raw_Score_RS",                      raw_tests, "| int(default=-1)"),
+  ("raw_pse",          "Raw_Score_Personal_Standard_Error", raw_tests, "| float(default=-1.0)"),
+  ("raw_upper",        "Raw_Score_Upper_Bound",             raw_tests, "| float(default=-1.0)"),
+  ("raw_lower",        "Raw_Score_Lower_Bound",             raw_tests, "| float(default=-1.0)"),
+  ("completed",        "Completion_Criteria_CC",            all_tests, ""),
+  ("sas_valid",        "SAS_Valid_Flags",                   all_tests, ""),
+  ("tmo",              "TMO_Flags",                         all_tests, ""),
+  ("ev",               "Extremely_Variable_Flags",          all_tests, ""),
+  ("chance",           "Chance_Flags",                      all_tests, ""),
+  ("gs",               "Grade_Stanine_GS",                  all_tests, ""),
+  ("as",               "Age_Stanine_AS",                    all_tests, ""),
+  ("ls",               "Local_Stanines",                    all_tests, ""),
+  ("gpr",              "Grade_Percentile_Rank_GPR",         all_tests, "| int(default=-1)"),
+  ("apr",              "Age_Percentile_Rank_APR",           all_tests, "| int(default=-1)"),
+  ("lpr",              "Local_Percentile_Rank",             all_tests, "| int(default=-1)"),
+  ("uss",              "Universal_Scale_Score_USS",         all_tests, "| int(default=-1)"),
+  ("sas",              "Standard_Age_Score_SAS",            all_tests, "| int(default=-1)"),
+  ("sas_upper",        "SAS_Upper_Bound",                   all_tests, "| float(default=-1.0)"),
+  ("sas_lower",        "SAS_Lower_Bound",                   all_tests, "| float(default=-1.0)"),
 ] %}
 
 sources:
@@ -127,43 +145,23 @@ transformations:
         columns:
           edfi_descriptor: gradeDescriptor
 
-  # Okay here's the big normalization where 3 potential inputs become one
+  # Everything downstream of here reads the same column names whichever file we were given.
+  # This node is also what gets written to input_student_id_no_match.csv, so it keeps the
+  # descriptive columns (names, school, class) that someone needs in order to fix an ID.
   input_normalized:
     source: $sources.input
     operations:
-      - operation: snake_case_columns
-      # CogAT has room for 30 subtests but only ever reports 7. The per-subtest CSV still
-      # ships columns 8-30, so drop them. Matches nothing in the other two files.
+      # padding and item-level responses are never read, and dropping them keeps the
+      # no-match file to a size a person can open
       - operation: drop_columns
         columns:
-        {% for score, column, tests, width, prefix, cast in score_fields %}
-          - "{{prefix}}_[89]"
-          - "{{prefix}}_[12][0-9]"
-          - "{{prefix}}_30"
-        {% endfor %}
-      # blank fixed-width fields read as NaN, not "", so make everything a string first.
+          - "Filler*"
+          - "Item_Responses*"
+      # A blank fixed-width field reads as NaN rather than "". Left alone it would reach the
+      # no-match file as the text "nan" and break `combine_columns` downstream.
       - operation: modify_columns
         columns:
-        {% for column, pattern in flat_fields %}
-          "{{pattern}}": "{%raw%}{{ value if value is string }}{%endraw%}"
-        {% endfor %}
-        {% for score, column, tests, width, prefix, cast in score_fields %}
-          "{{prefix}}*": "{%raw%}{{ (value if value is string else '').rjust({%endraw%}{{width}}{%raw%}) }}{%endraw%}"
-        {% endfor %}
-      {% for column, pattern in flat_fields %}
-      - operation: combine_columns
-        columns:
-          - "{{pattern}}"
-        new_column: {{column}}
-        separator: ''
-      {% endfor %}
-      {% for score, column, tests, width, prefix, cast in score_fields %}
-      - operation: combine_columns
-        columns:
-          - "{{prefix}}*"
-        new_column: {{column}}
-        separator: ''
-      {% endfor %}
+          "*": "{%raw%}{{ value if value is string }}{%endraw%}"
 
   input:
     source: $transformations.input_normalized
@@ -186,21 +184,22 @@ transformations:
           - Level
           - Form
           - Norm_Year
-          {% for score, column, tests, width, prefix, cast in score_fields %}
-          - {{column}}
+          {% for score, column, tests, cast in score_fields %}
+          {% for test in tests %}
+          - {{column}}__{{test}}
+          {% endfor %}
           {% endfor %}
           - Ability_Profile
           - TestInstance_GUID
-          - Mode_of_Administration_String
+          {% for position, name in accommodation_flags %}
+          - Mode_of_Administration__{{position}}
+          {% endfor %}
       - operation: modify_columns
         columns:
           Class_Grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
       - operation: rename_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueID
-      - operation: rename_columns
-        columns:
-          Mode_of_Administration_String: accommodations
       - operation: map_values
         column: Ability_Profile
         mapping:
@@ -238,12 +237,13 @@ transformations:
   scored_results:
     source: $transformations.clean_results
     operations:
-      # unpack fixed-width sections of individual columns
+      # name each subtest's score the way the templates expect, and cast it. Values are
+      # already strings by this point, so a blank one casts to the -1 sentinel.
       - operation: add_columns
         columns:
-        {% for score, column, tests, width, prefix, cast in score_fields %}
+        {% for score, column, tests, cast in score_fields %}
         {% for test in tests %}
-          {{score}}_{{test}}: "{%raw%}{{ {%endraw%}{{column}}[{{width * loop.index0}}:{{width * loop.index0 + width}}] {{cast}}{%raw%} }}{%endraw%}"
+          {{score}}_{{test}}: "{%raw%}{{ {%endraw%}{{column}}__{{test}} {{cast}}{%raw%} }}{%endraw%}"
         {% endfor %}
         {% endfor %}
 
@@ -252,13 +252,9 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          braile: "{% raw %}{% if accommodations[4] == '1'%}Y{% endif %}{% endraw %}"
-          large_print: "{% raw %}{% if accommodations[5] == '1'%}Y{% endif %}{% endraw %}"
-          proctor_led: "{% raw %}{% if accommodations[6] == '1'%}Y{% endif %}{% endraw %}"
-          self_paced: "{% raw %}{% if accommodations[7] == '1'%}Y{% endif %}{% endraw %}"
-          audio_type: "{% raw %}{% if accommodations[8] == '1'%}Y{% endif %}{% endraw %}"
-          extended_time: "{% raw %}{% if accommodations[11] == '1'%}Y{% endif %}{% endraw %}"
-          alt_v: "{% raw %}{% if accommodations[12] == '1'%}Y{% endif %}{% endraw %}"
+        {% for position, name in accommodation_flags %}
+          {{name}}: "{%raw%}{% if {%endraw%}Mode_of_Administration__{{position}}{%raw%} == '1' %}Y{% endif %}{%endraw%}"
+        {% endfor %}
       - operation: map_values
         columns:
         {% for test in all_tests %}
@@ -287,15 +283,19 @@ transformations:
         columns:
           assessmentIdentifier: "{{assessmentIdentifier}}"
           namespace: "{{namespace}}"
+<<<<<<< Updated upstream
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
   
+=======
+
+>>>>>>> Stashed changes
   academicSubjectDescriptors:
     source: $sources.academicSubjectDescriptors
     operations:
       - operation: rename_columns
         columns:
           edfi_descriptor: academicSubjectDescriptor
-  
+
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     operations:
@@ -309,7 +309,7 @@ transformations:
       - operation: add_columns
         columns:
           grade_json: >
-            {%raw-%}  
+            {%raw-%}
             {
               "gradeLevelDescriptor": "{{gradeDescriptor}}"
             },
@@ -321,7 +321,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
-        create_columns: 
+        create_columns:
           grade_json: agg(grade_json,)
       # there will be a trailing comma, want to get rid of that
       - operation: modify_columns

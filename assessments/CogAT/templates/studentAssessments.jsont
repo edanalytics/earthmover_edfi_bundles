@@ -15,8 +15,8 @@
   "accommodations": [
     {% set accs = [] %}
 
-    {% if braile == 'Y' %}
-      {% set _ = accs.append('Braile') %}
+    {% if braille == 'Y' %}
+      {% set _ = accs.append('Braille') %}
     {% endif %}
 
     {% if large_print  == 'Y' %}
