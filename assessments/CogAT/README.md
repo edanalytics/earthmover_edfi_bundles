@@ -10,16 +10,11 @@ To run this bundle, please add your own source file(s):
 <summary><code>data/cogat_export.txt</code> or <code>data/cogat_export.csv</code></summary>
 This bundle works with CogAT 7 & 8 and takes two files. There is a sample of each in `data/`:
 
-| File | What it is |
+| File | Source |
 | --- | --- |
-| `.txt` | the vendor's fixed-width export — the canonical file. 5682 characters per row; layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` |
+| `.txt` | the canonical export from the vendor; layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` |
 | `.csv` | `input_student_id_no_match.csv` from a previous run, with the student IDs corrected |
 
-The CSV is **not** a vendor file. When a student can't be matched to Ed-Fi, the run writes
-`input_student_id_no_match.csv`; users fix the IDs in it and submit it again. It matches no
-DataManager export, and no DataManager CSV export is accepted — only this one.
-
-A fixed-width file must be named `.txt`; that is how the bundle tells the two apart.
 
 </details>
 
@@ -46,18 +41,5 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 ### Maintenance notes
 
-  - `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` gives each subtest its own column rather than
-    reading a whole score field at once. Two reasons, both load-bearing. Reading a field whole
-    would break the fixed-width read, because pandas trims spaces off both ends and the values
-    are right-aligned, so the first one would lose its padding and shift the rest. And the
-    no-match file is written by the `student_ids` package through a template that applies
-    `|trim` to every value — a combined field would come back from a resubmission shifted by a
-    character, silently, with no error. One value per column survives both. If you ever change
-    this back to combined fields, the round-trip breaks.
-  - The mode-of-administration flags are split the same way, into
-    `Mode_of_Administration__00` through `__19`, and for the same reason: Riverside's layout
-    says an omitted flag is `0` **or blank**, so reading the field whole would let a blank flag
-    trim away and shift every flag after it. What each position means is written out in
-    `earthmover.yaml`; note the column number is 0-based and so is one less than the position
-    number in Riverside's document.
+  - We read the FWF slightly differently from how Riverside defines its fields. Essentially, the vendor packs multiple scores into individual column; if you read these in as single fields, you have to then unpack the scores in the bundle. We instead define a slightly different colspec so that those columns are read in as unpacked scores. This is safer (it's hard to control how Pandas' `read_fwf` will handle blanks, etc) and makes it easier to accommodate both the FWF and the CSV input formats.
   - The seed file `seeds/performanceLevelDescriptors.csv` was generated using the script `util/generate_pl_descriptors.py`. This was done to ensure that all possible CogAT [Ability Profiles](https://riversideinsights.com/citc/profile-finder) would be represented. If, in a future edition of the test, the set of possible Ability Profiles changes, this script will need to be modified.
