@@ -18,17 +18,17 @@ config:
           'OBSERVABLE_SCHOOL_ID': ${OBSERVABLE_SCHOOL_ID},
           'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
       } -%}
-      
-      {%- set col = observables[obs] -%}
-
+  
       {%- if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] -%}
         {%- set full_name = __row_data__['${OBSERVABLE_FULL_NAME}'] -%}
-        {%- if full_name and ',' in full_name -%}
-          {%- set first_name = full_name.split(',')[1].split(' ')[0] -%}
-          {%- set last_name = full_name.split(',')[0] -%}
-        {% elif full_name %}
-          {%- set first_name = full_name.split(' ')[0] -%}
-          {%- set last_name = full_name.split(' ')[full_name|length -1] -%}
+        {%- if full_name-%}
+          {%- if ',' in full_name -%}
+            {%- set first_name = full_name.split(',')[1].split(' ')[0] -%}
+            {%- set last_name = full_name.split(',')[0] -%}
+          {%- else -%}
+            {%- set first_name = full_name.split(' ')[0] -%}
+            {%- set last_name = full_name.split(' ')[full_name|length -1] -%}
+          {%- endif -%}
         {%- else -%}
           {%- set first_name = __row_data__['${OBSERVABLE_FIRST_NAME}'] -%}
           {%- set last_name = __row_data__['${OBSERVABLE_LAST_NAME}'] -%}
@@ -36,14 +36,15 @@ config:
         {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
         {%- else -%} {{last_name | trim | lower | default(none, true)}}
         {%- endif -%}
-      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ col | trim | lower | default(none, true) }}
+      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ observables[obs] | trim | lower | default(none, true) }}
       {%- else -%} 
+        {%- set col = observables[obs] -%}
         {%- if col is string or col is number -%}{%- set base_list = [col] -%}
-        {%- else -%}{%- set base_list = col | list -%}
+        {%- else -%}{%- set base_list = col -%}
         {%- endif -%}
         {%- set cleaned_list = [] -%}
-        {%- for ob in base_list -%}
-          {%- set _ = cleaned_list.append(ob | trim | lower | default(none, true)) -%}
+        {%- for item in base_list -%}
+          {%- set _ = cleaned_list.append(item | trim | lower | default(none, true)) -%}
         {%-endfor-%}
         {{cleaned_list}}
       {%- endif -%}
