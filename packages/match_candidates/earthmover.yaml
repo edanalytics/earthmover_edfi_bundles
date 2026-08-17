@@ -9,6 +9,18 @@ config:
   # All other observables are passed as variable references.
   macros: >
     {%- macro clean_observables(obs) -%}
+
+      {%- set observables = {
+          'OBSERVABLE_FIRST_NAME': '${OBSERVABLE_FIRST_NAME}',
+          'OBSERVABLE_LAST_NAME': '${OBSERVABLE_LAST_NAME}',
+          'OBSERVABLE_FULL_NAME': '${OBSERVABLE_FULL_NAME}',
+          'OBSERVABLE_BIRTH_DATE': ${OBSERVABLE_BIRTH_DATE},
+          'OBSERVABLE_SCHOOL_ID': ${OBSERVABLE_SCHOOL_ID},
+          'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
+      } -%}
+      
+      {%- set col = observables[obs] -%}
+
       {%- if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] -%}
         {%- set full_name = __row_data__['${OBSERVABLE_FULL_NAME}'] -%}
         {%- if full_name and ',' in full_name -%}
@@ -24,14 +36,14 @@ config:
         {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
         {%- else -%} {{last_name | trim | lower | default(none, true)}}
         {%- endif -%}
-      {%- elif obs is number -%}
-        {{__row_data__[obs] | trim | default(none, true) }}
-      {%- elif obs is string -%}
-        {{ __row_data__[obs] | trim | lower | default(none, true) }}
-      {%- elif obs is iterable -%}
+      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ col | trim | lower | default(none, true) }}
+      {%- else -%} 
+        {%- if col is string or col is number -%}{%- set base_list = [col] -%}
+        {%- else -%}{%- set base_list = col | list -%}
+        {%- endif -%}
         {%- set cleaned_list = [] -%}
-        {%- for ob in obs -%}
-          {%- set _ = cleaned_list.append(__row_data__[ob] | trim | lower | default(none, true)) -%}
+        {%- for ob in base_list -%}
+          {%- set _ = cleaned_list.append(ob | trim | lower | default(none, true)) -%}
         {%-endfor-%}
         {{cleaned_list}}
       {%- endif -%}
@@ -48,9 +60,9 @@ transformations:
         columns:
           obs_first_name: "{%raw%}{{clean_observables('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
           obs_last_name: "{%raw%}{{clean_observables('OBSERVABLE_LAST_NAME')}}{%endraw%}"
-          obs_birth_date: "{%raw%}{{clean_observables('${OBSERVABLE_BIRTH_DATE}')}}{%endraw%}"
-          obs_school_id: "{%raw%}{{clean_observables('${OBSERVABLE_SCHOOL_ID}')}}{%endraw%}"
-          obs_student_ids: "{%raw%}{{clean_observables(${OBSERVABLE_STUDENT_IDS})}}{%endraw%}"
+          obs_birth_date: "{%raw%}{{clean_observables('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
+          obs_school_id: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_ID')}}{%endraw%}"
+          obs_student_ids: "{%raw%}{{clean_observables('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
       - operation: combine_columns
         columns:
           - obs_first_name
