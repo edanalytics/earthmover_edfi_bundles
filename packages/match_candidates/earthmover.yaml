@@ -11,9 +11,6 @@ config:
     {%- macro clean_observables(obs) -%}
 
       {%- set observables = {
-          'OBSERVABLE_FIRST_NAME': '${OBSERVABLE_FIRST_NAME}',
-          'OBSERVABLE_LAST_NAME': '${OBSERVABLE_LAST_NAME}',
-          'OBSERVABLE_FULL_NAME': '${OBSERVABLE_FULL_NAME}',
           'OBSERVABLE_BIRTH_DATE': ${OBSERVABLE_BIRTH_DATE},
           'OBSERVABLE_SCHOOL_ID': ${OBSERVABLE_SCHOOL_ID},
           'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
@@ -36,17 +33,14 @@ config:
         {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
         {%- else -%} {{last_name | trim | lower | default(none, true)}}
         {%- endif -%}
-      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ observables[obs] | trim | lower | default(none, true) }}
-      {%- else -%} 
-        {%- set col = observables[obs] -%}
-        {%- if col is string or col is number -%}{%- set base_list = [col] -%}
-        {%- else -%}{%- set base_list = col -%}
-        {%- endif -%}
+      {%- elif obs in ['OBSERVABLE_SCHOOL_ID', 'OBSERVABLE_STUDENT_IDS'] -%} 
+        {%- set base_list = observables[obs] -%}
         {%- set cleaned_list = [] -%}
         {%- for item in base_list -%}
-          {%- set _ = cleaned_list.append(item | trim | lower | default(none, true)) -%}
+          {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
         {%-endfor-%}
         {{cleaned_list}}
+      {%- else -%}{{ observables[obs] | trim | lower | default(none, true) }}
       {%- endif -%}
     {%- endmacro %} 
 
