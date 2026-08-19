@@ -12,7 +12,7 @@ config:
 
       {%- set observables = {
           'OBSERVABLE_BIRTH_DATE': ${OBSERVABLE_BIRTH_DATE},
-          'OBSERVABLE_SCHOOL_ID': ${OBSERVABLE_SCHOOL_ID},
+          'OBSERVABLE_SCHOOL_IDS': ${OBSERVABLE_SCHOOL_IDS},
           'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
       } -%}
   
@@ -33,7 +33,7 @@ config:
         {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
         {%- else -%} {{last_name | trim | lower | default(none, true)}}
         {%- endif -%}
-      {%- elif obs in ['OBSERVABLE_SCHOOL_ID', 'OBSERVABLE_STUDENT_IDS'] -%} 
+      {%- elif obs in ['OBSERVABLE_SCHOOL_IDS', 'OBSERVABLE_STUDENT_IDS'] -%} 
         {%- set base_list = observables[obs] -%}
         {%- set cleaned_list = [] -%}
         {%- for item in base_list -%}
@@ -58,14 +58,14 @@ transformations:
           obs_first_name: "{%raw%}{{clean_observables('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
           obs_last_name: "{%raw%}{{clean_observables('OBSERVABLE_LAST_NAME')}}{%endraw%}"
           obs_birth_date: "{%raw%}{{clean_observables('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
-          obs_school_id: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_ID')}}{%endraw%}"
+          obs_school_ids: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
           obs_student_ids: "{%raw%}{{clean_observables('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
       - operation: combine_columns
         columns:
           - obs_first_name
           - obs_last_name
           - obs_birth_date
-          - obs_school_id
+          - obs_school_ids
           - obs_student_ids
         new_column: __candidate_id
         separator: '|'
@@ -99,7 +99,7 @@ transformations:
         - obs_first_name
         - obs_last_name
         - obs_birth_date
-        - obs_school_id
+        - obs_school_ids
         - obs_student_ids
         create_columns:
           record_count: count()
