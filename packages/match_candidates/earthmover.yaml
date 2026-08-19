@@ -39,7 +39,9 @@ config:
         {%- for item in base_list -%}
           {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
         {%-endfor-%}
-        {{cleaned_list}}
+        {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
+        {%- else -%}{{cleaned_list}}
+        {%-endif-%}
       {%- else -%}{{ observables[obs] | trim | lower | default(none, true) }}
       {%- endif -%}
     {%- endmacro %} 
