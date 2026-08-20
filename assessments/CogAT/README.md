@@ -8,14 +8,13 @@ This is an earthmover bundle created from the following Ed-Fi Data Import Tool m
 To run this bundle, please add your own source file(s):
 <details>
 <summary><code>data/cogat_export.txt</code> or <code>data/cogat_export.csv</code></summary>
-This bundle works with CogAT 7 & 8, and takes any of the three files we see in practice. At this time it's not clear what we should consider the canonical export from the Riverside Insights DataManager, but that is a problem for another day.
-There is a sample of each in `data/`:
+This bundle works with CogAT 7 & 8 and takes two files. There is a sample of each in `data/`:
 
-| File | Looks like |
+| File | Source |
 | --- | --- |
-| `.txt` | fixed width, 5682 characters per row (layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv`) |
-| `.csv` | one column per subtest: `Standard Age Score (SAS) V`, `Standard Age Score (SAS) VQ` |
-| `.csv` | one column per score: `Standard_Age_Score_SAS` = `107105117107114114112` |
+| `.txt` | the canonical export from the vendor; layout in `fwf_to_csv_xwalks/cogat_fwf_xwalk.csv` |
+| `.csv` | `input_student_id_no_match.csv` from a previous run, with the student IDs corrected |
+
 
 </details>
 
@@ -42,5 +41,5 @@ lightbeam validate+send -c ./lightbeam.yaml -p '{
 
 ### Maintenance notes
 
-  - We are trying to accommodate two different formats of CSV that we have seen. One matches the FWF and has individual columns containing strings of different scores packed together. We also see CSVs where the score columns are broken out. In order to accept all of this in a single bundle, the "fixed-width-like" CSV still needs to adhere to the column widths in the colspecs. We haven't yet encountered any that don't, but this is a risk, and a place to start debugging if your CSV input is producing gibberish outputs.
+  - We read the FWF slightly differently from how Riverside defines its fields. Essentially, the vendor packs multiple scores into individual column; if you read these in as single fields, you have to then unpack the scores in the bundle. We instead define a slightly different colspec so that those columns are read in as unpacked scores. This is safer (it's hard to control how Pandas' `read_fwf` will handle blanks, etc) and makes it easier to accommodate both the FWF and the CSV input formats.
   - The seed file `seeds/performanceLevelDescriptors.csv` was generated using the script `util/generate_pl_descriptors.py`. This was done to ensure that all possible CogAT [Ability Profiles](https://riversideinsights.com/citc/profile-finder) would be represented. If, in a future edition of the test, the set of possible Ability Profiles changes, this script will need to be modified.
