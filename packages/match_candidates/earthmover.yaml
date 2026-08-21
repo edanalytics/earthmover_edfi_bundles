@@ -2,7 +2,7 @@ version: 2
 
 config:
   parameter_defaults:
-    EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+    EARTHMOVER_NODE_TO_RESOLVE: "$transformations.input"
   # The clean_observables macro below takes the OBSERVABLES set in each bundle and cleans them for use downstream.
   # OBSERVABLE_FIRST_NAME and OBSERVABLE_LAST_NAME are passed to the macro as strings because we conditionally populate these
   # using either OBSERVABLE_FULL_NAME or OBSERVABLE_FIRST_NAME/OBSERVABLE_LAST_NAME, depending on which is provided.
