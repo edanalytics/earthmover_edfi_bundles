@@ -43,12 +43,7 @@
 ] %}
 
 {# (column prefix, reporting method descriptor, result data type) -- one entry per
-   Appendix A array in the layout.
-
-   The three percent-correct arrays (Iowa Skill Domain, CCS Domain, and CCS without
-   Computation) are read into columns but are deliberately absent here. Their slots are
-   keyed by level, form and battery through Appendices C, D and F rather than by
-   Appendix A, so they cannot be attached to the tests above. See the README. #}
+   Appendix A array in the layout. #}
 {% set indexed_scores = [
   ("Number_Attempted_NA",                     "Number Attempted",                   "Integer"   ),
   ("Raw_Score_RS",                            "Raw Score",                          "Integer"   ),
@@ -77,11 +72,6 @@
   ("State_Predicted_Scale_Score",             "State Predicted Scale Score",        "Integer"   )
 ] %}
 
-{# A test carries a second set of scores computed on the previous norm set: a 2011-normed
-   test also reports on 2005 norms, a 2017-normed one on 2011, and a 2024-normed one on
-   2017. Riverside's layout document only goes up to 2017; the 2024 entry is read off that
-   pattern and confirmed against a real 2024 export, where all four blocks are populated.
-   A norm year not listed here has no descriptor to report against, so it is left out. #}
 {% set norm_basis = {"2011": "2005", "2017": "2011", "2024": "2017"}.get(Norm_Year) %}
 {% if norm_basis %}
   {% set indexed_scores = indexed_scores + [
@@ -106,9 +96,6 @@
   ("Norm_Year",                           "Norm Year",                           "Level"  )
 ] %}
 
-{# Mode of Administration is 20 single-character flags, 1 = marked. Column NN is 0-based,
-   so it is one less than the position number in Riverside's layout. Positions 03 and 04
-   are reserved and positions 14-20 are unused, so neither appears here. #}
 {% set accommodations = [
   ("00", "Online desktop or laptop"),
   ("01", "Online tablet"),
@@ -164,9 +151,6 @@
     {% for slot, code, column, is_composite in tests %}
 
       {% set results = [] %}
-      {# A value survives only if it is present and has not been turned into a date or
-         into scientific notation by a spreadsheet on its way through the no-match CSV.
-         A leading minus is allowed: the predicted-score differences carry one. #}
       {% for prefix, method, datatype in indexed_scores %}
         {% set result = __row_data__.get(prefix ~ "__" ~ column, "") | trim %}
         {% if result and result != "NULL" and "/" not in result and "-" not in result[1:] and "e" not in result | lower %}
