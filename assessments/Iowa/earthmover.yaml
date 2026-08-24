@@ -17,32 +17,12 @@ config:
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
-{#
-  This bundle takes two files:
-
-    * the vendor's fixed-width export (.txt), which is the canonical file
-    * input_student_id_no_match.csv, which this bundle writes when it can't match a student
-      to Ed-Fi. Users fix the IDs and resubmit it.
-
-  Both use the same column names -- `fwf_to_csv_xwalks/iowa_fwf_xwalk.csv` names the
-  fixed-width fields, and the CSV is our own file written with those names -- so there is
-  nothing to rename or detect.
-
-  Riverside packs each score into a 30-slot array holding one value per Appendix A test.
-  The colspec reads each slot into its own column and we keep them that way, because
-  earthmover reads fixed-width files with pandas' default `delimiter`, which strips
-  leading and trailing spaces from every field: a packed block loses its alignment as soon
-  as a leading slot is blank, and the `|trim` the student_ids package applies when it
-  writes the no-match file would do the same. One value per column survives both.
-#}
-
 sources:
   input:
     file: ${INPUT_FILE}
   {% if "${INPUT_FILE}".lower().endswith(".txt") %}
     type: fixedwidth
-    # harmless when the file carries no byte-order mark; without it, a file that does
-    # carry one shifts its first record a character
+    # the file starts with a byte-order mark; without this the first record shifts a character
     encoding: utf-8-sig
     colspec_file: ./fwf_to_csv_xwalks/iowa_fwf_xwalk.csv
     colspec_headers:
@@ -88,10 +68,6 @@ transformations:
   input_normalized:
     source: $sources.input
     operations:
-      # Whatever survives here is what a resubmitted no-match file will carry, so this
-      # drops only columns nothing downstream reads and that tell you nothing about who
-      # a student is. The names, school, class and demographics stay: someone has to be
-      # able to look at a row and work out whose ID needs fixing.
       - operation: drop_columns
         columns:
           - "Filler*"
@@ -102,14 +78,9 @@ transformations:
           - "Code_Character_String*"
           - "Lexile_*"
           - "Quantile_*"
-          # no reporting method attaches to these yet -- see the README. Stop dropping
-          # them once there is a seed that says what their slots mean.
           - "*_Pct_Correct__*"
-      # A blank fixed-width field reads as NaN rather than "". Templates never see it --
-      # earthmover renders NA as an empty string on output -- but the operations further
-      # down manipulate these columns directly and would get the float instead of a string.
-      # Only the columns that are manipulated are listed: this costs one pass over the
-      # frame per column, and the layout has over a thousand of them.
+      # A blank fixed-width field reads as NaN rather than "". Left alone it would reach the
+      # no-match file as the text "nan" and break `combine_columns` downstream.
       - operation: modify_columns
         columns:
           Student_ID: "{%raw%}{{ value if value is string }}{%endraw%}"

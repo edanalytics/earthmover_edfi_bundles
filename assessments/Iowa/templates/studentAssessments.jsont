@@ -2,9 +2,7 @@
   Riverside packs each score into a 30-slot array holding one value per Appendix A test.
   `fwf_to_csv_xwalks/iowa_fwf_xwalk.csv` splits every array into one column per test,
   named `<prefix>__<test>`, so this template reads a column per score rather than slicing
-  a packed string. That is deliberate: earthmover reads fixed-width files with pandas'
-  default `delimiter`, which strips leading and trailing spaces from every field, and a
-  packed block loses its alignment the moment a leading slot is blank.
+  a packed string.
 #}
 {% set level_num = Level | int %}
 
