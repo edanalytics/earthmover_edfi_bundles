@@ -80,7 +80,7 @@ transformations:
           - "Quantile_*"
           - "*_Pct_Correct__*"
       # A blank fixed-width field reads as NaN rather than "". Left alone it would reach the
-      # no-match file as the text "nan" and break `combine_columns` downstream.
+      # no-match file as the text "nan" and break the below operations
       - operation: modify_columns
         columns:
           Student_ID: "{%raw%}{{ value if value is string }}{%endraw%}"
