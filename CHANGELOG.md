@@ -5,6 +5,30 @@
 
 ## Fixes
 
+# earthmover_edfi_bundles v.0.4.1
+## New features
+- AP (Advanced Placement) bundle
+- FastBridge CAT aMath & aReading, FastBridge Math, and FastBridge English bundles
+- Missouri Assessment Program (MAP) bundle
+- MVPA (Mastery View Predictive Assessments) bundle
+
+## Under the hood
+- Restructured the KRA bundle to use the vendor file directly and updated the standard admin date from Aug 10 to Aug 25
+- Updated MAP Growth bundle to handle screeners as separate assessments
+- Updated EOCEP bundle with objective assessment changes, new performance level columns, and biology standards fixes for 2025-2026
+- Rewrote WIN bundle to make all objective assessments optional and updated platform type descriptor references
+- Made the Cambridge, DIBELS 8, DIBELS Next, MAP Fluency, myIGDIs, and PALS bundles Runway compatible
+- Updated STAR bundle with expanded PerformanceLevelDescriptors and gradeLevelDescriptors
+- Updated PSAT/SAT bundle to improve date and null validation
+- Added platform descriptors to registry and assessment family to ACT_EdFi bundle
+- Updated CIRCLE sample data to match Grand Bend
+
+## Fixes
+- Fixed STAMP bundle to handle null grades
+- Fixed WIN bundle to check list element length instead of list length and fixed typos for performance level column and optional student objective assessment performance levels
+- Fixed typos in ACT and ACT_EdFi objective assessments seed and ACT_EdFi score names
+- Trimmed subject field in IB bundle
+
 # earthmover_edfi_bundles v.0.4.0
 ## New features
 - Cambridge bundle
