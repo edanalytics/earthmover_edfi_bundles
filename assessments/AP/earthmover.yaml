@@ -11,6 +11,12 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     API_YEAR: ''
 
+    OBSERVABLE_FIRST_NAME: 'First Name'
+    OBSERVABLE_LAST_NAME: 'Last Name'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_SCHOOL_IDS: ['School ID']
+    OBSERVABLE_STUDENT_IDS: ['Student Identifier']
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -372,12 +378,6 @@ transformations:
           IrregularityCode2: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           Score: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
           ExamCode: "{%raw%}{{ExamCode | int}}{%endraw%}"
-      # Filter to target school year if specified
-      {% if "${API_YEAR}" | length %}
-      - operation: filter_rows
-        query: School_Year != '${API_YEAR}'
-        behavior: exclude
-      {% endif %}
 
   # ===== Assessment-level transformations =====
 
