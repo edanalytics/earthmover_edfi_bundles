@@ -99,25 +99,7 @@ transformations:
           - race
           - special_ed_status
           - unnamed_*
-          - error*
           - "*error*"
-          - "*_composing_final_date"
-          - "*_counting_objects_final_date"
-          - "*_decomposing_one_final_date"
-          - "*_decomposing_kg_final_date"
-          - "*_equal_partitioning_final_date"
-          - "*_match_quantity_final_date"
-          - "*_number_sequence_one_final_date"
-          - "*_number_sequence_kg_final_date"
-          - "*_numeral_identification_one_final_date"
-          - "*_numeral_identification_kg_final_date"
-          - "*_place_value_final_date"
-          - "*_quantity_discrimination_least_final_date"
-          - "*_quantity_discrimination_most_final_date"
-          - "*_subitizing_final_date"
-          - "*_verbal_addition_final_date"
-          - "*_verbal_subtraction_final_date"
-          - "*_story_problems_final_date"
           - growth_score_from_*_to_*_1
           - growth_score_from_*_to_*_2
           - growth_score_from_*_to_*_3
@@ -210,7 +192,7 @@ transformations:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
-        query: melt_value == '' and cleaned_variable != 'early_math_final_date'
+        query: melt_value == '' and cleaned_variable != 'early_reading_english_final_date'
         behavior: exclude
       - operation: filter_rows
         query: season == ''
