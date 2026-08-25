@@ -26,8 +26,6 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
-    expect:
-      - "GROUP_NUMBER != ''"
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -49,6 +47,9 @@ transformations:
   ib_student_results:
     source: $transformations.input
     operations:
+      - operation: filter_rows
+        query: GROUP_NUMBER == ''
+        behavior: exclude
       - operation: rename_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
