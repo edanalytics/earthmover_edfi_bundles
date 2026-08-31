@@ -33,7 +33,7 @@ Sample file: `data/Sample_earlyReading_deidentified.csv`
 Running earthmover: 
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
-"INPUT_FILE": "data/Sample_earlyReading_deidentified.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "State ID",
 "API_YEAR": "2024"}'
