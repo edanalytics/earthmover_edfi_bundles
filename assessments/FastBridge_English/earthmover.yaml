@@ -192,15 +192,19 @@ transformations:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
-        query: melt_value == '' and cleaned_variable != 'early_reading_english_final_date'
+        query: melt_value == ''
         behavior: exclude
-      - operation: filter_rows
-        query: season == ''
-        behavior: exclude
+      - operation: distinct_rows
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
+      - operation: duplicate_columns
+        columns:
+          early_reading_english_final_date: administration_date
+      - operation: filter_rows
+        query: administration_date == '' or administration_date != administration_date
+        behavior: exclude
       - operation: map_values
         column: season
         mapping:
@@ -209,12 +213,6 @@ transformations:
           spring: Spring
           screening_period_4: Screening Period 4
           screening_period_5: Screening Period 5
-      - operation: duplicate_columns
-        columns:
-          early_reading_english_final_date: administration_date
-      - operation: filter_rows
-        query: administration_date == ''
-        behavior: exclude
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_earlyReading"
