@@ -449,7 +449,7 @@ destinations:
     extension: jsonl
   studentAssessments:
     source: $transformations.cleaned_input
-    template: ./templates/test.jsont
+    template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
