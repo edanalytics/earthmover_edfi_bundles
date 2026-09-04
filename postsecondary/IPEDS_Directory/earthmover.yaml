@@ -1,0 +1,106 @@
+version: 2
+
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  show_graph: False
+  show_stacktrace: true
+  parameter_defaults:
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+sources:
+  addressTypeDescriptors:
+    file: ./seeds/addressTypeDescriptors.csv
+    header_rows: 1
+  administrativeFundingControlDescriptors:
+    file: ./seeds/administrativeFundingControlDescriptors.csv
+    header_rows: 1
+  educationOrganizationCategoryDescriptors:
+    file: ./seeds/educationOrganizationCategoryDescriptors.csv
+    header_rows: 1
+  institutionTelephoneNumberTypeDescriptors:
+    file: ./seeds/institutionTelephoneNumberTypeDescriptors.csv
+    header_rows: 1
+  localeDescriptors:
+    file: ./seeds/localeDescriptors.csv
+    header_rows: 1
+  operationalStatusDescriptors:
+    file: ./seeds/operationalStatusDescriptors.csv
+    header_rows: 1
+  postSecondaryInstitutionLevelDescriptors:
+    file: ./seeds/postSecondaryInstitutionLevelDescriptors.csv
+    header_rows: 1
+  stateAbbreviationDescriptors:
+    file: ./seeds/stateAbbreviationDescriptors.csv
+    header_rows: 1
+
+  input:
+    # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
+    file: ${INPUT_FILE}
+    header_rows: 1
+
+definitions:
+  operations:
+    - &joinkey_join
+      operation: join
+      join_type: left
+      left_key: joinKey
+      right_key: joinKey
+    - &non_joinkey_join
+      operation: join
+      join_type: left
+      right_key: ipeds_code
+      # clean up unnecessary columns from previous joins
+      left_drop_columns:
+        - ipeds_code_x
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  clean_results:
+    source: $transformations.input
+    operations:
+      - operation: add_columns
+        columns:
+          joinKey: "1"
+      - <<: *joinkey_join
+        sources: 
+          - $sources.addressTypeDescriptors
+      - <<: *joinkey_join
+        sources: 
+          - $sources.educationOrganizationCategoryDescriptors
+      - <<: *joinkey_join
+        sources: 
+          - $sources.institutionTelephoneNumberTypeDescriptors
+      - <<: *non_joinkey_join
+        sources: 
+          - $sources.administrativeFundingControlDescriptors
+        left_key: CONTROL
+      - <<: *non_joinkey_join
+        sources: 
+          - $sources.localeDescriptors
+        left_key: LOCALE
+      - <<: *non_joinkey_join
+        sources: 
+          - $sources.operationalStatusDescriptors
+        left_key: ACT
+      - <<: *non_joinkey_join
+        sources: 
+          - $sources.postSecondaryInstitutionLevelDescriptors
+        left_key: HLOFFER 
+      - <<: *non_joinkey_join
+        sources: 
+          - $sources.stateAbbreviationDescriptors
+        left_key: STABBR
+
+
+destinations:
+  postSecondaryInstitutions:
+    source: $transformations.clean_results
+    template: ./templates/postSecondaryInstitutions.jsont
+    extension: jsonl
