@@ -47,9 +47,6 @@ transformations:
   ib_student_results:
     source: $transformations.input
     operations:
-      - operation: filter_rows
-        query: GROUP_NUMBER == ''
-        behavior: exclude
       - operation: rename_columns
         columns: 
           ${STUDENT_ID_NAME}: student_id
@@ -82,7 +79,7 @@ transformations:
       - operation: join
         sources:
           - $sources.academicSubjectDescriptors
-        join_type: inner
+        join_type: left
         left_key: group_number
         right_key: group_id
 
