@@ -45,7 +45,9 @@
     [RaceI, "RaceI", "Level"],
     [RaceP, "RaceP", "Level"],
     [RaceW, "RaceW", "Level"],
+    [RemoteTested, "RemoteTested", "Level"],
     [School, "School", "Level"],
+    [Sex, "Sex", "Level"],
     [TrueGrade, "TrueGrade", "Level"],
     [VSchool, "VSchool", "Level"],
 ] -%}
@@ -68,6 +70,7 @@
     [LexUp, "Lexile Max", "Level"],
     [LexNPR, "Lexile National Percentile Rank", "Integer"],
     [ELASS, "Overall Scale Score", "Integer"],
+    [ELASSW, "ELASSW", "Integer"],
     [ELAVSS, "Overall Vertical Scale Score", "Integer"],
     [ELAAg, "Ag", "Level"],
     [ELAAttempt, "Attempt", "Level"],
@@ -76,6 +79,7 @@
     [ELADNS2, "DNS2", "Level"],
     [ELAFormType, "FormType", "Level"],
     [ELAMode, "Mode", "Level"],
+    [MixedMode, "ELAMixedMode", "Level"],
     [ELANPR, "NPR", "Integer"],
     [ELARCWAbs, "RCWAbs", "Level"],
     [ELARCWGro, "RCWGro", "Level"],
@@ -92,6 +96,7 @@
     [ELATeachLName, "TeachLName", "Level"],
     [ELATeachMName, "TeachMName", "Level"],
     [ELATeachNbr, "TeachNbr", "Level"],
+    [TDWScore, "TDWScore", "Integer"],
     [ELA1FTime, "1FTime", "Integer"],
     [ELA1IEPInv, "1IEPInv", "Level"],
     [ELA1STime, "1STime", "Integer"],
@@ -104,6 +109,10 @@
     [ELA2SpecReq, "2SpecReq", "Level"],
     [ELA2TAInitials, "2TAInitials", "Level"],
     [ELA2TestDuration, "2TestDuration", "Integer"],
+    [ELA3FTime, "3FTime", "Integer"],
+    [ELA3STime, "3STime", "Integer"],
+    [ELA3TAInitials, "3TAInitials", "Level"],
+    [ELA3TestDuration, "3TestDuration", "Integer"],
 ] -%}
 
 {%- if (school_year | int) < 2025 -%}
@@ -236,6 +245,7 @@
     [ELALev8, ELALev8_name, 'Standards Performance Level'],
     [ELALev9, ELALev9_name, 'Standards Performance Level'],
     [ELALev11, ELALev11_name, 'Standards Performance Level'],
+    [ELALevW, ELALevW, 'Standards Performance Level'],
 ] -%}
 
 {%- set math_objective_assessments = [
