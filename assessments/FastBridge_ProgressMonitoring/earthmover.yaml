@@ -100,10 +100,10 @@ transformations:
         map_file: ./seeds/grade_level_mapping.csv
       - operation: duplicate_columns
         columns:
-          grade: gradeLevelDescriptor
+          grade: edfi_descriptor
       - operation: modify_columns
         columns:
-          gradeLevelDescriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
+          edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
       # filter out rows with missing student IDs
       - operation: filter_rows
         query: "student_unique_id	 != ''"
@@ -118,7 +118,7 @@ transformations:
           grade_json: >
             {%raw-%}
             {
-              "gradeLevelDescriptor": "{{gradeLevelDescriptor}}"
+              "gradeLevelDescriptor": "{{edfi_descriptor}}"
             },
             {%-endraw%}
       - operation: modify_columns
