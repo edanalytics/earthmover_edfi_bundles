@@ -71,9 +71,6 @@ transformations:
       - operation: duplicate_columns
         columns:
           assessment_date: administration_date
-      - operation: filter_rows
-        query: administration_date == ''
-        behavior: exclude
       - operation: map_values
         columns: 
           - assessment
