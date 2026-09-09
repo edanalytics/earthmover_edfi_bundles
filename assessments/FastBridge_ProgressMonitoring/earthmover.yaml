@@ -90,6 +90,9 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          grade: "{%raw%}{{ (grade|string).zfill(2) if (grade|string)|length < 2 else grade|string }}{%endraw%}"
       - operation: map_values
         columns: 
           - grade
