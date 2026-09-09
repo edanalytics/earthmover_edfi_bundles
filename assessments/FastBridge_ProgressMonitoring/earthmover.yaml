@@ -101,10 +101,7 @@ transformations:
       - operation: modify_columns
         columns:
           edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
-      # filter out rows with missing student IDs
-      - operation: filter_rows
-        query: "student_unique_id	 != ''"
-        behavior: include
+
 
 # Generate grade level JSON for assessments
   grade_level_descriptors:
