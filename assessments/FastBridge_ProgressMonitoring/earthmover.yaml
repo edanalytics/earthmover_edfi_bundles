@@ -158,29 +158,6 @@ transformations:
         columns:
           score_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
 
-  assessment_category_descriptors:
-    source: $sources.assessmentCategoryDescriptors
-    operations:
-      - operation: add_columns
-        columns:
-          assessmentCategoryDescriptor: "{%raw%}{{namespace}}#{{codeValue}}{%endraw%}"
-      - operation: keep_columns
-        columns:
-          - assessmentIdentifier
-          - assessmentCategoryDescriptor
-
-  assessment_category_descriptors_grouped:
-    source: $sources.assessmentCategoryDescriptors
-    operations:
-      - operation: group_by
-        group_by_columns:
-          - codeValue
-          - description
-          - namespace
-          - shortDescription
-        create_columns:
-          assessment_category_count: count(codeValue)
-
   # Prepare assessments with proper structure
   assessments:
     source: $sources.assessments
@@ -200,12 +177,6 @@ transformations:
       - operation: rename_columns
         columns:
          edfi_descriptor: academicSubjectDescriptor
-      - operation: join
-        sources:
-          - $transformations.assessment_category_descriptors
-        join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
       - operation: add_columns
         columns:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
@@ -227,7 +198,7 @@ destinations:
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:
-    source: $transformations.assessment_category_descriptors_grouped
+    source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
     extension: jsonl
     linearize: True
