@@ -71,10 +71,9 @@ transformations:
       - operation: duplicate_columns
         columns:
           assessment_date: administration_date
-      - operation: map_values
-        columns: 
-          - assessment
-        map_file: ./seeds/assessment_mapping.csv
+      - operation: modify_columns
+        columns:
+          assessment: "{%raw%}{{ assessment.replace(',', '').replace('-', ' ').split() | join('_') }}{%endraw%}"
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
