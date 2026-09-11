@@ -328,15 +328,15 @@ transformations:
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
 
+  # Optional CBMcomp files are not passed through student_id_wrapper xwalk, so they
+  # never get edFi_studentUniqueID. Keep native FastBridge IDs here and join to the
+  # main (possibly xwalked) input on fast_id + season below.
   cleaned_comp_question:
     source: $sources.input_comp_question
     operations:
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
       - operation: melt
-        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade]
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
@@ -346,18 +346,15 @@ transformations:
         behavior: exclude
       - operation: pivot
         cols_by: cleaned_variable
-        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
 
   cleaned_comp_recall:
     source: $sources.input_comp_recall
     operations:
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
       - operation: melt
-        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade]
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
@@ -367,7 +364,7 @@ transformations:
         behavior: exclude
       - operation: pivot
         cols_by: cleaned_variable
-        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
 
   joined_input:
@@ -378,10 +375,10 @@ transformations:
           - $transformations.cleaned_comp_question
         join_type: left
         left_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keep_columns:
           - comprehension_question_ic_per_minute
@@ -396,10 +393,10 @@ transformations:
           - $transformations.cleaned_comp_recall
         join_type: left
         left_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keep_columns:
           - comprehension_recall_detailed_comp_ic_per_minute
