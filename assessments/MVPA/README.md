@@ -6,7 +6,7 @@
 To run this bundle, please add your own source file(s):
 <code>data/MVPA.csv</code>
 
-Or use the sample file (`data/sample_anonymized_file.csv`).
+Or use the sample file (`data/sample_anonymized_file.csv` for MVPA 2025-2026 and onward or `data/sample_anonymized_file_historic.csv` for historic year).
 
 ## CLI Parameters
 
