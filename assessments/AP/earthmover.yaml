@@ -238,7 +238,7 @@ transformations:
           - IrregularityCode2
       - operation: add_columns
         columns:
-          School_Year: "{%raw%}20{{ SchoolYear }}{%endraw%}"
+          School_Year: "{%raw%}{%- if SchoolYear|string|length==2-%}20{{SchoolYear}}{%-else-%}{{SchoolYear}}{%-endif-%}{%endraw%}"
       - operation: rename_columns
         columns:
           Grade Level: GradeLevel
