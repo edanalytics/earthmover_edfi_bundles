@@ -12,7 +12,7 @@ To run this bundle, please add your own source file(s) and column(s):
 This template will only work with the vendor-provided FastBridge AUTOreading file.
 </details>
 
-Or use the sample file (data/sample_anonymized_file_fastbridge_autoreading.csv).
+Or use the sample file (data/sample_anonymized_file.csv).
 
 ## CLI Parameters
 - OUTPUT_DIR: Where output files will be written
@@ -27,7 +27,7 @@ Running earthmover:
 earthmover run -c ./earthmover.yaml -p '{
 "OUTPUT_DIR": "output/" ,
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file_fastbridge_autoreading.csv",
+"INPUT_FILE": "data/sample_anonymized_file.csv",
 "STUDENT_ID_NAME": "Local ID",
 "API_YEAR": "2024"
 }'
