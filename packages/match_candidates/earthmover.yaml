@@ -41,7 +41,7 @@ config:
         {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
         {%- else -%}{{cleaned_list | tojson}}
         {%-endif-%}
-      {%- else -%}{{ observables[obs] | trim | lower | default(none, true) }}
+      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ __row_data__['${OBSERVABLE_BIRTH_DATE}'] | trim | lower | default(none, true) }}
       {%- endif -%}
     {%- endmacro %} 
 
