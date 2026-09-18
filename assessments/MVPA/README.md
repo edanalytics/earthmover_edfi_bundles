@@ -24,7 +24,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/" ,
-"STUDENT_ID_NAME": "StudentID",
+"STUDENT_ID_NAME": "StuNumber",
 "EDFI_DS_VERSION": "4"
 }'
 ```
