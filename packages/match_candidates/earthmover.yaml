@@ -10,8 +10,7 @@ config:
   macros: >
     {%- macro clean_observables(obs) -%}
 
-      {%- set observables = {
-          'OBSERVABLE_BIRTH_DATE': ${OBSERVABLE_BIRTH_DATE},
+      {%- set list_obs = {
           'OBSERVABLE_SCHOOL_IDS': ${OBSERVABLE_SCHOOL_IDS},
           'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
       } -%}
@@ -34,7 +33,7 @@ config:
         {%- else -%} {{last_name | trim | lower | default(none, true)}}
         {%- endif -%}
       {%- elif obs in ['OBSERVABLE_SCHOOL_IDS', 'OBSERVABLE_STUDENT_IDS'] -%} 
-        {%- set base_list = observables[obs] -%}
+        {%- set base_list = list_obs[obs] -%}
         {%- set cleaned_list = [] -%}
         {%- for item in base_list -%}
           {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
