@@ -59,6 +59,12 @@ transformations:
           obs_birth_date: "{%raw%}{{clean_observables('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
           obs_school_ids: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
           obs_student_ids: "{%raw%}{{clean_observables('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
+      # We need to cast input dates to ISO format YYYY-MM-DD. This operation uses the bundle-configured birth date and birth date format to transform inputs to our required format
+      - operation: date_format
+        column: obs_birth_date
+        from_format: "${OBSERVABLE_BIRTH_DATE_FORMAT}"
+        to_format: '%Y-%m-%d'
+        ignore_errors: False
       - operation: combine_columns
         columns:
           - obs_first_name
