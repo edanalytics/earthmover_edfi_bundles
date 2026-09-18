@@ -6,7 +6,7 @@
 To run this bundle, please add your own source file(s):
 <code>data/MVPA.csv</code>
 
-Or use the sample file (`data/sample_anonymized_file.csv`).
+Or use the sample file (`data/sample_anonymized_file.csv` for MVPA 2025-2026 and onward or `data/sample_anonymized_file_historic.csv` for historic year).
 
 ## CLI Parameters
 
@@ -24,7 +24,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
 "INPUT_FILE": "data/sample_anonymized_file.csv",
 "OUTPUT_DIR": "output/" ,
-"STUDENT_ID_NAME": "StudentID",
+"STUDENT_ID_NAME": "StuNumber",
 "EDFI_DS_VERSION": "4"
 }'
 ```
