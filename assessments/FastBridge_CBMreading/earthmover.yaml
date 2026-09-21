@@ -42,8 +42,7 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
-    # Blank defaults so optional CBMcomp sources are empty DFs when unset (not unsubstituted paths)
-    INPUT_FILE_COMP_QUESTION: ''
+    INPUT_FILE_COMP_QUESTION: ''  # Blank defaults so optional CBMcomp sources are empty DFs when unset (not unsubstituted paths)
     INPUT_FILE_COMP_RECALL: ''
 
 sources:
