@@ -42,6 +42,8 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    INPUT_FILE_COMP_QUESTION: ''  # Blank defaults so optional CBMcomp sources are empty DFs when unset (not unsubstituted paths)
+    INPUT_FILE_COMP_RECALL: ''
 
 sources:
   input:
@@ -348,6 +350,17 @@ transformations:
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
+      # Empty optional/header-only files pivot with no score columns; ensure join keys exist
+      # without overwriting values when real CBMcomp data is present.
+      - operation: add_columns
+        columns:
+          comprehension_question_ic_per_minute: "{% raw %}{{ comprehension_question_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_question_items_correct: "{% raw %}{{ comprehension_question_items_correct | default('', true) }}{% endraw %}"
+          comprehension_question_total_items: "{% raw %}{{ comprehension_question_total_items | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_school: "{% raw %}{{ comprehension_question_percentile_at_school | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_lea: "{% raw %}{{ comprehension_question_percentile_at_lea | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_nation: "{% raw %}{{ comprehension_question_percentile_at_nation | default('', true) }}{% endraw %}"
+          comprehension_question_risk_level: "{% raw %}{{ comprehension_question_risk_level | default('', true) }}{% endraw %}"
 
   cleaned_comp_recall:
     source: $sources.input_comp_recall
@@ -366,6 +379,18 @@ transformations:
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
+      - operation: add_columns
+        columns:
+          comprehension_recall_detailed_comp_ic_per_minute: "{% raw %}{{ comprehension_recall_detailed_comp_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_recall_detailed_comp_items_correct: "{% raw %}{{ comprehension_recall_detailed_comp_items_correct | default('', true) }}{% endraw %}"
+          comprehension_recall_detailed_comp_total_items: "{% raw %}{{ comprehension_recall_detailed_comp_total_items | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_ic_per_minute: "{% raw %}{{ comprehension_recall_synthesis_comp_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_items_correct: "{% raw %}{{ comprehension_recall_synthesis_comp_items_correct | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_total_items: "{% raw %}{{ comprehension_recall_synthesis_comp_total_items | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_school: "{% raw %}{{ comprehension_recall_percentile_at_school | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_lea: "{% raw %}{{ comprehension_recall_percentile_at_lea | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_nation: "{% raw %}{{ comprehension_recall_percentile_at_nation | default('', true) }}{% endraw %}"
+          comprehension_recall_risk_level: "{% raw %}{{ comprehension_recall_risk_level | default('', true) }}{% endraw %}"
 
   joined_input:
     source: $transformations.cleaned_input
