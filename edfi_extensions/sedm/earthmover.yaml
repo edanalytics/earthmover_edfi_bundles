@@ -37,6 +37,9 @@ transformations:
     source: $sources.idea_events
     operations:
       - operation: snake_case_columns
+      - operation: duplicate_columns
+        columns:
+          education_organization_reference: lea_code
       - operation: date_format
         columns: 
           - event_date
