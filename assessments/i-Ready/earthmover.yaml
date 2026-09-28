@@ -179,7 +179,7 @@ transformations:
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
-        join_type: inner
+        join_type: left
         left_keys: [student_grade, assessmentIdentifier]
         right_keys: [iready_grade, assessmentIdentifier]
 
