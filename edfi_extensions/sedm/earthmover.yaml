@@ -39,7 +39,6 @@ transformations:
       - operation: snake_case_columns
       - operation: date_format
         columns: 
-          - event_date
           - event_begin_date
           - event_end_date
         from_format: "%m/%d/%y"
