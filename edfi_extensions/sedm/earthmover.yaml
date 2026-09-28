@@ -45,7 +45,7 @@ transformations:
           - event_date
           - event_begin_date
           - event_end_date
-        from_format: "%m/%d/%Y"
+        from_format: "%m/%d/%y"
         to_format: "%Y-%m-%d"
   
   student_ieps:
@@ -57,7 +57,7 @@ transformations:
           - event_date
           - event_begin_date
           - event_end_date
-        from_format: "%m/%d/%Y"
+        from_format: "%m/%d/%y"
         to_format: "%Y-%m-%d"
       - operation: map_values
         column: placement
@@ -73,7 +73,7 @@ transformations:
       - operation: date_format
         columns: 
           - event_date
-        from_format: "%m/%d/%Y"
+        from_format: "%m/%d/%y"
         to_format: "%Y-%m-%d"
       - operation: filter_rows
         query: primary_disability != ''
