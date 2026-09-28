@@ -154,13 +154,18 @@ transformations:
           Geometry Scale Score: geometry_scale_score
           Geometry Placement: geometry_placement
           Geometry Relative Placement: geometry_relative_placement
-          Baseline Diagnostic (Y/N): baseline_diagnostic
-          Most Recent Diagnostic YTD (Y/N): most_recent_diagnostic
           Duration (min): duration
           Rush Flag: rush_flag
-          Diagnostic Gain: diagnostic_gain
           Grouping: grouping
           Activity Id: activity_id
+      # Starting in SY 2027, i-Ready exports replace 'diagnostic' with 'assessment' in several columns.
+      # The below logic handles cases where 'assessment' OR 'diagnostic' is present in the column names and returns their values to a column following the traditional "diagnostic" convention.
+      # In future, we may want to remove logic to handle the old 'diagnostic columns' and explicitly expect 'assessment'.
+      - operation: add_columns
+        columns:
+          baseline_diagnostic: "{%raw%}{% if __row_data__['Baseline Assessment (Y/N)'] %}{{'Baseline Assessment (Y/N)'}}{% else %}{{'Baseline Diagnostic (Y/N)'}}{%endif%}{%endraw%}"
+          most_recent_diagnostic: "{%raw%}{% if __row_data__['Most Recent Assessment YTD (Y/N)'] %}{{'Most Recent Assessment YTD (Y/N)'}}{% else %}{{'Most Recent Diagnostic YTD (Y/N)'}}{%endif%}{%endraw%}" 
+          diagnostic_gain: "{%raw%}{% if __row_data__['Assessment Gain'] %}{{'Assessment Gain'}}{% else %}{{'Diagnostic Gain'}}{%endif%}{%endraw%}" 
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
