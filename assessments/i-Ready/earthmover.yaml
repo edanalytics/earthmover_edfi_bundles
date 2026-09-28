@@ -163,9 +163,9 @@ transformations:
       # In future, we may want to remove logic to handle the old 'diagnostic columns' and explicitly expect 'assessment'.
       - operation: add_columns
         columns:
-          baseline_diagnostic: "{%raw%}{% if __row_data__['Baseline Assessment (Y/N)'] %}{{'Baseline Assessment (Y/N)'}}{% else %}{{'Baseline Diagnostic (Y/N)'}}{%endif%}{%endraw%}"
-          most_recent_diagnostic: "{%raw%}{% if __row_data__['Most Recent Assessment YTD (Y/N)'] %}{{'Most Recent Assessment YTD (Y/N)'}}{% else %}{{'Most Recent Diagnostic YTD (Y/N)'}}{%endif%}{%endraw%}" 
-          diagnostic_gain: "{%raw%}{% if __row_data__['Assessment Gain'] %}{{'Assessment Gain'}}{% else %}{{'Diagnostic Gain'}}{%endif%}{%endraw%}" 
+          baseline_diagnostic: "{%raw%}{% if __row_data__['Baseline Assessment (Y/N)'] %}{{__row_data__['Baseline Assessment (Y/N)']}}{% else %}{{__row_data__['Baseline Diagnostic (Y/N)']}}{%endif%}{%endraw%}"
+          most_recent_diagnostic: "{%raw%}{% if __row_data__['Most Recent Assessment YTD (Y/N)'] %}{{__row_data__['Most Recent Assessment YTD (Y/N)']}}{% else %}{{__row_data__['Most Recent Diagnostic YTD (Y/N)']}}{%endif%}{%endraw%}" 
+          diagnostic_gain: "{%raw%}{% if __row_data__['Assessment Gain'] %}{{__row_data__['Assessment Gain']}}{% else %}{{__row_data__['Diagnostic Gain']}}{%endif%}{%endraw%}" 
       - operation: modify_columns
         columns:
           school_year: "{%raw%}{{value[-4:]}}{%endraw%}"
