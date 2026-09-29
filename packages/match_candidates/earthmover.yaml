@@ -65,6 +65,10 @@ transformations:
         from_format: "${OBSERVABLE_BIRTH_DATE_FORMAT}"
         to_format: '%Y-%m-%d'
         ignore_errors: False
+      # If any dates were nan after date_format, cast them back to string so we can include them in combine_columns
+      - operation: modify_columns
+        columns:
+          obs_birth_date: "{%raw%}{{ '' if value != value or value is none else value }}{%endraw%}"
       - operation: combine_columns
         columns:
           - obs_first_name

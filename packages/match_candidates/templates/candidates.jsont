@@ -2,7 +2,7 @@
     "correlation_id": "{{__candidate_id}}", 
     "first_name": {{obs_first_name | tojson if obs_first_name else 'null'}}, 
     "last_name": {{obs_last_name | tojson if obs_last_name else 'null'}}, 
-    "birth_date": "{{obs_birth_date}}", 
+    "birth_date": {{obs_birth_date | tojson if obs_birth_date else 'null'}}, 
     "school_ids": {{obs_school_ids}}, 
     "student_ids": {{obs_student_ids}},
     "record_count": {{record_count}}
