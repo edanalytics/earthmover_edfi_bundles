@@ -3,46 +3,58 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
-  # The clean_observables macro below takes the OBSERVABLES set in each bundle and cleans them for use downstream.
-  # OBSERVABLE_FIRST_NAME and OBSERVABLE_LAST_NAME are passed to the macro as strings because we conditionally populate these
-  # using either OBSERVABLE_FULL_NAME or OBSERVABLE_FIRST_NAME/OBSERVABLE_LAST_NAME, depending on which is provided.
-  # All other observables are passed as variable references.
+  # Three macros are used to clean observables. In order to apply these macros to new fields, make sure to update the 'obs' dict in the relevant macro.
+  # clean_names handles name inputs. If FULL_NAME is set, it tries to extract the first and last from the FULL_NAME field. If not, it cleans the FIRST_NAME and LAST_NAME fields.
+  # clean_list applies standard transformations to all list inputs, returning a new list with each item cleaned.
+  # clean_date applies some standard transformations to all date inputs.
   macros: >
-    {%- macro clean_observables(obs) -%}
+    {%- macro clean_names(obs) -%}
+      {%- set name_obs = {
+          'OBSERVABLE_FULL_NAME': '${OBSERVABLE_FULL_NAME}',
+          'OBSERVABLE_FIRST_NAME': '${OBSERVABLE_FIRST_NAME}',
+          'OBSERVABLE_LAST_NAME': '${OBSERVABLE_LAST_NAME}',       
+      } -%}
+      
+      {%- if __row_data__[name_obs['OBSERVABLE_FULL_NAME']] -%}
+        {%- set full_name = __row_data__[name_obs['OBSERVABLE_FULL_NAME']] | trim -%}
+        {%- if ',' in full_name -%}
+          {%- set first_name = full_name.split(',')[1].strip().split(' ')[0] -%}
+          {%- set last_name = full_name.split(',')[0] -%}
+        {%- else -%}
+          {%- set first_name = full_name.split(' ')[0] -%}
+          {%- set last_name = full_name.split(' ')[-1] -%}
+        {%- endif -%}
+      {%- endif -%}
 
+      {%- if first_name or last_name -%}
+        {{(first_name if obs == 'OBSERVABLE_FIRST_NAME' else last_name) | default('', true) | trim}}
+      {%- else -%}
+        {{__row_data__[name_obs[obs]] | default('', true) | trim }}
+      {%- endif -%}
+    {%- endmacro %} 
+
+    {%- macro clean_list(obs) -%}
       {%- set list_obs = {
           'OBSERVABLE_SCHOOL_IDS': ${OBSERVABLE_SCHOOL_IDS},
           'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
       } -%}
-  
-      {%- if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] -%}
-        {%- set full_name = __row_data__['${OBSERVABLE_FULL_NAME}'] -%}
-        {%- if full_name-%}
-          {%- if ',' in full_name -%}
-            {%- set first_name = full_name.split(',')[1].split(' ')[0] -%}
-            {%- set last_name = full_name.split(',')[0] -%}
-          {%- else -%}
-            {%- set first_name = full_name.split(' ')[0] -%}
-            {%- set last_name = full_name.split(' ')[full_name|length -1] -%}
-          {%- endif -%}
-        {%- else -%}
-          {%- set first_name = __row_data__['${OBSERVABLE_FIRST_NAME}'] -%}
-          {%- set last_name = __row_data__['${OBSERVABLE_LAST_NAME}'] -%}
-        {% endif %}
-        {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | default('', true) | trim }}
-        {%- else -%} {{last_name | default('', true) | trim }}
-        {%- endif -%}
-      {%- elif obs in ['OBSERVABLE_SCHOOL_IDS', 'OBSERVABLE_STUDENT_IDS'] -%} 
-        {%- set base_list = list_obs[obs] -%}
-        {%- set cleaned_list = [] -%}
-        {%- for item in base_list -%}
-          {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
-        {%-endfor-%}
-        {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
-        {%- else -%}{{cleaned_list | tojson}}
-        {%-endif-%}
-      {%- elif obs == 'OBSERVABLE_BIRTH_DATE' -%}{{ __row_data__['${OBSERVABLE_BIRTH_DATE}'] | trim | lower | default(none, true) }}
-      {%- endif -%}
+
+      {%- set base_list = list_obs[obs] -%}
+      {%- set cleaned_list = [] -%}
+      {%- for item in base_list -%}
+        {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
+      {%-endfor-%}
+      {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
+      {%- else -%}{{cleaned_list | tojson}}
+      {%-endif-%}
+    {%- endmacro %} 
+
+    {%- macro clean_date(obs) -%}
+      {%- set date_obs = {
+          'OBSERVABLE_BIRTH_DATE': '${OBSERVABLE_BIRTH_DATE}',
+      } -%}
+
+      {{ __row_data__[date_obs[obs]] | default('', true) | trim }}
     {%- endmacro %} 
 
 transformations:
@@ -54,11 +66,11 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          obs_first_name: "{%raw%}{{clean_observables('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
-          obs_last_name: "{%raw%}{{clean_observables('OBSERVABLE_LAST_NAME')}}{%endraw%}"
-          obs_birth_date: "{%raw%}{{clean_observables('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
-          obs_school_ids: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
-          obs_student_ids: "{%raw%}{{clean_observables('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
+          obs_first_name: "{%raw%}{{clean_names('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
+          obs_last_name: "{%raw%}{{clean_names('OBSERVABLE_LAST_NAME')}}{%endraw%}"
+          obs_birth_date: "{%raw%}{{clean_date('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
+          obs_school_ids: "{%raw%}{{clean_list('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
+          obs_student_ids: "{%raw%}{{clean_list('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
       # We need to cast input dates to ISO format YYYY-MM-DD. This operation uses the bundle-configured birth date and birth date format to transform inputs to our required format
       - operation: date_format
         column: obs_birth_date
