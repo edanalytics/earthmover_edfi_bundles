@@ -14,6 +14,8 @@ The input CSV should contain:
 - Student demographic columns (Local ID, State ID, First Name, Last Name, Grade, etc.)
 - Season-specific Student and Teacher SAEBRS columns (Total Items, Items Correct, Social/Academic/Emotional subscales, percentiles, risk level, final date)
 - Growth columns between seasons (duplicated once for Student and once for Teacher within each season block)
+
+Student vs Teacher export layouts reverse the order of those blocks. Growth is attributed automatically from the `Assessment` column (`SAEBRS Student` vs `SAEBRS Teacher`); no extra CLI parameter is required.
 </details>
 
 Sample file: `data/sample_anonymized_file.csv`

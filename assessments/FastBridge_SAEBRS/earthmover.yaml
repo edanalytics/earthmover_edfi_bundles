@@ -36,6 +36,32 @@ config:
         {{ col }}
       {%- endif -%}
     {%- endmacro -%}
+
+    {# Keep defined non-null values; treat missing/None/NaN as empty string. #}
+    {%- macro coalesce(val) -%}
+      {%- if val is defined and val is not none and val == val -%}{{ val }}{%- endif -%}
+    {%- endmacro -%}
+
+    {# True for vendor growth columns (identical headers appear twice; pandas suffixes _1). #}
+    {%- macro is_growth_col(col) -%}
+      {%- if col.startswith('growth_score_from_') or col.startswith('school_growth_percentile_from_') or col.startswith('district_growth_percentile_from_') or col.startswith('national_growth_percentile_from_') or col.startswith('growth_percentile_by_start_score_from_') -%}true{%- endif -%}
+    {%- endmacro -%}
+
+    {# Attribute duplicate growth columns using Assessment: teacher export unsuffixed=teacher/_1=student; student export reverse. #}
+    {%- macro attribute_melt_variable(melt_variable, assessment) -%}
+      {%- if is_growth_col(melt_variable) | trim -%}
+        {%- set is_dup = melt_variable.endswith('_1') -%}
+        {%- set base = melt_variable[:-2] if is_dup else melt_variable -%}
+        {%- if assessment == 'SAEBRS Teacher' -%}
+          {%- set form = 'student' if is_dup else 'teacher' -%}
+        {%- else -%}
+          {%- set form = 'teacher' if is_dup else 'student' -%}
+        {%- endif -%}
+        saebrs_{{ form }}_{{ base }}
+      {%- else -%}
+        {{ melt_variable }}
+      {%- endif -%}
+    {%- endmacro -%}
   parameter_defaults:
     OUTPUT_DIR: ./output/
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
@@ -96,125 +122,31 @@ transformations:
         columns:
           ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
-      - operation: drop_columns
+      # Keep SAEBRS score columns and growth metrics (drops demographics and other noise).
+      - operation: keep_columns
         columns:
-          - state
-          - first_name
-          - last_name
-          - gender
-          - dob
-          - race
-          - special_ed_status
-          - unnamed_*
-          - "*error*"
-      - operation: rename_columns
-        columns:
-          growth_score_from_fall_to_winter: saebrs_student_growth_score_from_fall_to_winter
-          school_growth_percentile_from_fall_to_winter: saebrs_student_school_growth_percentile_from_fall_to_winter
-          district_growth_percentile_from_fall_to_winter: saebrs_student_district_growth_percentile_from_fall_to_winter
-          national_growth_percentile_from_fall_to_winter: saebrs_student_national_growth_percentile_from_fall_to_winter
-          growth_percentile_by_start_score_from_fall_to_winter: saebrs_student_growth_percentile_by_start_score_from_fall_to_winter
-          growth_score_from_fall_to_spring: saebrs_student_growth_score_from_fall_to_spring
-          school_growth_percentile_from_fall_to_spring: saebrs_student_school_growth_percentile_from_fall_to_spring
-          district_growth_percentile_from_fall_to_spring: saebrs_student_district_growth_percentile_from_fall_to_spring
-          national_growth_percentile_from_fall_to_spring: saebrs_student_national_growth_percentile_from_fall_to_spring
-          growth_percentile_by_start_score_from_fall_to_spring: saebrs_student_growth_percentile_by_start_score_from_fall_to_spring
-          growth_score_from_winter_to_spring: saebrs_student_growth_score_from_winter_to_spring
-          school_growth_percentile_from_winter_to_spring: saebrs_student_school_growth_percentile_from_winter_to_spring
-          district_growth_percentile_from_winter_to_spring: saebrs_student_district_growth_percentile_from_winter_to_spring
-          national_growth_percentile_from_winter_to_spring: saebrs_student_national_growth_percentile_from_winter_to_spring
-          growth_percentile_by_start_score_from_winter_to_spring: saebrs_student_growth_percentile_by_start_score_from_winter_to_spring
-          growth_score_from_fall_to_screening_period_4: saebrs_student_growth_score_from_fall_to_screening_period_4
-          school_growth_percentile_from_fall_to_screening_period_4: saebrs_student_school_growth_percentile_from_fall_to_screening_period_4
-          district_growth_percentile_from_fall_to_screening_period_4: saebrs_student_district_growth_percentile_from_fall_to_screening_period_4
-          national_growth_percentile_from_fall_to_screening_period_4: saebrs_student_national_growth_percentile_from_fall_to_screening_period_4
-          growth_percentile_by_start_score_from_fall_to_screening_period_4: saebrs_student_growth_percentile_by_start_score_from_fall_to_screening_period_4
-          growth_score_from_winter_to_screening_period_4: saebrs_student_growth_score_from_winter_to_screening_period_4
-          school_growth_percentile_from_winter_to_screening_period_4: saebrs_student_school_growth_percentile_from_winter_to_screening_period_4
-          district_growth_percentile_from_winter_to_screening_period_4: saebrs_student_district_growth_percentile_from_winter_to_screening_period_4
-          national_growth_percentile_from_winter_to_screening_period_4: saebrs_student_national_growth_percentile_from_winter_to_screening_period_4
-          growth_percentile_by_start_score_from_winter_to_screening_period_4: saebrs_student_growth_percentile_by_start_score_from_winter_to_screening_period_4
-          growth_score_from_spring_to_screening_period_4: saebrs_student_growth_score_from_spring_to_screening_period_4
-          school_growth_percentile_from_spring_to_screening_period_4: saebrs_student_school_growth_percentile_from_spring_to_screening_period_4
-          district_growth_percentile_from_spring_to_screening_period_4: saebrs_student_district_growth_percentile_from_spring_to_screening_period_4
-          national_growth_percentile_from_spring_to_screening_period_4: saebrs_student_national_growth_percentile_from_spring_to_screening_period_4
-          growth_percentile_by_start_score_from_spring_to_screening_period_4: saebrs_student_growth_percentile_by_start_score_from_spring_to_screening_period_4
-          growth_score_from_fall_to_screening_period_5: saebrs_student_growth_score_from_fall_to_screening_period_5
-          school_growth_percentile_from_fall_to_screening_period_5: saebrs_student_school_growth_percentile_from_fall_to_screening_period_5
-          district_growth_percentile_from_fall_to_screening_period_5: saebrs_student_district_growth_percentile_from_fall_to_screening_period_5
-          national_growth_percentile_from_fall_to_screening_period_5: saebrs_student_national_growth_percentile_from_fall_to_screening_period_5
-          growth_percentile_by_start_score_from_fall_to_screening_period_5: saebrs_student_growth_percentile_by_start_score_from_fall_to_screening_period_5
-          growth_score_from_winter_to_screening_period_5: saebrs_student_growth_score_from_winter_to_screening_period_5
-          school_growth_percentile_from_winter_to_screening_period_5: saebrs_student_school_growth_percentile_from_winter_to_screening_period_5
-          district_growth_percentile_from_winter_to_screening_period_5: saebrs_student_district_growth_percentile_from_winter_to_screening_period_5
-          national_growth_percentile_from_winter_to_screening_period_5: saebrs_student_national_growth_percentile_from_winter_to_screening_period_5
-          growth_percentile_by_start_score_from_winter_to_screening_period_5: saebrs_student_growth_percentile_by_start_score_from_winter_to_screening_period_5
-          growth_score_from_spring_to_screening_period_5: saebrs_student_growth_score_from_spring_to_screening_period_5
-          school_growth_percentile_from_spring_to_screening_period_5: saebrs_student_school_growth_percentile_from_spring_to_screening_period_5
-          district_growth_percentile_from_spring_to_screening_period_5: saebrs_student_district_growth_percentile_from_spring_to_screening_period_5
-          national_growth_percentile_from_spring_to_screening_period_5: saebrs_student_national_growth_percentile_from_spring_to_screening_period_5
-          growth_percentile_by_start_score_from_spring_to_screening_period_5: saebrs_student_growth_percentile_by_start_score_from_spring_to_screening_period_5
-          growth_score_from_screening_period_4_to_screening_period_5: saebrs_student_growth_score_from_screening_period_4_to_screening_period_5
-          school_growth_percentile_from_screening_period_4_to_screening_period_5: saebrs_student_school_growth_percentile_from_screening_period_4_to_screening_period_5
-          district_growth_percentile_from_screening_period_4_to_screening_period_5: saebrs_student_district_growth_percentile_from_screening_period_4_to_screening_period_5
-          national_growth_percentile_from_screening_period_4_to_screening_period_5: saebrs_student_national_growth_percentile_from_screening_period_4_to_screening_period_5
-          growth_percentile_by_start_score_from_screening_period_4_to_screening_period_5: saebrs_student_growth_percentile_by_start_score_from_screening_period_4_to_screening_period_5
-          growth_score_from_fall_to_winter_1: saebrs_teacher_growth_score_from_fall_to_winter
-          school_growth_percentile_from_fall_to_winter_1: saebrs_teacher_school_growth_percentile_from_fall_to_winter
-          district_growth_percentile_from_fall_to_winter_1: saebrs_teacher_district_growth_percentile_from_fall_to_winter
-          national_growth_percentile_from_fall_to_winter_1: saebrs_teacher_national_growth_percentile_from_fall_to_winter
-          growth_percentile_by_start_score_from_fall_to_winter_1: saebrs_teacher_growth_percentile_by_start_score_from_fall_to_winter
-          growth_score_from_fall_to_spring_1: saebrs_teacher_growth_score_from_fall_to_spring
-          school_growth_percentile_from_fall_to_spring_1: saebrs_teacher_school_growth_percentile_from_fall_to_spring
-          district_growth_percentile_from_fall_to_spring_1: saebrs_teacher_district_growth_percentile_from_fall_to_spring
-          national_growth_percentile_from_fall_to_spring_1: saebrs_teacher_national_growth_percentile_from_fall_to_spring
-          growth_percentile_by_start_score_from_fall_to_spring_1: saebrs_teacher_growth_percentile_by_start_score_from_fall_to_spring
-          growth_score_from_winter_to_spring_1: saebrs_teacher_growth_score_from_winter_to_spring
-          school_growth_percentile_from_winter_to_spring_1: saebrs_teacher_school_growth_percentile_from_winter_to_spring
-          district_growth_percentile_from_winter_to_spring_1: saebrs_teacher_district_growth_percentile_from_winter_to_spring
-          national_growth_percentile_from_winter_to_spring_1: saebrs_teacher_national_growth_percentile_from_winter_to_spring
-          growth_percentile_by_start_score_from_winter_to_spring_1: saebrs_teacher_growth_percentile_by_start_score_from_winter_to_spring
-          growth_score_from_fall_to_screening_period_4_1: saebrs_teacher_growth_score_from_fall_to_screening_period_4
-          school_growth_percentile_from_fall_to_screening_period_4_1: saebrs_teacher_school_growth_percentile_from_fall_to_screening_period_4
-          district_growth_percentile_from_fall_to_screening_period_4_1: saebrs_teacher_district_growth_percentile_from_fall_to_screening_period_4
-          national_growth_percentile_from_fall_to_screening_period_4_1: saebrs_teacher_national_growth_percentile_from_fall_to_screening_period_4
-          growth_percentile_by_start_score_from_fall_to_screening_period_4_1: saebrs_teacher_growth_percentile_by_start_score_from_fall_to_screening_period_4
-          growth_score_from_winter_to_screening_period_4_1: saebrs_teacher_growth_score_from_winter_to_screening_period_4
-          school_growth_percentile_from_winter_to_screening_period_4_1: saebrs_teacher_school_growth_percentile_from_winter_to_screening_period_4
-          district_growth_percentile_from_winter_to_screening_period_4_1: saebrs_teacher_district_growth_percentile_from_winter_to_screening_period_4
-          national_growth_percentile_from_winter_to_screening_period_4_1: saebrs_teacher_national_growth_percentile_from_winter_to_screening_period_4
-          growth_percentile_by_start_score_from_winter_to_screening_period_4_1: saebrs_teacher_growth_percentile_by_start_score_from_winter_to_screening_period_4
-          growth_score_from_spring_to_screening_period_4_1: saebrs_teacher_growth_score_from_spring_to_screening_period_4
-          school_growth_percentile_from_spring_to_screening_period_4_1: saebrs_teacher_school_growth_percentile_from_spring_to_screening_period_4
-          district_growth_percentile_from_spring_to_screening_period_4_1: saebrs_teacher_district_growth_percentile_from_spring_to_screening_period_4
-          national_growth_percentile_from_spring_to_screening_period_4_1: saebrs_teacher_national_growth_percentile_from_spring_to_screening_period_4
-          growth_percentile_by_start_score_from_spring_to_screening_period_4_1: saebrs_teacher_growth_percentile_by_start_score_from_spring_to_screening_period_4
-          growth_score_from_fall_to_screening_period_5_1: saebrs_teacher_growth_score_from_fall_to_screening_period_5
-          school_growth_percentile_from_fall_to_screening_period_5_1: saebrs_teacher_school_growth_percentile_from_fall_to_screening_period_5
-          district_growth_percentile_from_fall_to_screening_period_5_1: saebrs_teacher_district_growth_percentile_from_fall_to_screening_period_5
-          national_growth_percentile_from_fall_to_screening_period_5_1: saebrs_teacher_national_growth_percentile_from_fall_to_screening_period_5
-          growth_percentile_by_start_score_from_fall_to_screening_period_5_1: saebrs_teacher_growth_percentile_by_start_score_from_fall_to_screening_period_5
-          growth_score_from_winter_to_screening_period_5_1: saebrs_teacher_growth_score_from_winter_to_screening_period_5
-          school_growth_percentile_from_winter_to_screening_period_5_1: saebrs_teacher_school_growth_percentile_from_winter_to_screening_period_5
-          district_growth_percentile_from_winter_to_screening_period_5_1: saebrs_teacher_district_growth_percentile_from_winter_to_screening_period_5
-          national_growth_percentile_from_winter_to_screening_period_5_1: saebrs_teacher_national_growth_percentile_from_winter_to_screening_period_5
-          growth_percentile_by_start_score_from_winter_to_screening_period_5_1: saebrs_teacher_growth_percentile_by_start_score_from_winter_to_screening_period_5
-          growth_score_from_spring_to_screening_period_5_1: saebrs_teacher_growth_score_from_spring_to_screening_period_5
-          school_growth_percentile_from_spring_to_screening_period_5_1: saebrs_teacher_school_growth_percentile_from_spring_to_screening_period_5
-          district_growth_percentile_from_spring_to_screening_period_5_1: saebrs_teacher_district_growth_percentile_from_spring_to_screening_period_5
-          national_growth_percentile_from_spring_to_screening_period_5_1: saebrs_teacher_national_growth_percentile_from_spring_to_screening_period_5
-          growth_percentile_by_start_score_from_spring_to_screening_period_5_1: saebrs_teacher_growth_percentile_by_start_score_from_spring_to_screening_period_5
-          growth_score_from_screening_period_4_to_screening_period_5_1: saebrs_teacher_growth_score_from_screening_period_4_to_screening_period_5
-          school_growth_percentile_from_screening_period_4_to_screening_period_5_1: saebrs_teacher_school_growth_percentile_from_screening_period_4_to_screening_period_5
-          district_growth_percentile_from_screening_period_4_to_screening_period_5_1: saebrs_teacher_district_growth_percentile_from_screening_period_4_to_screening_period_5
-          national_growth_percentile_from_screening_period_4_to_screening_period_5_1: saebrs_teacher_national_growth_percentile_from_screening_period_4_to_screening_period_5
-          growth_percentile_by_start_score_from_screening_period_4_to_screening_period_5_1: saebrs_teacher_growth_percentile_by_start_score_from_screening_period_4_to_screening_period_5
+          - assessment
+          - assessment_language
+          - district
+          - school
+          - local_id
+          - state_id
+          - fast_id
+          - grade
+          - student_unique_id
+          - "*saebrs*"
+          - growth_score_from_*
+          - school_growth_percentile_from_*
+          - district_growth_percentile_from_*
+          - national_growth_percentile_from_*
+          - growth_percentile_by_start_score_from_*
       - operation: melt
         id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
       - operation: add_columns
         columns:
-          season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
-          cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
+          attributed_variable: "{% raw %}{{ attribute_melt_variable(melt_variable, assessment) }}{% endraw %}"
+          season: "{% raw %}{{ extract_season(attributed_variable) }}{% endraw %}"
+          cleaned_variable: "{% raw %}{{ remove_season(attributed_variable, season) }}{% endraw %}"
       - operation: filter_rows
         query: melt_value == '' or cleaned_variable == ''
         behavior: exclude
@@ -227,6 +159,42 @@ transformations:
   student_form:
     source: $transformations.pivoted_by_season
     operations:
+      # Pivot omits metrics that were entirely empty in the export; ensure expected cols exist.
+      - operation: add_columns
+        columns:
+          saebrs_student_seba_saebrs_total_items: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_total_items) }}{% endraw %}"
+          saebrs_student_seba_saebrs_items_correct: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_items_correct) }}{% endraw %}"
+          saebrs_student_seba_saebrs_social_total_items: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_social_total_items) }}{% endraw %}"
+          saebrs_student_seba_saebrs_social_items_correct: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_social_items_correct) }}{% endraw %}"
+          saebrs_student_seba_saebrs_academic_total_items: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_academic_total_items) }}{% endraw %}"
+          saebrs_student_seba_saebrs_academic_items_correct: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_academic_items_correct) }}{% endraw %}"
+          saebrs_student_seba_saebrs_emotional_total_items: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_emotional_total_items) }}{% endraw %}"
+          saebrs_student_seba_saebrs_emotional_items_correct: "{% raw %}{{ coalesce(saebrs_student_seba_saebrs_emotional_items_correct) }}{% endraw %}"
+          saebrs_student_percentile_at_school: "{% raw %}{{ coalesce(saebrs_student_percentile_at_school) }}{% endraw %}"
+          saebrs_student_percentile_at_lea: "{% raw %}{{ coalesce(saebrs_student_percentile_at_lea) }}{% endraw %}"
+          saebrs_student_percentile_at_nation: "{% raw %}{{ coalesce(saebrs_student_percentile_at_nation) }}{% endraw %}"
+          saebrs_student_risk_level: "{% raw %}{{ coalesce(saebrs_student_risk_level) }}{% endraw %}"
+          saebrs_student_final_date: "{% raw %}{{ coalesce(saebrs_student_final_date) }}{% endraw %}"
+          saebrs_student_growth_score_from_fall: "{% raw %}{{ coalesce(saebrs_student_growth_score_from_fall) }}{% endraw %}"
+          saebrs_student_school_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_student_school_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_student_district_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_student_district_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_student_national_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_student_national_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_student_growth_percentile_by_start_score_from_fall: "{% raw %}{{ coalesce(saebrs_student_growth_percentile_by_start_score_from_fall) }}{% endraw %}"
+          saebrs_student_growth_score_from_winter: "{% raw %}{{ coalesce(saebrs_student_growth_score_from_winter) }}{% endraw %}"
+          saebrs_student_school_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_student_school_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_student_district_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_student_district_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_student_national_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_student_national_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_student_growth_percentile_by_start_score_from_winter: "{% raw %}{{ coalesce(saebrs_student_growth_percentile_by_start_score_from_winter) }}{% endraw %}"
+          saebrs_student_growth_score_from_spring: "{% raw %}{{ coalesce(saebrs_student_growth_score_from_spring) }}{% endraw %}"
+          saebrs_student_school_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_student_school_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_student_district_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_student_district_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_student_national_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_student_national_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_student_growth_percentile_by_start_score_from_spring: "{% raw %}{{ coalesce(saebrs_student_growth_percentile_by_start_score_from_spring) }}{% endraw %}"
+          saebrs_student_growth_score_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_student_growth_score_from_screening_period_4) }}{% endraw %}"
+          saebrs_student_school_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_student_school_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_student_district_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_student_district_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_student_national_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_student_national_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_student_growth_percentile_by_start_score_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_student_growth_percentile_by_start_score_from_screening_period_4) }}{% endraw %}"
       - operation: rename_columns
         columns:
           saebrs_student_seba_saebrs_total_items: total_items
@@ -252,6 +220,16 @@ transformations:
           saebrs_student_district_growth_percentile_from_winter: district_growth_percentile_from_winter
           saebrs_student_national_growth_percentile_from_winter: national_growth_percentile_from_winter
           saebrs_student_growth_percentile_by_start_score_from_winter: growth_percentile_by_start_score_from_winter
+          saebrs_student_growth_score_from_spring: growth_score_from_spring
+          saebrs_student_school_growth_percentile_from_spring: school_growth_percentile_from_spring
+          saebrs_student_district_growth_percentile_from_spring: district_growth_percentile_from_spring
+          saebrs_student_national_growth_percentile_from_spring: national_growth_percentile_from_spring
+          saebrs_student_growth_percentile_by_start_score_from_spring: growth_percentile_by_start_score_from_spring
+          saebrs_student_growth_score_from_screening_period_4: growth_score_from_screening_period_4
+          saebrs_student_school_growth_percentile_from_screening_period_4: school_growth_percentile_from_screening_period_4
+          saebrs_student_district_growth_percentile_from_screening_period_4: district_growth_percentile_from_screening_period_4
+          saebrs_student_national_growth_percentile_from_screening_period_4: national_growth_percentile_from_screening_period_4
+          saebrs_student_growth_percentile_by_start_score_from_screening_period_4: growth_percentile_by_start_score_from_screening_period_4
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_SAEBRS_Student"
@@ -266,6 +244,42 @@ transformations:
   teacher_form:
     source: $transformations.pivoted_by_season
     operations:
+      # Pivot omits metrics that were entirely empty in the export; ensure expected cols exist.
+      - operation: add_columns
+        columns:
+          saebrs_teacher_seba_saebrs_total_items: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_total_items) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_items_correct: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_items_correct) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_social_total_items: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_social_total_items) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_social_items_correct: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_social_items_correct) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_academic_total_items: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_academic_total_items) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_academic_items_correct: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_academic_items_correct) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_emotional_total_items: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_emotional_total_items) }}{% endraw %}"
+          saebrs_teacher_seba_saebrs_emotional_items_correct: "{% raw %}{{ coalesce(saebrs_teacher_seba_saebrs_emotional_items_correct) }}{% endraw %}"
+          saebrs_teacher_percentile_at_school: "{% raw %}{{ coalesce(saebrs_teacher_percentile_at_school) }}{% endraw %}"
+          saebrs_teacher_percentile_at_lea: "{% raw %}{{ coalesce(saebrs_teacher_percentile_at_lea) }}{% endraw %}"
+          saebrs_teacher_percentile_at_nation: "{% raw %}{{ coalesce(saebrs_teacher_percentile_at_nation) }}{% endraw %}"
+          saebrs_teacher_risk_level: "{% raw %}{{ coalesce(saebrs_teacher_risk_level) }}{% endraw %}"
+          saebrs_teacher_final_date: "{% raw %}{{ coalesce(saebrs_teacher_final_date) }}{% endraw %}"
+          saebrs_teacher_growth_score_from_fall: "{% raw %}{{ coalesce(saebrs_teacher_growth_score_from_fall) }}{% endraw %}"
+          saebrs_teacher_school_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_teacher_school_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_teacher_district_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_teacher_district_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_teacher_national_growth_percentile_from_fall: "{% raw %}{{ coalesce(saebrs_teacher_national_growth_percentile_from_fall) }}{% endraw %}"
+          saebrs_teacher_growth_percentile_by_start_score_from_fall: "{% raw %}{{ coalesce(saebrs_teacher_growth_percentile_by_start_score_from_fall) }}{% endraw %}"
+          saebrs_teacher_growth_score_from_winter: "{% raw %}{{ coalesce(saebrs_teacher_growth_score_from_winter) }}{% endraw %}"
+          saebrs_teacher_school_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_teacher_school_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_teacher_district_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_teacher_district_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_teacher_national_growth_percentile_from_winter: "{% raw %}{{ coalesce(saebrs_teacher_national_growth_percentile_from_winter) }}{% endraw %}"
+          saebrs_teacher_growth_percentile_by_start_score_from_winter: "{% raw %}{{ coalesce(saebrs_teacher_growth_percentile_by_start_score_from_winter) }}{% endraw %}"
+          saebrs_teacher_growth_score_from_spring: "{% raw %}{{ coalesce(saebrs_teacher_growth_score_from_spring) }}{% endraw %}"
+          saebrs_teacher_school_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_teacher_school_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_teacher_district_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_teacher_district_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_teacher_national_growth_percentile_from_spring: "{% raw %}{{ coalesce(saebrs_teacher_national_growth_percentile_from_spring) }}{% endraw %}"
+          saebrs_teacher_growth_percentile_by_start_score_from_spring: "{% raw %}{{ coalesce(saebrs_teacher_growth_percentile_by_start_score_from_spring) }}{% endraw %}"
+          saebrs_teacher_growth_score_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_teacher_growth_score_from_screening_period_4) }}{% endraw %}"
+          saebrs_teacher_school_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_teacher_school_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_teacher_district_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_teacher_district_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_teacher_national_growth_percentile_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_teacher_national_growth_percentile_from_screening_period_4) }}{% endraw %}"
+          saebrs_teacher_growth_percentile_by_start_score_from_screening_period_4: "{% raw %}{{ coalesce(saebrs_teacher_growth_percentile_by_start_score_from_screening_period_4) }}{% endraw %}"
       - operation: rename_columns
         columns:
           saebrs_teacher_seba_saebrs_total_items: total_items
@@ -291,6 +305,16 @@ transformations:
           saebrs_teacher_district_growth_percentile_from_winter: district_growth_percentile_from_winter
           saebrs_teacher_national_growth_percentile_from_winter: national_growth_percentile_from_winter
           saebrs_teacher_growth_percentile_by_start_score_from_winter: growth_percentile_by_start_score_from_winter
+          saebrs_teacher_growth_score_from_spring: growth_score_from_spring
+          saebrs_teacher_school_growth_percentile_from_spring: school_growth_percentile_from_spring
+          saebrs_teacher_district_growth_percentile_from_spring: district_growth_percentile_from_spring
+          saebrs_teacher_national_growth_percentile_from_spring: national_growth_percentile_from_spring
+          saebrs_teacher_growth_percentile_by_start_score_from_spring: growth_percentile_by_start_score_from_spring
+          saebrs_teacher_growth_score_from_screening_period_4: growth_score_from_screening_period_4
+          saebrs_teacher_school_growth_percentile_from_screening_period_4: school_growth_percentile_from_screening_period_4
+          saebrs_teacher_district_growth_percentile_from_screening_period_4: district_growth_percentile_from_screening_period_4
+          saebrs_teacher_national_growth_percentile_from_screening_period_4: national_growth_percentile_from_screening_period_4
+          saebrs_teacher_growth_percentile_by_start_score_from_screening_period_4: growth_percentile_by_start_score_from_screening_period_4
       - operation: add_columns
         columns:
           assessmentIdentifier: "FastBridge_SAEBRS_Teacher"
