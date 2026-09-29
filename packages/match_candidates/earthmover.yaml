@@ -29,8 +29,8 @@ config:
           {%- set first_name = __row_data__['${OBSERVABLE_FIRST_NAME}'] -%}
           {%- set last_name = __row_data__['${OBSERVABLE_LAST_NAME}'] -%}
         {% endif %}
-        {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
-        {%- else -%} {{last_name | trim | lower | default(none, true)}}
+        {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | default('', true) | trim }}
+        {%- else -%} {{last_name | default('', true) | trim }}
         {%- endif -%}
       {%- elif obs in ['OBSERVABLE_SCHOOL_IDS', 'OBSERVABLE_STUDENT_IDS'] -%} 
         {%- set base_list = list_obs[obs] -%}
