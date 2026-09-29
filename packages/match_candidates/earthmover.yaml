@@ -76,7 +76,7 @@ transformations:
         separator: '|'
       - operation: modify_columns
         columns:
-          __candidate_id: "{%raw%}{{md5(__candidate_id)}}{%endraw%}"
+          __candidate_id: "{%raw%}{{md5(__candidate_id | lower)}}{%endraw%}"
       - operation: add_columns
         columns:
           edFi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
