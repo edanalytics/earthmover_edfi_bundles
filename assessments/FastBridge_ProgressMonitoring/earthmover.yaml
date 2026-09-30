@@ -93,13 +93,18 @@ transformations:
       - operation: modify_columns
         columns:
           grade: "{%raw%}{{ (grade|string).zfill(2) if (grade|string)|length < 2 else grade|string }}{%endraw%}"
-      - operation: map_values
-        columns: 
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_keys:
+          - assessmentIdentifier
           - grade
-        map_file: ./seeds/grade_level_mapping.csv
-      - operation: duplicate_columns
-        columns:
-          grade: edfi_descriptor
+        right_keys:
+          - assessmentIdentifier
+          - original_grade
+        right_keep_columns:
+          - edfi_descriptor
       - operation: modify_columns
         columns:
           edfi_descriptor: "{%raw%}{%- if value != value -%}{%- else -%}{{value}}{%- endif -%}{%endraw%}"
