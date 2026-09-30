@@ -1,7 +1,6 @@
 {%- set possible_scores = 
   [
-    [scaleScore, "Scale Score", "Integer"],
-    [sem, "SEM", "Integer"]
+    [scaleScore, "Scale Score", "Integer"]
   ] -%}
 
 {%- set scores = [] -%}
@@ -13,8 +12,7 @@
 
 {%- set possible_perf_levels = 
   [
-    [performanceLevel, "Performance Level", "Level"],
-    [goalMet, "Goat Met", "Level"]
+    [performanceLevel, "Performance Level", "Level"]
   ] -%}
 
 {%- set perf_levels = [] -%}
@@ -26,15 +24,20 @@
 
 {% set possible_obj_assess = 
   [
-    ['Math1', math1Percentage, math1Level],
-    ['Math2', math2Percentage, math2Level],
-    ['SubMath1', subMath1Percentage, subMath1Level]
+    ['argumentative_organization_and_purpose', argumentative_organization_and_purpose],
+    ['argumentative_evidence_and_elaboration', argumentative_evidence_and_elaboration],
+    ['argumentative_conventions', argumentative_conventions],
+    ['explanatory_organization_and_purpose', explanatory_organization_and_purpose],
+    ['explanatory_evidence_and_elaboration', explanatory_evidence_and_elaboration],
+    ['explanatory_conventions', exp_coexplanatory_conventionsnv_raw_score],
+    ['narrative_organization_and_purpose', narrative_organization_and_purpose],
+    ['narrative_evidence_and_elaboration', narrative_evidence_and_elaboration],
+    ['narrative_conventions', narrative_conventions]
   ] %}
 
 {% set all_obj_assessment = [] %}
 {%- for obj in possible_obj_assess -%}
-  {% if (obj[1] is not none and obj[1] | length) or
-        (obj[2] is not none and obj[1] | length) %}
+  {% if (obj[1] is not none and obj[1] | length) %}
     {% set _= all_obj_assessment.append(obj) %}
   {% endif %}
 {% endfor %}
@@ -88,20 +91,11 @@
     },
     "scoreResults": [
       {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percentage",
-        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Decimal",
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Raw Score",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
         "result": "{{obj[1]}}"
       }
-    ],
-    "performanceLevels": [
-      {
-        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
-        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{obj[2]}}"
-        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
-        ,"performanceLevelMet": true
-        {% endif %}
-      }
-    ] 
+    ]
   } {% if not loop.last %},{% endif %}
   {% endfor %}
   ]
