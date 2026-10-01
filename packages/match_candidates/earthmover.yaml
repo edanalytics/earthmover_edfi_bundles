@@ -105,6 +105,9 @@ transformations:
         - obs_student_ids
         create_columns:
           record_count: count()
+      - operation: add_columns
+        columns:
+          obs_birth_date_format: "{%raw%}${OBSERVABLE_BIRTH_DATE_FORMAT}{%endraw%}"
 
 destinations:
   # input_records:
