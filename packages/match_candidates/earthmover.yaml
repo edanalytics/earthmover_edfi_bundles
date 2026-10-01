@@ -42,7 +42,7 @@ config:
       {%- set base_list = list_obs[obs] -%}
       {%- set cleaned_list = [] -%}
       {%- for item in base_list -%}
-        {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
+        {%- set _ = cleaned_list.append(__row_data__[item] | trim | default(none, true)) -%}
       {%-endfor-%}
       {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
       {%- else -%}{{cleaned_list | tojson}}
@@ -93,7 +93,7 @@ transformations:
         separator: '|'
       - operation: modify_columns
         columns:
-          __candidate_id: "{%raw%}{{md5(__candidate_id | lower)}}{%endraw%}"
+          __candidate_id: "{%raw%}{{md5(__candidate_id)}}{%endraw%}"
       - operation: add_columns
         columns:
           edFi_studentUniqueID: "{%raw%}CANDIDATE_{{__candidate_id}}{%endraw%}"
