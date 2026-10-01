@@ -5,5 +5,6 @@
     "birth_date": {{obs_birth_date | tojson if obs_birth_date else 'null'}}, 
     "school_ids": {{obs_school_ids}}, 
     "student_ids": {{obs_student_ids}},
+    "birth_date_format": {{obs_birth_date_format | tojson if obs_birth_date_format else 'null'}},
     "record_count": {{record_count}}
 }
