@@ -29,6 +29,12 @@ sources:
   gradeLevelDescriptors:
     file: ./seeds/gradeLevelDescriptors.csv
     header_rows: 1
+  retestIndicatorDescriptors:
+    file: ./seeds/retestIndicatorDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
 
   input:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
@@ -61,6 +67,12 @@ transformations:
           academic_subject: "{%raw%}{{ scale_score_header.split('_')[2] }}{%endraw%}"
           # Same with grade.
           grade: "{%raw%}{{ scale_score_header.split('_')[1] }}{%endraw%}"
+          retake_grade: "{%raw%}{% set parts = scale_score_header.split('_summative_')[1].split('_') %}{% if parts[0] == 'grade' %}{{ parts[1] }}{% endif %}{%endraw%}"
+          # The header only names a second grade on retakes, so its presence is the retake flag.
+          retest_indicator: "{%raw%}{{ 'True' if retake_grade else 'False' }}{%endraw%}"
+          # Grade the student was in when tested. On a retake that is the second grade in the header,
+          # otherwise assume the student tested in the assessment's own grade.
+          enrolled_grade: "{%raw%}{{ retake_grade if retake_grade else grade }}{%endraw%}"
           # Same with school year.
           schoolYear: "{%raw%}{{ test_reason.split(' ')[1].split('-')[1] }}{%endraw%}"
           
@@ -102,14 +114,13 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
 
-      # Join with gradeLevelDescriptors to get the originalGrade for each assessmentIdentifier and grade.
+      # Join with gradeLevelDescriptors to get the descriptor for the grade the student was in when tested.
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: inner
-        # change this to match the grade from the file
-        left_keys: 
-          - grade
+        left_keys:
+          - enrolled_grade
           - assessmentIdentifier
         right_keys: 
           - originalGrade
@@ -164,7 +175,15 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
-    extension: jsonl
+    extension: json
+  retestIndicatorDescriptors:
+    source: $sources.retestIndicatorDescriptors
+    template: ./templates/descriptors.jsont
+    extension: json
+  assessmentCategoryDescriptors:
+    source: $sources.assessmentCategoryDescriptors
+    template: ./templates/descriptors.jsont
+    extension: json
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ./templates/objectiveAssessments.jsont
