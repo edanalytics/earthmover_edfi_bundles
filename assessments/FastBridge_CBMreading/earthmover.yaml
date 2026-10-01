@@ -395,6 +395,7 @@ transformations:
   joined_input:
     source: $transformations.cleaned_input
     operations:
+    {% if "${INPUT_FILE_COMP_QUESTION}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_question
@@ -413,6 +414,8 @@ transformations:
           - comprehension_question_percentile_at_lea
           - comprehension_question_percentile_at_nation
           - comprehension_question_risk_level
+      {% endif %}
+      {% if "${INPUT_FILE_COMP_RECALL}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_recall
@@ -434,6 +437,7 @@ transformations:
           - comprehension_recall_percentile_at_lea
           - comprehension_recall_percentile_at_nation
           - comprehension_recall_risk_level
+      {% endif %}
       - operation: map_values
         column: season
         mapping:
