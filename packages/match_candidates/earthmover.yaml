@@ -3,10 +3,9 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
-  # Three macros are used to clean observables. In order to apply these macros to new fields, make sure to update the 'obs' dict in the relevant macro.
+  # Two macros are used to clean certain types of observables. In order to apply these macros to new fields, make sure to update the 'obs' dict in the relevant macro.
   # clean_names handles name inputs. If FULL_NAME is set, it tries to extract the first and last from the FULL_NAME field. If not, it cleans the FIRST_NAME and LAST_NAME fields.
   # clean_list applies standard transformations to all list inputs, returning a new list with each item cleaned.
-  # clean_date applies some standard transformations to all date inputs.
   macros: >
     {%- macro clean_names(obs) -%}
       {%- set name_obs = {
@@ -49,14 +48,6 @@ config:
       {%-endif-%}
     {%- endmacro %} 
 
-    {%- macro clean_date(obs) -%}
-      {%- set date_obs = {
-          'OBSERVABLE_BIRTH_DATE': '${OBSERVABLE_BIRTH_DATE}',
-      } -%}
-
-      {{ __row_data__[date_obs[obs]] | default('', true) | trim }}
-    {%- endmacro %} 
-
 transformations:
 
   # Create the candidate id. Hash all available observables associated with each student record.
@@ -68,20 +59,9 @@ transformations:
         columns:
           obs_first_name: "{%raw%}{{clean_names('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
           obs_last_name: "{%raw%}{{clean_names('OBSERVABLE_LAST_NAME')}}{%endraw%}"
-          obs_birth_date: "{%raw%}{{clean_date('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
+          obs_birth_date: "{%raw%}{{__row_data__['$OBSERVABLE_BIRTH_DATE']}}{%endraw%}"
           obs_school_ids: "{%raw%}{{clean_list('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
           obs_student_ids: "{%raw%}{{clean_list('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
-      # We need to cast input dates to ISO format YYYY-MM-DD. This operation uses the bundle-configured birth date and birth date format to transform inputs to our required format
-      - operation: date_format
-        column: obs_birth_date
-        from_format: "${OBSERVABLE_BIRTH_DATE_FORMAT}"
-        to_format: '%Y-%m-%d'
-        exact_match: True
-        ignore_errors: True
-      # If any dates were nan after date_format, cast them back to string so we can include them in combine_columns
-      - operation: modify_columns
-        columns:
-          obs_birth_date: "{%raw%}{{ '' if value != value or value is none else value }}{%endraw%}"
       - operation: combine_columns
         columns:
           - obs_first_name
