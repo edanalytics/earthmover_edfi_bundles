@@ -62,7 +62,7 @@ transformations:
         columns:
           # The academic subject can only be found in the Summative Scale Score Header (e.g. "Grade 6 ELA Summative Scale Score")
           # so here we create a column, scale_score_header, that contains the name of the column that ends with "Summative Scale Score". 
-          scale_score_header: "{%raw%}{% for k in __row_data__ if k.endswith('summative_scale_score') %}{{ k }}{% endfor %}{%endraw%}"
+          scale_score_header: "{%raw%}{% for k in __row_data__ if k.startswith('grade_') and k.endswith('_scale_score') %}{{ k }}{% endfor %}{%endraw%}"
           # Then we can extract the academic subject from that column name by removing the "Summative Scale Score" part.
           academic_subject: "{%raw%}{{ scale_score_header.split('_')[2] }}{%endraw%}"
           # Same with grade.
@@ -85,8 +85,8 @@ transformations:
       # Drop the original columns that we no longer need.
       - operation: drop_columns
         columns:
-          - grade_*_summative_scale_score
-          - grade_*_summative_performance
+          - grade_*_scale_score
+          - grade_*_performance
       
       # Use this date format for the studentAssessmentIdentifier, which is a combination of studentUniqueId and admin_date.
       - operation: date_format
