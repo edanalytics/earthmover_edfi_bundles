@@ -58,6 +58,10 @@ transformations:
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
           date_taken: adminDate
+      # Excel stores numeric IDs as numbers, so cast to a string before combine_columns joins it.
+      - operation: modify_columns
+        columns:
+          studentUniqueId: "{%raw%}{{ value }}{%endraw%}"
       - operation: add_columns
         columns:
           # The academic subject can only be found in the Summative Scale Score Header (e.g. "Grade 6 ELA Summative Scale Score")
