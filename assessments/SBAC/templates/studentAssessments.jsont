@@ -1,0 +1,111 @@
+{%- set possible_scores = 
+  [
+    [scaleScore, "Scale Score", "Integer"],
+    [grade, "Assessment Grade Level", "Level"]
+  ] -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- set possible_perf_levels = 
+  [
+    [performanceLevel, "Performance Level", "Level"]
+  ] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% set possible_obj_assess = 
+  [
+    ['opinion_organization_purpose', opinion_organization_purpose],
+    ['opinion_evidence_elaboration', opinion_evidence_elaboration],
+    ['opinion_conventions', opinion_conventions],
+    ['informational_organization_purpose', informational_organization_purpose],
+    ['informational_evidence_elaboration', informational_evidence_elaboration],
+    ['informational_conventions', informational_conventions],
+    ['narrative_organization_purpose', narrative_organization_purpose],
+    ['narrative_evidence_elaboration', narrative_evidence_elaboration],
+    ['narrative_conventions', narrative_conventions],
+    ['argumentative_organization_purpose', argumentative_organization_purpose],
+    ['argumentative_evidence_elaboration', argumentative_evidence_elaboration],
+    ['argumentative_conventions', argumentative_conventions],
+    ['explanatory_organization_purpose', explanatory_organization_purpose],
+    ['explanatory_evidence_elaboration', explanatory_evidence_elaboration],
+    ['explanatory_conventions', explanatory_conventions]
+  ] %}
+
+{% set all_obj_assessment = [] %}
+{%- for obj in possible_obj_assess -%}
+  {% if (obj[1] is not none and obj[1] | length) %}
+    {% set _= all_obj_assessment.append(obj) %}
+  {% endif %}
+{% endfor %}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "retestIndicatorDescriptor": "{{namespace}}/RetestIndicatorDescriptor#{{retest_indicator}}",
+  {% if scores | length %}
+  "scoreResults": [
+    {% for score in scores %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+        "result": "{{score[0]}}"
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  {% endif %}
+  {% if perf_levels | length %}
+  "performanceLevels": [
+    {% for perf_level in perf_levels %}
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+        "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        {%- if ${EDFI_DS_VERSION}|int < 4 -%}
+        ,"performanceLevelMet": true
+        {% endif %}
+      } {% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  {% endif %}
+  {% if all_obj_assessment | length %}
+  "studentObjectiveAssessments": [
+  {%- for obj in all_obj_assessment -%}
+  {
+    "objectiveAssessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "identificationCode": "{{obj[0]}}",
+      "namespace": "{{namespace}}"
+    },
+    "scoreResults": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Raw Score",
+        "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level",
+        "result": "{{obj[1]}}"
+      }
+    ]
+  } {% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+  {% endif %}
+}
