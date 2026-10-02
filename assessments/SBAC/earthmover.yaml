@@ -11,7 +11,7 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: student_id
     POSSIBLE_STUDENT_ID_COLUMNS: Student ID, studentId
-    DESCRIPTOR_NAMESPACE: uri://smarterbalanced.org
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '5'
 
 sources:
@@ -72,7 +72,8 @@ transformations:
           academic_subject: "{%raw%}{{ scale_score_header.split('_')[2] }}{%endraw%}"
           # Same with grade.
           grade: "{%raw%}{{ scale_score_header.split('_')[1] }}{%endraw%}"
-          retake_grade: "{%raw%}{% set parts = scale_score_header.split('_summative_')[1].split('_') %}{% if parts[0] == 'grade' %}{{ parts[1] }}{% endif %}{%endraw%}"
+          # Guarded so a header without "_summative_" (or no matching header at all) leaves this blank instead of erroring.
+          retake_grade: "{%raw%}{% if '_summative_' in scale_score_header %}{% set parts = scale_score_header.split('_summative_')[1].split('_') %}{% if parts[0] == 'grade' %}{{ parts[1] }}{% endif %}{% endif %}{%endraw%}"
           # The header only names a second grade on retakes, so its presence is the retake flag.
           retest_indicator: "{%raw%}{{ 'True' if retake_grade else 'False' }}{%endraw%}"
           # Grade the student was in when tested. On a retake that is the second grade in the header,
@@ -92,7 +93,13 @@ transformations:
         columns:
           - grade_*_scale_score
           - grade_*_performance
-      
+
+      # Drop rows that can't be loaded: no student, no admin date, or no overall score.
+      # This runs before date_format because a blank date becomes null there, and combine_columns errors on nulls.
+      - operation: filter_rows
+        query: studentUniqueId != '' and adminDate != '' and scaleScore != ''
+        behavior: include
+
       # Use this date format for the studentAssessmentIdentifier, which is a combination of studentUniqueId and admin_date.
       - operation: date_format
         column: adminDate
@@ -109,7 +116,7 @@ transformations:
 
       # Clean date formats.
       - operation: date_format
-        columns: 
+        columns:
           - adminDate
         from_format: "%Y%m%d"
         to_format: "%Y-%m-%d %H:%M:%S.%f"
@@ -120,6 +127,7 @@ transformations:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
 
       # Join with gradeLevelDescriptors to get the descriptor for the grade the student was in when tested.
+      # Rows whose grade is missing from the seed are dropped here.
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
@@ -127,7 +135,7 @@ transformations:
         left_keys:
           - enrolled_grade
           - assessmentIdentifier
-        right_keys: 
+        right_keys:
           - originalGrade
           - assessmentIdentifier
 
