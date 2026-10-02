@@ -9,9 +9,10 @@ config:
   show_graph: False
   show_stacktrace: true
   parameter_defaults:
-    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: studentId
-    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    STUDENT_ID_NAME: student_id
+    POSSIBLE_STUDENT_ID_COLUMNS: Student ID, studentId
+    DESCRIPTOR_NAMESPACE: uri://smarterbalanced.org
+    EDFI_DS_VERSION: '5'
 
 sources:
   assessments:
@@ -179,15 +180,15 @@ destinations:
   performanceLevelDescriptors:
     source: $sources.performanceLevelDescriptors
     template: ./templates/descriptors.jsont
-    extension: json
+    extension: jsonl
   retestIndicatorDescriptors:
     source: $sources.retestIndicatorDescriptors
     template: ./templates/descriptors.jsont
-    extension: json
+    extension: jsonl
   assessmentCategoryDescriptors:
     source: $sources.assessmentCategoryDescriptors
     template: ./templates/descriptors.jsont
-    extension: json
+    extension: jsonl
   objectiveAssessments:
     source: $sources.objectiveAssessments
     template: ./templates/objectiveAssessments.jsont
