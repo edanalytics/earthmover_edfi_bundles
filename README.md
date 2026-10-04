@@ -13,6 +13,15 @@ To better address student matching issues when implementing these bundles on rea
 
 For more in-depth documentation on Ed-Fi assessment integrations, please see [this link](https://edanalytics.slite.page/p/CxcM2foMcOuk1m/Ed-Fi-Assessment-Integrations-using-earthmover-and-lightbeam-Documentation).
 
+### Bundle structure testing
+
+Bundle developers can run automated testing to check whether a given bundle meets some of the development requirements. 
+
+Run the following command to get a report:
+```sh
+python testing-bundle-structure.py "<path to the bundle folder>"
+```
+
 ### Coming Soon
 The next version of the bundles repository will include:
 1. Breaking changes to the data model for some assessments in order to match [governance standards](https://edanalytics.slite.page/p/FwwhB84DoYVjY1/Assessment-Data-Governance-in-Ed-Fi). 
