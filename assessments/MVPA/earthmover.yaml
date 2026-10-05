@@ -9,19 +9,12 @@ config:
   show_graph: False
   show_stacktrace: true
   macros: >
-    {% macro clean_reading_title(title) -%}
-    {%- if title.endswith('ELA') -%} {{title | replace('ELA', 'Reading')}}
-    {%- else -%}{{title}}
-    {%- endif -%}
+    {% macro get_assessment_identifier(test_id) -%}
+      MVPA_{{ test_id[2:6] | string}}
     {%- endmacro %}
-
-    {%- macro get_assessment_identifier(test_id) -%}
-    MVPA_{{ test_id[2:6] | string}}
-    {%- endmacro -%}
-
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: StudentID
+    POSSIBLE_STUDENT_ID_COLUMNS: StudentID,StuNumber,StuStateID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '4'
 
@@ -58,6 +51,9 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: add_columns
         columns:
           assessmentIdentifier: "{%raw%}{{ get_assessment_identifier(TestID) }}{%endraw%}"
@@ -69,25 +65,19 @@ transformations:
           - assessmentIdentifier
         right_keys:
           - assessmentIdentifier
-      - operation: rename_columns
-        columns:
-          SchoolYear: schoolYear
-          TestDate: adminDate
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: studentUniqueId
       - operation: combine_columns
         columns:
-          - StudentID
-          - adminDate
-          - assessmentTitle
+          - student_unique_id
+          - TestDate
+          - assessmentIdentifier
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
-          schoolYear: "{%raw%}{{ schoolYear[:4] | int +1 }}{%endraw%}"
-      
+          SchoolYear: "{%raw%}{{ SchoolYear[:4] | int +1 }}{%endraw%}"
+      - operation: snake_case_columns
+
 
   grade_level_descriptors:
     source: $sources.gradeLevelDescriptors
@@ -113,6 +103,7 @@ transformations:
       - operation: modify_columns
         columns:
           grade_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: snake_case_columns
 
   academic_subject_descriptors:
     source: $sources.academicSubjectDescriptors
@@ -138,34 +129,32 @@ transformations:
       - operation: modify_columns
         columns:
           subject_json: "{%raw%}{{value.rstrip().rstrip(',')}}{%endraw%}"
+      - operation: snake_case_columns
 
   assessments:
     source: $transformations.clean_results
     operations:
       - operation: distinct_rows
-        column: assessmentIdentifier
+        column: assessment_identifier
       - operation: keep_columns
         columns:
-          - assessmentIdentifier
-          - assessmentTitle
-          - assessmentFamily
+          - assessment_identifier
+          - assessment_family
           - namespace
-          - assessmentCategoryDescriptor
-      - operation: modify_columns
-        columns:
-          assessmentTitle: "{%raw%}MVPA - {{ clean_reading_title(assessmentTitle) }}{%endraw%}"
+          - assessment_title
+          - assessment_category_descriptor
       - operation: join
         sources:
           - $transformations.grade_level_descriptors
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: assessment_identifier
+        right_key: assessment_identifier
       - operation: join
         sources:
           - $transformations.academic_subject_descriptors
         join_type: inner
-        left_key: assessmentIdentifier
-        right_key: assessmentIdentifier
+        left_key: assessment_identifier
+        right_key: assessment_identifier
 
 destinations:
   assessments:

@@ -91,13 +91,33 @@ transformations:
       - operation: snake_case_columns
       - operation: melt
         id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+      - operation: filter_rows
+        query: melt_value == '' or melt_value != melt_value
+        behavior: exclude
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
-        query: season == ''
+        query: season == '' or season != season
         behavior: exclude
+      - operation: drop_columns
+        columns:
+          - melt_variable
+      - operation: distinct_rows
+        columns:
+          - assessment
+          - assessment_language
+          - district
+          - school
+          - local_id
+          - state_id
+          - fast_id
+          - grade
+          - student_unique_id
+          - season
+          - cleaned_variable
+          - melt_value
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
@@ -114,7 +134,7 @@ transformations:
         columns:
           aut_oreading_final_date: administration_date
       - operation: filter_rows
-        query: administration_date == ''
+        query: administration_date == '' or administration_date != administration_date
         behavior: exclude
       - operation: add_columns
         columns:

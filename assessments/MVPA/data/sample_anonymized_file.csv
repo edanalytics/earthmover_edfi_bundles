@@ -1,6 +1,11 @@
-TestID,LeaID,TestDate,SchoolYear,TestName,TestSchedule,TestAdmin,SchID,TchName,Period,StudentID,Fname,Lname,PercCorr,AchLev,AchLevExt,SuggNMark,SuggLMark
-scmat81900abcd,District A,1900-01-01,2024-25,8th Grade Math,Year Round/Traditional,1st,School 1,Teacher 1,1,605000,First Name 1,Last Name 1,34.2857142857143,2,2-,60,D
-scmat81900abcd,District A,1900-01-01,2024-25,8th Grade Math,Year Round/Traditional,1st,School 1,Teacher 2,1,605001,First Name 2,Last Name 2,37.1428571428571,2,2-,62,D
-scmat81900abcd,District A,1900-01-01,2024-25,8th Grade Math,Year Round/Traditional,1st,School 1,Teacher 3,1,605002,First Name 3,Last Name 3,34.2857142857143,2,2-,60,D
-scmat81900abcd,District A,1900-01-01,2024-25,8th Grade Math,Year Round/Traditional,1st,School 1,Teacher 4,1,605003,First Name 4,Last Name 4,22.8571428571429,1,1,53,F
-scmat81900abcd,District A,1900-01-01,2024-25,8th Grade Math,Year Round/Traditional,1st,School 1,Teacher 5,2,605004,First Name 5,Last Name 5,17.1428571428571,1,1-,52,F
+TestID,Subject,TestSchedule,SchoolYear,TestAdmin,LEAID,LEA,TestName,NumScores,PercProjProf,SchoolID,School,TchName,TchEmail,ClassPeriod,FirstName,LastName,StuNumber,StuStateID,TestDate,PercCorr,ProjAchLvl,ProjScaleScore,SuggNMark,SuggLMark
+exalg12026ccomtrfclake,MATH,Traditional,2025-2026,Final,EX00123,Example,Alg I Math Trad Final Comp 2025-2026,482,40.9,10,Example High,Jane Doe,JaneDoe@k12.edu,1,First 1,Last 1,12345,678910,3/12/26,75.6,3+,346,86,B
+exalg12026ccomtrfclake,MATH,Traditional,2025-2026,Final,EX00123,Example,Alg I Math Trad Final Comp 2025-2026,50,34.5,10,Example High,Jane Doe,JaneDoe@k12.edu,1,First 1,Last 1,12346,678911,3/12/26,80.8,2,307,58,A
+exeng22026ccomtrfcking,ELA,Traditional,2025-2026,Final,EX00456,Example,Eng II ELA Trad Final Comp 2025-2026,51,59.6,20,Example High,Jane Doe,JaneDoe@k12.edu,2,First 2,Last 2,12347,678912,3/12/26,70.0,4,358,52,A
+exbiol2026ccomtrfcsull,SCIENCE,Traditional,2025-2026,Final,EX00789,Example,Biology Sci Trad Final Comp 2025-2026,32,38.7,30,Example High,Jane Doe,JaneDoe@k12.edu,3,First 2,Last 2,12348,678913,3/12/26,67.8,1,393,62,F
+exmat52026ccomtrfclake,MATH,Traditional,2025-2026,Final,EX00123,Example,5th Gr Math Trad Final Comp 2025-2026,43,38.8,10,Example High,Jane Doe,JaneDoe@k12.edu,4,First 3,Last 3,12349,678914,3/12/26,72.4,1,444,60,D
+exrea32026ccomtrfcking,ELA,Traditional,2025-2026,Final,EX00456,Example,3rd Gr Reading Trad Final Comp 2025-2026,40,41.1,20,Example High,Jane Doe,JaneDoe@k12.edu,5,First 4,Last 4,12350,678915,3/12/26,51.8,3,276,55,D
+exsci42026ccomtrfcsull,SCIENCE,Traditional,2025-2026,Final,EX00789,Example,4th Gr Sci Trad Final Comp 2025-2026,33,44.4,30,Example High,Jane Doe,JaneDoe@k12.edu,1,First 5,Last 5,12351,678916,3/12/26,58.9,3,261,96,D
+exsoc62026ccomtrfclake,SOCIAL STUDIES,Traditional,2025-2026,Final,EX00123,Example,6th Gr Soc Studies Trad Final Comp 2025-2026,47,35.0,10,Example High,Jane Doe,JaneDoe@k12.edu,2,First 6,Last 6,12352,678917,3/12/26,90.7,1,391,68,F
+exushi2026ccomtrfcking,SOCIAL STUDIES,Traditional,2025-2026,Final,EX00456,Example,US History Trad Final Comp 2025-2026,58,64.5,20,Example High,Jane Doe,JaneDoe@k12.edu,3,First 7,Last 7,12353,678918,3/12/26,71.8,1,261,92,B
+exmalg2026ccomtrfcsull,MATH,Traditional,2025-2026,Final,EX00789,Example,Middle Sch Alg Trad Final Comp 2025-2026,54,41.6,30,Example High,Jane Doe,JaneDoe@k12.edu,4,First 8,Last 8,12354,678919,3/12/26,44.4,2,275,74,C

@@ -26,8 +26,6 @@ sources:
   input:
     file: ${INPUT_FILE}
     header_rows: 1
-    expect:
-      - "GROUP_NUMBER != ''"
   assessmentReportingMethodDescriptors:
     file: ./seeds/assessmentReportingMethodDescriptors.csv
     header_rows: 1
@@ -81,7 +79,7 @@ transformations:
       - operation: join
         sources:
           - $sources.academicSubjectDescriptors
-        join_type: inner
+        join_type: left
         left_key: group_number
         right_key: group_id
 

@@ -210,11 +210,25 @@ transformations:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
           cleaned_variable: "{% raw %}{{ remove_season(melt_variable, season) }}{% endraw %}"
       - operation: filter_rows
-        query: melt_value == '' and cleaned_variable != 'early_math_final_date'
+        query: (melt_value == '' or melt_value != melt_value) and cleaned_variable != 'early_math_final_date'
         behavior: exclude
       - operation: filter_rows
-        query: season == ''
+        query: season == '' or season != season
         behavior: exclude
+      - operation: distinct_rows
+        columns: 
+          - assessment
+          - assessment_language
+          - district
+          - school
+          - local_id
+          - state_id
+          - fast_id
+          - grade
+          - student_unique_id
+          - season
+          - cleaned_variable
+          - melt_value
       - operation: pivot
         cols_by: cleaned_variable
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]

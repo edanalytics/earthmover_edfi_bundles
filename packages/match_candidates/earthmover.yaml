@@ -2,48 +2,24 @@ version: 2
 
 config:
   parameter_defaults:
-    EARTHMOVER_NODE_TO_RESOLVE: "$transformations.input"
-  # The clean_observables macro below takes the OBSERVABLES set in each bundle and cleans them for use downstream.
-  # OBSERVABLE_FIRST_NAME and OBSERVABLE_LAST_NAME are passed to the macro as strings because we conditionally populate these
-  # using either OBSERVABLE_FULL_NAME or OBSERVABLE_FIRST_NAME/OBSERVABLE_LAST_NAME, depending on which is provided.
-  # All other observables are passed as variable references.
+    EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+    OBSERVABLE_BIRTH_DATE_FORMAT: ""
+  # Two macros are used to clean certain types of observables.
+  # clean_single_observable handles single observable inputs. It simply trims inputs and falls back to an empty string if the input is null.
+  # clean_list applies standard transformations to all list inputs, returning a new list with each item trimmed and nulls interpolated for empty inputs.
   macros: >
-    {%- macro clean_observables(obs) -%}
+    {%- macro clean_single_observable(obs) -%}
+      {{ obs | default('', true) | trim }}
+    {%- endmacro %} 
 
-      {%- set observables = {
-          'OBSERVABLE_BIRTH_DATE': ${OBSERVABLE_BIRTH_DATE},
-          'OBSERVABLE_SCHOOL_IDS': ${OBSERVABLE_SCHOOL_IDS},
-          'OBSERVABLE_STUDENT_IDS': ${OBSERVABLE_STUDENT_IDS}
-      } -%}
-  
-      {%- if obs in ['OBSERVABLE_FIRST_NAME', 'OBSERVABLE_LAST_NAME'] -%}
-        {%- set full_name = __row_data__['${OBSERVABLE_FULL_NAME}'] -%}
-        {%- if full_name-%}
-          {%- if ',' in full_name -%}
-            {%- set first_name = full_name.split(',')[1].split(' ')[0] -%}
-            {%- set last_name = full_name.split(',')[0] -%}
-          {%- else -%}
-            {%- set first_name = full_name.split(' ')[0] -%}
-            {%- set last_name = full_name.split(' ')[full_name|length -1] -%}
-          {%- endif -%}
-        {%- else -%}
-          {%- set first_name = __row_data__['${OBSERVABLE_FIRST_NAME}'] -%}
-          {%- set last_name = __row_data__['${OBSERVABLE_LAST_NAME}'] -%}
-        {% endif %}
-        {%- if obs == 'OBSERVABLE_FIRST_NAME' -%} {{first_name | trim | lower | default(none, true)}}
-        {%- else -%} {{last_name | trim | lower | default(none, true)}}
-        {%- endif -%}
-      {%- elif obs in ['OBSERVABLE_SCHOOL_IDS', 'OBSERVABLE_STUDENT_IDS'] -%} 
-        {%- set base_list = observables[obs] -%}
-        {%- set cleaned_list = [] -%}
-        {%- for item in base_list -%}
-          {%- set _ = cleaned_list.append(__row_data__[item] | trim | lower | default(none, true)) -%}
-        {%-endfor-%}
-        {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
-        {%- else -%}{{cleaned_list}}
-        {%-endif-%}
-      {%- else -%}{{ observables[obs] | trim | lower | default(none, true) }}
-      {%- endif -%}
+    {%- macro clean_list(base_list, __row_data__) -%}
+      {%- set cleaned_list = [] -%}
+      {%- for item in base_list -%}
+      {%- set _ = cleaned_list.append(__row_data__[item] | trim | default(none, true)) -%}
+      {%- endfor -%}
+      {%- if cleaned_list | reject('none') | list | length == 0 -%} {{[]}}
+      {%- else -%}{{cleaned_list | tojson}}
+      {%-endif-%}
     {%- endmacro %} 
 
 transformations:
@@ -55,15 +31,18 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          obs_first_name: "{%raw%}{{clean_observables('OBSERVABLE_FIRST_NAME')}}{%endraw%}"
-          obs_last_name: "{%raw%}{{clean_observables('OBSERVABLE_LAST_NAME')}}{%endraw%}"
-          obs_birth_date: "{%raw%}{{clean_observables('OBSERVABLE_BIRTH_DATE')}}{%endraw%}"
-          obs_school_ids: "{%raw%}{{clean_observables('OBSERVABLE_SCHOOL_IDS')}}{%endraw%}"
-          obs_student_ids: "{%raw%}{{clean_observables('OBSERVABLE_STUDENT_IDS')}}{%endraw%}"
+          obs_first_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_FIRST_NAME'])}}{%endraw%}"
+          obs_last_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_LAST_NAME'])}}{%endraw%}"
+          obs_full_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_FULL_NAME'])}}{%endraw%}"
+          obs_birth_date: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_BIRTH_DATE'])}}{%endraw%}"
+          obs_school_ids: "{%raw%}{{clean_list($OBSERVABLE_SCHOOL_IDS, __row_data__)}}{%endraw%}"
+          obs_student_ids: "{%raw%}{{clean_list($OBSERVABLE_STUDENT_IDS, __row_data__)}}{%endraw%}"
+      # Note that list columns are JSON-encoded (Matching python json.dumps default), meaning that the candidate id hash is tied to a properly JSON formatted, unsorted list.
       - operation: combine_columns
         columns:
           - obs_first_name
           - obs_last_name
+          - obs_full_name
           - obs_birth_date
           - obs_school_ids
           - obs_student_ids
@@ -98,11 +77,16 @@ transformations:
         - __candidate_id
         - obs_first_name
         - obs_last_name
+        - obs_full_name
         - obs_birth_date
         - obs_school_ids
         - obs_student_ids
         create_columns:
           record_count: count()
+      - operation: add_columns
+        columns:
+          obs_birth_date_format: "{%raw%}${OBSERVABLE_BIRTH_DATE_FORMAT}{%endraw%}"
+
 
 destinations:
   # input_records:

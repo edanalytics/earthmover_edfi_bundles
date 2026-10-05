@@ -74,7 +74,7 @@
   ,"eventDescription": "{{eventDescription}}"
   {%- endif -%}
   {%- if serialNumber is not none and serialNumber | length -%}
-  ,"serialNumber": "{{serialNumber}}"
+  ,"serialNumber": "{{serialNumber  | truncate(60, true, '', 0) }}"
   {%- endif -%}
   {%- if CompositeScore is not none and CompositeScore | length -%}
   ,"scoreResults": [
