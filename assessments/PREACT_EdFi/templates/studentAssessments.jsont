@@ -13,46 +13,53 @@
     "administrationDate": "{{administration_date}}",
     "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
     
-    {% set pls_to_keep = ['uri://act.org/AssessmentReportingMethodDescriptor#Composite Score'] %}
+    {% set pls_to_keep = [namespace ~ 'AssessmentReportingMethodDescriptor#Composite Score'] %}
+    {% set kept_pls = [] %}
+    {% for item in fromjson(v_performance_levels | default('[]')) %}
+      {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
+        {% set _= kept_pls.append(item) %}
+      {% endif %}
+    {% endfor %}
     "performanceLevels": [
-      {% for item in fromjson(v_performance_levels | default('[]')) %}
-        {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
+      {% for item in kept_pls %}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
             "performanceLevelDescriptor": "{{item.performanceLevelDescriptor}}",
             "performanceLevelMet": true
-          }
-        {% endif %}
+          }{% if not loop.last %},{% endif %}
       {% endfor %}
     ],
 
-    {% set subscores_to_remove_from_scores = ['uri://act.org/AssessmentReportingMethodDescriptor#STEM Score',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM US Rank',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score Range High',
-                                           'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score Range Low',
+    {% set subscores_to_remove_from_scores = [namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score',
+                                           namespace ~ 'AssessmentReportingMethodDescriptor#STEM US Rank',
+                                           namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score Range High',
+                                           namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score Range Low',
                                            ] %}
+    {% set kept_scores = [] %}
+    {% for item in fromjson(v_score_results | default('[]')) %}
+      {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
+        {% set _= kept_scores.append(item) %}
+      {% endif %}
+    {% endfor %}
     "scoreResults": [
-      {% for item in fromjson(v_score_results | default('[]')) %}
-        {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
+      {% for item in kept_scores %}
          {
-            "assessmentReportingMethodDescriptor": "{{item.assessmentReportingMethodDescriptor.replace('Composite ', '').replace('Super Score', 'Superscore')}}",
+            "assessmentReportingMethodDescriptor": "{{item.assessmentReportingMethodDescriptor}}",
             "resultDatatypeTypeDescriptor": "{{item.resultDatatypeTypeDescriptor.replace('uri://ed-fi.org',descriptor_namespace)}}",
             "result": "{{item.result}}"
-         }
-          {% if not loop.last %},{% endif %}
-        {% endif %}
+         }{% if not loop.last %},{% endif %}
       {% endfor %}
     ],
 
     "studentObjectiveAssessments": [
       {% set topline_obj_assess = [['PREACT_STEM',
                                    {
-                                    'Score':PREACT_STEM_scale_score,
+                                    'Scale Score':PREACT_STEM_scale_score,
                                     'US Rank':PREACT_STEM_us_rank,
-                                    'Score Range High':PREACT_STEM_score_range_high,
-                                    'Score Range Low':PREACT_STEM_score_range_low
+                                    'Scale Score Range High':PREACT_STEM_score_range_high,
+                                    'Scale Score Range Low':PREACT_STEM_score_range_low
                                    },
-                                   'uri://act.org/AssessmentReportingMethodDescriptor#STEM Score']
+                                   namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score']
                                ] %}
 
   
@@ -72,15 +79,19 @@
           "namespace": "{{namespace}}"
         }
         ,
+        {% set obj_pls = [] %}
+        {%- for level in fromjson(v_performance_levels | default('[]')) -%}
+          {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
+            {% set _= obj_pls.append(level) %}
+          {%- endif -%}
+        {%- endfor -%}
         "performanceLevels": [
-          {%- for level in fromjson(v_performance_levels | default('[]')) -%}
-            {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
+          {%- for level in obj_pls -%}
               {
-                "assessmentReportingMethodDescriptor": "uri://act.org/AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+                "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
                 "performanceLevelDescriptor": "{{ level.performanceLevelDescriptor }}",
                 "performanceLevelMet": true
-              }
-            {%- endif -%}
+              }{%- if not loop.last -%},{%- endif -%}
           {%- endfor -%}
         ],
         "scoreResults": [
@@ -101,11 +112,11 @@
       ,{% for item in fromjson(v_student_objective_assessments | default('[]')) %}
         {
          "objectiveAssessmentReference": {
-           "assessmentIdentifier": "{{ item.objectiveAssessmentReference.assessmentIdentifier.replace('THE-', '').replace('-', '_') }}",
+           "assessmentIdentifier": "{{ assessment_identifier }}",
            "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
            "namespace": "{{ namespace }}"
          },
-         "performanceLevels": {{ item.performanceLevels }},
+         "performanceLevels": {{ item.performanceLevels | tojson }},
          "scoreResults": {{ item.scoreResults | tojson }}
         }{% if not loop.last %},{% endif %}
        {% endfor %}
