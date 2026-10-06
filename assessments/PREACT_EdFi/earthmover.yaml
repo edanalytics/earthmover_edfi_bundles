@@ -2,7 +2,7 @@
 version: 2
 
 config:
-  log_level: DEBUG # TODO CHANGE TO INFO AFTER TESTING
+  log_level: INFO
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -10,23 +10,20 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'registration_state_student_id,registration_local_student_id'
-    ACT_SNOWFLAKE_CONNECTION: ${SNOWFLAKE_CONNECTION}
-    ACT_SNOWFLAKE_TENANT_CODE: ${SNOWFLAKE_TENANT_CODE}
-    ACT_SNOWFLAKE_API_YEAR: ${SNOWFLAKE_API_YEAR}
-    ACT_SNOWFLAKE_EDU_STG_SCHEMA: ${SNOWFLAKE_EDU_STG_SCHEMA}
-    ACT_SNOWFLAKE_EDU_BLD_SCHEMA: 'analytics.prod_build'
+    PREACT_SNOWFLAKE_CONNECTION: ${SNOWFLAKE_CONNECTION}
+    PREACT_SNOWFLAKE_EDU_STG_SCHEMA: 'analytics.prod_stage'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
 
-sources: # commenting out the query below that was custom for ACT, will not be using it for PREACT at this point but will retain it
+sources:
   input:
-    connection: "${ACT_SNOWFLAKE_CONNECTION}"
-    query: # > 
-      ## select * from ${ACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
-      ## where tenant_code = '${ACT_SNOWFLAKE_TENANT_CODE}'
-      ## and api_year = ${ACT_SNOWFLAKE_API_YEAR}
-      ## and assessment_identifier = 'PREACT'  
-      ## limit 1
+    connection: "${PREACT_SNOWFLAKE_CONNECTION}"
+    query: > 
+      select * 
+      from ${PREACT_SNOWFLAKE_EDU_STG_SCHEMA}.base_ef3__student_assessments
+      where tenant_code = '${PREACT_TENANT_CODE}'
+      and api_year = ${API_YEAR}
+      and assessment_identifier in ('PREACT', 'PREACTSEC', 'PREACT89')
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
@@ -64,7 +61,6 @@ transformations:
     source: $transformations.input
     operations:
       # add wide score columns for certain scores that we want to eventually convert to objective assessments
-        # note, this is based on guidance from EA's assessment governance to map STEM as objective assessments rather than at the top level
       - operation: add_columns
         columns:
           {% set score_namespace_prefix = 'uri://act.org/AssessmentReportingMethodDescriptor#' %}
@@ -83,15 +79,12 @@ transformations:
       - operation: modify_columns
         columns: 
           studentUniqueId: "{%raw%}{{value|int(value)|string}}{%endraw%}"
-      # overwrite assess IDs to match governance decision
       - operation: map_values
         column: assessment_identifier
         mapping:
           PREACT: PRE-ACT
           PREACTSEC: PRE-ACT-SEC
           PREACT89: PRE-ACT-89
-      # the grade seed carries one row per grade per assessment, so the join must
-      # key on the assessment too or every student row fans out across all of them
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
