@@ -1,0 +1,58 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference":{
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}",
+      "identificationCode": "{{parentIdentificationCode}}"
+    },
+    {% endif %}
+    "academicSubjectDescriptor": "{{ academicSubjectDescriptor }}",
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#US Rank",
+        "maximumScore": "100",
+        "minimumScore": "1",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Scale Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Scale Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Scale Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT Scale Score Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT Scale Score High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+         {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Percent Correct",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentage"
+      },
+         {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Points Earned",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+         {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Points Possible",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ]
+
+
+  }
