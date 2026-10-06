@@ -1,10 +1,10 @@
 {#
   Riverside packs each score into a 30-slot array holding one value per Appendix A test.
   `fwf_to_csv_xwalks/iowa_fwf_xwalk.csv` splits every array into one column per test,
-  named `<prefix>__<test>`, so this template reads a column per score rather than slicing
+  named `<prefix>__<test>` (`<prefix>_<test>` once snake-cased), so this template reads a column per score rather than slicing
   a packed string.
 #}
-{% set level_num = Level | int %}
+{% set level_num = level | int %}
 
 {# (Appendix A slot, identification code, column suffix, is a composite).
 
@@ -45,55 +45,55 @@
 {# (column prefix, reporting method descriptor, result data type) -- one entry per
    Appendix A array in the layout. #}
 {% set indexed_scores = [
-  ("Number_Attempted_NA",                     "Number Attempted",                   "Integer"   ),
-  ("Raw_Score_RS",                            "Raw Score",                          "Integer"   ),
-  ("Standard_Score_SS",                       "Standard Score",                     "Integer"   ),
-  ("Grade_Equivalent_GE",                     "Grade Equivalent",                   "Decimal"   ),
-  ("National_Percentile_Rank_NPR",            "National Percentile Rank",           "Percentile"),
-  ("National_Curve_Equivalent_NCE",           "National Curve Equivalent",          "Percentile"),
-  ("National_Stanine_NS",                     "National Stanine",                   "Integer"   ),
-  ("PR_Valid_Flag",                           "PR Valid Flag",                      "Integer"   ),
-  ("Predicted_Standard_Score_PSS",            "Predicted Standard Score",           "Integer"   ),
-  ("Predicted_Grade_Equivalent_PGE",          "Predicted Grade Equivalent",         "Decimal"   ),
-  ("Predicted_National_Percentile_Rank_PNPR", "Predicted National Percentile Rank", "Percentile"),
-  ("Predicted_Standard_Score_Diffs",          "Predicted Standard Score Diffs",     "Integer"   ),
-  ("Predicted_Grade_Equivalent_Diffs",        "Predicted Grade Equivalent Diffs",   "Decimal"   ),
-  ("Significant_Diff_Indicators_68",          "Significant Diff Indicator 68",      "Integer"   ),
-  ("Significant_Diff_Indicators_80",          "Significant Diff Indicator 80",      "Integer"   ),
-  ("Significant_Diff_Indicators_90",          "Significant Diff Indicator 90",      "Integer"   ),
-  ("Local_Percentile_Rank",                   "Local Percentile Rank",              "Percentile"),
-  ("Local_Stanines",                          "Local Stanine",                      "Integer"   ),
-  ("Catholic_Private_PR",                     "Catholic - Private PR",              "Percentile"),
-  ("HSES_PR",                                 "HSES PR",                            "Percentile"),
-  ("LSES_PR",                                 "LSES PR",                            "Percentile"),
-  ("College_Readiness",                       "College Readiness",                  "Level"     ),
-  ("State_Predicted_Scale_Score_Low",         "SPSS: Low Score of Range",           "Integer"   ),
-  ("State_Predicted_Scale_Score_High",        "SPSS: High Score of Range",          "Integer"   ),
-  ("State_Predicted_Scale_Score",             "State Predicted Scale Score",        "Integer"   )
+  ("number_attempted_na",                     "Number Attempted",                   "Integer"   ),
+  ("raw_score_rs",                            "Raw Score",                          "Integer"   ),
+  ("standard_score_ss",                       "Standard Score",                     "Integer"   ),
+  ("grade_equivalent_ge",                     "Grade Equivalent",                   "Decimal"   ),
+  ("national_percentile_rank_npr",            "National Percentile Rank",           "Percentile"),
+  ("national_curve_equivalent_nce",           "National Curve Equivalent",          "Percentile"),
+  ("national_stanine_ns",                     "National Stanine",                   "Integer"   ),
+  ("pr_valid_flag",                           "PR Valid Flag",                      "Integer"   ),
+  ("predicted_standard_score_pss",            "Predicted Standard Score",           "Integer"   ),
+  ("predicted_grade_equivalent_pge",          "Predicted Grade Equivalent",         "Decimal"   ),
+  ("predicted_national_percentile_rank_pnpr", "Predicted National Percentile Rank", "Percentile"),
+  ("predicted_standard_score_diffs",          "Predicted Standard Score Diffs",     "Integer"   ),
+  ("predicted_grade_equivalent_diffs",        "Predicted Grade Equivalent Diffs",   "Decimal"   ),
+  ("significant_diff_indicators_68",          "Significant Diff Indicator 68",      "Integer"   ),
+  ("significant_diff_indicators_80",          "Significant Diff Indicator 80",      "Integer"   ),
+  ("significant_diff_indicators_90",          "Significant Diff Indicator 90",      "Integer"   ),
+  ("local_percentile_rank",                   "Local Percentile Rank",              "Percentile"),
+  ("local_stanines",                          "Local Stanine",                      "Integer"   ),
+  ("catholic_private_pr",                     "Catholic - Private PR",              "Percentile"),
+  ("hses_pr",                                 "HSES PR",                            "Percentile"),
+  ("lses_pr",                                 "LSES PR",                            "Percentile"),
+  ("college_readiness",                       "College Readiness",                  "Level"     ),
+  ("state_predicted_scale_score_low",         "SPSS: Low Score of Range",           "Integer"   ),
+  ("state_predicted_scale_score_high",        "SPSS: High Score of Range",          "Integer"   ),
+  ("state_predicted_scale_score",             "State Predicted Scale Score",        "Integer"   )
 ] %}
 
-{% set norm_basis = {"2011": "2005", "2017": "2011", "2024": "2017"}.get(Norm_Year) %}
+{% set norm_basis = {"2011": "2005", "2017": "2011", "2024": "2017"}.get(norm_year) %}
 {% if norm_basis %}
   {% set indexed_scores = indexed_scores + [
-    ("Standard_Score_Norm_Based",              "Standard Score based on "           ~ norm_basis ~ " norms", "Integer"   ),
-    ("Grade_Equivalent_Norm_Based",            "Grade Equivalent based on "         ~ norm_basis ~ " norms", "Decimal"   ),
-    ("National_Percentile_Rank_Norm_Based",    "National Percentile Rank based on " ~ norm_basis ~ " norms", "Percentile"),
-    ("National_Stanine_Norm_Based",            "National Stanine based on "         ~ norm_basis ~ " norms", "Integer"   )
+    ("standard_score_norm_based",              "Standard Score based on "           ~ norm_basis ~ " norms", "Integer"   ),
+    ("grade_equivalent_norm_based",            "Grade Equivalent based on "         ~ norm_basis ~ " norms", "Decimal"   ),
+    ("national_percentile_rank_norm_based",    "National Percentile Rank based on " ~ norm_basis ~ " norms", "Percentile"),
+    ("national_stanine_norm_based",            "National Stanine based on "         ~ norm_basis ~ " norms", "Integer"   )
   ] %}
 {% endif %}
 
 {# Scores that describe the whole test rather than one Appendix A slot. #}
 {% set flat_scores = [
-  ("Predicted_SAT_Critical_Reading_High", "Predicted SAT Critical Reading High", "Integer"),
-  ("Predicted_SAT_Critical_Reading_Low",  "Predicted SAT Critical Reading Low",  "Integer"),
-  ("Predicted_SAT_Math_High",             "Predicted SAT Math High",             "Integer"),
-  ("Predicted_SAT_Math_Low",              "Predicted SAT Math Low",              "Integer"),
-  ("Predicted_ACT_Composite_High",        "Predicted ACT Composite High",        "Integer"),
-  ("Predicted_ACT_Composite_Low",         "Predicted ACT Composite Low",         "Integer"),
-  ("Battery",                             "Battery",                             "Level"  ),
-  ("Level",                               "Level",                               "Level"  ),
-  ("Form",                                "Form",                                "Level"  ),
-  ("Norm_Year",                           "Norm Year",                           "Level"  )
+  ("predicted_sat_critical_reading_high", "Predicted SAT Critical Reading High", "Integer"),
+  ("predicted_sat_critical_reading_low",  "Predicted SAT Critical Reading Low",  "Integer"),
+  ("predicted_sat_math_high",             "Predicted SAT Math High",             "Integer"),
+  ("predicted_sat_math_low",              "Predicted SAT Math Low",              "Integer"),
+  ("predicted_act_composite_high",        "Predicted ACT Composite High",        "Integer"),
+  ("predicted_act_composite_low",         "Predicted ACT Composite Low",         "Integer"),
+  ("battery",                             "Battery",                             "Level"  ),
+  ("level",                               "Level",                               "Level"  ),
+  ("form",                                "Form",                                "Level"  ),
+  ("norm_year",                           "Norm Year",                           "Level"  )
 ] %}
 
 {% set accommodations = [
@@ -111,7 +111,7 @@
 
 {%- set marked = [] -%}
 {%- for position, descriptor in accommodations -%}
-  {%- if __row_data__.get("Mode_of_Administration__" ~ position, "") | trim == "1" -%}
+  {%- if __row_data__.get("mode_of_administration_" ~ position, "") | trim == "1" -%}
     {%- set _ = marked.append(descriptor) -%}
   {%- endif -%}
 {%- endfor -%}
@@ -123,17 +123,17 @@
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
-    "schoolYear": {{schoolYear}}
+    "schoolYear": {{school_year}}
   },
   "studentReference": {
     "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationDate": "{{Date_Tested}}",
+  "administrationDate": "{{date_tested}}",
   "period": {
-    "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{Semester}}"
+    "assessmentPeriodDescriptor": "{{namespace}}/AssessmentPeriodDescriptor#{{semester}}"
   },
-  "whenAssessedGradeLevelDescriptor": "{{Class_Grade}}",
-  "serialNumber": "{{serialNumber}}",
+  "whenAssessedGradeLevelDescriptor": "{{class_grade}}",
+  "serialNumber": "{{serial_number}}",
 
   {% if marked %}
   "accommodations": [
@@ -152,7 +152,7 @@
 
       {% set results = [] %}
       {% for prefix, method, datatype in indexed_scores %}
-        {% set result = __row_data__.get(prefix ~ "__" ~ column, "") | trim %}
+        {% set result = __row_data__.get(prefix ~ "_" ~ column, "") | trim %}
         {% if result and result != "NULL" and "/" not in result and "-" not in result[1:] and "e" not in result | lower %}
           {% set _ = results.append({
             "method": (method ~ "/" ~ code) if is_composite else method,
@@ -173,7 +173,7 @@
             "identificationCode": "{{code}}",
             "namespace": "{{namespace}}"
           },
-          {% set completion = __row_data__.get("Completion_Criteria_CC__" ~ column, "") | trim %}
+          {% set completion = __row_data__.get("completion_criteria_cc_" ~ column, "") | trim %}
           {% if completion %}
           "performanceLevels": [
             {
