@@ -1,0 +1,30 @@
+earthmover_config_file: earthmover.yaml
+edfi_data_model_version_range: [">=0.3.0", "<0.4.0"]
+assessment_year_validated_range: [">=2022", "<=2024"]
+student_id_names: ["studentId"]
+input_files:
+  INPUT_FILE: 
+    optional: false
+    required_fields: ["studentId", "adminDate", "grade", "scaleScore"],
+    optional_fields: ["studentName"]
+params:
+  required: ["INPUT_FILE", "OUTPUT_DIR"]
+  requires_user_input: []
+  properties:
+    INPUT_FILE:
+      type: string
+      format: data-url
+      title: Assessment File
+      description: The assessment file to be loaded
+    OUTPUT_DIR:
+      default: ./
+      type: string
+      format: data-url
+      title: Output Directory
+      description: The directory to output the resulting jsonl files
+    STATE_FILE:
+      default: ~/.earthmover.csv
+      type: string
+      format: data-url
+      title: State File
+      description: The file which maintains the tool state
