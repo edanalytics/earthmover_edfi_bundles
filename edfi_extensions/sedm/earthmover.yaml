@@ -9,6 +9,7 @@ config:
   show_graph: False
   parameter_defaults:
     DESCRIPTOR_NAMESPACE: uri://sedm.sc.gov
+    EVENT_STATUS: Active  # Active or Inactive
 
 
 sources:
@@ -58,6 +59,10 @@ transformations:
       - operation: map_values
         column: placement
         map_file: ./seeds/special_ed_setting_mapping.csv
+      # EVENT_STATUS param (Active|Inactive) populates empty Event Status
+      - operation: modify_columns
+        columns:
+          event_status: ${EVENT_STATUS}
 
   
 
@@ -78,7 +83,7 @@ transformations:
 destinations:
   ideaEvents:
     source: $transformations.idea_events
-    template: ./templates/iDEAEvents.jsont
+    template: ./templates/ideaEvents.jsont
     extension: jsonl
   studentIEPs:
     source: $transformations.student_ieps
