@@ -74,15 +74,15 @@ telpas  (TELPAS)                               telpas_alt  (TELPAS Alternate)
 ## Layout differences by year
 Each `fwf_to_csv_xwalks/{telpas,telpas_alt}_fwf_xwalk_{year}.csv` maps one year's layout to conformed column names, so templates are year-agnostic. Differences that affect output:
 
-| Year | TELPAS | TELPAS Alternate |
-|---|---|---|
-| 2022 | No per-domain Tested Grade; Writing holistic only (no raw/scale/reporting category scores); no Writing Speech-to-Text; accommodations are Reading-only (mapped to the Reading and Writing descriptors) | |
-| 2022-2023 | Opportunity Key / Test Result ID / Non-Participant at positions 1106-1152 | |
-| 2023 | No Yearly Progress Indicator | |
-| 2022-2025 | One Non-Participant flag for Listening/Speaking and one for Reading/Writing; each is sent on both domains | |
-| 2026 | Non-Participant per domain | |
+| Year | TELPAS |
+|---|---|
+| 2022 | No per-domain Tested Grade; Writing holistic only (no raw/scale/reporting category scores); no Writing Speech-to-Text; accommodations are Reading-only (mapped to the Reading and Writing descriptors) |
+| 2022-2023 | Opportunity Key / Test Result ID / Non-Participant at positions 1106-1152 |
+| 2023 | No Yearly Progress Indicator |
+| 2022-2025 | One Non-Participant flag for Listening/Speaking and one for Reading/Writing; each is sent on both domains |
+| 2026 | Non-Participant per domain |
 
-TELPAS Alternate score fields are unchanged across 2022-2026.
+(TELPAS Alternate score fields are unchanged across 2022-2026.)
 
 To add a year: copy the latest colspec files, adjust positions per TEA's new layout (see [here](https://tea.texas.gov/data-reports/student-assessment-results/data-file-formats)), and add to the table above.
 
@@ -114,12 +114,3 @@ Judgment calls that need review/discussion:
 
 ## Sample data
 `data/` contains anonymized and synthetic (fake) records only: `sample_anonymized_file_telpas.txt` (2026 TELPAS: K holistic plus synthetic grades 1-9 online/absent/not-tested records) and `sample_anonymized_file_telpas_alt.txt` (2026 TELPAS Alternate, synthetic).
-
-
-
-
-
-
---------------------------------------------------------------------------------------------
-Claude output:
-
