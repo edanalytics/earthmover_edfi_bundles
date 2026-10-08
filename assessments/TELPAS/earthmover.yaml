@@ -1,0 +1,219 @@
+version: 2
+
+config:
+  log_level: INFO
+  output_dir: ${OUTPUT_DIR}
+  memory_limit: 1GB
+  state_file: ${STATE_FILE}
+  tmp_dir: ${TMP_DIR}
+  show_graph: False
+  show_stacktrace: True
+  parameter_defaults:
+    OUTPUT_DIR: ./output
+    TMP_DIR: /tmp
+    STATE_FILE: ./runs.csv
+    STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
+    POSSIBLE_STUDENT_ID_COLUMNS: 'tx_unique_student_id,local_student_id'
+    FORMAT: 'Standard'
+    DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+    OBSERVABLE_FIRST_NAME: 'first_name'
+    OBSERVABLE_LAST_NAME: 'last_name'
+    OBSERVABLE_BIRTH_DATE: 'date_of_birth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: ['county_district_campus_number']
+    OBSERVABLE_STUDENT_IDS: ['tx_unique_student_id','local_student_id']
+
+# FORMAT selects the TEA layout and the Ed-Fi assessment:
+#   Standard  -> telpas      (TELPAS, grades K-12)
+#   Alternate -> telpas_alt  (TELPAS Alternate, grades 2-12)
+{% set assessment_identifiers = {'Standard': 'telpas', 'Alternate': 'telpas_alt'} %}
+{% set assessment_identifier = assessment_identifiers["${FORMAT}"] %}
+
+sources:
+  assessments:
+    file: ./seeds/assessments.csv
+    header_rows: 1
+  objectiveAssessments:
+    file: ./seeds/objectiveAssessments.csv
+    header_rows: 1
+  assessmentReportingMethodDescriptors:
+    file: ./seeds/assessmentReportingMethodDescriptors.csv
+    header_rows: 1
+  performanceLevelDescriptors:
+    file: ./seeds/performanceLevelDescriptors.csv
+    header_rows: 1
+  accommodationDescriptors:
+    file: ./seeds/accommodationDescriptors.csv
+    header_rows: 1
+  gradeLevelDescriptors:
+    file: ./seeds/gradeLevelDescriptors.csv
+    header_rows: 1
+  academicSubjectDescriptors:
+    file: ./seeds/academicSubjectDescriptors.csv
+    header_rows: 1
+  assessmentCategoryDescriptors:
+    file: ./seeds/assessmentCategoryDescriptors.csv
+    header_rows: 1
+
+  # TEA fixed-width student results file (no header); one colspec per format & administration year
+  input:
+    file: ${INPUT_FILE}
+    type: fixedwidth
+    colspec_file: ./fwf_to_csv_xwalks/{{assessment_identifier}}_fwf_xwalk_${API_YEAR}.csv
+    colspec_headers:
+      start: start_index
+      end: end_index
+      width: field_length
+      name: field_name
+
+
+transformations:
+  input:
+    source: $sources.input
+    operations: []
+
+  student_assessments:
+    source: $transformations.input
+    operations:
+      - operation: duplicate_columns
+        columns:
+          ${STUDENT_ID_NAME}: studentUniqueId
+
+      - operation: add_columns
+        columns:
+          assessmentIdentifier: {{assessment_identifier}}
+          school_year: ${API_YEAR}
+          # TEA only provides an MMYY administration code (e.g. 0326 = Spring 2026): use the 1st of that month
+          administration_date_iso: "{%raw%}{{ '20' ~ administration_date[2:4] ~ '-' ~ administration_date[0:2] ~ '-01' }}{%endraw%}"
+          student_assessment_identifier: "{%raw%}{{ opportunity_key if opportunity_key else test_result_id }}{%endraw%}"
+          # whenAssessedGradeLevel uses the tested grade (per-domain on TELPAS, from 2023); fall back to the enrolled/file grade
+          tested_grade: "{%raw%}{{ listening_tested_grade or speaking_tested_grade or reading_tested_grade or writing_tested_grade or grade_level_code }}{%endraw%}"
+
+      # TEA proficiency rating codes -> labels from the TEA layout (e.g. 4 -> Advanced High); see README "Design decisions"
+      - operation: map_values
+        columns:
+          - listening_proficiency_rating
+          - speaking_proficiency_rating
+          - reading_proficiency_rating
+          - writing_proficiency_rating
+          - composite_rating
+        map_file: ./seeds/proficiency_rating_xwalk_{{assessment_identifier}}.csv
+
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - namespace
+          - descriptorNamespace
+
+      - operation: join
+        sources:
+          - $sources.gradeLevelDescriptors
+        join_type: left
+        left_keys: [assessmentIdentifier, tested_grade]
+        right_keys: [assessmentIdentifier, telpas_grade]
+
+  # aggregate default Ed-Fi descriptors from seeds (never hardcoded in templates, so they can be overridden)
+  grade_level_descriptors:
+    source: $sources.gradeLevelDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          grade_json: '{%raw%}{"gradeLevelDescriptor": "{{edfi_descriptor}}"},{%endraw%}'
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          grade_json: agg(grade_json,)
+      # agg() cannot join on commas, so each item carries a trailing comma; strip the last one
+      - operation: modify_columns
+        columns:
+          grade_json: "{%raw%}{{value.rstrip(',')}}{%endraw%}"
+
+  academic_subject_descriptors:
+    source: $sources.academicSubjectDescriptors
+    operations:
+      - operation: add_columns
+        columns:
+          subject_json: '{%raw%}{"academicSubjectDescriptor": "{{edfi_descriptor}}"},{%endraw%}'
+      - operation: group_by
+        group_by_columns:
+          - assessmentIdentifier
+        create_columns:
+          subject_json: agg(subject_json,)
+      # agg() cannot join on commas, so each item carries a trailing comma; strip the last one
+      - operation: modify_columns
+        columns:
+          subject_json: "{%raw%}{{value.rstrip(',')}}{%endraw%}"
+
+  assessments:
+    source: $sources.assessments
+    operations:
+      - operation: join
+        sources:
+          - $transformations.grade_level_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $transformations.academic_subject_descriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+      - operation: join
+        sources:
+          - $sources.assessmentCategoryDescriptors
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+
+  objective_assessments:
+    source: $sources.objectiveAssessments
+    operations:
+      - operation: join
+        sources:
+          - $sources.assessments
+        join_type: inner
+        left_key: assessmentIdentifier
+        right_key: assessmentIdentifier
+        right_keep_columns:
+          - namespace
+          - descriptorNamespace
+
+
+destinations:
+  studentAssessments:
+    source: $transformations.student_assessments
+    template: ./templates/studentAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessments:
+    source: $transformations.assessments
+    template: ./templates/assessments.jsont
+    extension: jsonl
+    linearize: True
+  objectiveAssessments:
+    source: $transformations.objective_assessments
+    template: ./templates/objectiveAssessments.jsont
+    extension: jsonl
+    linearize: True
+  assessmentReportingMethodDescriptors:
+    source: $sources.assessmentReportingMethodDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  performanceLevelDescriptors:
+    source: $sources.performanceLevelDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
+  accommodationDescriptors:
+    source: $sources.accommodationDescriptors
+    template: ./templates/descriptors.jsont
+    extension: jsonl
+    linearize: True
