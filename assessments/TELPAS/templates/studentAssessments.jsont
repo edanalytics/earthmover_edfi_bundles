@@ -1,0 +1,180 @@
+{#- One template serves both formats: a column missing from a format's colspec resolves to none and is skipped. -#}
+{%- set row = __row_data__ -%}
+
+{#- Overall score results: [value, assessmentReportingMethod, resultDatatype] -#}
+{%- set possible_scores = [
+    [row.get('composite_score'), 'Composite Score', 'Decimal'],
+    [row.get('yearly_progress_indicator'), 'Yearly Progress Indicator', 'Integer'],
+    [row.get('administration_date'), 'Administration Code', 'Level'],
+    [row.get('score_code'), 'Score Code', 'Level'],
+    [row.get('non_participant'), 'Non-Participant', 'Level'],
+    [row.get('rater_info_a'), 'Rater Info-A', 'Level'],
+    [row.get('rater_info_b'), 'Rater Info-B', 'Level']
+] -%}
+{%- if assessmentIdentifier == 'telpas' -%}
+  {#- TELPAS Alternate's grade field is not labeled "enrolled", so only send it for TELPAS -#}
+  {%- set _ = possible_scores.append([row.get('grade_level_code'), 'Enrolled Grade', 'Level']) -%}
+{%- endif -%}
+
+{%- set scores = [] -%}
+{%- for score in possible_scores -%}
+  {%- if score[0] is not none and score[0] | trim | length -%}
+    {%- set _ = scores.append(score) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{#- Overall performance levels: [value, assessmentReportingMethod] -#}
+{%- set possible_perf_levels = [
+    [row.get('composite_rating'), 'Composite Rating']
+] -%}
+
+{%- set perf_levels = [] -%}
+{%- for perf_level in possible_perf_levels -%}
+  {%- if perf_level[0] is not none and perf_level[0] | trim | length -%}
+    {%- set _ = perf_levels.append(perf_level) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{#- Accommodations: [column, accommodationDescriptor codeValue]; flagged with '1' -#}
+{%- set possible_accommodations = [
+    ['listening_speaking_designated_supports', 'Listening and Speaking Designated Supports'],
+    ['listening_speaking_extra_day', 'Listening and Speaking Extra Day'],
+    ['reading_writing_designated_supports', 'Reading and Writing Designated Supports'],
+    ['large_print_reading_writing', 'Large Print Reading and Writing'],
+    ['reading_writing_extra_day', 'Reading and Writing Extra Day'],
+    ['reading_braille_language', 'Reading Braille Language'],
+    ['writing_speech_to_text', 'Writing Speech-to-Text']
+] -%}
+
+{%- set accommodations = [] -%}
+{%- for accommodation in possible_accommodations -%}
+  {%- if row.get(accommodation[0]) == '1' -%}
+    {%- set _ = accommodations.append(accommodation[1]) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{#- Objective assessments: each domain, then its reporting categories (children) -#}
+{%- set objective_assessments = [] -%}
+{%- for domain in ['Listening', 'Speaking', 'Reading', 'Writing'] -%}
+  {%- set prefix = domain | lower -%}
+
+  {%- set possible_domain_scores = [
+      [row.get(prefix ~ '_score_code'), 'Score Code', 'Level'],
+      [row.get(prefix ~ '_tested_grade'), 'Tested Grade', 'Level'],
+      [row.get(prefix ~ '_raw_score'), 'Raw Score', 'Integer'],
+      [row.get(prefix ~ '_scale_score'), 'Scale Score', 'Integer'],
+      [row.get(prefix ~ '_holistic_rating_test_administration'), 'Holistic Rating Test Administration', 'Level'],
+      [row.get(prefix ~ '_paper_test_administration'), 'Paper Test Administration', 'Level'],
+      [row.get(prefix ~ '_non_participant'), 'Non-Participant', 'Level']
+  ] -%}
+  {%- set domain_scores = [] -%}
+  {%- for score in possible_domain_scores -%}
+    {%- if score[0] is not none and score[0] | trim | length -%}
+      {%- set _ = domain_scores.append(score) -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- set domain_perf_levels = [] -%}
+  {%- set rating = row.get(prefix ~ '_proficiency_rating') -%}
+  {%- if rating is not none and rating | trim | length -%}
+    {%- set _ = domain_perf_levels.append([rating, 'Proficiency Rating']) -%}
+  {%- endif -%}
+
+  {%- if domain_scores | length or domain_perf_levels | length -%}
+    {%- set _ = objective_assessments.append([domain, domain_scores, domain_perf_levels]) -%}
+  {%- endif -%}
+
+  {%- for category in range(1, 4) -%}
+    {%- set raw_score = row.get(prefix ~ '_reporting_category_' ~ category ~ '_raw_score') -%}
+    {%- if raw_score is not none and raw_score | trim | length -%}
+      {%- set _ = objective_assessments.append([domain ~ ' Reporting Category ' ~ category, [[raw_score, 'Raw Score', 'Integer']], []]) -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": {{school_year}}
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{administration_date_iso}}"
+
+  {%- if edfi_descriptor is not none and edfi_descriptor | length %},
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  {%- endif %}
+
+  {%- if accommodations | length %},
+  "accommodations": [
+    {%- for accommodation in accommodations %}
+    {
+      "accommodationDescriptor": "{{descriptorNamespace}}/AccommodationDescriptor#{{accommodation}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+
+  {%- if scores | length %},
+  "scoreResults": [
+    {%- for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0] | trim}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+
+  {%- if perf_levels | length %},
+  "performanceLevels": [
+    {%- for perf_level in perf_levels %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+      "performanceLevelDescriptor": "{{descriptorNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+
+  {%- if objective_assessments | length %},
+  "studentObjectiveAssessments": [
+    {%- for obj in objective_assessments %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{obj[0]}}",
+        "namespace": "{{namespace}}"
+      }
+      {%- if obj[1] | length %},
+      "scoreResults": [
+        {%- for score in obj[1] %}
+        {
+          "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+          "result": "{{score[0] | trim}}"
+        }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+      ]
+      {%- endif %}
+      {%- if obj[2] | length %},
+      "performanceLevels": [
+        {%- for perf_level in obj[2] %}
+        {
+          "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
+          "performanceLevelDescriptor": "{{descriptorNamespace}}/PerformanceLevelDescriptor#{{perf_level[0]}}"
+        }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+      ]
+      {%- endif %}
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+}
