@@ -1,17 +1,12 @@
 {
     "ideaEventID": "{{idea_event_id}}",
     "educationOrganizationReference": {
-      "educationOrganizationId": {{lea_code}}
+      "educationOrganizationId": {{education_organization_reference}}
     },
     "studentReference": {
       "studentUniqueId": "{{student_reference}}"
     },
-    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IdeaEventDescriptor#{{event_type}}",
-    {% if event_begin_date is not none and event_begin_date | length %}
+    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IdeaEventDescriptor#{{idea_event_descriptor}}",
     "beginDate": "{{event_begin_date}}",
     "endDate": "{{event_end_date}}"
-    {% else %}
-    "beginDate": "{{event_date}}",
-    "endDate": "{{event_date}}"
-    {% endif %}
 }
