@@ -38,6 +38,12 @@ transformations:
     source: $sources.idea_events
     operations:
       - operation: snake_case_columns
+      # Support new headers and legacy/preprocessed names (LEA Code, StateCode, Event Type).
+      - operation: add_columns
+        columns:
+          education_organization_reference: "{% raw %}{{ education_organization_reference or lea_code }}{% endraw %}"
+          student_reference: "{% raw %}{{ student_reference or state_code }}{% endraw %}"
+          idea_event_descriptor: "{% raw %}{{ idea_event_descriptor or event_type }}{% endraw %}"
       - operation: date_format
         columns: 
           - event_begin_date
