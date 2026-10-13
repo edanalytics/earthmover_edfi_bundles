@@ -1,0 +1,29 @@
+{
+    "identificationCode": "{{identificationCode}}",
+    "assessmentReference": {
+      "assessmentIdentifier": "{{assessmentIdentifier}}",
+      "namespace": "{{namespace}}"
+    },
+    "description": "{{description}}",
+    {% if parentIdentificationCode is not none and parentIdentificationCode | length %}
+    "parentObjectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{parentIdentificationCode}}",
+        "namespace": "{{namespace}}"
+    },
+    {% endif %}
+    "performanceLevels": [
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Above"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Below"
+		},
+		{
+			"assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Category Performance Level",
+			"performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#At/Near"
+		}
+    ]
+  }
