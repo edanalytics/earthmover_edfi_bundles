@@ -102,25 +102,18 @@ transformations:
           - grade_*_scale_score
           - grade_*_performance
 
-      # Drop rows that can't be loaded: no student, no admin date, or no overall score.
-      # This runs before date_format because a blank date becomes null there, and combine_columns errors on nulls.
-      - operation: filter_rows
-        query: studentUniqueId != '' and adminDate != '' and scaleScore != ''
-        behavior: include
-
-      # Use this date format for the studentAssessmentIdentifier, which is a combination of studentUniqueId and admin_date.
+      # Use this date format for the studentAssessmentIdentifier, which is a combination of studentUniqueId, assessmentIdentifier and admin_date.
       - operation: date_format
         column: adminDate
         from_format: "%m/%d/%Y"
         to_format: "%Y%m%d"
 
-      # Combine studentUniqueId and adminDate to create a unique studentAssessmentIdentifier.
-      - operation: combine_columns
+      # Combine studentUniqueId, assessmentIdentifier and adminDate to create a unique studentAssessmentIdentifier.
+      # adminDate is null here when the source date was blank (date_format turns '' into NaN),
+      # so fall back to an empty string instead of erroring. The API will reject the record.
+      - operation: add_columns
         columns:
-          - studentUniqueId
-          - adminDate
-        new_column: studentAssessmentIdentifier
-        separator: '_'
+          studentAssessmentIdentifier: "{%raw%}{{ studentUniqueId }}_{{ assessmentIdentifier }}_{{ adminDate if adminDate is string else '' }}{%endraw%}"
 
       # Clean date formats.
       - operation: date_format
