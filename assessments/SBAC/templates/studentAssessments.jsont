@@ -62,7 +62,7 @@
     "studentUniqueId": "{{studentUniqueId}}"
   },
   "administrationDate": "{{adminDate}}",
-  "whenAssessedGradeLevelDescriptor": "{{gradeLevelDescriptor}}",
+  "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
   "retestIndicatorDescriptor": "{{namespace}}/RetestIndicatorDescriptor#{{retest_indicator}}",
   {% if scores | length %}
   "scoreResults": [
