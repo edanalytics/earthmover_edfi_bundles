@@ -305,10 +305,6 @@ destinations:
     source: $transformations.assessments
     template: ./templates/assessments.jsont
     extension: jsonl
-  assessmentCategoryDescriptors:
-    source: $transformations.distinct_assessment_category_descriptors
-    template: ./templates/descriptors.jsont
-    extension: jsonl
   assessmentReportingMethodDescriptors:
     source: $sources.assessmentReportingMethodDescriptors
     template: ./templates/descriptors.jsont
