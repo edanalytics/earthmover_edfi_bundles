@@ -276,10 +276,19 @@ The bundle produces Ed-Fi resources for:
 
 The exact `studentObjectiveAssessments` emitted for an ELA result depend on which optional writing-rubric fields are populated in the source record.
 
-## Lightbeam
+### Examples
+Using an ID column from the assessment file:
+```bash
+earthmover run -c earthmover.yaml -p '{
+"INPUT_FILE": "data/sample_anonymized_file_grade_3-5_ELA_summative.csv",
+"STATE_FILE": "./runs.csv",
+"OUTPUT_DIR": "output/",
+"API_YEAR": "2026",
+"STUDENT_ID_NAME": "Student ID"
+}'
+```
 
 Once you have inspected the output JSONL for issues, check the settings in `lightbeam.yaml` and transmit them to your Ed-Fi API with:
-
 ```bash
 lightbeam validate+send -c ./lightbeam.yaml -p '{
 "DATA_DIR": "./output/",
