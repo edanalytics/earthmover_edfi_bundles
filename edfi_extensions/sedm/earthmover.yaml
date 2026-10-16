@@ -16,6 +16,8 @@ sources:
   idea_events:
     file: ${IDEA_EVENTS_FILE}
     header_rows: 1
+    optional_fields:
+      - event_date
   student_ieps:
     file: ${STUDENT_IEPS_FILE}
     header_rows: 1
@@ -44,8 +46,8 @@ transformations:
           education_organization_reference: "{% raw %}{{ education_organization_reference or lea_code }}{% endraw %}"
           student_reference: "{% raw %}{{ student_reference or state_code }}{% endraw %}"
           idea_event_descriptor: "{% raw %}{{ idea_event_descriptor or event_type }}{% endraw %}"
-          event_begin_date: "{% raw %}{{ event_begin_date or event_date }}{% endraw %}"
-          event_end_date: "{% raw %}{{ event_end_date or event_date }}{% endraw %}"
+          event_begin_date: "{% raw %}{{ event_date or event_begin_date }}{% endraw %}"
+          event_end_date: "{% raw %}{{ event_date or event_end_date }}{% endraw %}"
       - operation: date_format
         columns: 
           - event_begin_date
