@@ -52,7 +52,6 @@ transformations:
           - event_end_date
         from_format: "%m/%d/%y"
         to_format: "%Y-%m-%d"
-        ignore_errors: False
   
   student_ieps:
     source: $sources.student_ieps
