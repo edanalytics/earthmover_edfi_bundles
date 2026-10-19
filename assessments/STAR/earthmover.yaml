@@ -28,6 +28,13 @@ config:
     INPUT_FILETYPE: csv
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'StudentFirstName'
+    OBSERVABLE_LAST_NAME: 'StudentLastName'
+    OBSERVABLE_BIRTH_DATE: 'BirthDate'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%Y-%m-%dT%H:%M:%SZ'
+    OBSERVABLE_SCHOOL_IDS: ['SchoolIdentifier', 'SchoolStateId']
+    OBSERVABLE_STUDENT_IDS: ['StudentStateID', 'StudentSourcedID', 'StudentIdentifier', 'StudentUserID']
+
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"  # converts "2021-2022" to "2022"
   overall_file_name: &overall_file_name ${INPUT_FILE}
