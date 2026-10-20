@@ -64,9 +64,10 @@
   },
   "administrationDate": "{{adminDate}}",
   "whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}",
-  "retestIndicatorDescriptor": "{{namespace}}/RetestIndicatorDescriptor#{{retest_indicator}}",
+  "retestIndicatorDescriptor": "{{namespace}}/RetestIndicatorDescriptor#{{retest_indicator}}"
+  {#- Each optional block below opens with its own comma, so skipping any of them never leaves a trailing comma. #}
   {% if scores | length %}
-  "scoreResults": [
+  ,"scoreResults": [
     {% for score in scores %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
@@ -74,10 +75,10 @@
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+  ]
   {% endif %}
   {% if perf_levels | length %}
-  "performanceLevels": [
+  ,"performanceLevels": [
     {% for perf_level in perf_levels %}
       {
         "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{perf_level[1]}}",
@@ -87,10 +88,10 @@
         {% endif %}
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+  ]
   {% endif %}
   {% if all_obj_assessment | length %}
-  "studentObjectiveAssessments": [
+  ,"studentObjectiveAssessments": [
   {%- for obj in all_obj_assessment -%}
   {
     "objectiveAssessmentReference": {
