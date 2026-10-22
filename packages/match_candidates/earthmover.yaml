@@ -5,9 +5,7 @@ config:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
     STUDENT_ASSESSMENTS_NODE: "$transformations.student_assessments"
     OBSERVABLE_BIRTH_DATE_FORMAT: ""
-    DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER: ""
-    STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS: ""
-    DELIMITER: ""
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: False
     HASH_APPLIED: ""
 
   # Two macros are used to clean certain types of observables.
@@ -28,13 +26,6 @@ config:
       {%-endif-%}
     {%- endmacro %} 
 
-    {%- macro list_student_assessment_identifier_columns(columns) -%}
-       {
-        {%- for col in columns -%}
-          {{ col | tojson }}: {{ __row_data__[col] | tojson }}{% if not loop.last %}, {% endif %}
-        {%- endfor -%}
-        }
-    {%- endmacro %}
 
 transformations:
 
@@ -106,17 +97,14 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          dynamic_student_assessment_identifier_flag: "{%raw%}${DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
-          student_assessment_identifier_columns: "{%raw%}{{list_student_assessment_identifier_columns($STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS)}}{%endraw%}"
-          delimiter: "{%raw%}${DELIMITER}{%endraw%}"
+          student_unique_id_in_student_assessment_identifier: "{%raw%}${STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
           hash_applied: "{%raw%}${HASH_APPLIED}{%endraw%}"
+          substitution: "{%raw%}{%if substitution_studentAssessmentIdentifier %}{{substitution_studentAssessmentIdentifier}}{%else%}''{%endif%}{%endraw%}"
       - operation: keep_columns
         columns:
         - __candidate_id
-        - studentAssessmentIdentifier
-        - dynamic_student_assessment_identifier_flag
-        - student_assessment_identifier_columns
-        - delimiter
+        - substitution
+        - student_unique_id_in_student_assessment_identifier
         - hash_applied
 
 destinations:
