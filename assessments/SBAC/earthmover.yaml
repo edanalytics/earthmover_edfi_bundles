@@ -127,14 +127,14 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
 
-      # Join with gradeLevelDescriptors to get the descriptor for the grade the student was in when tested.
+      # Join with gradeLevelDescriptors to get the descriptor for the grade level of the assessment the student took.
       # This is a left join so rows with a grade missing from the seed are still sent and rejected by the API, not dropped here.
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
         left_keys:
-          - enrolled_grade
+          - grade
           - assessmentIdentifier
         right_keys:
           - originalGrade
