@@ -1175,7 +1175,7 @@ transformations:
           namespace: "uri://wida.wisc.edu/assess/access"
           defaultTestStartDateTime: "${API_YEAR}-04-01 00:00:00"
           school_year: ${API_YEAR}
-          studentAssessmentIdentifier: "{%raw%}{{UniqueRecordID}}{%raw%}"
+          studentAssessmentIdentifier: "{%raw%}{{UniqueRecordID}}{%endraw%}"
           alternate_assessment:
             {% if "${FORMAT}" == "Standard" %}
               "N"

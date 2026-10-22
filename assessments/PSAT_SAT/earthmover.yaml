@@ -20,9 +20,7 @@ config:
     OBSERVABLE_SCHOOL_IDS: ['']
     OBSERVABLE_STUDENT_IDS: ['DISTRICT_STUDENT_ID','STATE_STUDENT_ID','SECONDARY_ID']
     
-    DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER: "Yes"
-    STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS: ['studentUniqueId', 'administrationDate', 'test_type']
-    DELIMITER: "_"
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: True
     HASH_APPLIED: "Yes"
 
   macros: >
@@ -250,6 +248,7 @@ transformations:
           namespace: "uri://collegeboard.org"
           test_type: "{%raw%}${TEST_TYPE}{%endraw%}"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{md5(studentAssessmentIdentifier)}}{%endraw%}"
