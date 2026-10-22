@@ -29,11 +29,11 @@ config:
     {%- endmacro %} 
 
     {%- macro list_student_assessment_identifier_columns(columns) -%}
-      {%- set list = [] -%}
-      {%- for col in columns -%}
-      {%- set _ = list.append(__row_data__[col]) -%}
-      {%- endfor -%}
-      {{list | tojson}}
+       {
+        {%- for col in columns -%}
+          {{ col | tojson }}: {{ __row_data__[col] | tojson }}{% if not loop.last %}, {% endif %}
+        {%- endfor -%}
+        }
     {%- endmacro %}
 
 transformations:
