@@ -11,7 +11,11 @@ input_params:
   - display_name: "School Year"
     env_var: "API_YEAR"
     is_required: true
-  - display_name: "Test Type: 'Auto', 'Process', or 'CAP'"
+  - display_name: "Test Type: 'Auto', 'CAP', or 'Process'"
     env_var: "TEST_TYPE"
     is_required: true
+    allowed_values:
+      - Auto
+      - CAP
+      - Process
 descriptor_mapping_files: ["academicSubjectDescriptors.csv", "assessmentCategoryDescriptors.csv", gradeLevelDescriptors.csv"]

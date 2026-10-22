@@ -42,6 +42,8 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: Local ID,State ID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+    INPUT_FILE_COMP_QUESTION: ''  # Blank defaults so optional CBMcomp sources are empty DFs when unset (not unsubstituted paths)
+    INPUT_FILE_COMP_RECALL: ''
 
 sources:
   input:
@@ -328,15 +330,15 @@ transformations:
         rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
         values: melt_value
 
+  # Optional CBMcomp files are not passed through student_id_wrapper xwalk, so they
+  # never get edFi_studentUniqueID. Keep native FastBridge IDs here and join to the
+  # main (possibly xwalked) input on fast_id + season below.
   cleaned_comp_question:
     source: $sources.input_comp_question
     operations:
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
       - operation: melt
-        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade]
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
@@ -346,18 +348,26 @@ transformations:
         behavior: exclude
       - operation: pivot
         cols_by: cleaned_variable
-        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
+      # Empty optional/header-only files pivot with no score columns; ensure join keys exist
+      # without overwriting values when real CBMcomp data is present.
+      - operation: add_columns
+        columns:
+          comprehension_question_ic_per_minute: "{% raw %}{{ comprehension_question_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_question_items_correct: "{% raw %}{{ comprehension_question_items_correct | default('', true) }}{% endraw %}"
+          comprehension_question_total_items: "{% raw %}{{ comprehension_question_total_items | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_school: "{% raw %}{{ comprehension_question_percentile_at_school | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_lea: "{% raw %}{{ comprehension_question_percentile_at_lea | default('', true) }}{% endraw %}"
+          comprehension_question_percentile_at_nation: "{% raw %}{{ comprehension_question_percentile_at_nation | default('', true) }}{% endraw %}"
+          comprehension_question_risk_level: "{% raw %}{{ comprehension_question_risk_level | default('', true) }}{% endraw %}"
 
   cleaned_comp_recall:
     source: $sources.input_comp_recall
     operations:
-      - operation: duplicate_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
       - operation: snake_case_columns
       - operation: melt
-        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id]
+        id_vars: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade]
       - operation: add_columns
         columns:
           season: "{% raw %}{{ extract_season(melt_variable) }}{% endraw %}"
@@ -367,21 +377,34 @@ transformations:
         behavior: exclude
       - operation: pivot
         cols_by: cleaned_variable
-        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, student_unique_id, season]
+        rows_by: [assessment, assessment_language, district, school, local_id, state_id, fast_id, grade, season]
         values: melt_value
+      - operation: add_columns
+        columns:
+          comprehension_recall_detailed_comp_ic_per_minute: "{% raw %}{{ comprehension_recall_detailed_comp_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_recall_detailed_comp_items_correct: "{% raw %}{{ comprehension_recall_detailed_comp_items_correct | default('', true) }}{% endraw %}"
+          comprehension_recall_detailed_comp_total_items: "{% raw %}{{ comprehension_recall_detailed_comp_total_items | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_ic_per_minute: "{% raw %}{{ comprehension_recall_synthesis_comp_ic_per_minute | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_items_correct: "{% raw %}{{ comprehension_recall_synthesis_comp_items_correct | default('', true) }}{% endraw %}"
+          comprehension_recall_synthesis_comp_total_items: "{% raw %}{{ comprehension_recall_synthesis_comp_total_items | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_school: "{% raw %}{{ comprehension_recall_percentile_at_school | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_lea: "{% raw %}{{ comprehension_recall_percentile_at_lea | default('', true) }}{% endraw %}"
+          comprehension_recall_percentile_at_nation: "{% raw %}{{ comprehension_recall_percentile_at_nation | default('', true) }}{% endraw %}"
+          comprehension_recall_risk_level: "{% raw %}{{ comprehension_recall_risk_level | default('', true) }}{% endraw %}"
 
   joined_input:
     source: $transformations.cleaned_input
     operations:
+    {% if "${INPUT_FILE_COMP_QUESTION}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_question
         join_type: left
         left_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keep_columns:
           - comprehension_question_ic_per_minute
@@ -391,15 +414,17 @@ transformations:
           - comprehension_question_percentile_at_lea
           - comprehension_question_percentile_at_nation
           - comprehension_question_risk_level
+      {% endif %}
+      {% if "${INPUT_FILE_COMP_RECALL}" != "" %}
       - operation: join
         sources:
           - $transformations.cleaned_comp_recall
         join_type: left
         left_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keys:
-          - student_unique_id
+          - fast_id
           - season
         right_keep_columns:
           - comprehension_recall_detailed_comp_ic_per_minute
@@ -412,6 +437,7 @@ transformations:
           - comprehension_recall_percentile_at_lea
           - comprehension_recall_percentile_at_nation
           - comprehension_recall_risk_level
+      {% endif %}
       - operation: map_values
         column: season
         mapping:

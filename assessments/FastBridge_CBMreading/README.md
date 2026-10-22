@@ -28,7 +28,7 @@ Or use the sample files provided.
 - INPUT_FILE: The path to the FastBridge CBMreading .csv file you want to transform
 - INPUT_FILE_COMP_QUESTION: (optional) The path to the Comprehension - Question .csv file
 - INPUT_FILE_COMP_RECALL: (optional) The path to the Comprehension - Recall .csv file
-- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId
+- STUDENT_ID_NAME: Which column to use as the Ed-Fi studentUniqueId (main `INPUT_FILE` only; optional CBMcomp files join on FastBridge `FAST ID` and do not need this column)
 - API_YEAR: The school year associated with the results file
 
 ### Examples

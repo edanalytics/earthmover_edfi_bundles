@@ -1,8 +1,9 @@
 {%- set possible_scores = 
   [
-    [PercCorr, "PercCorr", "Decimal"],
-    [SuggNMark, "SuggNMark", "Integer"],
-    [SuggLMark, "SuggLMark", "Level"]
+    [perc_corr, "PercCorr", "Decimal"],
+    [sugg_n_mark, "SuggNMark", "Integer"],
+    [sugg_l_mark, "SuggLMark", "Level"],
+    [proj_scale_score, "ProjScaleScore", "Integer"]
   ] -%}
 
 {%- set scores = [] -%}
@@ -14,8 +15,8 @@
 
 {%- set possible_perf_levels = 
   [
-    [AchLev, "AchLev"],
-    [AchLevExt, "AchLevExt"]
+    [ach_lev, "AchLev"],
+    [ach_lev_ext, "AchLevExt"]
   ] -%}
 
 {%- set perf_levels = [] -%}
@@ -26,18 +27,18 @@
 {%- endfor -%}
 
 {
-  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "studentAssessmentIdentifier": "{{student_assessment_identifier}}",
   "assessmentReference": {
-    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "assessmentIdentifier": "{{assessment_identifier}}",
     "namespace": "{{namespace}}"
   },
   "schoolYearTypeReference": {
-    "schoolYear": {{schoolYear}}
+    "schoolYear": {{school_year}}
   },
   "studentReference": {
-    "studentUniqueId": "{{studentUniqueId}}"
+    "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationDate": "{{adminDate}}",
+  "administrationDate": "{{test_date}}",
   {% if scores | length %}
   "scoreResults": [
     {% for score in scores %}
@@ -47,7 +48,7 @@
         "result": "{{score[0]}}"
       } {% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
+  ]{% if perf_levels | length %},{% endif %}
   {% endif %}
   {% if perf_levels | length %}
   "performanceLevels": [
