@@ -20,6 +20,10 @@ config:
     OBSERVABLE_SCHOOL_IDS: ['']
     OBSERVABLE_STUDENT_IDS: ['ID_StateAssign','ID_Local']
 
+    DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER: "Yes"
+    STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS: ['ID_ACT', 'Test_Dte']
+    DELIMITER: "-"
+    HASH_APPLIED: "Yes"
 
 sources:
   assessments:
@@ -65,7 +69,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  clean_results:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -243,6 +247,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
