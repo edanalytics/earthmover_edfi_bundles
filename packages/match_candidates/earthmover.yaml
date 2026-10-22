@@ -3,7 +3,13 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+    STUDENT_ASSESSMENTS_NODE: "$transformations.student_assessments"
     OBSERVABLE_BIRTH_DATE_FORMAT: ""
+    DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER: ""
+    STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS: ""
+    DELIMITER: ""
+    HASH_APPLIED: ""
+
   # Two macros are used to clean certain types of observables.
   # clean_single_observable handles single observable inputs. It simply trims inputs and falls back to an empty string if the input is null.
   # clean_list applies standard transformations to all list inputs, returning a new list with each item trimmed and nulls interpolated for empty inputs.
@@ -21,6 +27,14 @@ config:
       {%- else -%}{{cleaned_list | tojson}}
       {%-endif-%}
     {%- endmacro %} 
+
+    {%- macro list_student_assessment_identifier_columns(columns) -%}
+       {
+        {%- for col in columns -%}
+          {{ col | tojson }}: {{ __row_data__[col] | tojson }}{% if not loop.last %}, {% endif %}
+        {%- endfor -%}
+        }
+    {%- endmacro %}
 
 transformations:
 
@@ -87,12 +101,29 @@ transformations:
         columns:
           obs_birth_date_format: "{%raw%}${OBSERVABLE_BIRTH_DATE_FORMAT}{%endraw%}"
 
+  student_assessment_identifier_lookup:
+    source: ${STUDENT_ASSESSMENTS_NODE}
+    operations:
+      - operation: add_columns
+        columns:
+          dynamic_student_assessment_identifier_flag: "{%raw%}${DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
+          student_assessment_identifier_columns: "{%raw%}{{list_student_assessment_identifier_columns($STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS)}}{%endraw%}"
+          delimiter: "{%raw%}${DELIMITER}{%endraw%}"
+          hash_applied: "{%raw%}${HASH_APPLIED}{%endraw%}"
+      - operation: keep_columns
+        columns:
+        - __candidate_id
+        - studentAssessmentIdentifier
+        - dynamic_student_assessment_identifier_flag
+        - student_assessment_identifier_columns
+        - delimiter
+        - hash_applied
 
 destinations:
-  # input_records:
-  #   source: $transformations.input_numbered
-  #   template: ./templates/input_records.jsont
-  #   extension: jsonl
+  student_assessment_identifier_lookup:
+    source: $transformations.student_assessment_identifier_lookup
+    template: ./templates/student_assessment_identifier_lookup.jsont
+    extension: jsonl
   candidates:
     source: $transformations.candidates
     template: ./templates/candidates.jsont
