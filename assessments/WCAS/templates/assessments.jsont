@@ -1,0 +1,24 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Summative Scale Score",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {%- for lvl in ['1', '2', '3', '4', 'Insufficient to score'] %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{lvl}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+}
