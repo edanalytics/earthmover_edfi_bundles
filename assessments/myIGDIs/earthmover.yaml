@@ -53,6 +53,10 @@ transformations:
           Init District Id: InitDistrictId
       - operation: melt
         id_vars: [SchoolYear, "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId]
+      # Remove rows with empty or NaN melt_value (i.e. no data for that metric)
+      - operation: filter_rows
+        query: "melt_value == '' or melt_value != melt_value "
+        behavior: exclude
       # Parse the column name: {Assessment}/{Objective...}/{Window}/{Metric}
       # Español objectives contain '/' so we parse from both ends
       - operation: add_columns
@@ -69,6 +73,9 @@ transformations:
       - operation: filter_rows
         query: "metric in ['Score', 'Tier', 'AdministrationDate']"
         behavior: include
+      - operation: drop_columns
+        columns:
+          - melt_variable
       - operation: pivot
         cols_by: metric
         rows_by: [SchoolYear, "District Name", "School Name", "Classroom Name", "Student's First Name", "Student's Last Name", InitDistrictId, "Student Id", studentUniqueId, assessment, objective, TimeWindow]
