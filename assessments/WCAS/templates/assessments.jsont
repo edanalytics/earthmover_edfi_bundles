@@ -10,14 +10,10 @@
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Summative Scale Score",
       "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Integer"
-    },
-    {
-      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Assessment Grade Level",
-      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
     }
   ],
   "performanceLevels": [
-    {%- for lvl in ['1', '2', '3', '4'] %}
+    {%- for lvl in ['1', '2', '3', '4', 'Insufficient to score'] %}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{lvl}}",

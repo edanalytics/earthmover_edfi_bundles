@@ -1,9 +1,11 @@
 {#- A value counts as a result only if it is present and not a placeholder. -#}
 {%- macro has(v) -%}{{ 'y' if (v is not none and v | string | length and v | string not in ['N/A', 'nan']) else '' }}{%- endmacro -%}
+{#- A numeric score must also not be a "could not score" message. -#}
+{%- macro has_number(v) -%}{{ 'y' if (has(v) and v | string != 'Insufficient to score') else '' }}{%- endmacro -%}
 
 {%- set scores = [] -%}
-{%- for s in [[scaleScore, "Summative Scale Score", "Integer"], [grade, "Assessment Grade Level", "Level"]] -%}
-  {%- if has(s[0]) -%}{%- set _ = scores.append(s) -%}{%- endif -%}
+{%- for s in [[scaleScore, "Summative Scale Score", "Integer"]] -%}
+  {%- if has_number(s[0]) -%}{%- set _ = scores.append(s) -%}{%- endif -%}
 {%- endfor -%}
 
 {#- [identificationCode, percent points earned, proficiency] -- the codes must match seeds/objectiveAssessments.csv -#}
@@ -63,7 +65,7 @@
         "identificationCode": "{{oa[0]}}",
         "namespace": "{{namespace}}"
       }
-      {%- if has(oa[1]) %}
+      {%- if has_number(oa[1]) %}
       ,"scoreResults": [
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percent Points Earned",

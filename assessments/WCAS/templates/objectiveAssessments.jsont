@@ -19,7 +19,7 @@
     }
   ],
   "performanceLevels": [
-    {%- for lvl in ['Above Standard', 'At Standard', 'Below Standard'] %}
+    {%- for lvl in ['Above Standard', 'At Standard', 'Below Standard', 'Insufficient to score'] %}
     {
       "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Area Proficiency",
       "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{lvl}}",
