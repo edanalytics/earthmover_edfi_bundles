@@ -124,7 +124,7 @@ Each of the three areas has two columns.
 
 ### 5.1 Assessments
 
-The bundle creates one assessment resource. WCAS covers a single subject, so it is not split by subject the way the SBAC bundle is.
+The bundle creates one assessment resource. WCAS covers a single subject.
 
 | Assessment identifier | Subject | Assessed grades |
 | --- | --- | --- |
@@ -140,14 +140,12 @@ For each student assessment, the bundle maps:
 
 - **Summative Scale Score**
 - **Performance Level** (`1`–`4`)
-- **Grade when assessed** (first attempts only; see 5.4)
+- **Grade when assessed**
 - **Administration date** (from `Date Taken`)
 - **School year** (from `Test Reason`)
 - **Retest indicator**
 
 The source performance column may contain either `Level 3` or `3`. The bundle strips a leading `Level ` so both map to the same descriptor.
-
-**Assessment Grade Level is intentionally not mapped.** WCAS retake files do not provide the data needed to distinguish the student's grade from the assessment's grade, so the bundle does not emit an assessment-grade score.
 
 ### 5.3 Objective assessments
 
@@ -178,8 +176,6 @@ Grade 11 WCAS Summative (RETAKE) Performance
 ```
 
 From this the bundle sets the Ed-Fi `retestIndicatorDescriptor` to `True`, so retake status is preserved downstream.
-
-Unlike the SBAC extracts, WCAS retake headers do **not** state the student's enrolled grade at the time of the retake. The bundle therefore **omits `whenAssessedGradeLevelDescriptor` for retakes** rather than guessing. For first attempts, the grade when assessed is taken to be the assessment's grade.
 
 If a future extract includes the student's enrolled grade, `enrolled_grade` in `earthmover.yaml` is the place to use it.
 
