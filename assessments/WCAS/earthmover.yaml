@@ -86,12 +86,10 @@ transformations:
           #   grade_11_wcas_summative_retake_scale_score
           scale_score_header: "{%raw%}{% for k in __row_data__ if k.startswith('grade_') and k.endswith('_scale_score') %}{{ k }}{% endfor %}{%endraw%}"
           grade: "{%raw%}{{ scale_score_header.split('_')[1] }}{%endraw%}"
-          # Unlike SBAC, WCAS retake headers say "(RETAKE)" but do not name the student's grade.
+          # retake headers say "(RETAKE)" but does not name the student's grade.
           retest_indicator: "{%raw%}{{ 'True' if '_retake_' in scale_score_header else 'False' }}{%endraw%}"
           # Grade the student was in when tested. For first attempts, assume the assessment's own grade.
-          # For retakes the file does not say, so leave it blank; the template then omits
-          # whenAssessedGradeLevelDescriptor rather than guessing.
-          enrolled_grade: "{%raw%}{{ grade if retest_indicator == 'False' else '' }}{%endraw%}"
+          enrolled_grade: "{%raw%}{{ grade }}{%endraw%}"
           # "Spring 2025-2026 (Summative)" -> 2026
           schoolYear: "{%raw%}{{ test_reason.split(' ')[1].split('-')[1] }}{%endraw%}"
 
