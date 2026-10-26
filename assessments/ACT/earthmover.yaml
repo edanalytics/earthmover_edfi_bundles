@@ -20,11 +20,6 @@ config:
     OBSERVABLE_SCHOOL_IDS: ['']
     OBSERVABLE_STUDENT_IDS: ['ID_StateAssign','ID_Local']
 
-    DYNAMIC_STUDENT_ASSESSMENT_IDENTIFIER: "Yes"
-    STUDENT_ASSESSMENT_IDENTIFIER_COLUMNS: ['ID_ACT', 'Test_Dte']
-    DELIMITER: "-"
-    HASH_APPLIED: "Yes"
-
 sources:
   assessments:
     file: ./seeds/assessments.csv

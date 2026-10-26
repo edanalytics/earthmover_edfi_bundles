@@ -5,8 +5,8 @@ config:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
     STUDENT_ASSESSMENTS_NODE: "$transformations.student_assessments"
     OBSERVABLE_BIRTH_DATE_FORMAT: ""
-    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: False
-    HASH_APPLIED: ""
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: false
+    HASH_APPLIED: false
 
   # Two macros are used to clean certain types of observables.
   # clean_single_observable handles single observable inputs. It simply trims inputs and falls back to an empty string if the input is null.
@@ -99,10 +99,10 @@ transformations:
         columns:
           student_unique_id_in_student_assessment_identifier: "{%raw%}${STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
           hash_applied: "{%raw%}${HASH_APPLIED}{%endraw%}"
-          substitution: "{%raw%}{%if substitution_studentAssessmentIdentifier %}{{substitution_studentAssessmentIdentifier}}{%else%}''{%endif%}{%endraw%}"
+          substitution: "{%raw%}{%if substitution_studentAssessmentIdentifier %}{{substitution_studentAssessmentIdentifier}}{%else%}{%endif%}{%endraw%}"
       - operation: keep_columns
         columns:
-        - __candidate_id
+        - studentAssessmentIdentifier
         - substitution
         - student_unique_id_in_student_assessment_identifier
         - hash_applied

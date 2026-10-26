@@ -1,7 +1,7 @@
 version: 2
 
 config:
-  log_level: INFO
+  log_level: DEBUG
   output_dir: ${OUTPUT_DIR}
   memory_limit: 1GB
   state_file: ${STATE_FILE}
@@ -359,9 +359,12 @@ transformations:
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
 
   # Complete grade mapping in separate node to allow easier composition
-  star_with_obj_assessment_grade_mapped:
+  student_assessments:
     source: $transformations.star_with_obj_assessment
     operations:
+      - operation: add_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{StudentAssessmentID}}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
@@ -520,7 +523,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.star_with_obj_assessment_grade_mapped
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
