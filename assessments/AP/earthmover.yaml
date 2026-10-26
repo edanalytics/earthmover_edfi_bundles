@@ -18,6 +18,9 @@ config:
     OBSERVABLE_SCHOOL_IDS: ['School ID']
     OBSERVABLE_STUDENT_IDS: ['Student Identifier']
 
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -561,7 +564,7 @@ transformations:
         columns:
           SchoolCode: schoolId
 
-  prepare_student_assessments:
+  student_assessments:
     source: $transformations.stage_student_assessments
     operations:
       - operation: join
@@ -595,6 +598,7 @@ transformations:
           Score: result
       - operation: add_columns
         columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{ assessmentIdentifier ~ '-' ~ student_unique_id ~ '-' ~ School_Year }}{%endraw%}"
           studentAssessmentIdentifier: "{%raw%}{{ md5(assessmentIdentifier ~ '-' ~ student_unique_id ~ '-' ~ School_Year) }}{%endraw%}"
           administrationDate: "{%raw-%}{{'05/01/' ~ School_Year}}{%-endraw%}"
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}  
@@ -607,6 +611,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
+          - substitution_studentAssessmentIdentifier
           - assessmentIdentifier
           - student_unique_id
           - administrationDate
@@ -622,7 +627,7 @@ transformations:
           result: max(result)
 
   prepare_edorg_associations:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     operations:
       - operation: filter_rows
         query: schoolId == ''
@@ -638,7 +643,7 @@ destinations:
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:

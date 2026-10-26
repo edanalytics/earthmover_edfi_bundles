@@ -19,6 +19,9 @@ config:
     OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
     OBSERVABLE_SCHOOL_IDS: ['']
     OBSERVABLE_STUDENT_IDS: ['DISTRICT_STUDENT_ID','STATE_STUDENT_ID','SECONDARY_ID']
+    
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
 
   macros: >
       {% macro map_year_to_version(value) -%}
@@ -134,7 +137,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  psat_sat_student_assessment:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: rename_columns
@@ -243,7 +246,12 @@ transformations:
           schoolYear: ${API_YEAR}
           assessmentIdentifier: "{%raw%}${TEST_TYPE}_{{map_year_to_version(administrationDate)}}{%endraw%}"
           namespace: "uri://collegeboard.org"
+          test_type: "{%raw%}${TEST_TYPE}{%endraw%}"
           studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentUniqueId}}_{{administrationDate}}_${TEST_TYPE}{%endraw%}"
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{md5(studentAssessmentIdentifier)}}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
@@ -337,7 +345,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.psat_sat_student_assessment
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

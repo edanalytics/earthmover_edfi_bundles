@@ -3,7 +3,11 @@ version: 2
 config:
   parameter_defaults:
     EARTHMOVER_NODE_TO_RESOLVE: "$sources.input"
+    STUDENT_ASSESSMENTS_NODE: "$transformations.student_assessments"
     OBSERVABLE_BIRTH_DATE_FORMAT: ""
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: false
+    HASH_APPLIED: false
+
   # Two macros are used to clean certain types of observables.
   # clean_single_observable handles single observable inputs. It simply trims inputs and falls back to an empty string if the input is null.
   # clean_list applies standard transformations to all list inputs, returning a new list with each item trimmed and nulls interpolated for empty inputs.
@@ -21,6 +25,7 @@ config:
       {%- else -%}{{cleaned_list | tojson}}
       {%-endif-%}
     {%- endmacro %} 
+
 
 transformations:
 
@@ -87,12 +92,26 @@ transformations:
         columns:
           obs_birth_date_format: "{%raw%}${OBSERVABLE_BIRTH_DATE_FORMAT}{%endraw%}"
 
+  student_assessment_identifier_lookup:
+    source: ${STUDENT_ASSESSMENTS_NODE}
+    operations:
+      - operation: add_columns
+        columns:
+          student_unique_id_in_student_assessment_identifier: "{%raw%}${STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
+          hash_applied: "{%raw%}${HASH_APPLIED}{%endraw%}"
+          substitution: "{%raw%}{%if substitution_studentAssessmentIdentifier %}{{substitution_studentAssessmentIdentifier}}{%else%}{%endif%}{%endraw%}"
+      - operation: keep_columns
+        columns:
+        - studentAssessmentIdentifier
+        - substitution
+        - student_unique_id_in_student_assessment_identifier
+        - hash_applied
 
 destinations:
-  # input_records:
-  #   source: $transformations.input_numbered
-  #   template: ./templates/input_records.jsont
-  #   extension: jsonl
+  student_assessment_identifier_lookup:
+    source: $transformations.student_assessment_identifier_lookup
+    template: ./templates/student_assessment_identifier_lookup.jsont
+    extension: jsonl
   candidates:
     source: $transformations.candidates
     template: ./templates/candidates.jsont
