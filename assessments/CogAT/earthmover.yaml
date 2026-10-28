@@ -13,7 +13,19 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
     # need to conform the various inputs we accept first
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
+    EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org 
+
+    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
+    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
+    OBSERVABLE_BIRTH_DATE: 'Date_of_Birth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['Student_ID', 'Secondary_Student_ID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+    
 {% set assessmentIdentifier = "CogAT" %}
 {% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
 
@@ -230,6 +242,9 @@ transformations:
           - Date_Tested
         new_column: studentAssessmentIdentifier
         separator: '-'
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentAssessmentIdentifier}}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -276,7 +291,7 @@ transformations:
           "      ": "N"
           "       ": "N"
 
-  coded_results_with_identifiers:
+  student_assessments:
     source: $transformations.coded_results
     operations:
       - operation: add_columns
@@ -374,7 +389,7 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.coded_results_with_identifiers
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   accommodationDescriptors:
