@@ -22,6 +22,13 @@ config:
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
+    OBSERVABLE_FIRST_NAME: 'FName'
+    OBSERVABLE_LAST_NAME: 'LName'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%Y%m%d'
+    OBSERVABLE_SCHOOL_IDS: ['TSchoolID', 'RSchoolID']
+    OBSERVABLE_STUDENT_IDS: ['StateID']
+
 definitions:
   - &scd2-year-fill-nas
     operation: modify_columns
@@ -109,7 +116,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  eocep_student_assessments:
+  student_assessments:
     source: $transformations.input
     operations:
     - operation: duplicate_columns
@@ -147,6 +154,7 @@ transformations:
         namespace: "uri://datarecognitioncorp.com/Assessment"
         school_year: "${API_YEAR}"
         assessment_identifier: "{%raw%}EOCEP_{{Subject}}_${API_YEAR}{%endraw%}"
+        studentAssessmentIdentifier: "{%raw%}{{UID}}{%endraw%}"
         # TODO: move this to handle more than 1 type of ed org to keep (Administration and Attribution). this will require a transformation
         educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
     # Some dates are missing day-of-year. Force these to the first of the month.
@@ -270,12 +278,12 @@ destinations:
     linearize: True
 
   studentAssessments:
-    source: $transformations.eocep_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
 
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.eocep_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl

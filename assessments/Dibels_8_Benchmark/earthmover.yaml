@@ -13,6 +13,16 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student Primary ID,Primary ID - Student ID (State ID),Secondary Student ID (State ID)'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
   
+    OBSERVABLE_FIRST_NAME: 'Student First Name'
+    OBSERVABLE_LAST_NAME: 'Student Last Name'
+    OBSERVABLE_BIRTH_DATE: 'Date of Birth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%Y-%m-%d'
+    OBSERVABLE_SCHOOL_IDS: ['Primary School ID', 'Secondary School ID']
+    OBSERVABLE_STUDENT_IDS: ['Student Primary ID', 'Primary ID - Student ID (State ID)', 'Secondary Student ID (State ID)']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 definitions:
   year_mapping: &year_mapping "{%raw%}{{value[-4:]}}{%endraw%}"
   id_hashing: &id_hashing "{%raw%}{{ md5(value) }}{%endraw%}"
@@ -64,7 +74,7 @@ transformations:
     source: $sources.input
     operations: []
   
-  dibels_benchmark_student_assessment:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: rename_columns
@@ -89,13 +99,14 @@ transformations:
         right_key: original_grade
       - operation: add_columns
         columns:
-          student_assessment_id: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{%raw%}{{student_unique_id}}_{{client_date}}_{{assessment_grade}}{%endraw%}"
           assessmentIdentifier: "Dibels-8"
           namespace: "uri://dibels.uoregon.edu/assessment/dibels"
       - operation: modify_columns
         columns:
           school_year: *year_mapping
-          student_assessment_id: *id_hashing
+          studentAssessmentIdentifier: *id_hashing
       - operation: filter_rows
         query: client_date != ''
         behavior: include
@@ -191,7 +202,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.dibels_benchmark_student_assessment
+    source: $transformations.student_assessments
     template:  ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
