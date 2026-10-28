@@ -97,7 +97,8 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          student_unique_id_in_student_assessment_identifier: "{%raw%}${STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER}{%endraw%}"
+          # Some bundles use fallback, derived studentAssessmentIdentifiers when an expected field is not provided. We flag those cases in the bundle and can override the default flag on a per-record basis
+          student_unique_id_in_student_assessment_identifier: "{%raw%}{%if use_derived_studentAssessmentIdentifier == 'Yes' %}true{%else%}${STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER}{%endif%}{%endraw%}"
           hash_applied: "{%raw%}${HASH_APPLIED}{%endraw%}"
           substitution: "{%raw%}{%if substitution_studentAssessmentIdentifier %}{{substitution_studentAssessmentIdentifier}}{%else%}{%endif%}{%endraw%}"
       - operation: keep_columns
