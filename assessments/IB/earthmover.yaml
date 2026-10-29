@@ -11,6 +11,14 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'student_unique_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+    OBSERVABLE_FIRST_NAME: 'FIRST_NAME'
+    OBSERVABLE_LAST_NAME: 'LAST_NAME'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['SCHOOL_CODE']
+    OBSERVABLE_STUDENT_IDS: ['student_unique_id']
+
   macros: > 
       {% macro group_number_with_language(value) -%}
       {%- if group_number == '1' -%}
@@ -71,7 +79,7 @@ transformations:
           namespace: "uri://ibo.org"
           school_year: ${API_YEAR}
           administration_date: "{%raw%}{{year}}-{%- if month|upper == 'MAY' -%}05{%- else -%}11{%- endif -%}-01{%endraw%}"
-          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
+          studentAssessmentIdentifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}" 
   
   student_assessments:
     source: $transformations.ib_student_results
