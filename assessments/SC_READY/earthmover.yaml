@@ -15,6 +15,13 @@ config:
     INPUT_FILETYPE: csv
     POSSIBLE_STUDENT_ID_COLUMNS: StateID
 
+    OBSERVABLE_FIRST_NAME: 'FName'
+    OBSERVABLE_LAST_NAME: 'LName'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%Y%m%d'
+    OBSERVABLE_SCHOOL_IDS: ['TSchoolID', 'RSchoolID', 'SchoolID']
+    OBSERVABLE_STUDENT_IDS: ['StateID']
+
 definitions:
   - &scd2-year-fill-nas
     operation: modify_columns
@@ -461,7 +468,7 @@ transformations:
           assessment_grade: "{%raw%}{{SocGrade}}{%endraw%}"
           assessment_identifier: "{%raw%}SC_READY_Social_Studies_${API_YEAR}{%endraw%}"
 
-  scready_student_assessment_stacked:
+  student_assessments:
     source: $transformations.scready_student_assessment_ela
     operations: 
       - operation: union 
@@ -475,7 +482,7 @@ transformations:
         behavior: include
       - operation: add_columns
         columns:
-          student_assessment_id: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{UID}}__{{subject}}{%endraw%}"
           MathLev1_name: "{%raw%}{{assessment_grade | int}}_MathLev1{%endraw%}"
           MathLev2_name: "{%raw%}{{assessment_grade | int}}_MathLev2{%endraw%}"
           MathLev3_name: "{%raw%}{{assessment_grade | int}}_MathLev3{%endraw%}"
@@ -505,13 +512,16 @@ transformations:
           SocLev5_name: "{%raw%}{{assessment_grade | int}}_SocLev5{%endraw%}"
           SocLev6_name: "{%raw%}{{assessment_grade | int}}_SocLev6{%endraw%}"
           SocLev7_name: "{%raw%}{{assessment_grade | int}}_SocLev7{%endraw%}"
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{md5(studentAssessmentIdentifier)}}{%endraw%}"
   
   ## StudentAssessmentEducationOrganizationAssociations
   # Stack reported school ID (RSchoolID 2025 and later, SchoolID before 2025)
   # and tested school ID (TSchoolID 2025 and later)
 
   student_assessment_edu_org_associations__administration:
-    source: $transformations.scready_student_assessment_stacked
+    source: $transformations.student_assessments
     operations:
       - operation: add_columns
         columns:
@@ -519,7 +529,7 @@ transformations:
           educationOrganizationAssociationTypeDescriptor: "uri://ed.sc.gov/EducationOrganizationAssociationTypeDescriptor#Administration"
 
   student_assessment_edu_org_associations__attribution:
-    source: $transformations.scready_student_assessment_stacked
+    source: $transformations.student_assessments
     operations:
       - operation: add_columns
         columns:
@@ -600,7 +610,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.scready_student_assessment_stacked
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
