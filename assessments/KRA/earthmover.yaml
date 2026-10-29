@@ -9,6 +9,16 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'state_student_id,district_student_id'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+    OBSERVABLE_FIRST_NAME: 'student_first_name'
+    OBSERVABLE_LAST_NAME: 'student_last_name'
+    OBSERVABLE_BIRTH_DATE: 'student_dob'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['school_id']
+    OBSERVABLE_STUDENT_IDS: ['state_student_id','district_student_id']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
   
 sources:
   input:
@@ -226,7 +236,7 @@ transformations:
         columns:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
     
-  prepare_student_assessments:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -262,6 +272,7 @@ transformations:
         columns:
           SchoolYear: "{% raw %}{{School_Year|int}}{% endraw %}"
           administrationDate: "{%raw%}{{(SchoolYear|int -1) ~ '-08-25'}}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{% raw %}{{assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate}}{% endraw %}"
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
       - operation: join
         sources:
@@ -284,6 +295,7 @@ transformations:
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
+          - substitution_studentAssessmentIdentifier
           - assessmentIdentifier
           - studentUniqueId
           - administrationDate
@@ -322,11 +334,11 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   assessmentReportingMethodDescriptors:
