@@ -15,6 +15,12 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_SCHOOL_IDS: ['SchoolCode']
+    OBSERVABLE_STUDENT_IDS: ['StudentID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
 
   input:
@@ -209,8 +215,9 @@ transformations:
         right_key: joinKey
       - operation: add_columns
         columns:
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DateTaken}}-{{assessmentIdentifier}}-{{TextReading}}{%endraw%}"  
-          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{DateTaken}}-{{assessmentIdentifier}}-{{TextReading}}{%endraw%}" 
+          substitution_studentAssessmentIdentifier: "{%raw%}{{ combined_student_assessment_id }}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
 
   prepare_student_assessment_valid_school:
     source: $transformations.student_assessments
