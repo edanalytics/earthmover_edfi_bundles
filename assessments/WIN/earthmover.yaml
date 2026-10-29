@@ -15,6 +15,13 @@ config:
     EDFI_DS_VERSION: 3
     INPUT_FILETYPE: 'csv'
 
+    OBSERVABLE_FIRST_NAME: 'FirstName'
+    OBSERVABLE_LAST_NAME: 'LastName'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%Y%m%d'
+    OBSERVABLE_SCHOOL_IDS: ['SchoolID']
+    OBSERVABLE_STUDENT_IDS: ['StudentID', 'StateID']
+
 sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
@@ -157,7 +164,7 @@ transformations:
         query: SoftSS != ''
         behavior: include
 
-  stacked_results:
+  student_assessments:
     source: $transformations.clean_results
     operations:
       - operation: union
@@ -307,10 +314,10 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.stacked_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.stacked_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
