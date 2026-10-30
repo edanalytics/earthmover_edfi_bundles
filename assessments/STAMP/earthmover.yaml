@@ -9,6 +9,14 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature edFi_studentUniqueID
     POSSIBLE_STUDENT_ID_COLUMNS: 'Test Taker ID'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+    OBSERVABLE_FIRST_NAME: 'First Name'
+    OBSERVABLE_LAST_NAME: 'Last Name'
+    OBSERVABLE_SCHOOL_IDS: ['School']
+    OBSERVABLE_STUDENT_IDS: ['Test Taker ID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
   
 sources:
   input:
@@ -323,7 +331,7 @@ transformations:
         right_keep_columns:
           - grade_edfi_descriptor
 
-  prepare_student_assessments:
+  student_assessments:
     source: $transformations.stage_student_assessment_grade
     operations:
       - operation: duplicate_columns
@@ -368,10 +376,12 @@ transformations:
           - assessmentNamespace
       - operation: add_columns
         columns:
+          substitution_studentAssessmentIdentifier: "{% raw %}{{ assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ administrationLanguage }}{% endraw %}" 
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate ~ '-' ~ administrationLanguage) }}{% endraw %}" 
       - operation: group_by
         group_by_columns:
           - studentAssessmentIdentifier
+          - substitution_studentAssessmentIdentifier
           - assessmentIdentifier
           - studentUniqueId
           - administrationDate
@@ -414,11 +424,11 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   

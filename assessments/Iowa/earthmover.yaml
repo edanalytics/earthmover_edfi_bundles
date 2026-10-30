@@ -15,7 +15,18 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: Student_ID,Secondary_Student_ID
     # need to conform the various inputs we accept first
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
+    EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
+
+    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
+    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
+    OBSERVABLE_BIRTH_DATE: 'Date_of_Birth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: ['Building_Code']
+    OBSERVABLE_STUDENT_IDS: ['Student_ID', 'Secondary_Student_ID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
 
 sources:
   input:
@@ -525,7 +536,8 @@ transformations:
       - operation: add_columns
         columns:
           combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Date_Tested}}{%endraw%}" 
-          student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{%raw%}{{ combined_student_assessment_id }}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
           # Information regarding Form and Level for the assessment
           serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"

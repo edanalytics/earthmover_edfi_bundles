@@ -27,6 +27,14 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '4'
 
+    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
+    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: ['School_Code']
+    OBSERVABLE_STUDENT_IDS: ['DRC_Student_ID', 'State_Student_ID']
+
+
 sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
@@ -63,7 +71,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  clean_results:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -90,6 +98,9 @@ transformations:
           - Document_ID
         new_column: studentAssessmentIdentifier
         separator: '-'
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentAssessmentIdentifier}}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -224,10 +235,10 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl

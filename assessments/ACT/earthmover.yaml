@@ -17,9 +17,8 @@ config:
     OBSERVABLE_LAST_NAME: 'L_Name'
     OBSERVABLE_BIRTH_DATE: 'DOB'
     OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
-    OBSERVABLE_SCHOOL_IDS: ['']
+    OBSERVABLE_SCHOOL_IDS: []
     OBSERVABLE_STUDENT_IDS: ['ID_StateAssign','ID_Local']
-
 
 sources:
   assessments:
@@ -65,7 +64,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  clean_results:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -243,6 +242,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl

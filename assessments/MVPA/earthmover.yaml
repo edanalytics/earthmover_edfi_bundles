@@ -18,6 +18,14 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '4'
 
+    OBSERVABLE_FIRST_NAME: 'FirstName'
+    OBSERVABLE_LAST_NAME: 'LastName'
+    OBSERVABLE_SCHOOL_IDS: ['SchoolID', 'SchID']
+    OBSERVABLE_STUDENT_IDS: ['StudentID', 'StuNumber', 'StuStateID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
@@ -48,7 +56,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  clean_results:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -72,11 +80,18 @@ transformations:
           - assessmentIdentifier
         new_column: studentAssessmentIdentifier
         separator: '-'
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentAssessmentIdentifier}}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
           SchoolYear: "{%raw%}{{ SchoolYear[:4] | int +1 }}{%endraw%}"
       - operation: snake_case_columns
+      - operation: rename_columns
+        columns:
+          substitution_student_assessment_identifier: substitution_studentAssessmentIdentifier
+          student_assessment_identifier: studentAssessmentIdentifier
 
 
   grade_level_descriptors:
@@ -132,7 +147,7 @@ transformations:
       - operation: snake_case_columns
 
   assessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     operations:
       - operation: distinct_rows
         column: assessment_identifier
@@ -174,6 +189,6 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
