@@ -12,7 +12,7 @@ config:
     STATE_FILE: ./tmp/.earthmover/runs.csv
     API_YEAR: ''
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: Student_ID,Secondary_Student_ID
+    POSSIBLE_STUDENT_ID_COLUMNS: Student_ID,Secondary_Student_ID,Student ID, Secondary Student ID
     # need to conform the various inputs we accept first
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
@@ -68,28 +68,37 @@ transformations:
   input_normalized:
     source: $sources.input
     operations:
+      # rename student id column after x-walk operation
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
+      # Fillers repeat once per slot, so the reader suffixes them (`Filler CT.1`, `Filler CT-.1`),
+      # and those suffixes collide once snake-cased. Drop them before snake_case_columns.
       - operation: drop_columns
         columns:
           - "Filler*"
-          - "Item_Responses*"
-          - "Office_Use_*"
-          - "Test_Administrator_Use_*"
-          - "Other_Info_Field_*"
-          - "Code_Character_String*"
-          - "Lexile_*"
-          - "Quantile_*"
-          - "*_Pct_Correct__*"
+      - operation: snake_case_columns
+      - operation: drop_columns
+        columns:
+          - "item_responses*"
+          - "office_use_*"
+          - "test_administrator_use_*"
+          - "other_info_field_*"
+          - "code_character_string*"
+          - "lexile_*"
+          - "quantile_*"
+          - "*_pct_correct__*"
       # A blank fixed-width field reads as NaN rather than "". Left alone it would reach the
       # no-match file as the text "nan" and break the below operations
       - operation: modify_columns
         columns:
-          Student_ID: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Secondary_Student_ID: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Building_Code: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Class_Grade: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Date_Tested: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Level: "{%raw%}{{ value if value is string }}{%endraw%}"
-          Norm_Year: "{%raw%}{{ value if value is string }}{%endraw%}"
+          student_id: "{%raw%}{{ value if value is string }}{%endraw%}"
+          secondary_student_id: "{%raw%}{{ value if value is string }}{%endraw%}"
+          building_code: "{%raw%}{{ value if value is string }}{%endraw%}"
+          class_grade: "{%raw%}{{ value if value is string }}{%endraw%}"
+          date_tested: "{%raw%}{{ value if value is string }}{%endraw%}"
+          level: "{%raw%}{{ value if value is string }}{%endraw%}"
+          norm_year: "{%raw%}{{ value if value is string }}{%endraw%}"
 
   input:
     source: $transformations.input_normalized
@@ -100,42 +109,39 @@ transformations:
     operations:
       - operation: modify_columns
         columns:
-          Level: "{% raw -%}{{ (Level | int) | string if Level is not none and Level|string|trim != '' else '' }}{%- endraw %}"
-          Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
-          Class_Grade: "{%raw%}{{Class_Grade|string|trim}}{%endraw%}"
+          level: "{% raw -%}{{ (level | int) | string if level is not none and level|string|trim != '' else '' }}{%- endraw %}"
+          norm_year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          class_grade: "{%raw%}{{class_grade|string|trim}}{%endraw%}"
           # a spreadsheet drops the leading zero off a January-through-September date
-          Date_Tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
+          date_tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
       - operation: date_format
-        column: Date_Tested
+        column: date_tested
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
       - operation: add_columns
         columns:
-          schoolYear: "{%raw%}{{ Date_Tested[:4] | int + 1 if Date_Tested[5:7] | int >= 7 else Date_Tested[:4] | int }}{%endraw%}"
+          school_year: "{%raw%}{{ date_tested[:4] | int + 1 if date_tested[5:7] | int >= 7 else date_tested[:4] | int }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
-        left_key: Class_Grade
+        left_key: class_grade
         right_key: from
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ edfi_descriptor if edfi_descriptor else Class_Grade }}{%endraw%}"
+          class_grade: "{%raw%}{{ edfi_descriptor if edfi_descriptor else class_grade }}{%endraw%}"
       - operation: drop_columns
         columns:
           - from
           - edfi_descriptor
       - operation: map_values
-        column: Semester
+        column: semester
         mapping:
           "1": Fall
           "2": MidYear
           "3": Spring
-      # rename student id column after x-walk operation
-      - operation: rename_columns
-        columns:
-          ${STUDENT_ID_NAME}: student_unique_id
+
 
   appendix_a:
     source: $sources.appendix_a
@@ -515,20 +521,20 @@ transformations:
           - $transformations.assessments_source_modified
         join_type: left
         left_keys: 
-          - Battery
-          - Form
-          - Level 
+          - battery
+          - form
+          - level 
         right_keys: 
           - Battery
           - Form
           - Level
       - operation: add_columns
         columns:
-          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{District_Code}}-{{Building_Code}}-{{schoolYear}}-{{assessmentIdentifier}}-{{Date_Tested}}{%endraw%}" 
+          combined_student_assessment_id: "{%raw%}{{student_unique_id}}-{{district_code}}-{{building_code}}-{{school_year}}-{{assessmentIdentifier}}-{{date_tested}}{%endraw%}" 
           student_assessment_identifier: "{%raw%}{{ md5(combined_student_assessment_id) }}{%endraw%}"
           descriptor_namespace_override: ${DESCRIPTOR_NAMESPACE}
           # Information regarding Form and Level for the assessment
-          serialNumber: "{%raw%}Form_{{Form}}-Level_{{Level}}{%endraw%}"
+          serial_number: "{%raw%}Form_{{form}}-Level_{{level}}{%endraw%}"
       # filter out rows with missing student IDs
       # - operation: filter_rows
       #   query: "student_unique_id  != ''"
@@ -539,9 +545,9 @@ transformations:
     operations:
       - operation: modify_columns
         columns:
-          Building_Code: "{% raw -%}{{ (Building_Code | int) | string if Building_Code is not none and Building_Code|string|trim != '' else '' }}{%- endraw %}"
+          building_code: "{% raw -%}{{ (building_code | int) | string if building_code is not none and building_code|string|trim != '' else '' }}{%- endraw %}"
       - operation: filter_rows
-        query: Building_Code != "" and Building_Code != None
+        query: building_code != "" and building_code != None
         behavior: include
 
 destinations:
