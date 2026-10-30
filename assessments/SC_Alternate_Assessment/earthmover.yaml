@@ -10,7 +10,8 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
     INPUT_FILETYPE: csv
-    POSSIBLE_STUDENT_ID_COLUMNS: StateID
+    POSSIBLE_STUDENT_ID_COLUMNS: stateid
+    EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
     EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
 
     OBSERVABLE_FIRST_NAME: 'fname'
@@ -53,9 +54,6 @@ transformations:
   input_normalized:
     source: $sources.input
     operations:
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_unique_id
 
       # Ugly workaround to handle case-duplicate columns in historic years.
       - operation: add_columns
@@ -180,6 +178,9 @@ transformations:
       - operation: filter_rows
         query: ss.notnull() & (ss != "") & (ss != 'None')
         behavior: include
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: add_columns
         columns:
           administration_date: "${API_YEAR}-05-15"
