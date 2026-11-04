@@ -57,6 +57,10 @@ transformations:
     source: $sources.student_ieps
     operations:
       - operation: snake_case_columns
+      # Support new headers and legacy/preprocessed names (State Code).
+      - operation: add_columns
+        columns:
+          state_code: "{% raw %}{{ student_id or state_code }}{% endraw %}"
       - operation: date_format
         columns: 
           - event_date
