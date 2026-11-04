@@ -11,6 +11,15 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'Student_State_ID'
 
+    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
+    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
+    OBSERVABLE_BIRTH_DATE: 'Student_DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['School_Number']
+    OBSERVABLE_STUDENT_IDS: ['Student_State_ID']
+
+    HASH_APPLIED: true
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -344,7 +353,7 @@ sources:
 {% set conformed_columns = [
   'wave',
   'student_wave_id', 
-  'generated_test_id',
+  'studentAssessmentIdentifier',
   'student_unique_id',
   'local_student_id',
   'student_state_id',
@@ -630,7 +639,11 @@ transformations:
           subject_name: {{ subject_name }}
           subject_descriptor: {{ subject_values.descriptor }}
           subject_assess_lang: {{ subject_assess_lang }}
-          generated_test_id: '{%raw%}{{ student_wave_id }}__{{ subject_assessment_id }}_{{ subject_assess_lang }}{%endraw%}'
+          studentAssessmentIdentifier: '{%raw%}{{ student_wave_id }}__{{ subject_assessment_id }}_{{ subject_assess_lang }}{%endraw%}'
+      
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{md5(studentAssessmentIdentifier)}}{%endraw%}"
 
             
     # Handling Objective Assessments:  -------------------------------------------------------------------------------------------------------------
@@ -712,7 +725,7 @@ transformations:
 
 # TRANSFORMATION-STEP 3: STACK ALL SUBJECT DATA TOGETHER
 # Stack all the data we created together.
-  stacked_subject_scores:
+  student_assessments:
     source: $transformations.cli_circle_student_rln_v1
     operations:
       - operation: union
@@ -817,7 +830,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.stacked_subject_scores
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
 

@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{{ md5(generated_test_id) }}",
+    "studentAssessmentIdentifier": "{{ studentAssessmentIdentifier }}",
     "assessmentReference": {
       "assessmentIdentifier": "{{ subject_assessment_id }}",
       "namespace": "uri://www.cliengage.org/circle/assessment"
