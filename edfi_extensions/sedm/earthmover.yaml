@@ -72,13 +72,14 @@ transformations:
         columns:
           event_status: ${EVENT_STATUS}
 
-  
-
   student_iep_disability_collections:
     source: $sources.student_iep_disability_collections
     operations:
       - operation: snake_case_columns
-      - operation: debug
+      # Support new headers and legacy/preprocessed names (State Code).
+      - operation: add_columns
+        columns:
+          state_code: "{% raw %}{{ student_id or state_code }}{% endraw %}"
       - operation: date_format
         columns: 
           - event_date
@@ -87,6 +88,7 @@ transformations:
       - operation: filter_rows
         query: primary_disability != ''
         behavior: include
+
 
 destinations:
   ideaEvents:
