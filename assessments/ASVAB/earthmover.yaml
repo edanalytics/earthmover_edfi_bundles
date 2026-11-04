@@ -13,6 +13,13 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'student_unique_id' # this column will need to be added and populated as a pre-preprocessing step before this bundle can be used
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FULL_NAME: 'Student Full Name'
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['student_unique_id']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
   academicSubjectDescriptors:
     file: ./seeds/academicSubjectDescriptors.csv
@@ -47,7 +54,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  clean_results:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -65,6 +72,9 @@ transformations:
           - test_date
         new_column: studentAssessmentIdentifier
         separator: '-'
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentAssessmentIdentifier}}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}" 
@@ -151,6 +161,6 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.clean_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl

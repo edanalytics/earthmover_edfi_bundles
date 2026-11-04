@@ -1,5 +1,5 @@
 {
-    "studentAssessmentIdentifier": "{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(studentAssessmentIdentifier) }}{%endif%}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
     "assessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}"

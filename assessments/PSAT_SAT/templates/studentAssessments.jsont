@@ -110,7 +110,7 @@
 {% endfor %}
 
 {
-    "studentAssessmentIdentifier": "{{  md5(studentAssessmentIdentifier) }}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
     "assessmentReference": {
       "assessmentIdentifier": "{{assessmentIdentifier}}",
       "namespace": "{{namespace}}"

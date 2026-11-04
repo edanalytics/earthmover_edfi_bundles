@@ -1166,7 +1166,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  results:
+  student_assessments:
     source: $transformations.input
     operations:
       # Use April 1st of the assessment year for assessments with no date (invalid scores)
@@ -1175,6 +1175,7 @@ transformations:
           namespace: "uri://wida.wisc.edu/assess/access"
           defaultTestStartDateTime: "${API_YEAR}-04-01 00:00:00"
           school_year: ${API_YEAR}
+          studentAssessmentIdentifier: "{%raw%}{{UniqueRecordID}}{%endraw%}"
           alternate_assessment:
             {% if "${FORMAT}" == "Standard" %}
               "N"
@@ -1295,7 +1296,7 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   accommodationDescriptors:

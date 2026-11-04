@@ -10,6 +10,13 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: stateid
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'fname'
+    OBSERVABLE_LAST_NAME: 'lname'
+    OBSERVABLE_BIRTH_DATE: 'dob'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['schoolid']
+    OBSERVABLE_STUDENT_IDS: ['stateid']
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -218,7 +225,7 @@ transformations:
         right_key: joinKey
 
   #StudentAssessment
-  prepare_student_assessments:
+  student_assessments:
     source: $transformations.stage_student_assessments
     operations:      
       - operation: join
@@ -241,7 +248,7 @@ transformations:
 
   #StudentAssessmentEducationorganizationAssociation
   prepare_student_assessment_edorg:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     operations:
       - operation: filter_rows
         query: schoolid != ''
@@ -261,7 +268,7 @@ destinations:
     template: ./templates/studentAssessmentEducationOrganizationAssociations.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.prepare_student_assessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   

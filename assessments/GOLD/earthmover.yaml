@@ -13,6 +13,15 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'ChildID,SourceChildID,Identifier,Student ID#'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'Child F Name'
+    OBSERVABLE_LAST_NAME: 'Child L Name'
+    OBSERVABLE_BIRTH_DATE: 'BirthDate'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['SourceSiteID']
+    OBSERVABLE_STUDENT_IDS: ['ChildID','SourceChildID','Identifier','Student ID#']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
 
 sources:
   assessments:
@@ -148,13 +157,15 @@ transformations:
           - assessment_id
           - student_unique_id
         new_column: student_assessment_id
-      - operation: modify_columns
+      - operation: add_columns
         columns:
-          student_assessment_id: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
+          substitution_studentAssessmentIdentifier: "{%raw%}{{student_assessment_id}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{ md5(student_assessment_id) }}{%endraw%}" 
       - operation: keep_columns
         columns:
           - student_unique_id
-          - student_assessment_id
+          - substitution_studentAssessmentIdentifier
+          - studentAssessmentIdentifier
           - school_year
           - school_year_int
           - admin_date
@@ -173,10 +184,14 @@ transformations:
         {%- endfor -%}"
         behavior: include
       - operation: snake_case_columns
+      - operation: rename_columns
+        columns:
+          substitution_student_assessment_identifier: substitution_studentAssessmentIdentifier
+          student_assessment_identifier: studentAssessmentIdentifier
 
 {%-endfor%}
 
-  final_result:
+  student_assessments:
     source: $transformations.{{(assessments.keys())|list|first}}
     operations:
       - operation: union
@@ -187,7 +202,7 @@ transformations:
 
   # studentAssessmentEducationOrganizationAssociations
   student_assessment_education_organization_associations:
-    source: $transformations.final_result
+    source: $transformations.student_assessments
     operations:
       - operation: add_columns
         columns:
@@ -318,7 +333,7 @@ destinations:
     template: ./templates/descriptors.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.final_result
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   studentAssessmentEducationOrganizationAssociations:

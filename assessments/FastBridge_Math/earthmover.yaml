@@ -44,6 +44,16 @@ config:
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     API_YEAR: 2024
 
+    OBSERVABLE_FIRST_NAME: 'First Name'
+    OBSERVABLE_LAST_NAME: 'Last Name'
+    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['Local ID', 'State ID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
   input:
     file: ${INPUT_FILE} # Path to the input CSV file
@@ -82,7 +92,7 @@ transformations:
     source: $sources.input
     operations: []
 
-  cleaned_input:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -260,6 +270,9 @@ transformations:
           - season
         new_column: studentAssessmentIdentifier
         separator: '-'
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{studentAssessmentIdentifier}}{%endraw%}"
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
@@ -482,7 +495,7 @@ destinations:
     template: ./templates/objectiveAssessments.jsont
     extension: jsonl
   studentAssessments:
-    source: $transformations.cleaned_input
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
   assessmentCategoryDescriptors:

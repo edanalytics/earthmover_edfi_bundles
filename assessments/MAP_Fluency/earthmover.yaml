@@ -24,6 +24,11 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: StudentID
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['StudentID']
+
+    HASH_APPLIED: true
+
 sources:
   assessments:
     file: ./seeds/assessments.csv
@@ -67,13 +72,12 @@ transformations:
         columns:
           edfi_descriptor: languageDescriptor
 
-  nwea_map_student_assessment:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
         columns:
           ${STUDENT_ID_NAME}: studentUniqueId
-
       - operation: add_columns
         columns:
           school_year: "{%raw%}{{TermName[-4:]}}{%endraw%}"
@@ -108,6 +112,11 @@ transformations:
         columns:
           generated_test_id: "{%raw%}{{value}}_{{sequence_number}}{%endraw%}"
           grade: "{%raw%}{{value}}{%endraw%}"
+      - operation: add_columns
+        columns:
+          substitution_studentAssessmentIdentifier: "{%raw%}{{generated_test_id}}{%endraw%}"
+          use_derived_studentAssessmentIdentifier: "{%raw%}{% if TestID is not none and TestID | length%}No{%else%}Yes{%endif%}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{% if TestID is not none and TestID | length%}{{TestID}}{%else%}{{ md5(generated_test_id) }}{%endif%}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
@@ -214,7 +223,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.nwea_map_student_assessment
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True

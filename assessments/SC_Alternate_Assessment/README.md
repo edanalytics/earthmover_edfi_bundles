@@ -22,7 +22,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/sample_anonymized_file_2024.csv",
 "OUTPUT_DIR": "output/",
 "API_YEAR": "2024",
-"STUDENT_ID_NAME": "StateID"}'
+"STUDENT_ID_NAME": "stateid"}'
 ```
 
 

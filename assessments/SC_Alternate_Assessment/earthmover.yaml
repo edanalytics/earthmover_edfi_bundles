@@ -10,8 +10,19 @@ config:
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID'
     INPUT_FILETYPE: csv
-    POSSIBLE_STUDENT_ID_COLUMNS: StateID
+    POSSIBLE_STUDENT_ID_COLUMNS: stateid
+    EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
+    EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
 
+    OBSERVABLE_FIRST_NAME: 'fname'
+    OBSERVABLE_LAST_NAME: 'lname'
+    OBSERVABLE_BIRTH_DATE: 'dob'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: ['rschoolid', 'tschoolid']
+    OBSERVABLE_STUDENT_IDS: ['stateid']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
 
 sources:
   assessments:
@@ -40,16 +51,9 @@ sources:
 transformations:
 
   ### StudentAssessments
-  input:
+  input_normalized:
     source: $sources.input
-    operations: []
-
-  sc_alt_student_assessment:
-    source: $transformations.input
     operations:
-      - operation: duplicate_columns
-        columns: 
-          ${STUDENT_ID_NAME}: student_unique_id
 
       # Ugly workaround to handle case-duplicate columns in historic years.
       - operation: add_columns
@@ -95,10 +99,14 @@ transformations:
           statusmath: "{% raw %}{{ statusmath or mathstatus }}{% endraw %}"
           statussci: "{% raw %}{{ statussci or scistatus }}{% endraw %}"
           statussoc: "{% raw %}{{ statussoc or socstatus }}{% endraw %}"
+
+  input:
+    source: $transformations.input_normalized
+    operations: []
   
   # Add generic versions of all subject columns before unioning.
   sc_alt_ela:
-    source: $transformations.sc_alt_student_assessment
+    source: $transformations.input
     operations:
       - operation: add_columns
         columns:
@@ -113,7 +121,7 @@ transformations:
           test_name: "{% raw %}{{ testnameela }}{% endraw %}"
 
   sc_alt_math:
-    source: $transformations.sc_alt_student_assessment
+    source: $transformations.input
     operations:
       - operation: add_columns
         columns:
@@ -128,7 +136,7 @@ transformations:
           test_name: "{% raw %}{{ testnamemath }}{% endraw %}"
 
   sc_alt_sci:
-    source: $transformations.sc_alt_student_assessment
+    source: $transformations.input
     operations:
       - operation: add_columns
         columns:
@@ -143,7 +151,7 @@ transformations:
           test_name: "{% raw %}{{ testnamesci }}{% endraw %}"
 
   sc_alt_soc:
-    source: $transformations.sc_alt_student_assessment
+    source: $transformations.input
     operations:
       - operation: add_columns
         columns:
@@ -158,7 +166,7 @@ transformations:
           test_name: "{% raw %}{{ testnamesoc }}{% endraw %}"
 
   # Union together subject subsets, then finish xwalking of grade levels.
-  sc_alt_student_assessment_final:
+  student_assessments:
     source: $transformations.sc_alt_ela
     operations:
       - operation: union
@@ -170,11 +178,18 @@ transformations:
       - operation: filter_rows
         query: ss.notnull() & (ss != "") & (ss != 'None')
         behavior: include
+      - operation: duplicate_columns
+        columns: 
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: add_columns
         columns:
           administration_date: "${API_YEAR}-05-15"
           school_year: ${API_YEAR}
-          student_assessment_id: "{% raw %}{{ assessment_identifier ~ '_' ~ student_unique_id ~ '_' ~ test_name}}{% endraw %}"
+          studentAssessmentIdentifier: "{% raw %}{{ assessment_identifier ~ '_' ~ student_unique_id ~ '_' ~ test_name}}{% endraw %}"
+          substitution_studentAssessmentIdentifier: "{% raw %}{{ assessment_identifier ~ '_' ~ student_unique_id ~ '_' ~ test_name}}{% endraw %}"
+      - operation: modify_columns
+        columns:
+          studentAssessmentIdentifier: "{%raw%}{{md5(studentAssessmentIdentifier)}}{%endraw%}"
       - operation: map_values
         columns:
           - grade
@@ -185,7 +200,7 @@ transformations:
   ### StudentAssessmentEducationOrganizationAssociations
   # Create one association record per tDistrictID and rDistrictID.
   sc_alt_assessment_ed_org_assocs__administration:
-    source: $transformations.sc_alt_student_assessment_final
+    source: $transformations.student_assessments
     operations:
       - operation: add_columns
         columns:
@@ -193,7 +208,7 @@ transformations:
           ed_org_id: "{% raw %}{{ tschoolid }}{% endraw %}"
   
   sc_alt_assessment_ed_org_assocs__association:
-    source: $transformations.sc_alt_student_assessment_final
+    source: $transformations.student_assessments
     operations:
       - operation: add_columns
         columns:
@@ -268,7 +283,7 @@ destinations:
     extension: jsonl
     linearize: True
   studentAssessments:
-    source: $transformations.sc_alt_student_assessment_final
+    source: $transformations.student_assessments
     template: templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
