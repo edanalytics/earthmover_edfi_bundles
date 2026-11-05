@@ -856,12 +856,15 @@ destinations:
 
   {#
     This overrides the no-match output header
-    (if this bundle is being used with the `student_id` package)
-    
-    Note that this relies on the order of packages in the the `student_id_wrapper`
-    package being {ASSSESSMENT} _then_ `student_id`, not vice-versa.
+    (only if this bundle is being used with the `student_id` package)
+
+    The EARTHMOVER_WRAPPER param is declared in each respective wrapper package's earthmover.yaml file
+    (confirmed using EARTHMOVER_WRAPPER == 'student_id')
+
+    Note that this relies on the order of packages in the `student_id_wrapper`
+    package being {ASSESSMENT} _then_ `student_id`, not vice-versa.
   #}
-  {% if '${EDFI_ROSTER_SOURCE_TYPE}' == 'file' or '${EDFI_ROSTER_SOURCE_TYPE}' == 'snowflake' %}
+  {% if '${EARTHMOVER_WRAPPER}' == 'student_id' and ('${EDFI_ROSTER_SOURCE_TYPE}' == 'file' or '${EDFI_ROSTER_SOURCE_TYPE}' == 'snowflake') %}
   input_no_student_id_match:
     header: |
       {%raw%}{% for i in range(__row_data__['__row_data__'].keys()|length-2) %},{% endfor %},extra_runway_column{%endraw%}
