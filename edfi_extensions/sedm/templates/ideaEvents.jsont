@@ -6,7 +6,13 @@
     "studentReference": {
       "studentUniqueId": "{{student_reference}}"
     },
-    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IdeaEventDescriptor#{{idea_event_descriptor}}",
-    "beginDate": "{{event_begin_date}}",
-    "endDate": "{{event_end_date}}"
+    "ideaEventDescriptor": "${DESCRIPTOR_NAMESPACE}/IdeaEventDescriptor#{{idea_event_descriptor}}"
+    
+    {% if event_begin_date is not none and event_begin_date | length %}
+    , "beginDate": "{{event_begin_date}}"
+    {% endif %}
+    
+    {% if event_end_date is not none and event_end_date | length %}
+    , "endDate": "{{event_end_date}}"
+    {% endif %}
 }
