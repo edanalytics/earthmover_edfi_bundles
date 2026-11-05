@@ -1,0 +1,90 @@
+{#- A value counts as a result only if it is present and not a placeholder. -#}
+{%- macro has(v) -%}{{ 'y' if (v is not none and v | string | length and v | string not in ['N/A', 'nan']) else '' }}{%- endmacro -%}
+{#- A numeric score must also not be a "could not score" message. -#}
+{%- macro has_number(v) -%}{{ 'y' if (has(v) and v | string != 'Insufficient to score') else '' }}{%- endmacro -%}
+
+{%- set scores = [] -%}
+{%- for s in [[scaleScore, "Summative Scale Score", "Integer"]] -%}
+  {%- if has_number(s[0]) -%}{%- set _ = scores.append(s) -%}{%- endif -%}
+{%- endfor -%}
+
+{#- [identificationCode, percent points earned, proficiency] -- the codes must match seeds/objectiveAssessments.csv -#}
+{%- set obj_assessments = [] -%}
+{%- for oa in [
+    ['life_sciences', life_sciences_percent_points_earned, life_sciences_proficiency],
+    ['physical_sciences', physical_sciences_percent_points_earned, physical_sciences_proficiency],
+    ['earth_space_sciences', earth_space_sciences_percent_points_earned, earth_space_sciences_proficiency]
+  ] -%}
+  {%- if has(oa[1]) or has(oa[2]) -%}{%- set _ = obj_assessments.append(oa) -%}{%- endif -%}
+{%- endfor -%}
+
+{
+  "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "schoolYearTypeReference": {
+    "schoolYear": "{{schoolYear}}"
+  },
+  "studentReference": {
+    "studentUniqueId": "{{studentUniqueId}}"
+  },
+  "administrationDate": "{{adminDate}}",
+  "retestIndicatorDescriptor": "{{namespace}}/RetestIndicatorDescriptor#{{retest_indicator}}"
+  {#- Each optional block opens with its own comma, so skipping any of them never leaves a trailing comma. #}
+  {%- if has(edfi_descriptor) %}
+  ,"whenAssessedGradeLevelDescriptor": "{{edfi_descriptor}}"
+  {%- endif %}
+  {%- if scores | length %}
+  ,"scoreResults": [
+    {%- for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[2]}}",
+      "result": "{{score[0]}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+  {%- if has(performanceLevel) %}
+  ,"performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Performance Level",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{performanceLevel}}"
+      {%- if ${EDFI_DS_VERSION}|int < 4 -%},"performanceLevelMet": true{%- endif %}
+    }
+  ]
+  {%- endif %}
+  {%- if obj_assessments | length %}
+  ,"studentObjectiveAssessments": [
+    {%- for oa in obj_assessments %}
+    {
+      "objectiveAssessmentReference": {
+        "assessmentIdentifier": "{{assessmentIdentifier}}",
+        "identificationCode": "{{oa[0]}}",
+        "namespace": "{{namespace}}"
+      }
+      {%- if has_number(oa[1]) %}
+      ,"scoreResults": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Percent Points Earned",
+          "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Percentage",
+          "result": "{{oa[1]}}"
+        }
+      ]
+      {%- endif %}
+      {%- if has(oa[2]) %}
+      ,"performanceLevels": [
+        {
+          "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Reporting Area Proficiency",
+          "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#{{oa[2]}}"
+          {%- if ${EDFI_DS_VERSION}|int < 4 -%},"performanceLevelMet": true{%- endif %}
+        }
+      ]
+      {%- endif %}
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+}
