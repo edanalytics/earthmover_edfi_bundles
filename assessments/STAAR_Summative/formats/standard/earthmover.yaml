@@ -27,7 +27,7 @@ config:
    'test_version',
    'score_code',
    'overall_performance_level',
-   'stu_assess_id'
+   'studentAssessmentIdentifier'
   ] 
 %}
 
@@ -151,7 +151,7 @@ transformations:
           score_code_{{subject}}: score_code
           # in 2022 and later, opportunity key is the unique student assess id
           {% if ${API_YEAR} >= 2022 %}
-          opportunity_key_{{subject}}: stu_assess_id
+          opportunity_key_{{subject}}: studentAssessmentIdentifier
           {% endif %}
       # ADD subject, missing cols, overall_pl
       - operation: add_columns
@@ -159,7 +159,7 @@ transformations:
           subject: {{descriptor_subject}}
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
-          stu_assess_id: "{%raw%}{{document_number}}_{{subject}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{document_number}}_{{subject}}{%endraw%}"
           {% endif %}
           # use component PL columns to create overall PL
           overall_performance_level: >
@@ -178,11 +178,11 @@ transformations:
       {% if ${API_YEAR} <= 2021 %}
       - operation: group_by_with_rank
         group_by_columns:
-          - stu_assess_id
+          - studentAssessmentIdentifier
         rank_column: stu_assess_row_number
       - operation: modify_columns
         columns:
-          stu_assess_id: "{%raw%}{{value}}_{{stu_assess_row_number}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{value}}_{{stu_assess_row_number}}{%endraw%}"
       {% endif %}
 
       # JOIN ADMIN WINDOWS
@@ -221,7 +221,7 @@ transformations:
         join_type: left
       # FILTER to non-empty stu-assess ids, e.g. if wide record had no reading test, drop the reading rows
       - operation: filter_rows
-        query: stu_assess_id.notnull() & stu_assess_id != ''
+        query: studentAssessmentIdentifier.notnull() & studentAssessmentIdentifier != ''
         behavior: include
       # KEEP conformed columns
       - operation: keep_columns
@@ -246,7 +246,7 @@ transformations:
         {% endif %}
 
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
-  studentAssessments:
+  student_assessments:
     source: $transformations.stacked_scores
     operations:
       - operation: duplicate_columns

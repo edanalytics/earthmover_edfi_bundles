@@ -16,7 +16,7 @@ by looking for both the old and new names of changed columns.
 
 </details>
 
-Or use the sample file (`data/sample_anonymized_file.csv`).
+Or use one of the sample files (`data/sample_anonymized_AssessmentResults.csv` or `data/sample_anonymized_ComboStudentAssessment.csv`).
 
 ## CLI Parameters
 
@@ -27,11 +27,22 @@ Or use the sample file (`data/sample_anonymized_file.csv`).
 - STUDENT_ID_NAME: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (`StudentID` or `Student_StateID`).
 
 ### Examples
-Using an ID column from the assessment file:
+Using an ID column from the assessment file, with supplementary student ID information from the MAP `StudentBySchool.csv` file:
 ```bash
 earthmover run -c earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_AssessmentResults.csv",
+"INPUT_FILE_STUDENT_BY_SCHOOL": "data/sample_anonymized_StudentBySchool.csv",
+"OUTPUT_DIR": "output/",
+"STUDENT_ID_NAME": "Student_StateID"}'
+```
+
+Or, alternatively, using the MAP `ComboStudentAssessment.csv` file as input, which already contains student ID information and assessment results:
+
+```bash
+earthmover run -c earthmover.yaml -p '{
+"STATE_FILE": "./runs.csv",
+"INPUT_FILE": "data/sample_anonymized_ComboStudentAssessment.csv",
 "OUTPUT_DIR": "output/",
 "STUDENT_ID_NAME": "Student_StateID"}'
 ```

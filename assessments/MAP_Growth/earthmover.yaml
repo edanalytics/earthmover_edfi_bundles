@@ -10,11 +10,18 @@ config:
   show_graph: False
   parameter_defaults:
     STATE_FILE: ./runs.csv
+    INPUT_FILE_STUDENT_BY_SCHOOL: ''
     INPUT_FILETYPE: csv
+    EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
+    EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: 'StudentID,Student_StateID'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
 
+    OBSERVABLE_FIRST_NAME: 'StudentFirstName'
+    OBSERVABLE_LAST_NAME: 'StudentLastName'
+    OBSERVABLE_BIRTH_DATE: 'StudentDateOfBirth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
     OBSERVABLE_SCHOOL_IDS: ['School_StateID']
     OBSERVABLE_STUDENT_IDS: ['StudentID','Student_StateID']
 
@@ -55,19 +62,72 @@ sources:
     type: ${INPUT_FILETYPE}
     header_rows: 1
     # See the accompanying README.md for a list of required columns for this file
+  
+  student_by_school:
+    file: ${INPUT_FILE_STUDENT_BY_SCHOOL}
+    optional: true
+    columns:
+      - TermName
+      - DistrictName
+      - District_StateID
+      - SchoolName
+      - School_StateID
+      - StudentLastName
+      - StudentFirstName
+      - StudentMI
+      - StudentID
+      - Student_StateID
+      - StudentDateOfBirth
+      - StudentEthnicGroup
+      - NWEAStandard_EthnicGroup
+      - StudentGender
+      - Grade
+      - NWEAStandard_Grade
 
 # notes:
 # - left out all seasontoseasonGrowthQuintile
 
 
 transformations:
-  input:
+
+  {% if "${INPUT_FILE_STUDENT_BY_SCHOOL}" != "" %}
+  student_by_school_distinct:
+    source: $sources.student_by_school
+    operations:
+      - operation: distinct_rows
+        columns:
+          - StudentID
+          - Student_StateID
+  {% endif %}
+      
+  input_normalized:
     source: $sources.input
     operations:
       - operation: add_columns
         columns:
           is_screener: "{%raw%}{%- if TestType == 'Survey' and TestName.startswith('Screening:') -%}true{%- else -%}false{%- endif -%}{%endraw%}"
-
+      # If a StudentBySchool file was provided, we need to join it to supplement the AssessmentResults with ID information
+      {% if "${INPUT_FILE_STUDENT_BY_SCHOOL}" != "" %}
+      - operation: join
+        sources:
+          - $transformations.student_by_school_distinct
+        join_type: left
+        left_keys:
+          - StudentID
+          - Student_StateID
+        right_keys:
+          - StudentID
+          - Student_StateID
+        right_keep_columns:
+          - StudentLastName
+          - StudentFirstName
+          - StudentDateOfBirth
+      {% endif %}
+    
+  input:
+    source: $transformations.input_normalized
+    operations: []
+  
   student_assessments:
     source: $transformations.input
     operations:

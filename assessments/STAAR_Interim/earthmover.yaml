@@ -11,7 +11,12 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: TSDS UID,TSDS ID
 
-
+    OBSERVABLE_FIRST_NAME: 'FIRST-NAME'
+    OBSERVABLE_LAST_NAME: 'LAST-NAME'
+    OBSERVABLE_BIRTH_DATE: 'DATE-OF-BIRTH (MMDDYYYY)'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['TSDS UID', 'TSDS ID']
 
 
 sources:
@@ -54,7 +59,7 @@ transformations:
   input:
     source: $sources.input
     operations: []
-  staar_interim_student_assessment:
+  student_assessments:
     source: $transformations.input
     operations:
       - operation: duplicate_columns
@@ -151,11 +156,11 @@ transformations:
       {% if ("${API_YEAR}" | int) <= 2025 %}
       - operation: rename_columns
         columns:
-          Opportunity_Key: studentAssessmentId
+          Opportunity_Key: studentAssessmentIdentifier
       {% else %}
       - operation: rename_columns
         columns:
-          Result_ID: studentAssessmentId
+          Result_ID: studentAssessmentIdentifier
       {% endif %}
       # join test info (e.g. subject, grade level from test code xwalk)
       - operation: join
@@ -198,7 +203,7 @@ transformations:
 
 destinations:
   studentAssessments:
-    source: $transformations.staar_interim_student_assessment
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
