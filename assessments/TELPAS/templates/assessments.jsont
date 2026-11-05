@@ -1,0 +1,46 @@
+{%- if assessmentIdentifier == 'telpas_alt' -%}
+  {%- set scores = [
+      ['Composite Score', 'Decimal'],
+      ['Yearly Progress Indicator', 'Integer'],
+      ['Administration Code', 'Level'],
+      ['Score Code', 'Level'],
+      ['Non-Participant', 'Level']
+  ] -%}
+  {%- set perf_levels = ['No Rating Available', 'Awareness', 'Imitation', 'Early Independence', 'Developing Independence', 'Basic Fluency'] -%}
+{%- else -%}
+  {%- set scores = [
+      ['Composite Score', 'Decimal'],
+      ['Yearly Progress Indicator', 'Integer'],
+      ['Administration Code', 'Level'],
+      ['Enrolled Grade', 'Level'],
+      ['Rater Info-A', 'Level'],
+      ['Rater Info-B', 'Level']
+  ] -%}
+  {%- set perf_levels = ['No Rating Available', 'Beginning', 'Intermediate', 'Advanced', 'Advanced High'] -%}
+{%- endif -%}
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "namespace": "{{namespace}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{edfi_descriptor}}",
+  "academicSubjects": [{{subject_json}}],
+  "scores": [
+    {%- for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ],
+  "performanceLevels": [
+    {%- for perf_level in perf_levels %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#Composite Rating",
+      "performanceLevelDescriptor": "{{descriptorNamespace}}/PerformanceLevelDescriptor#{{perf_level}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+}

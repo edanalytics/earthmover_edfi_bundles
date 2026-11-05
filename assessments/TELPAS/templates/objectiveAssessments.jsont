@@ -1,0 +1,53 @@
+{%- set is_domain = not (parentIdentificationCode is not none and parentIdentificationCode | length) -%}
+{%- if not is_domain -%}
+  {#- reporting categories only report a raw score -#}
+  {%- set scores = [['Raw Score', 'Integer']] -%}
+  {%- set perf_levels = [] -%}
+{%- elif assessmentIdentifier == 'telpas_alt' -%}
+  {%- set scores = [['Raw Score', 'Integer'], ['Scale Score', 'Integer']] -%}
+  {%- set perf_levels = ['Awareness', 'Imitation', 'Early Independence', 'Developing Independence', 'Basic Fluency'] -%}
+{%- else -%}
+  {%- set scores = [
+      ['Score Code', 'Level'],
+      ['Tested Grade', 'Level'],
+      ['Raw Score', 'Integer'],
+      ['Scale Score', 'Integer'],
+      ['Holistic Rating Test Administration' if identificationCode != 'Reading' else 'Paper Test Administration', 'Level'],
+      ['Non-Participant', 'Level']
+  ] -%}
+  {%- set perf_levels = ['No Rating Available', 'Beginning', 'Intermediate', 'Advanced', 'Advanced High'] -%}
+{%- endif -%}
+{
+  "identificationCode": "{{identificationCode}}",
+  "assessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "namespace": "{{namespace}}"
+  },
+  "description": "{{description}}",
+  {%- if not is_domain %}
+  "parentObjectiveAssessmentReference": {
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "identificationCode": "{{parentIdentificationCode}}",
+    "namespace": "{{namespace}}"
+  },
+  {%- endif %}
+  "scores": [
+    {%- for score in scores %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#{{score[0]}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#{{score[1]}}"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- if perf_levels | length %},
+  "performanceLevels": [
+    {%- for perf_level in perf_levels %}
+    {
+      "assessmentReportingMethodDescriptor": "{{descriptorNamespace}}/AssessmentReportingMethodDescriptor#Proficiency Rating",
+      "performanceLevelDescriptor": "{{descriptorNamespace}}/PerformanceLevelDescriptor#{{perf_level}}",
+      "resultDatatypeTypeDescriptor": "${DESCRIPTOR_NAMESPACE}/ResultDatatypeTypeDescriptor#Level"
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+  {%- endif %}
+}
