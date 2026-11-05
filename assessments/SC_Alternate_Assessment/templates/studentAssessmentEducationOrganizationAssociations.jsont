@@ -9,7 +9,7 @@
   "studentAssessmentReference": {
     "assessmentIdentifier": "{{assessment_identifier}}",
     "namespace": "uri://cambiumassessment.com/Assessment",
-    "studentAssessmentIdentifier": "{{ md5(student_assessment_id) }}",
+    "studentAssessmentIdentifier": "{{studentAssessmentIdentifier}}",
     "studentUniqueId": "{{student_unique_id}}"
   }
 }

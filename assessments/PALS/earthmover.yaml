@@ -10,6 +10,16 @@ config:
     POSSIBLE_STUDENT_ID_COLUMNS: 'STD_STI,ID'
     DESCRIPTOR_NAMESPACE: 'uri://ed-fi.org'
 
+    OBSERVABLE_FIRST_NAME: 'STD_FIRSTNM'
+    OBSERVABLE_LAST_NAME: 'STD_LASTNM'
+    OBSERVABLE_BIRTH_DATE: 'STD_BDAY'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m/%d/%Y'
+    OBSERVABLE_SCHOOL_IDS: ['SCH_ID']
+    OBSERVABLE_STUDENT_IDS: ['STD_STI', 'ID']
+
+    STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
+    HASH_APPLIED: true
+
 sources:
   input:
     file: ${INPUT_FILE}
@@ -209,10 +219,12 @@ transformations:
         columns:
           administrationDate: "{%raw%}{% if ASSESSDATE and ASSESSDATE | trim | lower not in ['nan', ''] %}{{ASSESSDATE}}{% elif SEMESTER | lower == 's' %}{{YEAR[-4:]}}-05-01{% elif SEMESTER | lower == 'm' %}{{YEAR[-4:]}}-02-01{% elif SEMESTER | lower == 'f' %}{{YEAR[:4]}}-09-01{% endif %}{%endraw%}"
           schoolYear: "{%raw%}{{ administrationDate[:4] | int + 1 if administrationDate[5:7] | int >= 7 else administrationDate[:4] | int }}{%endraw%}"
+          substitution_studentAssessmentIdentifier: "{% raw %}{{ assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate }}{% endraw %}"
           studentAssessmentIdentifier: "{% raw %}{{ md5(assessmentIdentifier ~ '-' ~ studentUniqueId ~ '-' ~  administrationDate) }}{% endraw %}"
           descriptorNamespace:  ${DESCRIPTOR_NAMESPACE}
       - operation: keep_columns
         columns:
+            - "substitution_studentAssessmentIdentifier"
             - "studentAssessmentIdentifier"
             - "assessmentIdentifier"
             - "schoolId"
@@ -231,7 +243,7 @@ transformations:
         behavior: include
   {% endfor %}
 
-  combined_results:
+  student_assessments:
     source: $transformations.student_assessment_{{ assessment[0] }}
     operations:
     - operation: union
@@ -280,7 +292,7 @@ transformations:
           descriptorNamespace: ${DESCRIPTOR_NAMESPACE}
 
   prepare_student_assessment_valid_school:
-    source: $transformations.combined_results
+    source: $transformations.student_assessments
     operations:
       - operation: filter_rows
         query: schoolId != "" and schoolId != None
@@ -298,7 +310,7 @@ destinations:
     extension: jsonl
     
   studentAssessments:
-    source: $transformations.combined_results
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
 
