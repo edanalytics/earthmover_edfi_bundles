@@ -13,7 +13,7 @@
     {% if exit_reason_code is not none and exit_reason_code | length %}
     , "reasonExitedDescriptor": "${DESCRIPTOR_NAMESPACE}/ReasonExitedDescriptor#{{exit_reason_code}}"
     {% endif %}
-    {% if placement is not none and placement | length and placement != ' -none-'%}
+    {% if placement is not none and placement | length %}
     , "specialEducationSettingDescriptor": "${DESCRIPTOR_NAMESPACE}/SpecialEducationSettingDescriptor#{{placement}}"
     {% endif %}
 }
