@@ -17,15 +17,13 @@ packages:
     takes precedence over which, and could break some bundles.
   #}
   ${ASSESSMENT_BUNDLE}:
-    # git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    # branch: ${ASSESSMENT_BUNDLE_BRANCH}
-    # subdirectory: assessments/${ASSESSMENT_BUNDLE}
-    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/assessments/${ASSESSMENT_BUNDLE}
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: ${ASSESSMENT_BUNDLE_BRANCH}
+    subdirectory: assessments/${ASSESSMENT_BUNDLE}
   match_candidates:
-    # git: https://github.com/edanalytics/earthmover_edfi_bundles.git
-    # branch: main
-    # subdirectory: packages/match_candidates
-    local: /home/tkaufman/.venv/gen/code/earthmover_edfi_bundles/packages/match_candidates
+    git: https://github.com/edanalytics/earthmover_edfi_bundles.git
+    branch: main
+    subdirectory: packages/match_candidates
 
 transformations:
   input:
