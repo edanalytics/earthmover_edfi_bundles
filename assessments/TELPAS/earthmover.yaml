@@ -86,7 +86,7 @@ transformations:
           school_year: ${API_YEAR}
           # TEA only provides an MMYY administration code (e.g. 0326 = Spring 2026): use the 1st of that month
           administration_date_iso: "{%raw%}{{ '20' ~ administration_date[2:4] ~ '-' ~ administration_date[0:2] ~ '-01' }}{%endraw%}"
-          student_assessment_identifier: "{%raw%}{{ opportunity_key if opportunity_key else test_result_id }}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{ opportunity_key if opportunity_key else test_result_id }}{%endraw%}"
           # whenAssessedGradeLevel uses the tested grade (per-domain on TELPAS, from 2023); fall back to the enrolled/file grade
           tested_grade: "{%raw%}{{ listening_tested_grade or speaking_tested_grade or reading_tested_grade or writing_tested_grade or grade_level_code }}{%endraw%}"
 
