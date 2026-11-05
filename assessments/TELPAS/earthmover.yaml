@@ -103,7 +103,7 @@ transformations:
       - operation: join
         sources:
           - $sources.assessments
-        join_type: inner
+        join_type: left
         left_key: assessmentIdentifier
         right_key: assessmentIdentifier
         right_keep_columns:
