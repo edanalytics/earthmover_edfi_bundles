@@ -23,16 +23,16 @@ config:
 
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'State_Student_ID,DRC_Student_ID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'state_student_id,drc_student_id'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '4'
 
-    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
-    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
-    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_FIRST_NAME: 'student_first_name'
+    OBSERVABLE_LAST_NAME: 'student_last_name'
+    OBSERVABLE_BIRTH_DATE: 'dob'
     OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
-    OBSERVABLE_SCHOOL_IDS: ['School_Code']
-    OBSERVABLE_STUDENT_IDS: ['DRC_Student_ID', 'State_Student_ID']
+    OBSERVABLE_SCHOOL_IDS: ['school_code']
+    OBSERVABLE_STUDENT_IDS: ['drc_student_id', 'state_student_id']
 
 
 sources:
@@ -74,10 +74,10 @@ transformations:
   student_assessments:
     source: $transformations.input
     operations:
+      - operation: snake_case_columns
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
-      - operation: snake_case_columns
       - operation: rename_columns
         columns:
           tested_date: adminDate
