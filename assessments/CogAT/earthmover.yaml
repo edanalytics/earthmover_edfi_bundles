@@ -10,21 +10,22 @@ config:
   show_stacktrace: true
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'Student_ID,Secondary_Student_ID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'student_id,secondary_student_id'
     # need to conform the various inputs we accept first
     EARTHMOVER_NODE_TO_XWALK: '$transformations.input_normalized'
     EARTHMOVER_NODE_TO_RESOLVE: '$transformations.input_normalized'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org 
 
-    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
-    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
-    OBSERVABLE_BIRTH_DATE: 'Date_of_Birth'
+    OBSERVABLE_FIRST_NAME: 'student_first_name'
+    OBSERVABLE_LAST_NAME: 'student_last_name'
+    OBSERVABLE_BIRTH_DATE: 'date_of_birth'
     OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
     OBSERVABLE_SCHOOL_IDS: []
-    OBSERVABLE_STUDENT_IDS: ['Student_ID', 'Secondary_Student_ID']
+    OBSERVABLE_STUDENT_IDS: ['student_id', 'secondary_student_id']
 
     STUDENT_UNIQUE_ID_IN_STUDENT_ASSESSMENT_IDENTIFIER: true
     HASH_APPLIED: true
+    
     
 {% set assessmentIdentifier = "CogAT" %}
 {% set namespace = "uri://www.riversideinsights.com/cognitive_abilities_test" %}
@@ -83,29 +84,31 @@ config:
 ] %}
 
 {# (score name we output, field it comes from, subtests reported, filter to apply).
-   Per-subtest columns are named `<field>__<subtest>` by the colspec file. #}
+   Per-subtest columns are named `<field>__<subtest>` by the colspec file; snake_case_columns
+   in clean_results lowercases the field and collapses `__` to `_`, so these are the snake names. #}
 {% set score_fields = [
-  ("number_attempted", "Number_Attempted_NA",               raw_tests, "| int(default=-1)"),
-  ("raw_score",        "Raw_Score_RS",                      raw_tests, "| int(default=-1)"),
-  ("raw_pse",          "Raw_Score_Personal_Standard_Error", raw_tests, "| float(default=-1.0)"),
-  ("raw_upper",        "Raw_Score_Upper_Bound",             raw_tests, "| float(default=-1.0)"),
-  ("raw_lower",        "Raw_Score_Lower_Bound",             raw_tests, "| float(default=-1.0)"),
-  ("completed",        "Completion_Criteria_CC",            all_tests, ""),
-  ("sas_valid",        "SAS_Valid_Flags",                   all_tests, ""),
-  ("tmo",              "TMO_Flags",                         all_tests, ""),
-  ("ev",               "Extremely_Variable_Flags",          all_tests, ""),
-  ("chance",           "Chance_Flags",                      all_tests, ""),
-  ("gs",               "Grade_Stanine_GS",                  all_tests, ""),
-  ("as",               "Age_Stanine_AS",                    all_tests, ""),
-  ("ls",               "Local_Stanines",                    all_tests, ""),
-  ("gpr",              "Grade_Percentile_Rank_GPR",         all_tests, "| int(default=-1)"),
-  ("apr",              "Age_Percentile_Rank_APR",           all_tests, "| int(default=-1)"),
-  ("lpr",              "Local_Percentile_Rank",             all_tests, "| int(default=-1)"),
-  ("uss",              "Universal_Scale_Score_USS",         all_tests, "| int(default=-1)"),
-  ("sas",              "Standard_Age_Score_SAS",            all_tests, "| int(default=-1)"),
-  ("sas_upper",        "SAS_Upper_Bound",                   all_tests, "| float(default=-1.0)"),
-  ("sas_lower",        "SAS_Lower_Bound",                   all_tests, "| float(default=-1.0)"),
+  ("number_attempted", "number_attempted_na",               raw_tests, "| int(default=-1)"),
+  ("raw_score",        "raw_score_rs",                      raw_tests, "| int(default=-1)"),
+  ("raw_pse",          "raw_score_personal_standard_error", raw_tests, "| float(default=-1.0)"),
+  ("raw_upper",        "raw_score_upper_bound",             raw_tests, "| float(default=-1.0)"),
+  ("raw_lower",        "raw_score_lower_bound",             raw_tests, "| float(default=-1.0)"),
+  ("completed",        "completion_criteria_cc",            all_tests, ""),
+  ("sas_valid",        "sas_valid_flags",                   all_tests, ""),
+  ("tmo",              "tmo_flags",                         all_tests, ""),
+  ("ev",               "extremely_variable_flags",          all_tests, ""),
+  ("chance",           "chance_flags",                      all_tests, ""),
+  ("gs",               "grade_stanine_gs",                  all_tests, ""),
+  ("as",               "age_stanine_as",                    all_tests, ""),
+  ("ls",               "local_stanines",                    all_tests, ""),
+  ("gpr",              "grade_percentile_rank_gpr",         all_tests, "| int(default=-1)"),
+  ("apr",              "age_percentile_rank_apr",           all_tests, "| int(default=-1)"),
+  ("lpr",              "local_percentile_rank",             all_tests, "| int(default=-1)"),
+  ("uss",              "universal_scale_score_uss",         all_tests, "| int(default=-1)"),
+  ("sas",              "standard_age_score_sas",            all_tests, "| int(default=-1)"),
+  ("sas_upper",        "sas_upper_bound",                   all_tests, "| float(default=-1.0)"),
+  ("sas_lower",        "sas_lower_bound",                   all_tests, "| float(default=-1.0)"),
 ] %}
+
 
 sources:
   input:
@@ -174,6 +177,8 @@ transformations:
       - operation: modify_columns
         columns:
           "*": "{%raw%}{{ value if value is string }}{%endraw%}"
+      - operation: snake_case_columns
+
 
   input:
     source: $transformations.input_normalized
@@ -182,52 +187,54 @@ transformations:
   clean_results:
     source: $transformations.input
     operations:
+      # rename the student ID before snake-casing: its name comes from a parameter, so we
+      # can't know what snake_case_columns would turn it into
+      - operation: rename_columns
+        columns:
+          ${STUDENT_ID_NAME}: student_unique_id
       - operation: keep_columns
         columns:
-          - ${STUDENT_ID_NAME}
-          {% if '${STUDENT_ID_NAME}' != 'Student_ID' %}
-          - Student_ID
-          {% elif '${STUDENT_ID_NAME}' != 'Secondary_Student_ID' %}
-          - Secondary_Student_ID
+          - student_unique_id
+          {% if '${STUDENT_ID_NAME}' != 'student_id' %}
+          - student_id
+          {% elif '${STUDENT_ID_NAME}' != 'secondary_student_id' %}
+          - secondary_student_id
           {% endif %}
-          - Date_Tested
-          - Class_Grade
-          - Battery
-          - Level
-          - Form
-          - Norm_Year
+          - date_tested
+          - class_grade
+          - battery
+          - level
+          - form
+          - norm_year
           {% for score, column, tests, cast in score_fields %}
           {% for test in tests %}
-          - {{column}}__{{test}}
+          - {{column}}_{{test}}
           {% endfor %}
           {% endfor %}
-          - Ability_Profile
-          - TestInstance_GUID
+          - ability_profile
+          - test_instance_guid
           {% for position, name in accommodation_flags %}
-          - Mode_of_Administration__{{position}}
+          - mode_of_administration_{{position}}
           {% endfor %}
       - operation: modify_columns
         columns:
-          Class_Grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
-      - operation: rename_columns
-        columns:
-          ${STUDENT_ID_NAME}: studentUniqueID
+          class_grade: "{%raw%}{{ value.strip() | int}}{%endraw%}"
       - operation: map_values
-        column: Ability_Profile
+        column: ability_profile
         mapping:
           "": "N/A"
       - operation: join
         sources:
           - $transformations.gradeLevelDescriptors
         join_type: inner
-        left_keys: [Class_Grade]
+        left_keys: [class_grade]
         right_keys: [cogatGrade]
       - operation: modify_columns
         columns:
-          Norm_Year: "{%raw%}20{{value[-2:]}}{%endraw%}"
-          Date_Tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
+          norm_year: "{%raw%}20{{value[-2:]}}{%endraw%}"
+          date_tested: "{%raw%}{{value.rjust(8, '0')}}{%endraw%}"
       - operation: date_format
-        column: Date_Tested
+        column: date_tested
         from_format: "%m%d%Y"
         to_format: "%Y-%m-%d"
       - operation: add_columns
@@ -237,9 +244,9 @@ transformations:
       # e.g. when handling Enrich-sourced files
       - operation: combine_columns
         columns:
-          - TestInstance_GUID
-          - studentUniqueID
-          - Date_Tested
+          - test_instance_guid
+          - student_unique_id
+          - date_tested
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: add_columns
@@ -258,7 +265,7 @@ transformations:
         columns:
         {% for score, column, tests, cast in score_fields %}
         {% for test in tests %}
-          {{score}}_{{test}}: "{%raw%}{{ {%endraw%}{{column}}__{{test}} {{cast}}{%raw%} }}{%endraw%}"
+          {{score}}_{{test}}: "{%raw%}{{ {%endraw%}{{column}}_{{test}} {{cast}}{%raw%} }}{%endraw%}"
         {% endfor %}
         {% endfor %}
 
@@ -268,7 +275,7 @@ transformations:
       - operation: add_columns
         columns:
         {% for position, name in accommodation_flags %}
-          {{name}}: "{%raw%}{% if {%endraw%}Mode_of_Administration__{{position}}{%raw%} == '1' %}Y{% endif %}{%endraw%}"
+          {{name}}: "{%raw%}{% if {%endraw%}mode_of_administration_{{position}}{%raw%} == '1' %}Y{% endif %}{%endraw%}"
         {% endfor %}
       - operation: map_values
         columns:
