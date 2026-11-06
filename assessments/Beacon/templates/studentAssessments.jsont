@@ -1,9 +1,9 @@
 {%- set possible_scores = 
   [
-    [Total_Scale_Score, "Scale Score", "Integer"],
-    [Total_Scale_Score_SEM, "SEM", "Integer"],
-    [Total_Theta, "Theta", "Decimal"],
-    [Total_Theta_SEM, "Theta SEM", "Decimal"]
+    [total_scale_score, "Scale Score", "Integer"],
+    [total_scale_score_sem, "SEM", "Integer"],
+    [total_theta, "Theta", "Decimal"],
+    [total_theta_sem, "Theta SEM", "Decimal"]
   ] -%}
 
 {%- set scores = [] -%}
@@ -15,7 +15,7 @@
 
 {%- set possible_perf_levels = 
   [
-     [Total_Achievement_Level, "Achievement Level"]
+     [total_achievement_level, "Achievement Level"]
   ] -%}
 
 {%- set perf_levels = [] -%}
@@ -29,8 +29,8 @@
 
 {%- set possible_obj_assess = [] -%}
 {%- for obj_assess in obj_assess_list -%}
-  {%- set col_prefix = 'S'~loop.index -%}
-  {%- set obj = [obj_assess, [('Scale Score','Integer', __row_data__[col_prefix ~ '_Scale_Score']), ('SEM','Integer',__row_data__[col_prefix ~ '_Scale_Score_SEM']), ('Theta','Decimal',__row_data__[col_prefix ~ '_Theta']), ('Theta SEM','Decimal',__row_data__[col_prefix ~ '_Theta_SEM']), ('Achievement Level',__row_data__[col_prefix ~ '_Achievement_Level'])]] -%}
+  {%- set col_prefix = 's'~loop.index -%}
+  {%- set obj = [obj_assess, [('Scale Score','Integer', __row_data__[col_prefix ~ '_scale_score']), ('SEM','Integer',__row_data__[col_prefix ~ '_scale_score_sem']), ('Theta','Decimal',__row_data__[col_prefix ~ '_theta']), ('Theta SEM','Decimal',__row_data__[col_prefix ~ '_theta_sem']), ('Achievement Level',__row_data__[col_prefix ~ '_achievement_level'])]] -%}
   {%- set _ = possible_obj_assess.append(obj) -%}
 {%- endfor -%}
 
@@ -52,7 +52,7 @@
     "schoolYear": {{schoolYear}}
   },
   "studentReference": {
-    "studentUniqueId": "{{studentUniqueId}}"
+    "studentUniqueId": "{{student_unique_id}}"
   },
   "administrationDate": "{{adminDate}}"
   {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
