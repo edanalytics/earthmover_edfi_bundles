@@ -23,16 +23,16 @@ config:
 
   parameter_defaults:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
-    POSSIBLE_STUDENT_ID_COLUMNS: 'State_Student_ID,DRC_Student_ID'
+    POSSIBLE_STUDENT_ID_COLUMNS: 'state_student_id,drc_student_id'
     DESCRIPTOR_NAMESPACE: uri://ed-fi.org
     EDFI_DS_VERSION: '4'
 
-    OBSERVABLE_FIRST_NAME: 'Student_First_Name'
-    OBSERVABLE_LAST_NAME: 'Student_Last_Name'
-    OBSERVABLE_BIRTH_DATE: 'DOB'
+    OBSERVABLE_FIRST_NAME: 'student_first_name'
+    OBSERVABLE_LAST_NAME: 'student_last_name'
+    OBSERVABLE_BIRTH_DATE: 'dob'
     OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
-    OBSERVABLE_SCHOOL_IDS: ['School_Code']
-    OBSERVABLE_STUDENT_IDS: ['DRC_Student_ID', 'State_Student_ID']
+    OBSERVABLE_SCHOOL_IDS: ['school_code']
+    OBSERVABLE_STUDENT_IDS: ['drc_student_id', 'state_student_id']
 
 
 sources:
@@ -74,28 +74,32 @@ transformations:
   student_assessments:
     source: $transformations.input
     operations:
+      - operation: snake_case_columns
       - operation: duplicate_columns
         columns: 
           ${STUDENT_ID_NAME}: studentUniqueId
       - operation: rename_columns
         columns:
-          Tested_Date: adminDate
+          tested_date: adminDate
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{%raw%}{{- assign_assessment_identifier(Test) -}}{%endraw%}"
+          assessmentIdentifier: "{%raw%}{{- assign_assessment_identifier(test) -}}{%endraw%}"
           namespace: "uri://datarecognitioncorp.com/Assessment"
-          schoolYear: "{%raw%}{{Academic_Year[-4:] | int}}{%endraw%}"
+          schoolYear: "{%raw%}{{academic_year[-4:] | int}}{%endraw%}"
           educationOrganizationAssociationTypeDescriptor: "${DESCRIPTOR_NAMESPACE}/EducationOrganizationAssociationTypeDescriptor#Enrollment"
           # School code and district code may be prepended with a ` to preserve leading 0. Remove this so we are sending an int as Ed-Fi expects
-          educationOrganizationId: "{%raw%}{{ ((District_Code | replace('`', '')) ~ (School_Code | replace ('`', ''))) | int }}{%endraw%}"
+          educationOrganizationId: "{%raw%}{{ ((district_code | replace('`', '')) ~ (school_code | replace ('`', ''))) | int }}{%endraw%}"
+      - operation: filter_rows
+        query: assessmentIdentifier == '' or assessmentIdentifier != assessmentIdentifier
+        behavior: exclude
       - operation: combine_columns
         columns:
-          - State_Student_ID
+          - state_student_id
           - adminDate
-          - Test
+          - test
           # Document ID is necessary to differentiate instances where multiple record exist for the same test to the same student on the same day
           # Though this is uncommon, there are examples in the data with distinct Objective assessment and overall results associated with each record.
-          - Document_ID
+          - document_id
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: add_columns
@@ -105,19 +109,19 @@ transformations:
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
           # Some Test_Level values may have a season appended (e.g., 4_W for 4th Grade - Winter). We split on the '_' in these cases and use the numeric test level to send to Ed-Fi. 
-          Test_Level: "{%raw%}{{ (Test_Level |string |trim).split('_')[0] }}{%endraw%}"
+          test_level: "{%raw%}{{ (test_level |string |trim).split('_')[0] }}{%endraw%}"
       - operation: join
         sources:
           - $sources.gradeLevelDescriptors
         join_type: left
         left_keys: 
-          - Test_Level
+          - test_level
           - assessmentIdentifier
         right_keys: 
           - originalGrade
           - assessmentIdentifier
       - operation: map_values
-        column: "*_Achievement_Level"
+        column: "*_achievement_level"
         mapping:  # Force PLs back to their code values
           Support Needed: 1
           Near Target: 2
@@ -125,7 +129,7 @@ transformations:
       # Add a column capturing the level of the assessment (3-8 or K-2)
       - operation: add_columns
         columns:
-          beacon_level: "{%raw%}{{assign_beacon_level(Test_Level)}}{%endraw%}"
+          beacon_level: "{%raw%}{{assign_beacon_level(test_level)}}{%endraw%}"
       # Join in the objectiveAssessmentMapping file, so that we may accurately unpack year-specific objectiveAssessment values in studentAssessments.jsont
       - operation: join
         sources:
@@ -133,7 +137,7 @@ transformations:
         join_type: left
         left_keys:
           - assessmentIdentifier
-          - Academic_Year
+          - academic_year
           - beacon_level
         right_keys:
           - assessmentIdentifier
