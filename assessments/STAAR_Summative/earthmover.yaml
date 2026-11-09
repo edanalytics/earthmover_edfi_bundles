@@ -14,6 +14,13 @@ config:
     STUDENT_ID_NAME: 'edFi_studentUniqueID' # default to the column added by the apply_xwalk package of student ID xwalking feature
     POSSIBLE_STUDENT_ID_COLUMNS: tx_unique_student_id
 
+    OBSERVABLE_FIRST_NAME: 'first_name'
+    OBSERVABLE_LAST_NAME: 'last_name'
+    OBSERVABLE_BIRTH_DATE: 'date_of_birth'
+    OBSERVABLE_BIRTH_DATE_FORMAT: '%m%d%Y'
+    OBSERVABLE_SCHOOL_IDS: []
+    OBSERVABLE_STUDENT_IDS: ['tx_unique_student_id']
+
 packages:
   {% if "${FORMAT}" == "Standard" %}
   {% set format = "" %}
@@ -73,7 +80,7 @@ sources:
 
 destinations:
   studentAssessments:
-    source: $transformations.studentAssessments
+    source: $transformations.student_assessments
     template: ./templates/studentAssessments.jsont
     extension: jsonl
     linearize: True
