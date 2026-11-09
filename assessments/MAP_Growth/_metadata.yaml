@@ -7,6 +7,8 @@ input_files:
     env_var: "INPUT_FILE"
     is_required: true
     file_type: ["csv"]
+    description: > 
+      This file can either be the ComboStudentAssessments or AssessmentResults. If you are using fuzzy matching and wish to automatically match records when possible, you must either submit ComboStudentAssessments alone OR AssessmentResults plus the additional StudentBySchool input file.
   - display_name: "StudentBySchool Input File"
     env_var: "INPUT_FILE_STUDENT_BY_SCHOOL"
     is_required: false
