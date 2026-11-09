@@ -1,5 +1,6 @@
 # Unreleased
 ## New features
+- TELPAS and TELPAS Alternate bundle
 
 ## Under the hood
 
