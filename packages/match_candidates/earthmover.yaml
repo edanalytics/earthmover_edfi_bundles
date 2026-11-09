@@ -36,8 +36,8 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          obs_first_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_FIRST_NAME'])}}{%endraw%}"
-          obs_last_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_LAST_NAME'])}}{%endraw%}"
+          obs_first_name: "{%raw%}{{clean_single_observable(__row_data__[\"$OBSERVABLE_FIRST_NAME\"])}}{%endraw%}"
+          obs_last_name: "{%raw%}{{clean_single_observable(__row_data__[\"$OBSERVABLE_LAST_NAME\"])}}{%endraw%}"
           obs_full_name: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_FULL_NAME'])}}{%endraw%}"
           obs_birth_date: "{%raw%}{{clean_single_observable(__row_data__['$OBSERVABLE_BIRTH_DATE'])}}{%endraw%}"
           obs_school_ids: "{%raw%}{{clean_list($OBSERVABLE_SCHOOL_IDS, __row_data__)}}{%endraw%}"

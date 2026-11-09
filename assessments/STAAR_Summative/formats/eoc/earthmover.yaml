@@ -33,7 +33,7 @@ sources:
    'test_version',
    'score_code',
    'overall_performance_level',
-   'stu_assess_id'
+   'studentAssessmentIdentifier'
   ] 
 %}
 
@@ -57,7 +57,7 @@ transformations:
         columns:
           "administration_date": administration_window
         {% if ${API_YEAR} >= 2022 %}
-          opportunity_key: stu_assess_id
+          opportunity_key: studentAssessmentIdentifier
         {% endif %}
       # ADD assess_id & overall_pl
       - operation: add_columns
@@ -67,7 +67,7 @@ transformations:
           subject: "{%raw%}{{course_academic_subject}}{%endraw%}"
           # in 2021 and earlier, opportunity key didn't exist, so create own unique key
           {% if ${API_YEAR} <= 2021 %}
-          stu_assess_id: "{%raw%}{{document_number}}_{{end_of_course_code}}{%endraw%}"
+          studentAssessmentIdentifier: "{%raw%}{{document_number}}_{{end_of_course_code}}{%endraw%}"
           {% endif %}
           overall_performance_level: >
             {%raw%}
@@ -132,7 +132,7 @@ transformations:
         columns: {{conformed_columns}}
   
   # FINAL STEPS for stu-assess: stu_id_xwalk, api_year
-  studentAssessments:
+  student_assessments:
     source: $transformations.conformed_staar_summative_eoc
     operations:
       - operation: duplicate_columns

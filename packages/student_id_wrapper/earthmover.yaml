@@ -9,6 +9,8 @@ config:
     OUTPUT_DIR: output
     ASSESSMENT_BUNDLE_BRANCH: main
     EDFI_STUDENT_ID_TYPES: Local,School,District,State
+    # Identify the wrapper so that bundles can reference if needed
+    EARTHMOVER_WRAPPER: student_id
 
 packages:
   {#
