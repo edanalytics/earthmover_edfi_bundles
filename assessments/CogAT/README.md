@@ -25,7 +25,7 @@ earthmover run -c ./earthmover.yaml -p '{
 "INPUT_FILE": "data/sample_anonymized_file.txt",
 "OUTPUT_DIR": "output/",
 "API_YEAR" : "2023",
-"STUDENT_ID_NAME" : "Student_ID"}'
+"STUDENT_ID_NAME" : "student_id"}'
 ```
 The value for `STUDENT_ID_NAME` may vary
 
