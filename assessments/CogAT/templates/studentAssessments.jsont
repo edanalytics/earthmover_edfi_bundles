@@ -8,9 +8,9 @@
     "schoolYear": {{school_year}}
   },
   "studentReference": {
-    "studentUniqueId": "{{studentUniqueID}}"
+    "studentUniqueId": "{{student_unique_id}}"
   },
-  "administrationDate": "{{Date_Tested}}",
+  "administrationDate": "{{date_tested}}",
   "whenAssessedGradeLevelDescriptor": "{{gradeDescriptor}}",
   "accommodations": [
     {% set accs = [] %}
@@ -52,20 +52,20 @@
   "scoreResults": [
   {% set scores = [] %}
 
-    {% if Battery is not none and Battery.strip() | length %}
-      {% set _ = scores.append([Battery, 'Battery', 'Level']) %}
+    {% if battery is not none and battery.strip() | length %}
+      {% set _ = scores.append([battery, 'Battery', 'Level']) %}
     {% endif %}
 
-    {% if Level is not none and Level.strip() | length %}
-      {% set _ = scores.append([Level, 'Level', 'Level']) %}
+    {% if level is not none and level.strip() | length %}
+      {% set _ = scores.append([level, 'Level', 'Level']) %}
     {% endif %}
 
-    {% if Form is not none and Form.strip() | length %}
-      {% set _ = scores.append([Form, 'Form', 'Level']) %}
+    {% if form is not none and form.strip() | length %}
+      {% set _ = scores.append([form, 'Form', 'Level']) %}
     {% endif %}
 
-    {% if Norm_Year is not none and Norm_Year.strip() | length %}
-      {% set _ = scores.append([Norm_Year, 'Norm Year', 'Level']) %}
+    {% if norm_year is not none and norm_year.strip() | length %}
+      {% set _ = scores.append([norm_year, 'Norm Year', 'Level']) %}
     {% endif %}
 
     {% if uss_composite_vqn is not none and uss_composite_vqn | int >= 0 and uss_composite_vq.strip() | length %}
@@ -124,7 +124,7 @@
       (tmo_composite_vqn, 'Too Many Omits Flag'),
       (ev_composite_vqn, 'Extremely Variable Flag'),
       (chance_composite_vqn, 'Chance Flag'),
-      (Ability_Profile, 'Ability Profile') 
+      (ability_profile, 'Ability Profile') 
     ] %}
     {#  TODO: make sure ability profile is not nan #}
 
