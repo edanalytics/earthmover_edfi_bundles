@@ -1,6 +1,6 @@
 {% if schoolId is not none and schoolId | length and studentUniqueId is not none and studentUniqueId | length %}
  {
-      "educationOrganizationAssociationTypeDescriptor": "uri://ed-fi.org/EducationOrganizationAssociationTypeDescriptor#Enrollment",
+      "educationOrganizationAssociationTypeDescriptor": "{{descriptorNamespace}}/EducationOrganizationAssociationTypeDescriptor#Enrollment",
       "educationOrganizationReference": {
         "educationOrganizationId": {{schoolId|int}}
       },
