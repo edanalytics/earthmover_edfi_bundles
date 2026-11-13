@@ -98,7 +98,7 @@ transformations:
           # retake headers say "(RETAKE)" but does not name the student's grade.
           retest_indicator: "{%raw%}{{ 'True' if '_retake_' in scale_score_header else 'False' }}{%endraw%}"
           # Grade level of the assessment.
-          enrolled_grade: "{%raw%}{{ grade }}{%endraw%}"
+          assessment_grade: "{%raw%}{{ grade }}{%endraw%}"
           # "Spring 2025-2026 (Summative)" -> 2026
           schoolYear: "{%raw%}{{ test_reason.split(' ')[1].split('-')[1] }}{%endraw%}"
 
@@ -149,7 +149,7 @@ transformations:
           - $sources.gradeLevelDescriptors
         join_type: left
         left_keys:
-          - enrolled_grade
+          - assessment_grade
           - assessmentIdentifier
         right_keys:
           - originalGrade
