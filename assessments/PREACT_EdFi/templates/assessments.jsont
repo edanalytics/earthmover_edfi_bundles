@@ -1,0 +1,103 @@
+{
+    "assessmentIdentifier": "{{assessmentIdentifier}}",
+    "assessmentTitle": "{{assessmentTitle}}",
+    "assessmentFamily": "PreACT",
+    "namespace": "{{namespace}}",
+    "assessedGradeLevels": [{{grade_json}}],
+    "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+    "academicSubjects": [{{subject_json}}],
+    "scores": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Composite Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Composite Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Composite Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Composite US Rank",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Composite Standard Error of Measurement",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT Composite Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT Composite Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT STEM Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Predicted ACT STEM Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#STEM Score",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#STEM Score Range High",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#STEM Score Range Low",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#STEM US Rank",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Percentile"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Sum of Scale Scores",
+        "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+      }
+    ],
+    "performanceLevels": [
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "0",
+        "minimumScore": "0",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Unlikely to obtain an NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "1",
+        "minimumScore": "1",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Likely to obtain a Bronze level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "2",
+        "minimumScore": "2",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Likely to obtain a Silver level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "3",
+        "minimumScore": "3",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Likely to obtain a Gold level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "maximumScore": "4",
+        "minimumScore": "4",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Likely to obtain a Platinum level NCRC"
+      },
+      {
+        "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#Progress Toward Career Readiness Indicator",
+        "performanceLevelDescriptor": "{{namespace}}PerformanceLevelDescriptor#Unable to calculate"
+      }
+    ]
+}
