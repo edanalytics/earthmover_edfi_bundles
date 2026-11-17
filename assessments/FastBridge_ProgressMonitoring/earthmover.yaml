@@ -22,6 +22,9 @@ sources:
   assessments:
     file: ./seeds/assessments.csv
     header_rows: 1
+  assessment_mapping:
+    file: ./seeds/assessment_mapping.csv
+    header_rows: 1
   assessmentCategoryDescriptors:
     file: ./seeds/assessmentCategoryDescriptors.csv
     header_rows: 1
@@ -73,10 +76,23 @@ transformations:
           assessment_date: administration_date
       - operation: modify_columns
         columns:
-          assessment: "{%raw%}{{ assessment.replace(',', '').replace('-', ' ').split() | join('_') }}{%endraw%}"
+          assessment: "{%raw%}{{ value.strip() }}{%endraw%}"
+      - operation: join
+        sources:
+          - $sources.assessment_mapping
+        join_type: left
+        left_keys:
+          - assessment
+        right_keys:
+          - from
+        right_keep_columns:
+          - to
+      - operation: modify_columns
+        columns:
+          to: "{%raw%}{%- if value != value or not value -%}{{ assessment.replace(',', '').replace('-', ' ').split() | join('_') }}{%- else -%}{{ value }}{%- endif -%}{%endraw%}"
       - operation: add_columns
         columns:
-          assessmentIdentifier: "{%raw%}FastBridge_{{ assessment.strip() }}_PM{%endraw%}"
+          assessmentIdentifier: "{%raw%}FastBridge_{{ to.strip() }}_PM{%endraw%}"
           namespace: "uri://fastbridge.org/assessment"
           descriptor_namespace: ${DESCRIPTOR_NAMESPACE}
           school_year: ${API_YEAR}
@@ -84,7 +100,7 @@ transformations:
         columns:
           - administration_date
           - student_unique_id
-          - assessment
+          - assessmentIdentifier
         new_column: studentAssessmentIdentifier
         separator: '-'
       - operation: modify_columns
