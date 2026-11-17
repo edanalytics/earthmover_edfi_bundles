@@ -15,7 +15,7 @@
     
     {% set pls_to_keep = [namespace ~ 'AssessmentReportingMethodDescriptor#Composite Score'] %}
     {% set kept_pls = [] %}
-    {% for item in fromjson(v_performance_levels | default('[]')) %}
+    {% for item in fromjson(v_performance_levels | default('[]', true)) %}
       {% if item.assessmentReportingMethodDescriptor in pls_to_keep %}
         {% set _= kept_pls.append(item) %}
       {% endif %}
@@ -36,7 +36,7 @@
                                            namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score Range Low',
                                            ] %}
     {% set kept_scores = [] %}
-    {% for item in fromjson(v_score_results | default('[]')) %}
+    {% for item in fromjson(v_score_results | default('[]', true)) %}
       {% if item.assessmentReportingMethodDescriptor not in subscores_to_remove_from_scores %}
         {% set _= kept_scores.append(item) %}
       {% endif %}
@@ -52,7 +52,9 @@
     ],
 
     "studentObjectiveAssessments": [
-      {% set topline_obj_assess = [['PREACT_STEM',
+      {%- set obj_comma = joiner(',') -%}
+      {%- set stem_id = assessment_identifier | replace('-', '') ~ '_STEM' -%}
+      {%- set topline_obj_assess = [[stem_id,
                                    {
                                     'Scale Score':PREACT_STEM_scale_score,
                                     'US Rank':PREACT_STEM_us_rank,
@@ -60,29 +62,28 @@
                                     'Scale Score Range Low':PREACT_STEM_score_range_low
                                    },
                                    namespace ~ 'AssessmentReportingMethodDescriptor#STEM Score']
-                               ] %}
+                               ] -%}
 
-  
       {%- for obj in topline_obj_assess -%}
-      {% set all_score_obj = [] %}
-        {% for score_name, score_result in obj[1].items() %}
-          {% if score_result != '' %}
-            {% set _= all_score_obj.append([score_name, score_result]) %}
-          {% endif %}
-        {% endfor %}
+      {%- set all_score_obj = [] -%}
+        {%- for score_name, score_result in obj[1].items() -%}
+          {%- if score_result != '' -%}
+            {%- set _= all_score_obj.append([score_name, score_result, 'Percentile' if score_name == 'US Rank' else 'Integer']) -%}
+          {%- endif -%}
+        {%- endfor -%}
   
-      {% if all_score_obj|length > 0 %}
+      {%- if all_score_obj|length > 0 -%}
+      {{ obj_comma() }}
       {
         "objectiveAssessmentReference": {
           "assessmentIdentifier": "{{assessment_identifier}}",
           "identificationCode": "{{obj[0]}}",
           "namespace": "{{namespace}}"
-        }
-        ,
-        {% set obj_pls = [] %}
-        {%- for level in fromjson(v_performance_levels | default('[]')) -%}
+        },
+        {%- set obj_pls = [] -%}
+        {%- for level in fromjson(v_performance_levels | default('[]', true)) -%}
           {%- if level.assessmentReportingMethodDescriptor == obj[2] -%}
-            {% set _= obj_pls.append(level) %}
+            {%- set _= obj_pls.append(level) -%}
           {%- endif -%}
         {%- endfor -%}
         "performanceLevels": [
@@ -98,29 +99,26 @@
          {%- for score in all_score_obj -%}
           {
             "assessmentReportingMethodDescriptor": "{{namespace}}AssessmentReportingMethodDescriptor#{{score[0]}}",
-            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer",
+            "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
             "result": "{{score[1]}}"
-          }
-          {%- if not loop.last -%},
-          {%- else %}{% endif %}{%- endfor -%}
+          }{%- if not loop.last -%},{%- endif -%}
+         {%- endfor -%}
         ]
-      }{%- if not loop.last -%},
-      {%- else %}{% endif %}
-      {% endif %}
+      }
+      {%- endif -%}
       {%- endfor -%}
-      {%- if v_student_objective_assessments -%}
-      ,{% for item in fromjson(v_student_objective_assessments | default('[]')) %}
+      {%- for item in fromjson(v_student_objective_assessments | default('[]', true)) -%}
+        {{ obj_comma() }}
         {
          "objectiveAssessmentReference": {
            "assessmentIdentifier": "{{ assessment_identifier }}",
            "identificationCode": "{{ item.objectiveAssessmentReference.identificationCode.replace('THE-', '').replace('-', '_') }}",
            "namespace": "{{ namespace }}"
          },
-         "performanceLevels": {{ item.performanceLevels | tojson }},
-         "scoreResults": {{ item.scoreResults | tojson }}
-        }{% if not loop.last %},{% endif %}
-       {% endfor %}
-      {%- endif -%}
+         "performanceLevels": {{ item.performanceLevels | default([], true) | tojson }},
+         "scoreResults": {{ item.scoreResults | default([], true) | tojson }}
+        }
+      {%- endfor -%}
     ]
   }
 
