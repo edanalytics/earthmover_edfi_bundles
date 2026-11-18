@@ -28,7 +28,7 @@ Sample file: `data/sample_anonymized_file_early_reading_eng.csv`
 - **OUTPUT_DIR**: Where output files will be written
 - **INPUT_FILE**: The Progress Monitoring assessment file to be mapped
 - **STUDENT_ID_NAME**: Which column to use as the Ed-Fi `studentUniqueId`. Can be one of the native columns in the assessment file (e.g., `Student Id`, `Student State Id`) when the bundle is run directly. Otherwise, leave the default value `edFi_studentUniqueID`
-- **POSSIBLE_STUDENT_ID_COLUMNS**: All possible native student ID columns in the assessment file (defaults: `Local ID,State ID`)
+- **POSSIBLE_STUDENT_ID_COLUMNS**: All possible native student ID columns in the assessment file (defaults: `Student Id,Student State Id`)
 
 ### Optional
 
