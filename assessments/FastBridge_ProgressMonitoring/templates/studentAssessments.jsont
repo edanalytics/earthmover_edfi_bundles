@@ -4,6 +4,7 @@
   [detailed_comp_ic_per_minute,"Detailed Comp IC per minute","Decimal"],
   [detailed_comp_items_correct,"Detailed Comp Items Correct","Integer"],
   [detailed_comp_total_items,"Detailed Comp Total Items","Integer"],
+  [discontinued,"Discontinued","Integer"],
   [ic_per_minute,"IC per minute","Decimal"],
   [items_attempted,"Items Attempted","Integer"],
   [items_correct,"Items Correct","Integer"],
@@ -54,7 +55,7 @@
       "schoolYear": {{school_year}}
     },
     "studentReference": {
-      "studentUniqueId": "{{student_unique_id|int}}"
+      "studentUniqueId": "{{student_unique_id}}"
     },
     "administrationDate": "{{administration_date}}"
     {%- if edfi_descriptor is not none and edfi_descriptor | length -%}
@@ -67,7 +68,7 @@
         {
           "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#{{score[1]}}",
           "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#{{score[2]}}",
-          "result": "{{score[0]}}"
+          "result": "{{score[0]|float|int if score[2] == 'Integer' else score[0]}}"
         } {% if not loop.last %},{% endif %}
       {% endfor %}
     ]
