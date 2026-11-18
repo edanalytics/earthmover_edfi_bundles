@@ -106,6 +106,10 @@ transformations:
       - operation: modify_columns
         columns:
           studentAssessmentIdentifier: "{%raw%}{{ md5(studentAssessmentIdentifier) }}{%endraw%}"
+      - operation: date_format
+        column: administration_date
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
       - operation: modify_columns
         columns:
           grade: "{%raw%}{{ (grade|string).zfill(2) if (grade|string)|length < 2 else grade|string }}{%endraw%}"
