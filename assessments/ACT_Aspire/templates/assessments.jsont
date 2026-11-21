@@ -1,0 +1,55 @@
+{
+  "assessmentIdentifier": "{{assessmentIdentifier}}",
+  "assessmentTitle": "{{assessmentTitle}}",
+  "namespace": "{{namespace}}",
+  "assessmentFamily": "{{assessmentFamily}}",
+  "assessedGradeLevels": [{{grade_json}}],
+  "assessmentCategoryDescriptor": "{{assessmentCategoryDescriptor}}",
+  "academicSubjects": [{"academicSubjectDescriptor":"{{academicSubjectDescriptor}}"}],
+  "scores": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Composite Score",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ACT Projected Composite Score Range Low",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#ACT Projected Composite Score Range High",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Integer"
+    }
+  ],
+  "performanceLevels": [
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress with Text Complexity",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#Y",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress with Text Complexity",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#N",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Towards Career Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#0",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Towards Career Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#1",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Towards Career Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#2",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    },
+    {
+      "assessmentReportingMethodDescriptor": "{{namespace}}/AssessmentReportingMethodDescriptor#Progress Towards Career Readiness",
+      "performanceLevelDescriptor": "{{namespace}}/PerformanceLevelDescriptor#3",
+      "resultDatatypeTypeDescriptor": "{{descriptor_namespace}}/ResultDatatypeTypeDescriptor#Level"
+    }
+  ]
+}
