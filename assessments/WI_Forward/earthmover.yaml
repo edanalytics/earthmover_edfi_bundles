@@ -542,7 +542,7 @@ transformations:
     operations:
       - operation: add_columns
         columns:
-          topLevelField_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=[]) }}{%endraw%}"
+          topLevelField_json: "{%raw%}{{ em_row_to_json(exclude=['assessmentIdentifier'], literal=['min_year', 'max_year']) }}{%endraw%}"
       - operation: group_by
         group_by_columns:
           - assessmentIdentifier
