@@ -32,8 +32,8 @@
             { "reportingMethod": "Date_of_Birth"                    , "col": "Date_of_Birth"                    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Gender"                           , "col": "Gender"                           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Ethnicity"                        , "col": "Ethnicity"                        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Out_of_District_IEP_Placement"    , "col": "Out_of_District_IEP_Placement"    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "EL_Student_New_to_Country"        , "col": "EL_Student_New_to_Country"        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Disability_Status"                , "col": "Disability_Status"                ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
@@ -42,9 +42,9 @@
             { "reportingMethod": "English_Proficiency"              , "col": "English_Proficiency"              ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Economic_Status"                  , "col": "Economic_Status"                  ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Migrant_Status"                   , "col": "Migrant_Status"                   ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Choice_Program_Participant"       , "col": "Choice_Program_Participant"       ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }
+            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }
         ], 
         "performanceLevels": [
             { "reportingMethod": "Performance Level", "col": "performanceLevel", "raw_col": "ELA_Performance_Level", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
@@ -107,16 +107,18 @@
                 "description": "Key Ideas and Details", 
                 "parentIdentificationCode": "Reading", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_ELA_Reading_KI", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_Reading_KI" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_A"          , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_ELA_A"                    , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_ELA_A"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_ELA_A"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Reading_KI", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Reading_KI"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Reading_KI"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_A"                   , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_ELA_A"                             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_ELA_A"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_ELA_A"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Reading_KI", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_ELA_A"              , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Reading_KI", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Reading_KI"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_ELA_A"                       , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -124,16 +126,18 @@
                 "description": "Craft and Structure/Integration of Knowledge", 
                 "parentIdentificationCode": "Reading", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_ELA_Reading_CS", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_Reading_CS" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_B"          , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_ELA_B"                    , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_ELA_B"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_ELA_B"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Reading_CS", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Reading_CS"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Reading_CS"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_B"                   , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_ELA_B"                             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_ELA_B"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_ELA_B"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Reading_CS", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_ELA_B"              , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Reading_CS", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Reading_CS"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_ELA_B"                       , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -141,16 +145,18 @@
                 "description": "Vocabulary Use", 
                 "parentIdentificationCode": "Reading", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_ELA_Reading_VU", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_Reading_VU" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_C"          , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_ELA_C"                    , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_ELA_C"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_ELA_C"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Reading_VU", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Reading_VU"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Reading_VU"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_C"                   , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_ELA_C"                             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_ELA_C"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_ELA_C"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Reading_VU", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_ELA_C"              , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Reading_VU", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Reading_VU"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_ELA_C"                       , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -158,16 +164,18 @@
                 "description": "Text Types and Purposes", 
                 "parentIdentificationCode": "Writing", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_ELA_Writing_Lang_TT", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_Writing_Lang_TT" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_D"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_ELA_D"                         , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_ELA_D"             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_ELA_D"             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Writing_Lang_TT", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Writing_Lang_TT"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Writing_Lang_TT"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_D"                        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_ELA_D"                                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_ELA_D"                      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_ELA_D"                      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Writing_Lang_TT", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_ELA_D"                   , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Writing_Lang_TT", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Writing_Lang_TT"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_ELA_D"                            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -176,11 +184,13 @@
                 "parentIdentificationCode": "Writing", 
                 "min_year": 2024, 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score", "col": "Progress_Score_ELA_Writing_Lang_IB", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned" , "col": "Points_Earned_ELA_Writing_Lang_IB" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Writing_Lang_IB", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Writing_Lang_IB"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Writing_Lang_IB"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Writing_Lang_IB", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Writing_Lang_IB", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Writing_Lang_IB"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -188,16 +198,18 @@
                 "description": "Language Conventions", 
                 "parentIdentificationCode": "Writing", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_ELA_Writing_Lang_LC", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_Writing_Lang_LC" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_ELA_F"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_ELA_F"                         , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_ELA_F"             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_ELA_F"             , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_ELA_Writing_Lang_LC", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_ELA_Writing_Lang_LC"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_Writing_Lang_LC"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_ELA_F"                        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_ELA_F"                                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_ELA_F"                      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_ELA_F"                      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_ELA_Writing_Lang_LC", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_ELA_F"                   , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_ELA_Writing_Lang_LC", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_ELA_Writing_Lang_LC"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_ELA_F"                            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -224,11 +236,12 @@
             { "col": "educationOrganizationId", "raw_col": "School_Agency_Key"     }
         ], 
         "accommodations": [
-            { "col": "Color_Choices"             , "raw_col": "Color_Choices_ELA"                  , "min_year": 2024                   }, 
+            { "col": "Color_Preferences"         , "raw_col": "Color_Preferences_ELA"              , "min_year": 2026                   }, 
+            { "col": "Color_Choices"             , "raw_col": "Color_Choices_ELA"                  , "min_year": 2024, "max_year": 2025 }, 
             { "col": "Color_Choices"             , "raw_col": "Provided_Color_Choices_ELA"         ,                   "max_year": 2023 }, 
-            { "col": "Contrasting_Color"         , "raw_col": "Contrasting_Color_ELA"              , "min_year": 2018                   }, 
+            { "col": "Contrasting_Color"         , "raw_col": "Contrasting_Color_ELA"              , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Contrasting_Color"         , "raw_col": "Used_Contrasting_Color_ELA"         ,                   "max_year": 2017 }, 
-            { "col": "Reverse_Contrast"          , "raw_col": "Reverse_Contrast_ELA"               , "min_year": 2018                   }, 
+            { "col": "Reverse_Contrast"          , "raw_col": "Reverse_Contrast_ELA"               , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Reverse_Contrast"          , "raw_col": "Used_Reverse_Contrast_ELA"          ,                   "max_year": 2017 }, 
             { "col": "Masking"                   , "raw_col": "Masking_ELA"                        , "min_year": 2018                   }, 
             { "col": "Masking"                   , "raw_col": "Used_Masking_ELA"                   ,                   "max_year": 2017 }, 
@@ -303,8 +316,8 @@
             { "reportingMethod": "Date_of_Birth"                    , "col": "Date_of_Birth"                    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Gender"                           , "col": "Gender"                           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Ethnicity"                        , "col": "Ethnicity"                        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Out_of_District_IEP_Placement"    , "col": "Out_of_District_IEP_Placement"    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "EL_Student_New_to_Country"        , "col": "EL_Student_New_to_Country"        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Disability_Status"                , "col": "Disability_Status"                ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
@@ -313,9 +326,9 @@
             { "reportingMethod": "English_Proficiency"              , "col": "English_Proficiency"              ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Economic_Status"                  , "col": "Economic_Status"                  ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Migrant_Status"                   , "col": "Migrant_Status"                   ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Choice_Program_Participant"       , "col": "Choice_Program_Participant"       ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }
+            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }
         ], 
         "performanceLevels": [
             { "reportingMethod": "Performance Level", "col": "performanceLevel", "raw_col": "MTH_Performance_Level", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
@@ -326,160 +339,180 @@
                 "identificationCode": "MTH_Gr3-5_OA", 
                 "description": "Operations and Algebraic Thinking (grades 3-5)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr3-5_OA", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr3-5_OA" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_A"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_A"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_A"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_A"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr3-5_OA", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr3-5_OA"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr3-5_OA"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_A"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_A"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_A"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_A"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr3-5_OA", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_A"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr3-5_OA", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr3-5_OA"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_A"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr3-5_NBT", 
                 "description": "Number and Operations in Base Ten (grades 3-5)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr3-5_NBT", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr3-5_NBT" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_B"         , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_B"                   , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_B"       , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_B"       , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr3-5_NBT", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr3-5_NBT"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr3-5_NBT"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_B"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_B"                            , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_B"                , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_B"                , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr3-5_NBT", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_B"             , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr3-5_NBT", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr3-5_NBT"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_B"                      , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr3-5_NF", 
                 "description": "Number and Operations - Fractions (grades 3-5)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr3-5_NF", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr3-5_NF" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_C"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_C"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_C"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_C"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr3-5_NF", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr3-5_NF"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr3-5_NF"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_C"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_C"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_C"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_C"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr3-5_NF", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_C"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr3-5_NF", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr3-5_NF"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_C"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr3-5_MD", 
                 "description": "Measurement and Data (grades 3-5)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr3-5_MD", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr3-5_MD" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_D"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_D"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_D"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_D"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr3-5_MD", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr3-5_MD"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr3-5_MD"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_D"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_D"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_D"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_D"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr3-5_MD", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_D"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr3-5_MD", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr3-5_MD"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_D"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr3-8_GEO", 
                 "description": "Geometry (grades 3-8)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr3-8_GEO", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr3-8_GEO" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_E"         , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_E"                   , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_E"       , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_E"       , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr3-8_GEO", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr3-8_GEO"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr3-8_GEO"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_E"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_E"                            , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_E"                , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_E"                , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr3-8_GEO", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_E"             , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr3-8_GEO", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr3-8_GEO"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_E"                      , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr6-7_RP", 
                 "description": "Ratios and Proportional Relationships (grades 6-7)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr6-7_RP", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr6-7_RP" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_F"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_F"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_F"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_F"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr6-7_RP", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr6-7_RP"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr6-7_RP"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_F"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_F"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_F"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_F"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr6-7_RP", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_F"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr6-7_RP", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr6-7_RP"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_F"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr6-8_NS", 
                 "description": "The Number System (grades 6-8)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr6-8_NS", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr6-8_NS" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_G"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_G"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_G"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_G"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr6-8_NS", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr6-8_NS"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr6-8_NS"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_G"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_G"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_G"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_G"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr6-8_NS", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_G"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr6-8_NS", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr6-8_NS"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_G"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr6-8_EE", 
                 "description": "Expressions and Equations (grades 6-8)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr6-8_EE", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr6-8_EE" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_H"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_H"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_H"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_H"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr6-8_EE", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr6-8_EE"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr6-8_EE"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_H"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_H"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_H"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_H"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr6-8_EE", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_H"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr6-8_EE", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr6-8_EE"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_H"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr6-8_SP", 
                 "description": "Statistics and Probability (grades 6-8)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr6-8_SP", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr6-8_SP" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_I"        , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_I"                  , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_I"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_I"      , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr6-8_SP", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr6-8_SP"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr6-8_SP"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_I"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_I"                           , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_I"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_I"               , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr6-8_SP", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_I"            , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr6-8_SP", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr6-8_SP"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_I"                     , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "MTH_Gr8_FNC", 
                 "description": "Functions (grades 8)", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_MTH_Gr8_FNC", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_Gr8_FNC" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_MTH_J"       , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_MTH_J"                 , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_MTH_J"     , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_MTH_J"     , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_MTH_Gr8_FNC", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_MTH_Gr8_FNC"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_Gr8_FNC"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_MTH_J"                , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_MTH_J"                          , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_MTH_J"              , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_MTH_J"              , "min_year": 2016, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_MTH_Gr8_FNC", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_MTH_J"           , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_MTH_Gr8_FNC", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_MTH_Gr8_FNC"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_MTH_J"                    , "min_year": 2016, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }
         ], 
@@ -491,11 +524,12 @@
             { "col": "educationOrganizationId", "raw_col": "School_Agency_Key"    }
         ], 
         "accommodations": [
-            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_MTH"                  , "min_year": 2024                   }, 
+            { "col": "Color_Preferences"              , "raw_col": "Color_Preferences_MTH"              , "min_year": 2026                   }, 
+            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_MTH"                  , "min_year": 2024, "max_year": 2025 }, 
             { "col": "Color_Choices"                  , "raw_col": "Provided_Color_Choices_MTH"         ,                   "max_year": 2023 }, 
-            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_MTH"              , "min_year": 2018                   }, 
+            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_MTH"              , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Contrasting_Color"              , "raw_col": "Used_Contrasting_Color_MTH"         ,                   "max_year": 2017 }, 
-            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_MTH"               , "min_year": 2018                   }, 
+            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_MTH"               , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Reverse_Contrast"               , "raw_col": "Used_Reverse_Contrast_MTH"          ,                   "max_year": 2017 }, 
             { "col": "Masking"                        , "raw_col": "Masking_MTH"                        , "min_year": 2018                   }, 
             { "col": "Masking"                        , "raw_col": "Used_Masking_MTH"                   ,                   "max_year": 2017 }, 
@@ -571,8 +605,8 @@
             { "reportingMethod": "Date_of_Birth"                    , "col": "Date_of_Birth"                    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Gender"                           , "col": "Gender"                           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Ethnicity"                        , "col": "Ethnicity"                        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Out_of_District_IEP_Placement"    , "col": "Out_of_District_IEP_Placement"    ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "EL_Student_New_to_Country"        , "col": "EL_Student_New_to_Country"        ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Disability_Status"                , "col": "Disability_Status"                ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
@@ -581,9 +615,9 @@
             { "reportingMethod": "English_Proficiency"              , "col": "English_Proficiency"              ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Economic_Status"                  , "col": "Economic_Status"                  ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Migrant_Status"                   , "col": "Migrant_Status"                   ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                            "min_year": 2024, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Choice_Program_Participant"       , "col": "Choice_Program_Participant"       ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }
+            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                            "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }
         ], 
         "performanceLevels": [
             { "reportingMethod": "Performance Level", "col": "performanceLevel", "raw_col": "SCN_Performance_Level", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
@@ -594,63 +628,69 @@
                 "identificationCode": "SCN_LS", 
                 "description": "Life Science", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SCN_LS", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_LS" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_A"  , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_A"            , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_A", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_A", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_F"  , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_F"            , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_F", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_F", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SCN_LS", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SCN_LS"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_LS"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_A"           , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_A"                     , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_A"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_A"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_F"           , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_F"                     , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_F"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_F"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SCN_LS", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_A"      , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_F"      , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SCN_LS", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SCN_LS"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_A"               , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_F"               , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SCN_PS", 
                 "description": "Physical Science", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SCN_PS", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_PS" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_B"  , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_B"            , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_B", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_B", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_D"  , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_D"            , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_D", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_D", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SCN_PS", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SCN_PS"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_PS"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_B"           , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_B"                     , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_B"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_B"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_D"           , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_D"                     , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_D"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_D"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SCN_PS", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_B"      , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_D"      , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SCN_PS", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SCN_PS"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_B"               , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_D"               , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SCN_ES", 
                 "description": "Earth and Space Science", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SCN_ES", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_ES" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_C"  , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_C"            , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_C", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_C", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_E"  , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_E"            , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_E", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_E", "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SCN_ES", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SCN_ES"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_ES"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_C"           , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_C"                     , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_C"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_C"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_E"           , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_E"                     , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_E"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_E"         , "min_year": 2016, "max_year": 2018, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SCN_ES", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_C"      , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_E"      , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SCN_ES", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SCN_ES"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_C"               , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_E"               , "min_year": 2016, "max_year": 2018, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -658,16 +698,18 @@
                 "description": "Engineering", 
                 "min_year": 2019, 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SCN_ET", "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_ET" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SCN_D"  , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SCN_D"            , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SCN_D", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SCN_D", "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SCN_ET", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SCN_ET"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_ET"          , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SCN_D"           , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SCN_D"                     , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SCN_D"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SCN_D"         , "min_year": 2019, "max_year": 2023, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SCN_ET", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SCN_D"      , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SCN_ET", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SCN_ET"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SCN_D"               , "min_year": 2019, "max_year": 2023, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
@@ -714,18 +756,20 @@
             }
         ], 
         "topLevelFields": [
-            { "col": "schoolYear"             , "raw_col": "Year"                 }, 
-            { "col": "adminDate"              , "raw_col": "Test_End_Date_SCN"    }, 
-            { "col": "attemptStatus"          , "raw_col": "SCN_Attempted_Status" }, 
-            { "col": "reasonNotTested"        , "raw_col": "Reason_Not_Tested_SC" }, 
-            { "col": "educationOrganizationId", "raw_col": "School_Agency_Key"    }
+            { "col": "schoolYear"             , "raw_col": "Year"                                                      }, 
+            { "col": "adminDate"              , "raw_col": "Test_End_Date_SCN"                                         }, 
+            { "col": "attemptStatus"          , "raw_col": "SCN_Attempted_Status"                                      }, 
+            { "col": "reasonNotTested"        , "raw_col": "Reason_Not_Tested_SCN", "min_year": 2026                   }, 
+            { "col": "reasonNotTested"        , "raw_col": "Reason_Not_Tested_SC" ,                   "max_year": 2025 }, 
+            { "col": "educationOrganizationId", "raw_col": "School_Agency_Key"                                         }
         ], 
         "accommodations": [
-            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_SCN"                  , "min_year": 2024                   }, 
+            { "col": "Color_Preferences"              , "raw_col": "Color_Preferences_SCN"              , "min_year": 2026                   }, 
+            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_SCN"                  , "min_year": 2024, "max_year": 2025 }, 
             { "col": "Color_Choices"                  , "raw_col": "Provided_Color_Choices_SCN"         ,                   "max_year": 2023 }, 
-            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_SCN"              , "min_year": 2018                   }, 
+            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_SCN"              , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Contrasting_Color"              , "raw_col": "Used_Contrasting_Color_SCN"         ,                   "max_year": 2017 }, 
-            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_SCN"               , "min_year": 2018                   }, 
+            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_SCN"               , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Reverse_Contrast"               , "raw_col": "Used_Reverse_Contrast_SCN"          ,                   "max_year": 2017 }, 
             { "col": "Masking"                        , "raw_col": "Masking_SCN"                        , "min_year": 2018                   }, 
             { "col": "Masking"                        , "raw_col": "Used_Masking_SCN"                   ,                   "max_year": 2017 }, 
@@ -796,8 +840,8 @@
             { "reportingMethod": "Date_of_Birth"                    , "col": "Date_of_Birth"                    ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Gender"                           , "col": "Gender"                           ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Ethnicity"                        , "col": "Ethnicity"                        ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_School_FAY"           , "col": "Enrolled_in_School_FAY"           ,                                           "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Enrolled_in_District_FAY"         , "col": "Enrolled_in_District_FAY"         ,                                           "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Out_of_District_IEP_Placement"    , "col": "Out_of_District_IEP_Placement"    ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "EL_Student_New_to_Country"        , "col": "EL_Student_New_to_Country"        ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Disability_Status"                , "col": "Disability_Status"                ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
@@ -806,9 +850,9 @@
             { "reportingMethod": "English_Proficiency"              , "col": "English_Proficiency"              ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Economic_Status"                  , "col": "Economic_Status"                  ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Migrant_Status"                   , "col": "Migrant_Status"                   ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                           "min_year": 2024, "max_year": 2100, "typeDescriptor": "Level"      }, 
+            { "reportingMethod": "Optional_Field_PreID"             , "col": "Optional_Field_PreID"             ,                                           "min_year": 2024, "max_year": 2025, "typeDescriptor": "Level"      }, 
             { "reportingMethod": "Choice_Program_Participant"       , "col": "Choice_Program_Participant"       ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }, 
-            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                           "min_year": 2016, "max_year": 2100, "typeDescriptor": "Level"      }
+            { "reportingMethod": "Precode_Record_Source"            , "col": "Precode_Record_Source"            ,                                           "min_year": 2016, "max_year": 2025, "typeDescriptor": "Level"      }
         ], 
         "performanceLevels": [
             { "reportingMethod": "Performance Level", "col": "performanceLevel", "raw_col": "SS_Performance_Level", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
@@ -819,100 +863,110 @@
                 "identificationCode": "SS_BH", 
                 "description": "Behavioral Sciences", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SS_BH" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_BH"  , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_BH"            , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_BH", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_BH", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_E"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_E"             , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_E" , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_E" , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SS_BH", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SS_BH"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_BH"          , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_BH"                    , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_BH"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_BH"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_E"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_E"                     , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_E"         , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_E"         , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SS_BH", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_BH"     , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_E"      , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SS_BH", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SS_BH"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_BH"              , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_E"               , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SS_Econ", 
                 "description": "Economics", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SS_Econ" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_Econ"  , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_Econ"            , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_Econ", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_Econ", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_D"     , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_D"               , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_D"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_D"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SS_Econ", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SS_Econ"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_Econ"          , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_Econ"                    , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_Econ"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_Econ"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_D"             , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_D"                       , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_D"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_D"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SS_Econ", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_Econ"     , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_D"        , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SS_Econ", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SS_Econ"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_Econ"              , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_D"                 , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SS_Geog", 
                 "description": "Geography", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SS_Geog" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_Geog"  , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_Geog"            , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_Geog", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_Geog", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_A"     , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_A"               , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_A"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_A"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SS_Geog", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SS_Geog"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_Geog"          , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_Geog"                    , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_Geog"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_Geog"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_A"             , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_A"                       , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_A"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_A"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SS_Geog", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_Geog"     , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_A"        , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SS_Geog", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SS_Geog"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_Geog"              , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_A"                 , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SS_Hist", 
                 "description": "History", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SS_Hist" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_Hist"  , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_Hist"            , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_Hist", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_Hist", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_B"     , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_B"               , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_B"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_B"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SS_Hist", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SS_Hist"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_Hist"          , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_Hist"                    , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_Hist"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_Hist"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_B"             , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_B"                       , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_B"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_B"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SS_Hist", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_Hist"     , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_B"        , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SS_Hist", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SS_Hist"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_Hist"              , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_B"                 , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
                 ]
             }, 
             {
                 "identificationCode": "SS_PS", 
                 "description": "Political Science and Citizenship", 
                 "scoreResults": [
-                    { "reportingMethod": "Progress Score" , "col": "Progress_Score_SS_PS" , "min_year": 2024, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_PS"  , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_PS"            , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_PS", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_PS", "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "Points Earned"  , "col": "Points_Earned_SS_C"   , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI"            , "col": "SPI_SS_C"             , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Upper Limit", "col": "SPI_Upper_Limit_SS_C" , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
-                    { "reportingMethod": "SPI Lower Limit", "col": "SPI_Lower_Limit_SS_C" , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
+                    { "reportingMethod": "Performance Stars Score", "col": "Performance_Stars_Score_SS_PS", "min_year": 2026, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Progress Score"         , "col": "Progress_Score_SS_PS"         , "min_year": 2024, "max_year": 2025, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_PS"          , "min_year": 2022, "max_year": 2100, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_PS"                    , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_PS"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_PS"        , "min_year": 2022, "max_year": 2023, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "Points Earned"          , "col": "Points_Earned_SS_C"           , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI"                    , "col": "SPI_SS_C"                     , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Upper Limit"        , "col": "SPI_Upper_Limit_SS_C"         , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }, 
+                    { "reportingMethod": "SPI Lower Limit"        , "col": "SPI_Lower_Limit_SS_C"         , "min_year": 2016, "max_year": 2021, "typeDescriptor": "Integer" }
                 ], 
                 "performanceLevels": [
-                    { "reportingMethod": "Progress Level", "col": "Progress_Level_SS_PS", "min_year": 2024, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_PS"     , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
-                    { "reportingMethod": "SPI Level"     , "col": "SPI_Level_SS_C"      , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
+                    { "reportingMethod": "Performance Stars Level", "col": "Performance_Stars_Level_SS_PS", "min_year": 2026, "max_year": 2100, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "Progress Level"         , "col": "Progress_Level_SS_PS"         , "min_year": 2024, "max_year": 2025, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_PS"              , "min_year": 2022, "max_year": 2023, "levels": [1, 2, 3, 4] }, 
+                    { "reportingMethod": "SPI Level"              , "col": "SPI_Level_SS_C"               , "min_year": 2016, "max_year": 2021, "levels": [1, 2, 3, 4] }
                 ]
             }
         ], 
@@ -924,11 +978,12 @@
             { "col": "educationOrganizationId", "raw_col": "School_Agency_Key"    }
         ], 
         "accommodations": [
-            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_SS"                  , "min_year": 2024                   }, 
+            { "col": "Color_Preferences"              , "raw_col": "Color_Preferences_SS"              , "min_year": 2026                   }, 
+            { "col": "Color_Choices"                  , "raw_col": "Color_Choices_SS"                  , "min_year": 2024, "max_year": 2025 }, 
             { "col": "Color_Choices"                  , "raw_col": "Provided_Color_Choices_SS"         ,                   "max_year": 2023 }, 
-            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_SS"              , "min_year": 2018                   }, 
+            { "col": "Contrasting_Color"              , "raw_col": "Contrasting_Color_SS"              , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Contrasting_Color"              , "raw_col": "Used_Contrasting_Color_SS"         ,                   "max_year": 2017 }, 
-            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_SS"               , "min_year": 2018                   }, 
+            { "col": "Reverse_Contrast"               , "raw_col": "Reverse_Contrast_SS"               , "min_year": 2018, "max_year": 2025 }, 
             { "col": "Reverse_Contrast"               , "raw_col": "Used_Reverse_Contrast_SS"          ,                   "max_year": 2017 }, 
             { "col": "Masking"                        , "raw_col": "Masking_SS"                        , "min_year": 2018                   }, 
             { "col": "Masking"                        , "raw_col": "Used_Masking_SS"                   ,                   "max_year": 2017 }, 
