@@ -5,7 +5,7 @@
 
 ## Model
 
-Data model is based on information in the [User's Guide to Interpreting Reports 2024-25](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf) as well as the [Wisconsin Forward Exam Spring 2024 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf) for 2023-2025. For historical data, information was sourced from:
+Data model is based on information in the [User's Guide to Interpreting Reports Spring 2026](https://dpi.wi.gov/media/54313/download?inline=), the [User's Guide to Interpreting Reports 2024-25](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Forward_Exam_Users_Guide_to_Interpreting_Reports_2024-25.pdf), as well as the [Wisconsin Forward Exam Spring 2024 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/Final_Forward_Technical_Report_2024.pdf) for 2023-2026. For historical data, information was sourced from:
 - For 2022-23, the [2023 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/EWI270_WIFW_SPRG_23_TECH.pdf) covers the content standards and different scores, especially for major column name and score differences prior to changes in 2024.
 - For 2021-22, the [Spring 2022 Technical Report](https://dpi.wi.gov/sites/default/files/imce/assessment/pdf/2022_Technical_Report_Final.pdf) includes past reporting categories and the old Listening domain for ELA, as well as mappings of letter codes to reporting categories to interpret column names.
 - For 2020-21, the [2021 Technical Report](https://www.wistatedocuments.org/digital/collection/p267601coll4/id/34743/) covers past column names, especially for SS prior to renaming that occurred in 2021-22.
@@ -48,7 +48,7 @@ Prior to revisions in 2023-24, there was an additional Listening domain and scor
 
 
 #### Reporting categories / content standards
-Separate from domains, Forward also provides raw points, scale scores, and performance levels for each of the following reporting categories. Each category is targeted at specific knowledge areas, skills, or concepts. These differ by subject and can differ by grade for certain subjects. From 2023-24 onwards, scale scores are called 'Progress Scores' and the derived performance levels 'Progress Levels'. Prior, these were 'SPI (Standard Performance Index) Scores' and 'SPI Levels'; SPIs were also provided with upper and lower bounds.
+Separate from domains, Forward also provides raw points, scale scores, and performance levels for each of the following reporting categories. Each category is targeted at specific knowledge areas, skills, or concepts. These differ by subject and can differ by grade for certain subjects. Starting in 2025-26, reporting category scores and levels are called 'Performance Stars Scores' and 'Performance Stars Levels'. In 2023-24 and 2024-25, these were called 'Progress Scores' and 'Progress Levels'. Prior, these were 'SPI (Standard Performance Index) Scores' and 'SPI Levels'; SPIs were also provided with upper and lower bounds.
 
 ELA:
 - Reading
@@ -91,7 +91,7 @@ Science (same for all grades, prefixed by 'Practices and Crosscutting Concepts i
 
 
 ### Accommodations and supports
-Accommodations and supports are included, with mappings documented in `seeds/columns_to_accommodations.csv`. These are currently intended to best match the 2024-25 version of the assessment, with historical accommodations aligned where possible. There are some subject-specific accommodations, such as Read Aloud Passages or Listening Scripts for ELA or Multiplication Table for MTH.
+Accommodations and supports are included, with mappings documented in `seeds/columns_to_accommodations.csv`. These are currently intended to best match the 2025-26 version of the assessment (where color/contrast designated supports are consolidated under `Color_Preferences`), with historical accommodations aligned where possible. There are some subject-specific accommodations, such as Read Aloud Passages or Listening Scripts for ELA or Multiplication Table for MTH.
 
 ## General bundle info
 This bundle follows our current best-practices, which include:
@@ -155,11 +155,11 @@ To run this bundle without implementing the student ID xwalking packages:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_file_2026.csv",
 "OUTPUT_DIR": "output/" ,
 "STUDENT_ID_NAME": "WISEID",
 "EDFI_DS_VERSION": "5",
-"API_YEAR": 2025
+"API_YEAR": 2026
 }'
 ```
 
