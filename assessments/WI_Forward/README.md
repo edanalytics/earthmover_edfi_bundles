@@ -155,11 +155,11 @@ To run this bundle without implementing the student ID xwalking packages:
 ```bash
 earthmover run -c ./earthmover.yaml -p '{
 "STATE_FILE": "./runs.csv",
-"INPUT_FILE": "data/sample_anonymized_file.csv",
+"INPUT_FILE": "data/sample_anonymized_file_2026.csv",
 "OUTPUT_DIR": "output/" ,
 "STUDENT_ID_NAME": "WISEID",
 "EDFI_DS_VERSION": "5",
-"API_YEAR": 2025
+"API_YEAR": 2026
 }'
 ```
 

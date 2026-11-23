@@ -192,7 +192,7 @@ sources:
     # THIS FILE DOES NOT EXIST; IT MUST BE SUPPLIED BY THE USER!
     file: ${INPUT_FILE}
     header_rows: 1
-    # See data/sample_anonymized_file.csv
+    # See data/sample_anonymized_file_2026.csv or data/sample_anonymized_file_2025.csv
     optional_fields:
       {% for col in columns_in_spec %}
       - {{ col }}
