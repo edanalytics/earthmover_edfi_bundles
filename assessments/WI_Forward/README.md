@@ -48,7 +48,7 @@ Prior to revisions in 2023-24, there was an additional Listening domain and scor
 
 
 #### Reporting categories / content standards
-Separate from domains, Forward also provides raw points, scale scores, and performance levels for each of the following reporting categories. Each category is targeted at specific knowledge areas, skills, or concepts. These differ by subject and can differ by grade for certain subjects. From 2023-24 onwards, scale scores are called 'Progress Scores' and the derived performance levels 'Progress Levels'. Prior, these were 'SPI (Standard Performance Index) Scores' and 'SPI Levels'; SPIs were also provided with upper and lower bounds.
+Separate from domains, Forward also provides raw points, scale scores, and performance levels for each of the following reporting categories. Each category is targeted at specific knowledge areas, skills, or concepts. These differ by subject and can differ by grade for certain subjects. Starting in 2025-26, reporting category scores and levels are called 'Performance Stars Scores' and 'Performance Stars Levels'. In 2023-24 and 2024-25, these were called 'Progress Scores' and 'Progress Levels'. Prior, these were 'SPI (Standard Performance Index) Scores' and 'SPI Levels'; SPIs were also provided with upper and lower bounds.
 
 ELA:
 - Reading
